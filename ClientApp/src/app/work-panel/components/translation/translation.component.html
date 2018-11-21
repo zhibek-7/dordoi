@@ -1,0 +1,48 @@
+<div class="translationBlock" *ngIf="checkPhrase()" >
+
+    <div class="controlBlock">
+        <div class="row">
+            <div class="leftHideArrow col-1"><img class="hideBlocksIcons" src="../../../assets/icons/main/bothSideArrows.png" (click)="hideLeftBlock()" ></div>
+            <div class="col-8">Текст для перевода</div>
+            <div class="options col-2"></div>
+            <div class="rightHideArrow col-1"><img class="hideBlocksIcons float-right rightHideIcon" src="../../../assets/icons/main/bothSideArrows.png" (click)="hideRightBlock()"></div>
+        </div>
+    </div>
+
+    <div class="contextBlock">
+        <div class="textForTranslate">{{phraseForTranslate.text}}</div>
+        <div class="context row">
+            <div class="contextPicker col-xl-1 col-lg-2" (click)="contextShowClick()">Контекст</div>
+            <div class="verticalLine col-1">|</div>
+            <div class="contextEdit col-xl-5 col-lg-5" (click)="editContextClick()" >Редактировать контекст</div>
+        </div>
+        <div class="objectInCode">array['mounths'][1]</div>
+        <hr>
+    </div>
+
+    <div class="workWithTranslation">
+        <div class="yourTranslateBlock">
+            <div class="form-group translateTextArea">
+                <textarea class="form-control" rows="5" id="inputForTranslation" name="translatedText" [(ngModel)]="translatedText" placeholder="Введите вариант перевода"></textarea>
+            </div>
+        </div>
+    
+        <div class="optionsBlock">
+            <hr>
+            <div class="row">
+                <div class="arrowsIcons col-2 row">
+                    <div (click)="arrowLeftClick()"><img class="arrowIcon" src="../../../assets/icons/main/arrowLeft.png" alt="Предыдущая страница"></div>
+                    <div (click)="arrowRightClick()"><img class="arrowIcon" src="../../../assets/icons/main/arrowRight.png" alt="Следующая страница"></div>
+                </div>
+                <div class="col-7"><img class="importIcon" (click)="importFileClick()" src="../../../assets/icons/main/import.png" ></div>
+                <div class="col-1 align-self-center">6/7</div>
+                <button type="submit" class="btn btn-default float-right col-2" name="buttonSubmitInput" form="inputForTranslation" (click)="submitTranslate()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<div class="translationBlockWithoutPhrase" *ngIf="!checkPhrase()">
+    <div class="phraseUndifinedBlock">Выберите фразу</div>
+</div>

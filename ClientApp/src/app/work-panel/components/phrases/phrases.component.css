@@ -1,0 +1,54 @@
+.phrasesBlock {
+    padding-left: 15px;
+}
+
+.searchBlock {
+    background-color: #F6F5F1;
+    padding-top: 10px;
+    padding-bottom: 0px;
+    height: 7vh;
+}
+
+.inputSearch input {
+    height: 50px;
+    min-width: 100%;
+}
+
+.pharseListBlock .list-group {
+    height: 82vh;
+    overflow-y: scroll;
+    overflow-x: hidden; 
+    -webkit-overflow-scrolling: touch;
+    cursor: pointer;
+}
+
+.searchIcon {
+    margin-top: 5px;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+}
+
+.colorIcon {
+    height: 10px;
+    width: 10px;
+}
+
+.pagesBlock {
+    background-color: #F6F5F1;
+    height: 5vh;
+    padding-left: 10%;
+    padding-top: 0.5%;
+}
+
+.numberOfPages {
+    font-size: 1.5em;
+    color: gray;
+}
+
+.arrowIcon {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+}
+

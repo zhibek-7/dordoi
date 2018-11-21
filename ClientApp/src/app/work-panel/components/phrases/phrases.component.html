@@ -1,0 +1,41 @@
+<div class="phrasesBlock">
+
+    <div class="searchBlock">
+        <div class="container">
+            <div class="row">
+                <div class="col-2"><img class="searchIcon" src="../../../assets/icons/main/loop.png"></div>
+                <form class="col-8">
+                    <div class=" inputSearch">
+                        <input type="text" [(ngModel)]="searchText" name="first" class="form-control input-lg" placeholder="Поиск в файле" class="col-9">
+                    </div>
+                </form>
+                <div class="col-2 float-right"><img class="searchIcon" src="../../../assets/icons/main/filter.png" (click)="filterPhrasesClick()"></div>
+            </div>            
+        </div>
+    </div>
+
+    <div class="pharseListBlock">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText" (click)="choosePhrase(phrase)">
+                        <div class="row" >
+                            <div class="col-1"><img class="colorIcon" [src]="phrase.color.iconPath"></div>
+                            <div class="col-11"> {{phrase.text}} </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagesBlock">
+        <div class="row">
+            <p class="numberOfPages col-8">Page {{currentPageNumber}} of {{maxNumberOfPages}} </p>
+            <div class="arrowsIcons col-4 row">
+                <div><img class="arrowIcon" src="../../../assets/icons/main/arrowLeft.png" alt="Предыдущая страница" (click)="previuosPage()" ></div>
+                <div><img class="arrowIcon" src="../../../assets/icons/main/arrowRight.png" alt="Следующая страница" (click)="nextPage()" ></div>
+            </div>
+        </div>
+    </div>
+</div>

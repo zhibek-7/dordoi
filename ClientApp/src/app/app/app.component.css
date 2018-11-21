@@ -1,0 +1,26 @@
+ .container-full {
+    width: 100%;
+    padding-left: 0%;
+    padding-right: 0%;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.btn-create, .dropdown-item {
+    padding: .25rem 2.5rem;
+}
+
+.btn-create {
+    margin-left: 1.25rem;
+}
+
+.dropdown-menu {
+    width: 15rem;
+}
+
+.divider {
+    height: 5rem;
+}
+.navbar {
+    padding: 0rem 20rem;
+}
