@@ -5,7 +5,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
 
 
-
 const routes: Routes = [
     {
         path: 'work-panel',
@@ -22,6 +21,10 @@ const routes: Routes = [
     {
       path: 'example',
       loadChildren: '../example/example.model#ExampleModule'
+    },
+    {
+      path: 'example2',
+      loadChildren: '../example2/example2.model#Example2Module'
     },
     {
         path: '**',

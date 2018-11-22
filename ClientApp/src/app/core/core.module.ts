@@ -1,6 +1,10 @@
+//import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule} from '@angular/router';
+
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 
 import { CoreRoutingModule } from './core-routing.model';
@@ -11,12 +15,16 @@ import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
-    imports: [ 
+    imports: [
         CommonModule,
-        CoreRoutingModule
+        CoreRoutingModule,
+  // BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+   HttpClientModule,
+   FormsModule,
+
     ],
     declarations: [
-        NotFoundComponent,
+  	      NotFoundComponent,
         HeaderComponent,
         LoginComponent
     ],
@@ -24,6 +32,6 @@ import { LoginComponent } from './login/login.component';
         RouterModule,
         HeaderComponent
     ],
-    providers: [],
+    providers: []
 })
 export class CoreModule {}
