@@ -170,6 +170,7 @@ namespace LocalizationServiceWpfApp
                                       }).ContinueWith(_ =>
                                       {
                                           this.StatusLabelText = string.Format("Загружено файлов: {0} из {1}", successfulLoadCount, ofd.FileNames.Length);
+                                          this.IsFileUploadAllowed = true;
                                       }, TaskScheduler.FromCurrentSynchronizationContext());
 
                                   }
