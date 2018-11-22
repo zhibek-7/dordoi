@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: '../admin/admin.model#AdminModule'
     },
     {
+      path: 'example',
+      loadChildren: '../example/example.model#ExampleModule'
+    },
+    {
         path: '**',
         component: NotFoundComponent
     }
