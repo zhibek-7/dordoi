@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Models.Data;
-using Models.Logs;
+using Utilities.Logs;
 
 namespace Localization.Controllers
 {
@@ -12,10 +13,12 @@ namespace Localization.Controllers
     public class SampleDataController : Controller
     {
         private LogTools lt;
+        private ExceptionLog ltErro;
 
         public SampleDataController()
         {
             lt = new LogTools();
+            ltErro = new ExceptionLog();
         }
 
         [HttpGet("[action]")]
@@ -23,10 +26,21 @@ namespace Localization.Controllers
         {
             lt.WriteDebug("WeatherForecasts-->");
 
-            WeatherForecast wf = new WeatherForecast();
+            try
+            {
+                WeatherForecast wf = new WeatherForecast();
 
-            lt.WriteDebug("WeatherForecasts--<");
-            return wf.getData();
+
+                lt.WriteDebug("WeatherForecasts--<");
+                return wf.getData();
+
+            }
+            catch (Exception exc)
+            {
+                ltErro.WriteExceprion("Ошибка при создании ссылки ", exc);
+            }
+
+            return null;
         }
     }
 }
