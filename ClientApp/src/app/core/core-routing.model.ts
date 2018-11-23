@@ -27,6 +27,10 @@ const routes: Routes = [
       loadChildren: '../example2/example2.model#Example2Module'
     },
     {
+      path: 'crowdin',                                          // 1. Поменять название модуля
+      loadChildren: '../crowdin/crowdin.module#CrowdinModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
+    },
+    {
         path: '**',
         component: NotFoundComponent
     }
