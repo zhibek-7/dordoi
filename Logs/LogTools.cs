@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NLog;
 
-namespace Models.Logs
+namespace Utilities.Logs
 {
     /**
      * Класс для логирования.
@@ -37,7 +37,8 @@ namespace Models.Logs
          */
         protected Logger getLog(String logNameIn)
         {
-            return LogManager.GetLogger(logNameIn);
+            log = LogManager.GetLogger(logNameIn);
+            return log;
         }
 
         // Создание debuglogs лога
@@ -50,7 +51,7 @@ namespace Models.Logs
         // Создание лога с базовым контекстом
         public LogTools(String logNameIn)
         {
-            getLog();
+            getLog(logNameIn);
             logName = logNameIn;
         }
 
@@ -100,6 +101,7 @@ namespace Models.Logs
         {
             StringBuilder sb = getStr(str);
             getLog().Error(err, sb.ToString());
+
 
             /*
                         logger.Trace("trace message");
