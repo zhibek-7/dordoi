@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DAL.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Localization
 {
@@ -21,6 +23,7 @@ namespace Localization
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddEntityFrameworkNpgsql().AddDbContext<PostgreSqlEFContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("MyWebApiConnection"))); // тут подключаем нашу удаленную бд
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
