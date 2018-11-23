@@ -1,0 +1,120 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+     {{ title }}
+  </h1>
+ 
+</div>
+<form>
+    <div class="form-group" *ngFor="let form of forms">
+      <label for="exampleInputName">{{form.labelName}}</label>
+      <input type="name" class="form-control is-invalid" id='{{form.id}}'  placeholder='{{form.placeHolder}}' required>
+      <div class="invalid-feedback">
+        {{form.ivalid_feedback}}
+        </div>   
+    </div>
+  
+    <div class="form-check" *ngFor="let option of options">
+        <input class="form-check-input" type="radio" name='{{option.name}}' id='{{option.id}}' value='{{option.value}}'>
+        <label class="form-check-label" for='{{option.id}}'>
+        {{option.labelName}}
+        </label>
+        <small id="nameHelp" class="form-text text-muted">  {{option.small}}</small>
+      </div>
+     
+      
+      <div class="form-group">
+                <div>
+                        <label for="exampleFormControlSelect2">Исходный язык</label>
+                </div>
+                <div>
+                  
+                    <select class="form-control">
+                        <option id='{{lang.id}}' *ngFor="let lang of dropdownList">  {{lang.itemName}}</option>
+                    </select>
+                  </div>
+          
+                <div class="row">
+                  <div class="col">
+                      <label for="exampleFormControlSelect2">Целевые языки</label>
+                      <div class="input-group">
+                       
+                          <div class="custom-file">
+                              
+                              <input type="text" name = "itemName"  class="form-control"  [(ngModel)]="searchText" id="idFilter" placeholder="Фильтровать языки" >
+                          </div>
+                          <div class="input-group-append">
+                                <button style="height: 38px;" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top" (click)="args='ascending';reverse=!reverse" id="idOrder">
+                                 
+                                <i class="material-icons">sort_by_alpha</i>
+                                </button>
+                                            
+                          </div>
+                        </div>
+                        <div class="input-group">
+
+                                <div class="col-md"  size="4"  style="height: 10em; overflow: auto;" >
+                                        <div class="form-check" *ngFor="let lang of dropdownList |filter:searchText|orderBy:args:reverse">
+           
+           
+                                           <label class="form-check-label" for=' {{lang.id}}'> 
+                                             <input class="form-check-input" type="checkbox" id='{{lang.id}}'  
+                                           name='{{lang.itemName}}'
+                                           
+                                           (click) = "AddSelected($event,lang)">
+                                              {{lang.itemName}}
+                                           </label>
+                                       </div>
+           
+                                    </div>
+                        </div>
+                        <div class="input-group">
+
+                         
+                            <div class="btn-group mr-2" role="group" aria-label="First group">
+                          
+                                  <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top"  (click) = "AllSelected()">
+                                    Select top 30   
+                                  </button>
+                                  <button type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="right" title="Tooltip on right"  >
+                                    Пользовательские языки
+                                  </button>
+                               
+                              </div>
+                        
+                        
+                        </div>
+                         
+                  </div>
+                  <div class="col">
+                  <label for="exampleFormControlSelect2">  </label>
+                    <div class="input-group">
+                     
+                        <div class="custom-file">
+                              <label class="form-check-label"> No language selected</label>
+                           
+                        </div>
+                        <div class="input-group-append">
+                         
+                        </div>
+                      </div>
+                      <div class="col-md"  size="4"  style="height: 10em; overflow: auto;">
+                          <div class="form-check" *ngFor="let lang of selectedItems" >
+                              <label class="form-check-label" for=' {{lang.id}}' id='{{lang.id}}'>  
+                              {{lang.itemName}}
+                             
+                              </label>
+                          </div>
+                      </div>
+                      
+
+
+                  </div>
+                  
+                </div>
+              </div>
+  </form>
+
+  
+ 
+<router-outlet></router-outlet>
