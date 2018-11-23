@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="C:\Users\lamiis\.nuget\packages\nlog.config\4.5.11\contentFiles\any\any\NLog.config">
+    <None Update=".\NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="NLog.config">
