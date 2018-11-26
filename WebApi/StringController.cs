@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Context; // EF
 using DAL.Reposity.PostgreSqlRepository; // Native
 using Models.DatabaseEntities;
+using Microsoft.AspNetCore.Cors;
 
 namespace Localization.WebApi
 {
@@ -29,10 +30,12 @@ namespace Localization.WebApi
         }
 
         [HttpGet("{id}")]
+        [EnableCors("AllowSpecificOrigin")]
         public Models.DatabaseEntities.String GetStringById(int id)
         {
             Models.DatabaseEntities.String foundedString = stringRepository.GetByID(id);
             return foundedString;
         }
+
     }
 }

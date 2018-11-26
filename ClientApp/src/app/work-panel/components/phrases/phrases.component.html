@@ -3,10 +3,10 @@
     <div class="searchBlock">
         <div class="container">
             <div class="row">
-                <div class="col-2"><img class="searchIcon" src="../../../assets/icons/main/loop.png"></div>
+                <div class="col-2" (click)="getString()"><img class="searchIcon" src="../../../assets/icons/main/loop.png"></div>
                 <form class="col-8">
                     <div class=" inputSearch">
-                        <input type="text" [(ngModel)]="searchText" name="first" class="form-control input-lg" placeholder="Поиск в файле" class="col-9">
+                        <input type="text" [(ngModel)]="searchText" name="first" class="form-control input-lg" placeholder="Поиск в файле" class="col-9" >
                     </div>
                 </form>
                 <div class="col-2 float-right"><img class="searchIcon" src="../../../assets/icons/main/filter.png" (click)="filterPhrasesClick()"></div>
