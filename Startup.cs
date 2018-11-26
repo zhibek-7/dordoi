@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DAL.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace Localization
 {
@@ -22,11 +23,21 @@ namespace Localization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            ////ƒанный блок кода включает доступ к серверу с любого порта(нужен дл€ тестировани€ с нескольких клиентов)///////
+            var corsBuilder = new CorsPolicyBuilder();
+            corsBuilder.AllowAnyHeader();
+            corsBuilder.AllowAnyMethod();
+            corsBuilder.AllowAnyOrigin(); // For anyone access.
+            //corsBuilder.WithOrigins("http://localhost:56573"); // for a specific url. Don't add a forward slash on the end!
+            corsBuilder.AllowCredentials();
+
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("http://localhost:4200"));
+                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
             });
+            //////////////ƒанный блок заканчиваетс€
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddEntityFrameworkNpgsql().AddDbContext<PostgreSqlEFContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("MyWebApiConnection"))); // тут подключаем нашу удаленную бд
 
@@ -48,9 +59,8 @@ namespace Localization
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
-            }
+            }         
 
-            app.UseCors("AllowSpecificOrigin");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -63,6 +73,8 @@ namespace Localization
                     template: "{controller}/{action=Index}/{id?}");
             });
 
+            app.UseCors("SiteCorsPolicy"); // это тоже дл€ нескольких портов(см. выше)
+            
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
