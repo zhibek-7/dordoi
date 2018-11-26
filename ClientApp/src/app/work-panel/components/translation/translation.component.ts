@@ -3,7 +3,10 @@ import { SharePhraseService } from '../../services/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../services/share-translated-phrase.service';
 
 
+
 import { String } from 'src/app/models/database-entities/string.type';
+import { Translation } from 'src/app/models/database-entities/translation.type';
+import { TranslationService } from '../../services/databaseServices/translationService.service';
 
 // import { Phrase } from '../../../entities/phrase/phrase.type';
 
@@ -12,7 +15,7 @@ import { String } from 'src/app/models/database-entities/string.type';
     selector: 'translation-component',
     templateUrl: './translation.component.html',
     styleUrls: ['./translation.component.css'],
-    providers: []
+    providers: [TranslationService]
 })
 export class TranslationComponent implements OnInit {
 
@@ -23,10 +26,11 @@ export class TranslationComponent implements OnInit {
 
     translatedText: string;
     phraseForTranslate: String;
+    translatedPhrase: Translation;
 
 
     constructor(private sharePhraseService: SharePhraseService,
-        private shareTranslatedPhraseService: ShareTranslatedPhraseService) {
+        private shareTranslatedPhraseService: ShareTranslatedPhraseService, private translationService: TranslationService ) {
 
         this.sharePhraseService.onClick.subscribe(pickedPhrase => this.phraseForTranslate = pickedPhrase);
      }
@@ -73,9 +77,14 @@ export class TranslationComponent implements OnInit {
         alert("Импортируем файл");
     }
 
-    submitTranslate(){
-        this.shareTranslatedPhraseService.sumbitTranslatedPhrase(this.translatedText);
-        this.translatedText = null;
+    async submitTranslate(){ // завершить данный метод
+        this.translatedPhrase = new Translation(this.translatedText, this.phraseForTranslate.id, 10123);  //поменять потом на реальный id пользователя
+        let test = await this.translationService.createTranslate(this.translatedPhrase);
+        // let test = await this.translationService.getTranslations();
+        console.log(test);
+
+        // this.shareTranslatedPhraseService.sumbitTranslatedPhrase(this.translatedPhrase);
+        // this.translatedPhrase = null;
     }
 
     checkPhrase(): boolean{

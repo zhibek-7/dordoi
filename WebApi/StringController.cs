@@ -11,15 +11,16 @@ using Microsoft.AspNetCore.Cors;
 
 namespace Localization.WebApi
 {
+    [EnableCors("SiteCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
     public class StringController : ControllerBase
     {
-        private readonly StringRepository stringRepository = new StringRepository();
+        private readonly StringRepository stringRepository;
 
         public StringController()
         {
-            
+            stringRepository = new StringRepository();
         }
 
         [HttpGet]
@@ -30,7 +31,7 @@ namespace Localization.WebApi
         }
 
         [HttpGet("{id}")]
-        [EnableCors("AllowSpecificOrigin")]
+        //[EnableCors("AllowSpecificOrigin")]
         public Models.DatabaseEntities.String GetStringById(int id)
         {
             Models.DatabaseEntities.String foundedString = stringRepository.GetByID(id);
