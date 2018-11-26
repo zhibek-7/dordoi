@@ -2,7 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SharePhraseService } from '../../services/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../services/share-translated-phrase.service';
 
-import { Phrase } from '../../../entities/phrase/phrase.type';
+
+import { String } from 'src/app/models/database-entities/string.type';
+
+// import { Phrase } from '../../../entities/phrase/phrase.type';
 
 
 @Component({
@@ -19,7 +22,7 @@ export class TranslationComponent implements OnInit {
     @Output() onChangedRightBlock = new EventEmitter<boolean>();
 
     translatedText: string;
-    phraseForTranslate: Phrase;
+    phraseForTranslate: String;
 
 
     constructor(private sharePhraseService: SharePhraseService,

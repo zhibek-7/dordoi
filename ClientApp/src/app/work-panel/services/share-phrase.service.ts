@@ -1,12 +1,12 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Phrase } from '../../entities/phrase/phrase.type';
+import { String } from 'src/app/models/database-entities/string.type';
 
 @Injectable()
 export class SharePhraseService {
 
-    private sharedPhrase: Phrase = undefined;
+    private sharedPhrase: String = undefined;
 
-    onClick:EventEmitter<Phrase> = new EventEmitter();
+    onClick:EventEmitter<String> = new EventEmitter();
 
     constructor(){
 
@@ -17,7 +17,7 @@ export class SharePhraseService {
         this.onClick.emit(sharedPhrase);
     }
 
-    getSharedPhrase(): Phrase{
+    getSharedPhrase(): String{
         return this.sharedPhrase;
     }
 

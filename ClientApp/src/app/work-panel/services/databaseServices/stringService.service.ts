@@ -14,17 +14,11 @@ export class StringService {
 
     async getStringById(){        
         let asyncResult = await this.http.get<String>(this.url).toPromise();
-        await console.log(asyncResult);
         return asyncResult;    
     }
 
     async getStrings(){
         let strings: String[] = await this.http.get<String[]>(this.url).toPromise();
-        await console.log(strings);
         return strings;
-    }
-
-    async test(){
-        await console.log("Промежуток");
     }
 }

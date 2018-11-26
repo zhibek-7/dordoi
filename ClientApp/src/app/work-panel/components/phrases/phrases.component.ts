@@ -14,15 +14,12 @@ import { StringService } from '../../services/databaseServices/stringService.ser
 })
 export class PhrasesComponent implements OnInit {
 
-    stringsList: Array<String>;
-    testString: String = new String();
+    phrasesList: Array<String>;
+    phrasesOnPages: String[][];
+    currentPageOfPhrases: String[];
+    filtredPhrases: String[];
 
-    phrasesList: Array<Phrase>;
-    phrasesOnPages: Phrase[][];
-    currentPageOfPhrases: Phrase[];
-    filtredPhrases: Phrase[];
-
-    pickedPhrase: Phrase;
+    pickedPhrase: String;
 
     currentPageNumber: number = 1;
     maxNumberOfPages: number;
@@ -30,24 +27,19 @@ export class PhrasesComponent implements OnInit {
     constructor(private jsonParserService: JsonParserService,
          private sharePhraseService: SharePhraseService, private stringService: StringService) {
         this.phrasesList = new Array<Phrase>();
-        this.stringsList = new Array<String>();
      }
 
     ngOnInit(): void {
         this.getStrings();
      }
 
-    
-    // async getString(){
-    //     this.testString = await this.stringService.getStringById();
-    // }
-
     async getStrings(){
-        this.stringsList = await this.stringService.getStrings();
+        this.phrasesList = await this.stringService.getStrings();
+        this.countPages();
     }
 
      async countPages(){
-        let maxPhrasesOnOnePage = 15;
+        let maxPhrasesOnOnePage = 70;
         let allPhrases = this.phrasesList.length;
         let numberOfPages = Math.ceil(allPhrases/maxPhrasesOnOnePage);
         this.phrasesOnPages = [];
@@ -55,15 +47,16 @@ export class PhrasesComponent implements OnInit {
         for(var i: number = 0; i < numberOfPages; i++){
             this.phrasesOnPages[i] = [];
             for(var j: number = 0; j < maxPhrasesOnOnePage; j++){
-                let position: number = ( (i)*15 + j );
-                if(this.phrasesList[position] != undefined){
+                let position: number = ( (i)*70 + j );
+                if(this.phrasesList[position] != undefined && this.phrasesList[position].substringToTranslate != null){
                     this.phrasesOnPages[i][j] = this.phrasesList[position];
                 }
             }
         }
         this.currentPageOfPhrases = [];
         this.currentPageOfPhrases = this.phrasesOnPages[0];
-        this.maxNumberOfPages = this.phrasesOnPages.length;
+        this.maxNumberOfPages = await this.phrasesOnPages.length;
+        await console.log(this.phrasesOnPages);
      }
 
      previuosPage() {
@@ -79,11 +72,6 @@ export class PhrasesComponent implements OnInit {
             this.currentPageOfPhrases = this.phrasesOnPages[this.currentPageNumber - 1];
         }
     }
-
-    // async getPhrases() { 
-    //     this.phrasesList = await this.jsonParserService.getPhrasesFromJsonFile('../../../assets/testData/phrases.json');
-    //     await this.countPages();
-    // }
 
     choosePhrase(phrase){
         this.pickedPhrase = phrase;
