@@ -16,6 +16,7 @@ namespace Localization.WebApi.work_panel
     {
         PostgreSqlEFContext context;
         private readonly UserRepository userRepository = new UserRepository();
+        private readonly StringRepository stringRepository = new StringRepository();
 
         public WorkPanelController(PostgreSqlEFContext context)
         {
@@ -25,6 +26,9 @@ namespace Localization.WebApi.work_panel
         [HttpGet]
         public IEnumerable<User> GetUsers()
         {
+            //List<Models.DatabaseEntities.String> strings = context.Strings.ToList();
+            List<Models.DatabaseEntities.String> strings = stringRepository.GetAll().ToList(); // получаем через нативный sql
+            Models.DatabaseEntities.String foundedString = stringRepository.GetByID(5);
             List<User> users = context.Users.ToList(); //получаем через EF
             users = userRepository.GetAll().ToList(); // получаем через нативный sql
             return users;
