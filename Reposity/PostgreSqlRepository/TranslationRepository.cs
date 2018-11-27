@@ -53,5 +53,16 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<Translation> GetAllTranslationsInStringByID(int idString)
+        {
+            using (IDbConnection dbConnection = context.Connection)
+            {
+                dbConnection.Open();
+                IEnumerable<Translation> translations = dbConnection.Query<Translation>("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @Id ", new { Id = idString }).ToList();
+                dbConnection.Close();
+                return translations;
+            }
+        }
     }
 }
