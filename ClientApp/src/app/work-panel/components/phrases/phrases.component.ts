@@ -17,7 +17,7 @@ export class PhrasesComponent implements OnInit {
     phrasesList: Array<String>;
     phrasesOnPages: String[][];
     currentPageOfPhrases: String[];
-    filtredPhrases: String[];
+    filtredPhrases: String[]; 
 
     pickedPhrase: String;
 
@@ -40,16 +40,24 @@ export class PhrasesComponent implements OnInit {
 
      async countPages(){
         let maxPhrasesOnOnePage = 70;
-        let allPhrases = this.phrasesList.length;
-        let numberOfPages = Math.ceil(allPhrases/maxPhrasesOnOnePage);
         this.phrasesOnPages = [];
+
+        let StringsFromNullValue: String[] = [];
+        this.phrasesList.forEach(element => {
+            if(element.substringToTranslate != null) {
+                StringsFromNullValue.push(element);
+            }
+        });
+        let allPhrases = StringsFromNullValue.length;
+        let numberOfPages = Math.ceil(allPhrases/maxPhrasesOnOnePage);
+        this.phrasesList = StringsFromNullValue;
 
         for(var i: number = 0; i < numberOfPages; i++){
             this.phrasesOnPages[i] = [];
             for(var j: number = 0; j < maxPhrasesOnOnePage; j++){
-                let position: number = ( (i)*70 + j );
-                if(this.phrasesList[position] != undefined && this.phrasesList[position].substringToTranslate != null){
-                    this.phrasesOnPages[i][j] = this.phrasesList[position];
+                let position: number = ( (i)*maxPhrasesOnOnePage + j );
+                if(this.phrasesList[position] != undefined){
+                    this.phrasesOnPages[i][j] = StringsFromNullValue[position];
                 }
             }
         }
@@ -76,6 +84,7 @@ export class PhrasesComponent implements OnInit {
     choosePhrase(phrase){
         this.pickedPhrase = phrase;
         this.sharePhraseService.addSharedPhrase(this.pickedPhrase);        
+        this.sharePhraseService.getTranslationsOfPickedPhrase();
     }
 
     filterPhrasesClick(){

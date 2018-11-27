@@ -15,6 +15,7 @@ import { TranslationComponent } from './components/translation/translation.compo
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
 import { SharePhraseService } from './services/share-phrase.service';
 import { ShareTranslatedPhraseService } from './services/share-translated-phrase.service';
+import { TranslationService } from './services/databaseServices/translationService.service';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { ShareTranslatedPhraseService } from './services/share-translated-phrase
     ],
     providers: [
         SharePhraseService,
-        ShareTranslatedPhraseService
+        ShareTranslatedPhraseService,
+        TranslationService
     ],
 })
 export class WorkPanelModule {}

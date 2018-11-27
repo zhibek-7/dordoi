@@ -13,17 +13,14 @@
     <div class="actionsBlock">
         <div class="tab-content" id="nav-tabContent">
 
-            <div *ngIf="checkTranslations()" class="tab-pane fade show active" id="nav-offers" role="tabpanel" aria-labelledby="nav-offers-tab">
+            <div *ngIf="checkNumberOfTranslations()" class="tab-pane fade show active" id="nav-offers" role="tabpanel" aria-labelledby="nav-offers-tab">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item list-group-item-action" *ngFor="let translation of listOfTranslations">
-                        <div class="row offersBlock">
-                            <div *ngIf="checkTranslations()">
-
-                            </div>
+                        <div class="row offersBlock">                            
                             <div class="col-1"><img class="userIcon" src="../../../assets/icons/main/userDefaultIcon.jpg"></div>
                             <div class="col-9 ">
                                 <div class="align-self-start translatedText">
-                                    {{translation}}
+                                    {{translation.translated}}
                                 </div>
                                 <div class="align-self-end translationInfo">
                                     <div class="row">
@@ -39,7 +36,7 @@
                     </li>
                 </ul>
             </div>
-            <div *ngIf="!checkTranslations()" class="tab-pane fade show active" id="nav-offers" role="tabpanel" aria-labelledby="nav-offers-tab">
+            <div *ngIf="!checkNumberOfTranslations()" class="tab-pane fade show active" id="nav-offers" role="tabpanel" aria-labelledby="nav-offers-tab">
                 <div class="translationsEmpty">
                     Переводов данной фразы не было предложено
                 </div>
