@@ -30,7 +30,7 @@
         </DataGrid>
         <DataGrid Grid.Row="0" Grid.Column="1" ItemsSource="{Binding LSStrings}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" SelectionMode="Single">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Строки" Binding="{Binding OriginalString}"/>
+                <DataGridTextColumn Width="*" Header="Строки" Binding="{Binding OriginalStringWithoutEOL}"/>
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">

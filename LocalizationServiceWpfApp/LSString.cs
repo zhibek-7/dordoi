@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LocalizationServiceWpfApp
@@ -21,6 +22,20 @@ namespace LocalizationServiceWpfApp
         public string OriginalString { get; set; }
         public string TranslationSubstring { get; set; }
         public int? TranslationSubstringPositionInLine { get; set; }
+
+        private string _originalStringWithoutEOL = null;
+        public string OriginalStringWithoutEOL
+        {
+            get
+            {
+               if (this._originalStringWithoutEOL == null)
+                {
+                    this._originalStringWithoutEOL = this.OriginalString;
+                    while (Regex.IsMatch(this._originalStringWithoutEOL, "\\r$|\\n$")) this._originalStringWithoutEOL = this._originalStringWithoutEOL.Substring(0, this._originalStringWithoutEOL.Length - 1);
+                }
+                return this._originalStringWithoutEOL;
+            }
+        }
 
         public string State
         {

@@ -96,7 +96,8 @@ namespace LocalizationServiceWpfApp
             this.Priority = priority;
             this.ID_FolderOwner = id_FolderOwner;
             this.IsFolder = false;
-            string[] Lines = File.ReadAllLines(fileFullName);
+            string text = File.ReadAllText(fileFullName);
+            string[] Lines = ReadAllLinesWithEOLs(text);
             this.StringsCount = Lines.Length;
             using (StreamReader sr = new StreamReader(fileFullName, Encoding.UTF8, true))
             {
@@ -139,12 +140,49 @@ namespace LocalizationServiceWpfApp
                     }
                 case "php":
                     {
-                        this.LSStrings = phpFileParse(context, File.ReadAllText(fileFullName), this.ID, null);
+                        this.LSStrings = phpFileParse(context, text, this.ID, null);
                         break;
                     }
+                case "resx":
+                    {
+                        this.LSStrings = resxFileParse(context, Lines, this.ID, null);
+                        break;
+                    }
+
             }
             this._isFileStringsLoaded = true;
             context.SaveChanges();
+        }
+
+        private string[] ReadAllLinesWithEOLs(string text)
+        {
+            List<string> ans = new List<string>();
+            int leftBorder = 0;
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] == '\r')
+                {
+                    if (i < text.Length - 1 && text[i + 1] == '\n')
+                    {
+                        ans.Add(text.Substring(leftBorder, i + 2 - leftBorder));
+                        leftBorder = i + 2;
+                        i++;
+                    }
+                    else
+                    {
+                        ans.Add(text.Substring(leftBorder, i + 1 - leftBorder));
+                        leftBorder = i + 1;
+                    }
+                    continue;
+                }
+                if (text[i] == '\n')
+                {
+                    ans.Add(text.Substring(leftBorder, i + 1 - leftBorder));
+                    leftBorder = i + 1;
+                }
+            }
+            if (leftBorder < text.Length) ans.Add(text.Substring(leftBorder, text.Length - leftBorder));
+            return ans.ToArray();
         }
 
         private static ObservableCollection<LSString> poFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
@@ -200,7 +238,8 @@ namespace LocalizationServiceWpfApp
                 Match m = Regex.Match(lines[i], pattern);
                 if (m.Success)
                 {
-                    strings.Add(new LSString(context, m.Groups[1].Value, null, m.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m.Groups[2].Value, m.Groups[2].Index));
+                    bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
+                    strings.Add(new LSString(context, m.Groups[isLatin ? 2 : 1].Value, null, m.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m.Groups[2].Value, m.Groups[2].Index));
                 }
                 else strings.Add(new LSString(context, null, id_FileOwner, i, lines[i]));
 
@@ -282,10 +321,10 @@ namespace LocalizationServiceWpfApp
             return strings;
         }
 
-        private static ObservableCollection<LSString> phpFileParse(db_Entities context, string Text, int id_FileOwner, int? defaultTranslationMaxLength)
+        private static ObservableCollection<LSString> phpFileParse(db_Entities context, string text, int id_FileOwner, int? defaultTranslationMaxLength)
         {
             ObservableCollection<LSString> strings = new ObservableCollection<LSString>();
-            var m = Regex.Matches(Text, "'\\s*([^']*)\\s*'|,\\s*(\\d)+\\s*=>");
+            var m = Regex.Matches(text, "('[^']*')|(\\d+)\\s*=>"); //some rows may contains '/'' which crash next matches
             List<string> LScontextParts = new List<string>();
             int rightBorder = 0;
             int lastRowNumber = 0;
@@ -294,24 +333,24 @@ namespace LocalizationServiceWpfApp
                 int n = m[i].Index - 1;
                 while (n >= 0)
                 {
-                    if (Text[n] == '[' || Text[n] == '(')
+                    if (text[n] == '[' || text[n] == '(')
                     {
                         LScontextParts.Add(m[i].Groups[2].Value == string.Empty ? m[i].Value : m[i].Groups[2].Value);
                         break;
                     }
-                    if (Text[n] == ',')
+                    if (text[n] == ',')
                     {
                         LScontextParts.RemoveAt(LScontextParts.Count - 1);
-                        if (Regex.IsMatch(Text.Substring(0, n).Trim().Last().ToString(), "\\]|\\)")) LScontextParts.RemoveAt(LScontextParts.Count - 1);
+                        if (Regex.IsMatch(text.Substring(0, n).Trim().Last().ToString(), "\\]|\\)")) LScontextParts.RemoveAt(LScontextParts.Count - 1);
                         LScontextParts.Add(m[i].Groups[2].Value == string.Empty ? m[i].Value : m[i].Groups[2].Value);
                         break;
                     }
-                    if (Text[n] == '>' && n > 0 && Text[n - 1] == '=')
+                    if (text[n] == '>' && n > 0 && text[n - 1] == '=')
                     {
                         n = rightBorder;
                         rightBorder = m[i].Index + m[i].Length;
-                        while (Text[rightBorder] != '\n') rightBorder++;
-                        string[] lines = Text.Substring(n, rightBorder - n).Split('\n');
+                        while (text[rightBorder] != '\n') rightBorder++;
+                        string[] lines = text.Substring(n, rightBorder - n).Split('\n');
                         int linesNumber = lines.Length;
                         if (m[i].Value.Contains('\n'))
                         {
@@ -322,11 +361,11 @@ namespace LocalizationServiceWpfApp
                                 Array.Resize(ref lines, lines.Length - 1);
                             }
                         }
-                        for (int j = 0; j < lines.Length - 1; j++) strings.Add(new LSString(context, null, id_FileOwner, lastRowNumber + j, lines[j]));
+                        for (int j = 0; j < lines.Length - 1; j++) strings.Add(new LSString(context, null, id_FileOwner, lastRowNumber + j, lines[j] + '\n'));
                         string LSContext = "array";
                         for (int j = 0; j < LScontextParts.Count; j++) LSContext += "[" + LScontextParts[j] + "]";
                         int posInLine = m[i].Groups[1].Index - strings.Sum(str => str.OriginalString.Length) - (strings.Count - 1);
-                        strings.Add(new LSString(context, m[i].Groups[1].Value, null, LSContext, defaultTranslationMaxLength, id_FileOwner, lastRowNumber + lines.Length - 1, lines.Last(), m[i].Groups[1].Value, posInLine));
+                        strings.Add(new LSString(context, m[i].Groups[1].Value, null, LSContext, defaultTranslationMaxLength, id_FileOwner, lastRowNumber + lines.Length - 1, lines.Last() + '\n', m[i].Groups[1].Value, posInLine));
                         lastRowNumber += linesNumber;
                         rightBorder++;
                         break;
@@ -334,10 +373,44 @@ namespace LocalizationServiceWpfApp
                     n--;
                 }
             }
-            string[] lastStrings = Text.Substring(rightBorder).Split('\n');
+            string[] lastStrings = text.Substring(rightBorder).Split('\n');
             for (int i = 0; i < lastStrings.Length; i++)
             {
-                strings.Add(new LSString(context, null, id_FileOwner, lastRowNumber + i, lastStrings[i]));
+                strings.Add(new LSString(context, null, id_FileOwner, lastRowNumber + i, lastStrings[i] + '\n'));
+            }
+            return strings;
+        }
+
+        private static ObservableCollection<LSString> resxFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
+        {
+            ObservableCollection<LSString> strings = new ObservableCollection<LSString>();
+            string contextPattern = "name[\\s]*=[\\s]*\"(.*)\"";
+            string translationPattern = "<value>(.*)</value>";
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Match m_context = Regex.Match(lines[i], contextPattern);
+                if (m_context.Success)
+                {
+                    Match m_translation = Regex.Match(lines[i], translationPattern);
+                    if (m_translation.Success)
+                    {
+                        strings.Add(new LSString(context, m_translation.Groups[1].Value, null, m_context.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m_translation.Groups[1].Value, m_translation.Groups[1].Index));
+                    }
+                    else
+                    {
+                        strings.Add(new LSString(context, null, id_FileOwner, i, lines[i]));
+                        if (!Regex.IsMatch(lines[i + 1], contextPattern))
+                        {
+                            m_translation = Regex.Match(lines[i + 1], translationPattern);
+                            if (m_translation.Success)
+                            {
+                                strings.Add(new LSString(context, m_translation.Groups[1].Value, null, m_context.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i + 1, lines[i + 1], m_translation.Groups[1].Value, m_translation.Groups[1].Index));
+                                i++;
+                            }
+                        }
+                    }
+                }
+                else strings.Add(new LSString(context, null, id_FileOwner, i, lines[i]));
             }
             return strings;
         }

@@ -204,7 +204,6 @@ namespace LocalizationServiceWpfApp
                                           for (int i = 0; i < this._SelectedLSFile.LSStrings.Count; i++)
                                           {
                                               sw.Write(this._SelectedLSFile.LSStrings[i].OriginalString);
-                                              if (i != this._SelectedLSFile.LSStrings.Count - 1) sw.Write(fm.Groups[2].Value == "resx" ? "\r\n" : "\n");
                                           }
                                       }
                                   }
