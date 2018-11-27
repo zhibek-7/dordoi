@@ -1,12 +1,13 @@
 export class Translation {
-    id: number;
-    iD_String: number;
-    translated: string;
-    conformid: boolean;
-    iD_User: number;
-    dateTime: Date;
+    id?: number;
+    iD_String?: number;
+    translated?: string;
+    conformid?: boolean;
+    iD_User?: number;
+    dateTime?: Date;
 
-    constructor(translated: string, id_string: number, id_user: number ){
+    constructor(translated: string, id_string: number, id_user: number, id?: number ){
+        this.id = id;
         this.iD_String = id_string;
         this.translated = translated;
         this.conformid = false;

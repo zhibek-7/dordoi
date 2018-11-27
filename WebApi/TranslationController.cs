@@ -11,6 +11,7 @@ using Models.DatabaseEntities;
 namespace Localization.WebApi
 {
     [Route("api/[controller]")]
+    [EnableCors("SiteCorsPolicy")]
     [ApiController]
     public class TranslationController : ControllerBase
     {
@@ -21,7 +22,6 @@ namespace Localization.WebApi
             translationRepository = new TranslationRepository();
         }
 
-        [EnableCors("SiteCorsPolicy")]
         [HttpPost]
         public IActionResult Create([FromBody]Translation translation)
         {
@@ -37,6 +37,14 @@ namespace Localization.WebApi
         public List<Translation> GetTranslations()
         {
             List<Translation> translations = translationRepository.GetAll().ToList();
+            return translations;
+        }
+
+        [HttpGet]
+        [Route("InString/{idString}")]
+        public IEnumerable<Translation> GetTranslationsInString(int idString)
+        {
+            List<Translation> translations = translationRepository.GetAllTranslationsInStringByID(idString).ToList();
             return translations;
         }
 

@@ -2,20 +2,16 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SharePhraseService } from '../../services/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../services/share-translated-phrase.service';
 
-
-
 import { String } from 'src/app/models/database-entities/string.type';
 import { Translation } from 'src/app/models/database-entities/translation.type';
 import { TranslationService } from '../../services/databaseServices/translationService.service';
 
-// import { Phrase } from '../../../entities/phrase/phrase.type';
-
+declare var $: any;
 
 @Component({
     selector: 'translation-component',
     templateUrl: './translation.component.html',
-    styleUrls: ['./translation.component.css'],
-    providers: [TranslationService]
+    styleUrls: ['./translation.component.css']
 })
 export class TranslationComponent implements OnInit {
 
@@ -77,14 +73,15 @@ export class TranslationComponent implements OnInit {
         alert("Импортируем файл");
     }
 
-    async submitTranslate(){ // завершить данный метод
+    async submitTranslate(){
         this.translatedPhrase = new Translation(this.translatedText, this.phraseForTranslate.id, 10123);  //поменять потом на реальный id пользователя
-        let test = await this.translationService.createTranslate(this.translatedPhrase);
-        // let test = await this.translationService.getTranslations();
-        console.log(test);
-
-        // this.shareTranslatedPhraseService.sumbitTranslatedPhrase(this.translatedPhrase);
-        // this.translatedPhrase = null;
+        let createdTranslate: Translation = await this.translationService.createTranslate(this.translatedPhrase);
+        await this.translationService.getAllTranslationsInStringById(this.phraseForTranslate.id);
+        this.shareTranslatedPhraseService.sumbitTranslatedPhrase(createdTranslate);
+        this.translatedText = null;
+        this.translatedPhrase = null;       
+        $("#btnSave").attr("disabled", true); 
+        $("#btnSave").attr("disabled", false);  // хорошо бы найти стиль который убирает обводку кнопки после нажатия(убирать его другим способом)
     }
 
     checkPhrase(): boolean{
