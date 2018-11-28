@@ -1,0 +1,40 @@
+.directoryBlock {
+    background-color: #F6F5F1;
+    padding-top: 2.7vh;
+    padding-left: 2%; 
+    height: 7vh;
+}
+
+.directoryBlock a {
+    color: gray;
+}
+
+.commentsFiled .list-group {
+    height: 80vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.addCommentBlock {
+    height: 7vh;
+    background-color: #F6F5F1;
+}
+
+.inputSearch {
+    padding-top: 1%;
+    padding-left: 0%;
+    padding-right: 1%;
+}
+
+.inputSearch input {
+    height: 50px;
+    border-radius: 0%
+}
+
+.conditionsBlock {
+    text-align: center;
+    padding-top: 40%;
+    font-size: 1.2em;
+    color: grey;
+}

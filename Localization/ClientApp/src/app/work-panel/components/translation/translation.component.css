@@ -1,0 +1,103 @@
+.translationBlock {
+    height: 60vh;
+    overflow-y: scroll;
+    overflow-x: hidden; 
+    -webkit-overflow-scrolling: touch;
+}
+
+.controlBlock {
+    font-size: 1.5em;
+    color: gray;
+    height: 3vh;
+}
+
+.hideBlocksIcons {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.rightHideIcon {
+    margin-top: 12%;
+    margin-right: 5%;
+}
+
+.contextBlock {
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 1%;
+    height: 15.5vh;
+}
+
+.textForTranslate {
+    font-size: 1.3em;
+}
+
+.context {
+    margin-top: 1%;
+    color: #A4BF82;
+    font-size: 1.1em;
+}
+
+.verticalLine {
+    color: gray;
+}
+
+.contextPicker {
+    margin-right: 3%;
+    cursor: pointer;
+}
+
+.contextEdit {
+    margin-left: -3%;
+    cursor: pointer;
+}
+
+.objectInCode {
+    color: gray;
+    margin-top: 0.5%;
+    font-size: 1.05em;
+}
+
+.workWithTranslation {
+    margin-top: 2vh;
+}
+
+.translateTextArea {
+    padding-left: 3%;
+    padding-right: 3%;
+}
+
+.translateTextArea textarea {
+    min-height: 29.3vh;
+    resize: none;
+}
+
+.arrowIcon {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+}
+
+.importIcon {
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+}
+
+.optionsBlock {
+    padding-left: 3%;
+    padding-right: 3%;
+    margin-bottom: 1%;
+}
+
+.arrowsIcons {
+    padding-left: 2%;
+}
+
+.phraseUndifinedBlock {
+    font-size: 2em;
+    color: gray;
+    text-align: center;
+    padding-top: 40vh;
+}

@@ -1,0 +1,22 @@
+.mainBlock {
+    height: 95vh;
+}
+
+.noPadding {
+    padding-left: 0% !important;
+    padding-right: 0% !important;
+}
+
+.middleBlock {
+    overflow-y: scroll;
+    overflow-x: hidden; 
+    -webkit-overflow-scrolling: touch;
+}
+
+.middleBlockAndRight {
+    padding-left: 15px !important;
+}
+
+.translationBlock {
+    height: 50vh;
+}
