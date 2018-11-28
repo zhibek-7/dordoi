@@ -8,6 +8,6 @@ namespace LocalizationServiceWpfApp
 {
     static class Data
     {
-        public static string AllowedFileFormats = "po|properties|json|strings|csv|xml|php|resx";
+        public static string AllowedFileFormats = "po|properties|json|strings|csv|xml|php|resx|string";
     }
 }

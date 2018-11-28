@@ -140,6 +140,7 @@ namespace LocalizationServiceWpfApp
                                   ofd.Multiselect = true;
                                   if (ofd.ShowDialog() == true)
                                   {
+                                      ProgressBarValue = 0;
                                       this.IsFileUploadAllowed = false;
                                       this.StatusLabelText = "Загрузка файлов в БД";
                                       int successfulLoadCount = 0;

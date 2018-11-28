@@ -148,6 +148,11 @@ namespace LocalizationServiceWpfApp
                         this.LSStrings = resxFileParse(context, Lines, this.ID, null);
                         break;
                     }
+                case "string":
+                    {
+                        this.LSStrings = stringFileParse(context, Lines, this.ID, null);
+                        break;
+                    }
 
             }
             this._isFileStringsLoaded = true;
@@ -324,7 +329,7 @@ namespace LocalizationServiceWpfApp
         private static ObservableCollection<LSString> phpFileParse(db_Entities context, string text, int id_FileOwner, int? defaultTranslationMaxLength)
         {
             ObservableCollection<LSString> strings = new ObservableCollection<LSString>();
-            var m = Regex.Matches(text, "('[^']*')|(\\d+)\\s*=>"); //some rows may contains '/'' which crash next matches
+            var m = Regex.Matches(text, "'([^']*)'|(\\d+)\\s*=>"); //some rows may contains '/'' which crash next matches
             List<string> LScontextParts = new List<string>();
             int rightBorder = 0;
             int lastRowNumber = 0;
@@ -364,7 +369,7 @@ namespace LocalizationServiceWpfApp
                         for (int j = 0; j < lines.Length - 1; j++) strings.Add(new LSString(context, null, id_FileOwner, lastRowNumber + j, lines[j] + '\n'));
                         string LSContext = "array";
                         for (int j = 0; j < LScontextParts.Count; j++) LSContext += "[" + LScontextParts[j] + "]";
-                        int posInLine = m[i].Groups[1].Index - strings.Sum(str => str.OriginalString.Length) - (strings.Count - 1);
+                        int posInLine = m[i].Groups[1].Index - strings.Sum(str => str.OriginalStringWithoutEOL.Length) - (strings.Count - 1);
                         strings.Add(new LSString(context, m[i].Groups[1].Value, null, LSContext, defaultTranslationMaxLength, id_FileOwner, lastRowNumber + lines.Length - 1, lines.Last() + '\n', m[i].Groups[1].Value, posInLine));
                         lastRowNumber += linesNumber;
                         rightBorder++;
@@ -409,6 +414,22 @@ namespace LocalizationServiceWpfApp
                             }
                         }
                     }
+                }
+                else strings.Add(new LSString(context, null, id_FileOwner, i, lines[i]));
+            }
+            return strings;
+        }
+
+        private static ObservableCollection<LSString> stringFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
+        {
+            ObservableCollection<LSString> strings = new ObservableCollection<LSString>();
+            string pattern = "\"(.*)\"(?:\\s)*=(?:\\s)*\"(.*)\";";
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Match m = Regex.Match(lines[i], pattern);
+                if (m.Success)
+                {
+                    strings.Add(new LSString(context, m.Groups[2].Value, null, m.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m.Groups[2].Value, m.Groups[2].Index));
                 }
                 else strings.Add(new LSString(context, null, id_FileOwner, i, lines[i]));
             }
