@@ -1,0 +1,22 @@
+<h1>Лучшие участники</h1>
+
+<p *ngIf="!reportrows"><em>Loading...</em></p>
+
+<table class='table' *ngIf="reportrows">
+  <thead>
+  <tr>
+    <th>Имя</th>
+    <th>Язык</th>
+    <th>Кол-во переводов</th>
+    <th>Кол-во принятых</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let row of reportrows">
+    <td>{{ row.name }}</td>
+    <td>{{ row.language }}</td>
+    <td>{{ row.translations }}</td>
+    <td>{{ row.confirmed }}</td>
+  </tr>
+  </tbody>
+</table>
