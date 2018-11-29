@@ -1,3 +1,21 @@
-<p>
-  glossaries works!
-</p>
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div *ngIf='selectedGlossary'>{{selectedGlossary.name}}</div>
+    <div *ngIf='!selectedGlossary'>Выберите глоссарий</div>
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <button *ngFor="let glossary of glossaries" class="dropdown-item" (click)='selectGlossary(glossary)'>{{glossary.name}}</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <button>Отправить</button>
+    <button>Скачать</button>
+    <button>Добавить термин</button>
+  </div>
+  <div class="col"></div>
+  <div class="col">
+    <button>Следующая страница</button>
+    <button>Предыдущая страница</button>
+  </div>
+</div>
