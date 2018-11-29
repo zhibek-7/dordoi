@@ -7,7 +7,7 @@ import { Glossary } from '../models/database-entities/glossary.type';
 @Injectable()
 export class GlossariesService {
 
-  static connectionUrl: string = 'api/glossary';
+  static connectionUrl: string = 'api/glossary/';
 
   constructor(private httpClient: HttpClient) { }
 
