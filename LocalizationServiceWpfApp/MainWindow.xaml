@@ -54,7 +54,8 @@
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Background="#FFFFFFFF">
-                        <TextBlock Text="here is the place for translation's menu"/>
+                        <TextBlock Text="Context: "/>
+                        <TextBlock Text="{Binding Context}"/>
                     </StackPanel>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>

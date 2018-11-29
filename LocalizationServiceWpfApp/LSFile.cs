@@ -329,7 +329,10 @@ namespace LocalizationServiceWpfApp
         private static ObservableCollection<LSString> phpFileParse(db_Entities context, string text, int id_FileOwner, int? defaultTranslationMaxLength)
         {
             ObservableCollection<LSString> strings = new ObservableCollection<LSString>();
-            var m = Regex.Matches(text, "'([^']*)'|(\\d+)\\s*=>"); //some rows may contains '/'' which crash next matches
+
+            var ex = Regex.Matches(text, @"\\'");
+            text = Regex.Replace(text, @"\\'", "##");
+            var m = Regex.Matches(text, "'([^']*)'|(\\d+)\\s*=>");
             List<string> LScontextParts = new List<string>();
             int rightBorder = 0;
             int lastRowNumber = 0;
@@ -355,7 +358,26 @@ namespace LocalizationServiceWpfApp
                         n = rightBorder;
                         rightBorder = m[i].Index + m[i].Length;
                         while (text[rightBorder] != '\n') rightBorder++;
-                        string[] lines = text.Substring(n, rightBorder - n).Split('\n');
+                        string subtext = text.Substring(n, rightBorder - n);
+                        var suspicions = Regex.Matches(subtext, "##");
+                        if (suspicions.Count > 0)
+                        {
+                            StringBuilder sb = new StringBuilder(subtext);
+                            foreach (Match suspicion in suspicions)
+                            {
+                                for (int j = 0; j < ex.Count; j++)
+                                {
+                                    if (suspicion.Index + n == ex[j].Index)
+                                    {
+                                        sb.Remove(suspicion.Index, 2);
+                                        sb.Insert(suspicion.Index, "\\'");
+                                        break;
+                                    }
+                                }
+                            }
+                            subtext = sb.ToString();
+                        }
+                        string[] lines = subtext.Split('\n');
                         int linesNumber = lines.Length;
                         if (m[i].Value.Contains('\n'))
                         {
