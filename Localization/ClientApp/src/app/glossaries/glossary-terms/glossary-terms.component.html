@@ -1,7 +1,9 @@
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th></th>
+      <th>
+        <input type="checkbox" class="checkbox">
+      </th>
       <th>Термин</th>
       <th>Описание</th>
       <th>Действия</th>
@@ -9,11 +11,7 @@
   </thead>
   <tr *ngFor="let term of terms">
     <td>
-      <div class="form-check">
-        <label class="form-check-label">
-          <input type="checkbox" class="form-check-input" value="">
-        </label>
-      </div>
+      <input type="checkbox" class="checkbox">
     </td>
     <td>{{term.originalString}}</td>
     <td>{{term.description}}</td>
