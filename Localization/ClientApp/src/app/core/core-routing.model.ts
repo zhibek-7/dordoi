@@ -31,6 +31,10 @@ const routes: Routes = [
       loadChildren: '../crowdin/crowdin.module#CrowdinModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
     },
     {
+      path: 'glossaries',
+      loadChildren: '../glossaries/glossaries.model#GlossariesModule'
+    },
+    {
         path: '**',
         component: NotFoundComponent
     }
