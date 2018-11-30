@@ -1,15 +1,14 @@
 import { Component, OnInit} from '@angular/core';
 
 import { String } from 'src/app/models/database-entities/string.type';
-import { JsonParserService } from '../../services/json-parser.service';
-import { SharePhraseService } from '../../services/share-phrase.service';
-import { StringService } from '../../services/databaseServices/stringService.service';
+import { SharePhraseService } from '../../localServices/share-phrase.service';
+import { StringService } from '../../../services/accessToDatabase/stringService.service';
 
 @Component({
     selector: 'phrases-component',
     templateUrl: './phrases.component.html',
     styleUrls: ['./phrases.component.css'],
-    providers: [JsonParserService, StringService]
+    providers: [StringService]
 })
 export class PhrasesComponent implements OnInit {
 
@@ -23,8 +22,7 @@ export class PhrasesComponent implements OnInit {
     currentPageNumber: number = 1;
     maxNumberOfPages: number;
 
-    constructor(private jsonParserService: JsonParserService,
-         private sharePhraseService: SharePhraseService, private stringService: StringService) {
+    constructor(private sharePhraseService: SharePhraseService, private stringService: StringService) {
         this.phrasesList = new Array<String>();
      }
 
@@ -63,7 +61,6 @@ export class PhrasesComponent implements OnInit {
         this.currentPageOfPhrases = [];
         this.currentPageOfPhrases = this.phrasesOnPages[0];
         this.maxNumberOfPages = await this.phrasesOnPages.length;
-        await console.log(this.phrasesOnPages);
      }
 
      previuosPage() {

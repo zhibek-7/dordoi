@@ -13,10 +13,9 @@ import { LanguagesComponent } from './components/languages/languages.component';
 import { TranslationComponent } from './components/translation/translation.component';
 
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
-import { SharePhraseService } from './services/share-phrase.service';
-import { ShareTranslatedPhraseService } from './services/share-translated-phrase.service';
-import { TranslationService } from './services/databaseServices/translationService.service';
-
+import { SharePhraseService } from './localServices/share-phrase.service';
+import { ShareTranslatedPhraseService } from './localServices/share-translated-phrase.service';
+import { TranslationService } from '../services/accessToDatabase/translationService.service';
 
 @NgModule({
     declarations: [

@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { SharePhraseService } from '../../services/share-phrase.service';
-import { ShareTranslatedPhraseService } from '../../services/share-translated-phrase.service';
+import { SharePhraseService } from '../../localServices/share-phrase.service';
+import { ShareTranslatedPhraseService } from '../../localServices/share-translated-phrase.service';
 
 import { String } from 'src/app/models/database-entities/string.type';
 import { Translation } from 'src/app/models/database-entities/translation.type';
-import { TranslationService } from '../../services/databaseServices/translationService.service';
+import { TranslationService } from '../../../services/accessToDatabase/translationService.service';
 
 declare var $: any;
 

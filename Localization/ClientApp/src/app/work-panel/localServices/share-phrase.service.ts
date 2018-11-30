@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
-import { TranslationService } from '../services/databaseServices/translationService.service';
+import { TranslationService } from '../../services/accessToDatabase/translationService.service';
 
 import { String } from 'src/app/models/database-entities/string.type';
 
