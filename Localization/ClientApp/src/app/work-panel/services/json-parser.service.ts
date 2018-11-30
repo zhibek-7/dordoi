@@ -1,25 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Phrase } from '../../entities/phrase/phrase.type';
-import { Comment } from '../../entities/comments/comment.type';
-
 @Injectable()
 export class JsonParserService {
-
-    phrasesFromFile: Array<Phrase>;
 
     constructor( private http: HttpClient){
 
     }
 
     public async getPhrasesFromJsonFile(filePath:string){
-        let asyncResult = await this.http.get<Array<Phrase>>(filePath).toPromise();
+        let asyncResult = await this.http.get<Array<String>>(filePath).toPromise();
         return asyncResult;
     }
 
     public async getCommentsFromJsonFile(filePath:string){
-        let asyncResult = await this.http.get<Array<Comment>>(filePath).toPromise();
+        let asyncResult = await this.http.get<Array<String>>(filePath).toPromise();
         return asyncResult;
     }
 

@@ -1,6 +1,5 @@
 import { Component, OnInit} from '@angular/core';
 
-import { Phrase } from '../../../entities/phrase/phrase.type';
 import { String } from 'src/app/models/database-entities/string.type';
 import { JsonParserService } from '../../services/json-parser.service';
 import { SharePhraseService } from '../../services/share-phrase.service';
@@ -26,7 +25,7 @@ export class PhrasesComponent implements OnInit {
 
     constructor(private jsonParserService: JsonParserService,
          private sharePhraseService: SharePhraseService, private stringService: StringService) {
-        this.phrasesList = new Array<Phrase>();
+        this.phrasesList = new Array<String>();
      }
 
     ngOnInit(): void {
