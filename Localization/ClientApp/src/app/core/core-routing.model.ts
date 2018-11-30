@@ -31,7 +31,11 @@ const routes: Routes = [
       loadChildren: '../crowdin/crowdin.module#CrowdinModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
     },
     {
-      path: 'Report',
+      path: 'Reports',
+      loadChildren: '../reports/Reports.model#ReportsModule'
+    },
+    {
+      path: 'TranslatedWordsReport',
       loadChildren: '../reports/TranslatedWords/TranslatedWords.model#TranslatedWordsModule'
     },
     {

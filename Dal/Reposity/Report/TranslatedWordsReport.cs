@@ -16,7 +16,7 @@ namespace DAL.Reposity.Report
         /// <returns>Список строк отчета</returns>
         public override IEnumerable<TranslatedWordsReportRow> Get()
         {
-            using (IDbConnection dbConnection = Context.Connection)
+            /*using (IDbConnection dbConnection = Context.Connection)
             {
                 dbConnection.Open();
                 IEnumerable<TranslatedWordsReportRow> rows = 
@@ -25,23 +25,29 @@ namespace DAL.Reposity.Report
                         "u.\"Name\" as Name, " +
                         "l.\"Name\" as Language, " +
                         "count(t.\"ID_Locale\") as Translations, " +
-                        "t.\"Confirmed\" as Confirmed" +
+                        "t.\"Confirmed\" as Confirmed " +
                         "from " +
-                        "\"Translations\" t, " +
-                        "\"Users\" u, " +
-                        "\"Locales\" l, " +
-                        "\"Strings\" s" +
-                        "where t.\"ID_User\" = u.\"ID\" " +
+                        "public.\"Translations\" t, " +
+                        "public.\"Users\" u, " +
+                        "public.\"Locales\" l, " +
+                        "public.\"Strings\" s " +
+                        "where " +
+                        "t.\"ID_User\" = u.\"ID\" " +
                         "and t.\"ID_Locale\" = l.\"ID\" " +
                         "and t.\"ID_String\" = s.\"ID\" " +
                         "group by " +
                         "Name, " +
                         "Language, " +
-                        "Confirmed");
+                        "Confirmed"
+                        );
                 return rows;
-            }
-        }
-
-       
+            }*/
+            List<TranslatedWordsReportRow> res = new List<TranslatedWordsReportRow>();
+                res.Add(new TranslatedWordsReportRow(){Name = "Иван Иванов", Language = "Английский", Translations = 1200, Confirmed = true});
+                res.Add(new TranslatedWordsReportRow() { Name = "Петр Петров", Language = "Французский", Translations = 1200, Confirmed = false });
+                res.Add(new TranslatedWordsReportRow() { Name = "Никовай Николаев", Language = "Немецкий", Translations = 1200, Confirmed = true });
+                res.Add(new TranslatedWordsReportRow() { Name = "Никита Никитин", Language = "Испанский", Translations = 1200, Confirmed = false });
+            return res;
+        }       
     }
 }

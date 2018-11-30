@@ -14,13 +14,12 @@ namespace Localization.WebApi
     public class ReportController : ControllerBase
     {
         [HttpGet]
-        [Route("TranslatedWords")] //[Route("TranslatedWords/{dateFrom}")]
-        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport()//(DateTime dateFrom)
+        [Route("TranslatedWords:{dateFrom}:{dateTo}")]
+        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport()
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
             List<TranslatedWordsReportRow> reportRows = TranslatedWords.Get().ToList();
             return reportRows;
         }
-
     }
 }

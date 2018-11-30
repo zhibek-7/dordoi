@@ -3,18 +3,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { TranslatedWordsRoutingModule } from './TranslatedWords-routing.module';
-import { TranslatedWordsComponent } from './TranslatedWords.component';
+import { ReportsRoutingModule } from './Reports-routing.module';
+import { ReportsComponent } from"./Reports.component";
 
 @NgModule({
   imports: [
     CommonModule,
-    TranslatedWordsRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReportsRoutingModule
   ],
   exports: [
   ],
-  declarations: [TranslatedWordsComponent]
+  declarations: [ReportsComponent]
 })
-export class TranslatedWordsModule { }
+export class ReportsModule { }

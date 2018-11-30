@@ -9,8 +9,8 @@ export class ReportService {
 
   constructor(private http: HttpClient) {}
 
-  async getTranslatedWordsReport() {
-    let reportRows: TranslatedWordsReportRow[] = await this.http.get<TranslatedWordsReportRow[]>(this.url + 'TranslatedWords').toPromise();
+  async getTranslatedWordsReport(from: string, to: string) {
+    let reportRows: TranslatedWordsReportRow[] = await this.http.get<TranslatedWordsReportRow[]>(this.url + 'TranslatedWords:' + from + ":" + to).toPromise();
     return reportRows;
   }
 }
