@@ -1,0 +1,22 @@
+.webSiteLogo a {
+    color: #F6F5F1;
+    font-size: 24px;
+}
+
+.leftUl a {
+    color: gray;
+    font-size: 20px;
+}
+
+.rightUl a {    
+    color: gray;
+    font-size: 20px;
+    padding-left: 50px;        
+}
+
+.iconLi {
+    width: 30px;
+    height: 30px;
+    margin-top: 7px;
+    margin-left: 2.5ch
+}

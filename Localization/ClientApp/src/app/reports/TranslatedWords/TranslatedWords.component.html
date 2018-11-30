@@ -1,0 +1,45 @@
+<h1>Лучшие участники</h1>
+
+<!--<p *ngIf="!reportrows"><em>Loading...</em></p>-->
+
+
+<h2>{{msg}}</h2>
+
+<div>
+  <label>
+    from:
+    <input [(ngModel)]="from" value="{{from}}" type="date">
+  </label>
+  <label>
+    to:
+    <input [(ngModel)]="to" value="{{to}}" type="date">
+  </label>
+  <button (click)="clickEvent()">
+    Generate
+  </button>
+</div>
+
+<button (click)="download()">
+  Export to Excell
+</button>
+
+<table class='table' *ngIf="reportrows">
+  <thead>
+    <tr>
+      <th>Имя</th>
+      <th>Язык</th>
+      <th>Кол-во переводов</th>
+      <th>Кол-во принятых</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of reportrows">
+      <td>{{ row.name }}</td>
+      <td>{{ row.language }}</td>
+      <td>{{ row.translations }}</td>
+      <td>{{ row.confirmed }}</td>
+    </tr>
+  </tbody>
+</table>
+
+

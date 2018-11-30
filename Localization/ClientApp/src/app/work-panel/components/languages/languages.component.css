@@ -1,0 +1,60 @@
+.languagesBlock {
+    height: 33vh;
+}
+
+.languagesOptionsBlock {
+    background-color: #F6F5F1;
+    padding-top: 1vh;
+    padding-left: 1%;
+}
+.languagesOptionsBlock a {
+    color: gray;
+}
+
+.offersBlock {
+    padding: 30px 30px 10px 30px;
+}
+
+.userIcon {
+    width: 50px;
+    height: 50px;
+}
+
+.userLogin {
+    color: #A4BF82;
+}
+
+.translatedText {
+    font-size: 1.1em;
+}
+
+.translationInfo {
+    padding-top: 10px;
+}
+
+.utilitiesIcon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.translationsEmpty {
+    text-align: center;
+    color: gray;
+    padding: 12vh;
+    font-size: 1.2em;
+}
+
+.otherLanguages {
+    text-align: center;
+    color: gray;
+    padding: 12vh;
+    font-size: 1.2em;
+}
+
+.searchByMemory {
+    padding: 15px;
+    text-align: justify;
+    color: gray;
+    font-size: 1.1em;
+}

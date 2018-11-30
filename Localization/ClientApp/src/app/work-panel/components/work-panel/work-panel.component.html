@@ -1,0 +1,14 @@
+<div class="mainBlock">
+    <div class="row">
+        <div class="noPadding" [ngClass]="{'col-md-3':left3, 'col-md-0':left0}" *ngIf="showLeftBlock">
+            <phrases-component></phrases-component>
+        </div>
+        <div class="bd-content noPadding " [ngClass]="{'col-md-6':middleCol6, 'col-md-9':middleCol9, 'col-md-12':middleCol12, 'middleBlock': true, 'middleBlockAndRight': middleAndRight}" >
+            <translation-component class="translationBlock" (onChangedLeftBlock)="hideLeftBlockFunction($event)" (onChangedRightBlock)="hideRightBlockFunction($event)"></translation-component>
+            <languages-component></languages-component>
+        </div>
+        <div class="noPadding" [ngClass]="{'col-md-3':right3, 'col-md-0':right0}" *ngIf="showRightBlock">
+            <comments-component></comments-component>
+        </div>
+    </div>
+</div>
