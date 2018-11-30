@@ -6,7 +6,9 @@ import { String } from 'src/app/models/database-entities/string.type';
 @Injectable()
 export class StringService {
 
-    private url = "http://localhost:50872/api/string/";
+    // private url = "http://localhost:50872/api/string/";
+    private url: string = document.getElementsByTagName('base')[0].href + "api/string/";
+
 
     constructor(private http: HttpClient) {
 

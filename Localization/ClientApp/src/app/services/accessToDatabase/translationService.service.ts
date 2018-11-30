@@ -5,7 +5,8 @@ import { Translation } from 'src/app/models/database-entities/translation.type';
 @Injectable()
 export class TranslationService {
 
-    private url = "http://localhost:50872/api/translation/";
+    // private url = "http://localhost:50872/api/translation/";
+    private url: string = document.getElementsByTagName('base')[0].href + "api/translation/";
 
     constructor(private http: HttpClient) {
 
