@@ -35,10 +35,6 @@ const routes: Routes = [
       loadChildren: '../reports/Reports.model#ReportsModule'
     },
     {
-      path: 'TranslatedWordsReport',
-      loadChildren: '../reports/TranslatedWords/TranslatedWords.model#TranslatedWordsModule'
-    },
-    {
         path: '**',
         component: NotFoundComponent
     }

@@ -1,17 +1,11 @@
-<h1>Лучшие участники</h1>
-
-<!--<p *ngIf="!reportrows"><em>Loading...</em></p>-->
 
 
-<h2>{{msg}}</h2>
-
-<div>
+<div name="date-range">
+  Диапазон дат<br>
   <label>
-    from:
     <input [(ngModel)]="from" value="{{from}}" type="date">
   </label>
   <label>
-    to:
     <input [(ngModel)]="to" value="{{to}}" type="date">
   </label>
   <button (click)="clickEvent()">
@@ -19,8 +13,10 @@
   </button>
 </div>
 
+<div>{{msg}}</div>
+
 <button (click)="download()">
-  Export to Excell
+  Экспорт переводов
 </button>
 
 <table class='table' *ngIf="reportrows">

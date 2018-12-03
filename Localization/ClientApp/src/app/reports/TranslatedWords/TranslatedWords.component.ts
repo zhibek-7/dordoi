@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { ReportService } from '../../services/reports.service';
@@ -6,20 +6,17 @@ import { ReportService } from '../../services/reports.service';
 @Component({
   selector: 'translated-words-report',
   templateUrl: './TranslatedWords.component.html',
-  styleUrls: ['./TranslatedWords.component.css'],
-  providers: [ReportService]
+  styleUrls: ['./TranslatedWords.component.css']
 })
 
-export class TranslatedWordsComponent implements OnInit {
+export class TranslatedWordsComponent{
   public reportrows: TranslatedWordsReportRow[];
-  msg: string;
+  msg: string = "Лучшие участники";
   from: Date;
   to: Date;
 
   constructor(private reportService: ReportService) {
   }
-
-  ngOnInit(): void {}
 
   async getRows() {
     this.reportrows = await this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString());
@@ -27,12 +24,12 @@ export class TranslatedWordsComponent implements OnInit {
 
   setHeaderMsg() {
     let fromStr = "";
-    if (this.from != undefined)
-      fromStr = "с " + this.from;
+    if (this.from != undefined && this.from != null)
+      fromStr = this.from.toString();
     let toStr = "";
-    if (this.from != undefined)
-      toStr = " по " + this.to;
-    this.msg = "Отчет " + fromStr + toStr;
+    if (this.to != undefined && this.to != null)
+      toStr = " - " + this.to;
+    this.msg = "Лучшие участники:  " + fromStr + toStr;
   }
 
   clickEvent() {
