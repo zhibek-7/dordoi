@@ -11,8 +11,6 @@ import { CoreRoutingModule } from './core-routing.model';
 
 import { HeaderComponent } from './header/header.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { LoginComponent } from './login/login.component';
-
 
 @NgModule({
     imports: [
@@ -25,8 +23,7 @@ import { LoginComponent } from './login/login.component';
     ],
     declarations: [
   	      NotFoundComponent,
-        HeaderComponent,
-        LoginComponent
+        HeaderComponent
     ],
     exports: [
         RouterModule,
