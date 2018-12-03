@@ -21,6 +21,14 @@ const routes: Routes = [
       loadChildren: '../reports/TranslatedWords/TranslatedWords.model#TranslatedWordsModule'
     },
     {
+      path: 'example',
+      loadChildren: '../example/example.model#ExampleModule'
+    },
+    {
+      path: 'example2',
+      loadChildren: '../example2/example2.model#Example2Module'
+    },
+    {
         path: '**',
         component: NotFoundComponent
     }
