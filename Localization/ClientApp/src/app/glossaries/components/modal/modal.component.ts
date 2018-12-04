@@ -9,9 +9,9 @@ export class ModalComponent implements OnInit {
 
   private _visible: boolean = false;
 
-  @Input()
   get visible() { return this._visible }
 
+  @Input()
   set visible(value: boolean) {
     this._visible = value;
     this.visibleChange.emit(this._visible);
