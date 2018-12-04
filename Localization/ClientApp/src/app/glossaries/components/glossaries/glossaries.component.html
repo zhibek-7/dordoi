@@ -16,7 +16,7 @@
       </div>
       <button class="btn btn-primary m-1" (click)="addTermFormModal.show()">Добавить термин</button>
       <app-add-term-form-modal (newTermSubmitted)="addNewTerm($event)" #addTermFormModal></app-add-term-form-modal>
-      <button class="btn btn-primary m-1" (click)="deleteSelectedTermsConfirmationModal.show()">Удалить</button>
+      <button [disabled]="selectedTerms.length == 0 ? true : null" class="btn btn-primary m-1" (click)="deleteSelectedTermsConfirmationModal.show()">Удалить</button>
       <app-delete-terms-confirmation-modal #deleteSelectedTermsConfirmationModal (deleteTermsConfirmed)="deleteSelectedTerms()"></app-delete-terms-confirmation-modal>
     </div>
     <div class="col d-flex justify-content-end">
