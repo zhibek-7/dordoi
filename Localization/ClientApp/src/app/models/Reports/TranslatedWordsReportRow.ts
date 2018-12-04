@@ -2,9 +2,9 @@ export class TranslatedWordsReportRow {
     name?: string;
     language?: string;
     translations?: string;
-    confirmed?: boolean;
+    confirmed?: string;
 
-    constructor(name: string, language: string, translations: string, confirmed: boolean)
+    constructor(name: string, language: string, translations: string, confirmed: string)
     {
         this.name = name;
         this.language = language;

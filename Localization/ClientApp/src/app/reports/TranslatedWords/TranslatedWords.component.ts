@@ -11,15 +11,42 @@ import { ReportService } from '../../services/reports.service';
 
 export class TranslatedWordsComponent{
   public reportrows: TranslatedWordsReportRow[];
+  public filteredrows: TranslatedWordsReportRow[];
   msg: string = "Лучшие участники";
+  userName: string;
+  userLang: string;
   from: Date;
   to: Date;
+  languageList = [];
 
   constructor(private reportService: ReportService) {
+    this.languageList = [
+      { itemName: 'Все языки' },
+      { itemName: 'Английский'},
+      { itemName: 'Французский' },
+      { itemName: 'Русский' },
+      { itemName: 'Немецкий' }
+    ];
   }
 
   async getRows() {
     this.reportrows = await this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString());
+    this.filteredrows = this.reportrows;
+  }
+
+  filterRows() {
+    let rows: TranslatedWordsReportRow[] = new Array();
+    for (var i = 0; i < this.reportrows.length; i++) {
+      if ((this.userName == undefined || this.userName == null || this.reportrows[i].name.indexOf(this.userName) != -1)
+      && (this.userLang === "Все языки" || this.userLang == undefined || this.reportrows[i].language.indexOf(this.userLang) != -1))
+        rows.push(new TranslatedWordsReportRow(this.reportrows[i].name, this.reportrows[i].language, this.reportrows[i].translations, this.reportrows[i].confirmed));
+    }
+    return rows;
+  }
+
+  filterReport() {
+    
+    this.filteredrows = this.filterRows();
   }
 
   setHeaderMsg() {
@@ -37,42 +64,13 @@ export class TranslatedWordsComponent{
     this.setHeaderMsg();
   }
 
-  ConvertToCSV(objArray) {
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    var str = '';
-    var row = "";
-
-    for (var index in objArray[0]) {
-      //Now convert each value to string and comma-separated
-      row += index + ',';
-    }
-    row = row.slice(0, -1);
-    //append Label row with line break
-    str += row + '\r\n';
-
-    for (var i = 0; i < array.length; i++) {
-      var line = '';
-      for (var index in array[i]) {
-        if (line != '') line += ','
-
-        line += array[i][index];
-      }
-      str += line + '\r\n';
-    }
-    return str;
+  confimed(val: string) : string {
+    if (val === "true") return "Да";
+    else return "Нет";
   }
 
   download() {
-    var csvData = this.ConvertToCSV(this.reportrows);
-    var a = document.createElement("a");
-    a.setAttribute('style', 'display:none;');
-    document.body.appendChild(a);
-    var blob = new Blob([csvData], { type: 'application/vnd.ms-excel' });
-    var url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = 'User_Results.xls';/* your file name*/
-    a.click();
-    return 'success';
+    this.reportService.getTranslatedWordsReportExcel(this.from.toString(), this.to.toString());
   }
 }
 

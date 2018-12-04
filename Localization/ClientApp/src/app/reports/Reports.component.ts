@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-//import { TranslatedWordsComponent } from "./TranslatedWords/TranslatedWords.Component";
-
 
 @Component({
   selector: 'app-reports',
@@ -8,5 +6,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./Reports.component.css'],
 })
 
-export class ReportsComponent {}
+export class ReportsComponent {
+
+  showProjectState: boolean = false;
+  showCostSumm: boolean = false;
+  showTranslationCost: boolean = false;
+  showTranslatedWords: boolean = false;
+  showViolations: boolean = false;
+
+  constructor() { }
+
+  public showReport(type: Number) {
+    this.showTranslatedWords = (type == 4);
+  }
+
+}
 
