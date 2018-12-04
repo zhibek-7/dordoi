@@ -26,4 +26,4 @@ export class LanguageService {
         return this.httpClient.get(getUrl);
     }
 
-} 
+}

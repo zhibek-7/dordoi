@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule} from '@angular/router';
 
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 
@@ -11,7 +10,22 @@ import { CoreRoutingModule } from './core-routing.model';
 
 import { HeaderComponent } from './header/header.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { LoginComponent } from './login/login.component';
+
+import { CurrentProjectSettingsComponent } from '../current-project-settings/current-project-settings.component';
+import { NewProjectComponent } from '../new-project/new-project.component';
+import { UserAccountComponent } from '../user-account/user-account.component';
+
+import { MatIconModule,
+  MatInputModule,
+  MatButtonModule,
+  MatButtonToggleModule,
+  MatRadioModule,
+  MatSelectModule,
+  MatOptionModule,
+  MatCheckboxModule,
+  MatTableModule} from '@angular/material';
+
+  import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -21,12 +35,25 @@ import { LoginComponent } from './login/login.component';
   // BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
    HttpClientModule,
    FormsModule,
+   MatIconModule,
+   MatInputModule,
+   MatButtonModule,
+   MatButtonToggleModule,
+   MatRadioModule,
+   MatOptionModule,
+   MatSelectModule,
+   MatCheckboxModule,
+   MatTableModule,
+
+   ReactiveFormsModule
 
     ],
     declarations: [
   	      NotFoundComponent,
         HeaderComponent,
-        LoginComponent
+        CurrentProjectSettingsComponent,
+        NewProjectComponent,
+        UserAccountComponent
     ],
     exports: [
         RouterModule,

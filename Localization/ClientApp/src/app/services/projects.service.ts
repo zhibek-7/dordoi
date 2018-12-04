@@ -53,4 +53,4 @@ export class ProjectsService  implements Project{
     updateProject(project: Project) {
         this.projects[project.id] = project;
     }
-} 
+}
