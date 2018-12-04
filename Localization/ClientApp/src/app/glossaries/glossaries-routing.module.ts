@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { GlossariesComponent } from './glossaries.component';
+import { GlossariesComponent } from 'src/app/glossaries/components/glossaries/glossaries.component';
 
 const routes: Routes = [
   {

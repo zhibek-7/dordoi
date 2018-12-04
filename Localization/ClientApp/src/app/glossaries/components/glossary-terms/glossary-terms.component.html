@@ -1,0 +1,28 @@
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>
+        <input type="checkbox" class="checkbox" (change)="toggleSelectionForAllDisplayedTerms($event)">
+      </th>
+      <th>Термин</th>
+      <th>Описание</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tr *ngFor="let termViewModel of termViewModels">
+    <td>
+      <input type="checkbox" class="checkbox" [(ngModel)]="termViewModel.isSelected">
+    </td>
+    <td>{{termViewModel.term.value}}</td>
+    <td>{{termViewModel.term.description}}</td>
+    <td>
+      <div class="btn-group">
+        <button class="btn" (click)="editTermFormModal.show()">Изменить</button>
+        <app-edit-term-form-modal #editTermFormModal [term]="termViewModel.term" (termUpdateConfirmed)="updateTerm($event)" ></app-edit-term-form-modal>
+        <button class="btn" (click)="deleteTermModal.show()">Удалить</button>
+        <app-delete-term-confirmation-modal #deleteTermModal [term]="termViewModel.term" (deleteTermConfirmed)="deleteTerm(termViewModel.term)"></app-delete-term-confirmation-modal>
+        <button class="btn" disabled>Задать язык</button>
+      </div>
+    </td>
+  </tr>
+</table>

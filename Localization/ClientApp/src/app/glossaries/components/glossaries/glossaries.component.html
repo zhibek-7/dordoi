@@ -1,0 +1,44 @@
+<div style="overflow-y: auto; max-height: 90vh;" class="m-3">
+  <div class="dropdown m-2">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <div *ngIf='selectedGlossary'>{{selectedGlossary.name}}</div>
+      <div *ngIf='!selectedGlossary'>Выберите глоссарий</div>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <button *ngFor="let glossary of glossaries" class="dropdown-item" (click)='selectGlossary(glossary)'>{{glossary.name}}</button>
+    </div>
+  </div>
+  <div class="row m-2">
+    <div class="col">
+      <div class="btn-group m-1">
+        <button class="btn btn-primary" disabled>Отправить</button>
+        <button class="btn btn-primary" disabled>Скачать</button>
+      </div>
+      <button class="btn btn-primary m-1" (click)="addTermFormModal.show()">Добавить термин</button>
+      <app-add-term-form-modal (newTermSubmitted)="addNewTerm($event)" #addTermFormModal></app-add-term-form-modal>
+      <button class="btn btn-primary m-1" (click)="deleteSelectedTermsConfirmationModal.show()">Удалить</button>
+      <app-delete-terms-confirmation-modal #deleteSelectedTermsConfirmationModal (deleteTermsConfirmed)="deleteSelectedTerms()"></app-delete-terms-confirmation-modal>
+    </div>
+    <div class="col d-flex justify-content-end">
+      <ul class="pagination m-1">
+        <li class="page-item"><a class="page-link">Предыдущая страница</a></li>
+        <li class="page-item"><a class="page-link">Следующая страница</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row m-2">
+    <div class="col">
+      <input type="text" class="form-control m-1" placeholder="Искать термин" [(ngModel)]="termSearchString" (input)="loadTerms()" />
+    </div>
+    <div class="col d-flex justify-content-end">
+      <div class="form-check m-1">
+        <label class="form-check-label">
+          <input type="checkbox" class="form-check-input" value="" disabled>Переводить глоссарий
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="col m-2">
+    <app-glossary-terms [termViewModels]="termViewModels" [glossary]="selectedGlossary"></app-glossary-terms>
+  </div>
+</div>
