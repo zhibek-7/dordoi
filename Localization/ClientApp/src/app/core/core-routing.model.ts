@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule} from '@angular/router';
 
 import { NotFoundComponent } from './not-found/not-found.component';
+import { CurrentProjectSettingsComponent } from '../current-project-settings/current-project-settings.component';
+import { NewProjectComponent } from '../new-project/new-project.component';
+import { UserAccountComponent } from '../user-account/user-account.component';
 
 const routes: Routes = [
     {
@@ -27,6 +30,18 @@ const routes: Routes = [
     {
       path: 'example2',
       loadChildren: '../example2/example2.model#Example2Module'
+    },
+    {
+      path: 'projects/:id',
+      component: CurrentProjectSettingsComponent
+    },
+    {
+      path: 'new-project',
+      component: NewProjectComponent
+    },
+   {
+      path: 'profile',
+      component: UserAccountComponent
     },
     {
         path: '**',
