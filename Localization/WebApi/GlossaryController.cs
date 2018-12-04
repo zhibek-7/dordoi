@@ -14,7 +14,7 @@ namespace Localization.WebApi
 
         public GlossaryController()
         {
-            this._glossaryRepository = new GlossaryRepository();
+            this._glossaryRepository = new GlossaryRepository(stringsRepository: new StringRepository());
         }
 
         [HttpGet]

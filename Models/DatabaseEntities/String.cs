@@ -20,14 +20,8 @@ namespace Models.DatabaseEntities
 
         public int ID_FileOwner { get; set; }
 
-        public int PositionInFile { get; set; }
+        public string Value { get; set; }
 
-        public string OriginalString { get; set; }
-
-        public bool HasTranslationSubstring { get; set; }
-
-        public string TranslationSubstring { get; set; }
-
-        public int? TranslationSubstringPositionInLine { get; set; }
+        public int? PositionInFullText { get; set; }
     }
 }
