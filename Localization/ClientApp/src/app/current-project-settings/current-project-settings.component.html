@@ -1,0 +1,104 @@
+<div class="container-fluide">
+  <div class="row">
+    <div class="col-sm-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a class="nav-link" role="button" aria-haspopup="true" routerLink='/profile'>
+                  <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
+                </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">{{ currentProject.name }}</li>
+            </ol>
+          </nav>
+    </div>
+    <div class="col-sm-4">
+        <button mat-raised-button><mat-icon>how_to_reg</mat-icon></button>
+        <button mat-raised-button>Перейти к странице проекта</button>
+    </div>
+  </div>
+</div>
+
+<h1>
+  <span>
+    {{currentProject.name}}
+  </span>
+
+  настройки
+</h1>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light navbar-category">
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav navbar-custom">
+      <mat-icon class="nav-item">tune</mat-icon>
+      <a class="nav-item nav-link active" href="#">Переводы</a>
+      <a class="nav-item nav-link" href="#">Файлы</a>
+      <a class="nav-item nav-link" href="#">Переводчики</a>
+      <a class="nav-item nav-link" href="#">Агенства</a>
+      <a class="nav-item nav-link" href="#">Отчеты</a>
+      <a class="nav-item nav-link" href="#">TM & MT</a>
+      <a class="nav-item nav-link" href="#">Скриншоты</a>
+      <a class="nav-item nav-link" href="#">Словарь</a>
+      <a class="nav-item nav-link" href="#">Интеграции</a>
+      <a class="nav-item nav-link" href="#">API</a>
+      <a class="nav-item nav-link" href="#">Строки</a>
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="moreDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Ещё
+        </a>
+        <div class="dropdown-menu" aria-labelledby="moreDropdown">
+          <a class="dropdown-item" href="#">Все проекты</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Все проекты</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="download">
+  <div class="btn-group ">
+    <button mat-menu-item (click)="file.click()" type="button" class="btn btn-success">
+      <mat-icon>cloud_upload</mat-icon>
+      <span style="margin-left: 1rem;">Собрать и скачать</span>
+      <input type="file" #file (change)="filesUpload(file.files)" hidden>
+    </button>
+    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="#">Собрать проект</a>
+      <a class="dropdown-item" href="#">Загрузить</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#">Загурзить как CSV</a>
+      <a class="dropdown-item" href="#">Загурзить как XLSX</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#">Предпросмотр</a>
+    </div>
+  </div>
+  <button mat-raised-button>Загрузить переводы в проект</button>
+  <button mat-raised-button>Целевые языки</button>
+  <button mat-raised-button>Контроль качества</button>
+  <button mat-raised-button>Удалить проект</button>
+</div>
+<table class="table">
+  <tr>
+    <td>Последняя сборка</td>
+    <td> {{wasChanged}} </td>
+    <!-- <td>{{currentProject.created | date: 'fullDate'}} {{currentProject.created | date: 'shortTime'}}</td> -->
+  </tr>
+  <tr>
+    <td>Последняя активность</td>
+    <td> {{wasCreated}} </td>
+    <!-- <td> {{ currentProject.changed | date: 'fullDate' }} {{ currentProject.changed | date: 'shortTime' }} </td> -->
+  </tr>
+  <tr>
+    <td>Контроль качества</td>
+    <td>
+      <p *ngIf="currentProject.itsErr" [ngClass]="{'error-block': currentProject.itsErr}">НАЙДЕНЫ ОШИБКИ</p>
+      <p *ngIf="!currentProject.itsErr" [ngClass]="{'none-error-block': !currentProject.itsErr}">ОШИБОК НЕ ОБНАРУЖЕНО</p>
+    </td>
+  </tr>
+</table>
