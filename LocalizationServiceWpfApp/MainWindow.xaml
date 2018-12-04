@@ -28,37 +28,12 @@
                 <DataGridTextColumn Width="*" Header="Имя файла" Binding="{Binding Name}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid Grid.Row="0" Grid.Column="1" ItemsSource="{Binding LSStrings}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" SelectionMode="Single">
+        <DataGrid Grid.Row="0" Grid.Column="1" ItemsSource="{Binding TranslationSubstrings}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" CanUserSortColumns="False" SelectionMode="Single">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Строки" Binding="{Binding OriginalStringWithoutEOL}"/>
+                <DataGridTextColumn Width="*" Header="Контекст" Binding="{Binding Context}"/>
+                <DataGridTextColumn Width="2*" Header="Подстрока для перевода" Binding="{Binding SubstringToTranslate}"/>
+                <DataGridTextColumn Width="2*" Header="Перевод" Binding="{Binding Value}"/>
             </DataGrid.Columns>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding State}" Value="IsNotTranslated">
-                            <Setter Property="Background" Value="Red"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding State}" Value="Translated">
-                            <Setter Property="Background" Value="LightGreen"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding State}" Value="HasNotTranslationSubstring">
-                            <Setter Property="Background" Value= "#FFFFFFFF"/>
-                        </DataTrigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="DetailsVisibility" Value="{Binding HasTranslationSubstring , Converter= {StaticResource BooleanToVisibility}}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Background="#FFFFFFFF">
-                        <TextBlock Text="Context: "/>
-                        <TextBlock Text="{Binding Context}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
         </DataGrid>
         <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding LoadFiles}" IsEnabled="{Binding IsFileUploadAllowed}">Загрузить файлы</Button>
         <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding SaveFile}" IsEnabled="{Binding isFileSelected}">Сохранить файл на диск</Button>

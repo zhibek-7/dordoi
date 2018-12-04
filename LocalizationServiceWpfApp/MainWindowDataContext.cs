@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,18 +39,18 @@ namespace LocalizationServiceWpfApp
                     OnPropertyChanged("isFileSelected");
                     if (this._SelectedLSFile != null)
                     {
-                        if (!this._SelectedLSFile.IsFileStringsLoaded)
+                        if (!this._SelectedLSFile.IsFileContentLoaded)
                         {
                             IsLoadingInProgress = true;
-                            StatusLabelText = string.Format("Загрузка строк файла из {0}", this._SelectedLSFile.Name);
-                            Task.Run(() => this._SelectedLSFile.LoadStrings()).ContinueWith(_ =>
+                            StatusLabelText = string.Format("Загрузка подстрок перевода из {0}", this._SelectedLSFile.Name);
+                            Task.Run(() => this._SelectedLSFile.LoadTranslationSubstrings()).ContinueWith(_ =>
                             {
                                 IsLoadingInProgress = false;
-                                StatusLabelText = string.Format("Загрузка строк файла {0} успешно завершена", this._SelectedLSFile.Name);
-                                LSStrings = this._SelectedLSFile.LSStrings;
+                                StatusLabelText = string.Format("Загрузка подстрок перевода {0} успешно завершена", this._SelectedLSFile.Name);
+                                this.TranslationSubstrings = this._SelectedLSFile.TranslationSubstrings;
                             }, TaskScheduler.FromCurrentSynchronizationContext());
                         }
-                        else LSStrings = this._SelectedLSFile.LSStrings;
+                        else this.TranslationSubstrings = this._SelectedLSFile.TranslationSubstrings;
                     }
                 }
                 catch (Exception ex)
@@ -56,6 +58,13 @@ namespace LocalizationServiceWpfApp
                     MessageBox.Show(ex.Message);
                 }
             }
+        }
+
+        ObservableCollection<TranslationSubstring> _translationSubstrings;
+        public ObservableCollection<TranslationSubstring> TranslationSubstrings
+        {
+            get { return this._translationSubstrings; }
+            set { this._translationSubstrings = value; OnPropertyChanged("TranslationSubstrings"); }
         }
 
         public bool isFileSelected
@@ -91,13 +100,6 @@ namespace LocalizationServiceWpfApp
             set { this._progressBarValue = value; OnPropertyChanged("ProgressBarValue"); }
         }
 
-        private ObservableCollection<LSString> _LSStrings;
-        public ObservableCollection<LSString> LSStrings
-        {
-            get { return _LSStrings; }
-            set { this._LSStrings = value; OnPropertyChanged("LSStrings"); }
-        }
-
         public MainWindowDataContext()
         {
             this.IsLoadingInProgress = true;
@@ -105,10 +107,37 @@ namespace LocalizationServiceWpfApp
             this.StatusLabelText = "Загрузка списка файлов";
             Task.Run(() =>
             {
-                using (db_Entities context = new db_Entities())
+                LSFiles = new ObservableCollection<LSFile>();
+                NpgsqlConnection conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["LocaliztionService"].ConnectionString);
+                conn.Open();
+                NpgsqlCommand comm = new NpgsqlCommand("SELECT \"ID\", \"ID_LocalizationProject\", \"Name\", \"Description\" , \"DateOfChange\", \"StringsCount\", \"Version\", \"Priority\", \"ID_FolderOwner\", \"Encoding\", \"IsFolder\", \"OriginalFullText\" FROM \"Files\"", conn);
+                NpgsqlDataReader r = comm.ExecuteReader();
+                while (r.Read())
                 {
-                    this.LSFiles = new ObservableCollection<LSFile>(context.LSFile.ToList());
+                    int ID = r.GetInt32(0);
+                    int ID_LocalizationProject = r.GetInt32(1);
+                    string Name = r.GetString(2);
+                    string Description = r.IsDBNull(3) ? null : r.GetString(3);
+                    DateTime? DateOfChange;
+                    if (r.IsDBNull(4)) DateOfChange = null; else DateOfChange = r.GetDateTime(4);
+                    int? StringsCount;
+                    if (r.IsDBNull(5)) StringsCount = null; else StringsCount = r.GetInt32(5);
+                    int? Version;
+                    if (r.IsDBNull(6)) Version = null; else Version = r.GetInt32(6);
+                    int? Priority;
+                    if (r.IsDBNull(7)) Priority = null; else Priority = r.GetInt32(7);
+                    int? ID_FolderOwner;
+                    if (r.IsDBNull(8)) ID_FolderOwner = null; else ID_FolderOwner = r.GetInt32(8);
+                    string LSFEncoding = r[9] == DBNull.Value ? null : r.GetString(9);
+                    bool IsFolder = r.GetBoolean(10);
+                    string OriginalFullText = r.GetString(11);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        LSFiles.Add(new LSFile(ID, ID_LocalizationProject, Name, Description, DateOfChange, StringsCount, Version, Priority, ID_FolderOwner, LSFEncoding, IsFolder, OriginalFullText));
+                    });
                 }
+                r.Close();
+                conn.Close();
             }).ContinueWith(_ =>
             {
                 this.IsLoadingInProgress = false;
@@ -131,7 +160,7 @@ namespace LocalizationServiceWpfApp
             get
             {
                 return LoadFilesCommand ??
-                          (this.LoadFilesCommand = new RelayCommand((obj) =>
+                    (this.LoadFilesCommand = new RelayCommand((obj) =>
                           {
                               try
                               {
@@ -146,28 +175,27 @@ namespace LocalizationServiceWpfApp
                                       int successfulLoadCount = 0;
                                       Task.Run(() =>
                                       {
-                                          using (db_Entities context = new db_Entities())
+
+                                          for (int i = 0; i < ofd.FileNames.Length; i++)
                                           {
-                                              for (int i = 0; i < ofd.FileNames.Length; i++)
+                                              string ext = ofd.SafeFileNames[i].Split('.').Last().ToLower();
+                                              if (Regex.IsMatch(ext, Data.AllowedFileFormats))
                                               {
-                                                  string ext = ofd.SafeFileNames[i].Split('.').Last().ToLower();
-                                                  if (Regex.IsMatch(ext, Data.AllowedFileFormats))
+                                                  Application.Current.Dispatcher.Invoke(() =>
                                                   {
-                                                      Application.Current.Dispatcher.Invoke(() =>
-                                                      {
-                                                          this.StatusLabelText = string.Format("Загружется файл {0}", ofd.FileNames[i]);
-                                                      });
-                                                      LSFile lsf = new LSFile(context, ext, 0, ofd.SafeFileNames[i], null, DateTime.Now, null, null, null, ofd.FileNames[i]);
-                                                      Application.Current.Dispatcher.Invoke(() =>
-                                                      {
-                                                          this.LSFiles.Add(lsf);
-                                                          OnPropertyChanged("LSFiles");
-                                                          successfulLoadCount++;
-                                                          ProgressBarValue = 100 * (i + 1) / ofd.FileNames.Length;
-                                                      });
-                                                  }
+                                                      this.StatusLabelText = string.Format("Загружется файл {0}", ofd.FileNames[i]);
+                                                  });
+                                                  LSFile lsf = new LSFile(ext, 0, ofd.SafeFileNames[i], null, DateTime.Now, null, null, null, ofd.FileNames[i]);
+                                                  Application.Current.Dispatcher.Invoke(() =>
+                                                  {
+                                                      this.LSFiles.Add(lsf);
+                                                      OnPropertyChanged("LSFiles");
+                                                      successfulLoadCount++;
+                                                      ProgressBarValue = 100 * (i + 1) / ofd.FileNames.Length;
+                                                  });
                                               }
                                           }
+
                                       }).ContinueWith(_ =>
                                       {
                                           this.StatusLabelText = string.Format("Загружено файлов: {0} из {1}", successfulLoadCount, ofd.FileNames.Length);
@@ -202,10 +230,7 @@ namespace LocalizationServiceWpfApp
                                   {
                                       using (StreamWriter sw = new StreamWriter(File.Open(sfd.FileName, FileMode.CreateNew), Encoding.GetEncoding(this._SelectedLSFile.LSFEncoding)))
                                       {
-                                          for (int i = 0; i < this._SelectedLSFile.LSStrings.Count; i++)
-                                          {
-                                              sw.Write(this._SelectedLSFile.LSStrings[i].OriginalString);
-                                          }
+                                              sw.Write(this._SelectedLSFile.OriginalFullText);
                                       }
                                   }
                               }
