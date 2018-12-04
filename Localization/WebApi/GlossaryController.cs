@@ -23,28 +23,45 @@ namespace Localization.WebApi
             return this._glossaryRepository.GetAll();
         }
 
-        [HttpPut("{id}")]
-        public void Update(int id, [FromBody] Glossary updatedGlossary)
+        [HttpPut("{glossaryId}")]
+        public void Update(int glossaryId, [FromBody] Glossary updatedGlossary)
         {
+            updatedGlossary.ID = glossaryId;
             this._glossaryRepository.Update(updatedGlossary);
         }
 
-        [HttpGet("{id}")]
-        public Glossary GetGlossaryById(int id)
+        [HttpGet("{glossaryId}")]
+        public Glossary GetGlossaryById(int glossaryId)
         {
-            return this._glossaryRepository.GetByID(id: id);
+            return this._glossaryRepository.GetByID(id: glossaryId);
         }
 
-        [HttpGet("{id}/get_assotiated_terms")]
-        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(int id)
+        [HttpGet("{glossaryId}/terms")]
+        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(int glossaryId, [FromQuery] string termSearch)
         {
-            return this._glossaryRepository.GetAssotiatedTermsByGlossaryId(id: id);
+            if (string.IsNullOrEmpty(termSearch))
+                return this._glossaryRepository.GetAssotiatedTermsByGlossaryId(id: glossaryId);
+            else
+                return this._glossaryRepository.FindAssotiatedTermsByPart(glossaryId: glossaryId, termPart: termSearch);
         }
 
-        [HttpPost("{id}/add_term")]
-        public void AddTerm(int id, [FromBody] Models.DatabaseEntities.String newTerm)
+        [HttpPost("{glossaryId}/terms")]
+        public void AddTerm(int glossaryId, [FromBody] Models.DatabaseEntities.String newTerm)
         {
-            this._glossaryRepository.AddNewTerm(glossaryId: id, newTerm: newTerm);
+            this._glossaryRepository.AddNewTerm(glossaryId: glossaryId, newTerm: newTerm);
+        }
+
+        [HttpDelete("{glossaryId}/terms/{termId}")]
+        public void DeleteTerm(int glossaryId, int termId)
+        {
+            this._glossaryRepository.DeleteTerm(glossaryId: glossaryId, termId: termId);
+        }
+
+        [HttpPut("{glossaryId}/terms/{termId}")]
+        public void UpdateTerm(int glossaryId, int termId, [FromBody] Models.DatabaseEntities.String updatedTerm)
+        {
+            updatedTerm.ID = termId;
+            this._glossaryRepository.UpdateTerm(updatedTerm: updatedTerm);
         }
 
     }
