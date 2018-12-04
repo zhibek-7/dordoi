@@ -4,6 +4,7 @@ import { String } from 'src/app/models/database-entities/string.type';
 import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
 import { ModalComponent } from 'src/app/glossaries/components/modal/modal.component';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
+import { Glossary } from 'src/app/models/database-entities/glossary.type';
 
 @Component({
   selector: 'app-edit-term-form-modal',
@@ -17,6 +18,18 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
   _originalTermReference: String;
 
   _term: String = new String();
+
+  @Input()
+  set glossary(value: Glossary) {
+    if (!value)
+      return;
+
+    this.partsOfSpeechService.getByGlossaryId(value.id)
+      .subscribe(
+        partsOfSpeech => this.partsOfSpeech = partsOfSpeech,
+        error => console.log(error)
+      );
+  }
 
   @Input()
   set term(value: String) {
