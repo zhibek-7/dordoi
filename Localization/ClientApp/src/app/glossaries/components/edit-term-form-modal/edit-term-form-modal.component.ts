@@ -24,7 +24,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
     if (!value)
       return;
 
-    this.partsOfSpeechService.getByGlossaryId(value.id)
+    this.partsOfSpeechService.getListByGlossaryId(value.id)
       .subscribe(
         partsOfSpeech => this.partsOfSpeech = partsOfSpeech,
         error => console.log(error)
