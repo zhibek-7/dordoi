@@ -22,6 +22,6 @@ namespace Models.DatabaseEntities
 
         public string Value { get; set; }
 
-        public int? PositionInFullText { get; set; }
+        public int? PositionInText { get; set; }
     }
 }

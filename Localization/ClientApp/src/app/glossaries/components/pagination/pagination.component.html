@@ -1,0 +1,13 @@
+<ul class="pagination m-1">
+  <li class="page-item">
+    <a class="page-link" (click)="selectPage(currentPage - 1)" [class.disabled]="currentPage == 1">&laquo;</a>
+  </li>
+  <li class="page-item" *ngFor="let page of pages | async" [class.active]="page == currentPage">
+    <a class="page-link" (click)="selectPage(page)">
+      {{page}}
+    </a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" (click)="selectPage(currentPage + 1)" [class.disabled]="currentPage == totalPages">&raquo;</a>
+  </li>
+</ul>

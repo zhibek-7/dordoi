@@ -20,14 +20,62 @@ export class GlossariesService {
     return this.httpClient.get<Glossary[]>(GlossariesService.connectionUrl);
   }
 
-  getAssotiatedTerms(glossaryId: number, termPart?: string): Observable<String[]> {
+  getAssotiatedTermsTotalCount(
+    glossaryId: number,
+    termPart?: string): Observable<number>
+  {
     let params = null;
+    let paramsObject: any = {};
     if (termPart && termPart != '') {
+      paramsObject.termSearch = termPart;
+    }
+    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
       params = new HttpParams({
-        fromObject:
+        fromObject: paramsObject
+      });
+    }
+    return this.httpClient.get<number>(
+        GlossariesService.connectionUrl + glossaryId + '/terms/count',
         {
-          'termSearch': termPart
+          params: params
+        });
+  }
+
+  getAssotiatedTerms(
+    glossaryId: number,
+    termPart?: string,
+    pageSize?: number,
+    pageNumber?: number,
+    sortBy?: string[],
+    sortAscending?: boolean): Observable<String[]>
+  {
+    let params = null;
+    let paramsObject: any = {};
+    if (termPart && termPart != '') {
+      paramsObject.termSearch = termPart;
+    }
+    if (pageSize) {
+      paramsObject.pageSize = pageSize;
+    }
+    if (pageNumber) {
+      paramsObject.pageNumber = pageNumber;
+    }
+    if (sortBy && sortBy.length > 0) {
+      let clearedSortBy = new Array<string>();
+      for (let sortByElement of sortBy) {
+        if (sortByElement)
+          clearedSortBy.push(sortByElement);
+      }
+      if (clearedSortBy.length > 0) {
+        paramsObject.sortBy = clearedSortBy;
+        if (sortAscending !== undefined) {
+          paramsObject.sortAscending = sortAscending;
         }
+      }
+    }
+    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
+      params = new HttpParams({
+        fromObject: paramsObject
       });
     }
     return this.httpClient

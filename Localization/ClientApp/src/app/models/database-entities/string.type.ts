@@ -8,7 +8,7 @@ export class String {
     public id_fileOwner?: number,
     public translationMaxLength?: number,
     public value?: string,
-    public positionInFullText?: number,
+    public positionInText?: number,
   ) { }
 
 }
