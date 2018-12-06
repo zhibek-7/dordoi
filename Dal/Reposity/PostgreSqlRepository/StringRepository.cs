@@ -28,7 +28,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (IDbConnection dbConnection = context.Connection)
             {
                 dbConnection.Open();
-                IEnumerable<Models.DatabaseEntities.String> strings = dbConnection.Query<Models.DatabaseEntities.String>("SELECT * FROM \"Strings\"").ToList();
+                IEnumerable<Models.DatabaseEntities.String> strings = dbConnection.Query<Models.DatabaseEntities.String>("SELECT * FROM \"TranslationSubstrings\"").ToList();
                 dbConnection.Close();
                 return strings;
             }
