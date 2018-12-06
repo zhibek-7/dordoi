@@ -34,12 +34,16 @@ export class TranslatedWordsComponent{
   }
 
   filterReport() {
-    let rows: TranslatedWordsReportRow[] = new Array();
-    for (var i = 0; i < this.reportrows.length; i++) {
-      if ((this.userName == undefined || this.userName == null || this.reportrows[i].name.indexOf(this.userName) != -1)
-        && (this.userLang === "Все языки" || this.userLang == undefined || this.reportrows[i].language.indexOf(this.userLang) != -1))
-        rows.push(new TranslatedWordsReportRow(this.reportrows[i].name, this.reportrows[i].language, this.reportrows[i].translations, this.reportrows[i].confirmed));
-    }
+    let rows: TranslatedWordsReportRow[];
+
+    if (this.userName != undefined && this.userName != null)
+      rows = this.reportrows.filter(s => s.name.indexOf(this.userName) != -1);
+    else
+      rows = this.reportrows;
+
+    if (this.userLang != "Все языки" && this.userLang != undefined)
+      rows = rows.filter(s => s.language.indexOf(this.userLang) != -1);
+
     this.filteredrows = rows;
   }
 
