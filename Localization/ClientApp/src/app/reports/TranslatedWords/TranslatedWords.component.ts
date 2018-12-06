@@ -34,12 +34,10 @@ export class TranslatedWordsComponent{
   }
 
   filterReport() {
-    let rows: TranslatedWordsReportRow[];
+    let rows: TranslatedWordsReportRow[] = this.reportrows;
 
     if (this.userName != undefined && this.userName != null)
-      rows = this.reportrows.filter(s => s.name.indexOf(this.userName) != -1);
-    else
-      rows = this.reportrows;
+      rows = rows.filter(s => s.name.indexOf(this.userName) != -1);
 
     if (this.userLang != "Все языки" && this.userLang != undefined)
       rows = rows.filter(s => s.language.indexOf(this.userLang) != -1);
