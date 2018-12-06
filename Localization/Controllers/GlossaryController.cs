@@ -36,13 +36,34 @@ namespace Localization.WebApi
             return this._glossaryRepository.GetByID(id: glossaryId);
         }
 
-        [HttpGet("{glossaryId}/terms")]
-        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(int glossaryId, [FromQuery] string termSearch)
+        [HttpGet("{glossaryId}/terms/count")]
+        public int GetAssotiatedTerms(
+            int glossaryId,
+            [FromQuery] string termSearch)
         {
-            if (string.IsNullOrEmpty(termSearch))
-                return this._glossaryRepository.GetAssotiatedTermsByGlossaryId(id: glossaryId);
-            else
-                return this._glossaryRepository.FindAssotiatedTermsByPart(glossaryId: glossaryId, termPart: termSearch);
+            return this._glossaryRepository
+                .GetAssotiatedTermsCount(
+                    glossaryId: glossaryId,
+                    termPart: termSearch);
+        }
+
+        [HttpGet("{glossaryId}/terms")]
+        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(
+            int glossaryId,
+            [FromQuery] string termSearch,
+            [FromQuery] int? pageSize,
+            [FromQuery] int? pageNumber,
+            [FromQuery] string[] sortBy,
+            [FromQuery] bool? sortAscending)
+        {
+            return this._glossaryRepository
+                .GetAssotiatedTermsByGlossaryId(
+                    glossaryId: glossaryId,
+                    termPart: termSearch,
+                    pageSize: pageSize ?? 25,
+                    pageNumber: pageNumber ?? 1,
+                    sortBy: sortBy,
+                    sortAscending: sortAscending ?? true);
         }
 
         [HttpPost("{glossaryId}/terms")]
