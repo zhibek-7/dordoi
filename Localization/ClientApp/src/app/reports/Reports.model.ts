@@ -6,7 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReportsRoutingModule } from './Reports-routing.module';
 import { ReportsComponent } from "./Reports.component";
 import { TranslatedWordsComponent } from "./TranslatedWords/TranslatedWords.component";
-import { ReportService  } from "../services/reports.service";
+import { ReportService } from "../services/reports.service";
+import { LanguageService } from '../services/languages.service';
 
 @NgModule({
   imports: [
@@ -17,7 +18,7 @@ import { ReportService  } from "../services/reports.service";
   ],
   exports: [
   ],
-  providers: [ReportService],
+  providers: [ReportService, LanguageService],
   declarations: [ReportsComponent, TranslatedWordsComponent]
 })
 export class ReportsModule { }

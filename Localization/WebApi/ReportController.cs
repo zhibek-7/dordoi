@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using DAL.Reposity.Report;
@@ -14,19 +15,19 @@ namespace Localization.WebApi
     {
         [HttpGet]
         [Route("TranslatedWords:{dateFrom}:{dateTo}")]
-        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport()
+        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(string dateFrom, string dateTo)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.Get().ToList();
+            List<TranslatedWordsReportRow> reportRows = TranslatedWords.Get(dateFrom, dateTo).ToList();
             return reportRows;
         }
 
         [HttpGet]
         [Route("TranslatedWordsExcel:{dateFrom}:{dateTo}")]
-        public FileResult GetTranslatedWordsReportExcel()
+        public FileResult GetTranslatedWordsReportExcel(string dateFrom, string dateTo)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.Get().ToList();
+            List<TranslatedWordsReportRow> reportRows = TranslatedWords.Get(dateFrom, dateTo).ToList();
             byte[] bin;
             HttpResponseMessage result = null;
 

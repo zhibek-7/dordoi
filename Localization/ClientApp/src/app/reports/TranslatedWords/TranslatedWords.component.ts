@@ -1,7 +1,8 @@
-import { Component} from '@angular/core';
-
+import { Component } from '@angular/core';
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { ReportService } from '../../services/reports.service';
+import { LanguageService } from '../../services/languages.service';
+import { Language  } from '../../models/Language';
 
 @Component({
   selector: 'translated-words-report',
@@ -12,6 +13,7 @@ import { ReportService } from '../../services/reports.service';
 export class TranslatedWordsComponent{
   public reportrows: TranslatedWordsReportRow[];
   public filteredrows: TranslatedWordsReportRow[];
+  public Languages: Language[];
   msg: string = "Лучшие участники";
   userName: string;
   userLang: string;
@@ -19,34 +21,26 @@ export class TranslatedWordsComponent{
   to: Date;
   languageList = [];
 
-  constructor(private reportService: ReportService) {
-    this.languageList = [
-      { itemName: 'Все языки' },
-      { itemName: 'Английский'},
-      { itemName: 'Французский' },
-      { itemName: 'Русский' },
-      { itemName: 'Немецкий' }
-    ];
+  constructor(private reportService: ReportService, private languagesService: LanguageService) {
+    this.languagesService.getLanguageList()
+      .subscribe( Languages => { this.Languages = Languages; },
+                  error => console.error(error));
   }
-
+  
   async getRows() {
-    this.reportrows = await this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString());
-    this.filteredrows = this.reportrows;
-  }
-
-  filterRows() {
-    let rows: TranslatedWordsReportRow[] = new Array();
-    for (var i = 0; i < this.reportrows.length; i++) {
-      if ((this.userName == undefined || this.userName == null || this.reportrows[i].name.indexOf(this.userName) != -1)
-      && (this.userLang === "Все языки" || this.userLang == undefined || this.reportrows[i].language.indexOf(this.userLang) != -1))
-        rows.push(new TranslatedWordsReportRow(this.reportrows[i].name, this.reportrows[i].language, this.reportrows[i].translations, this.reportrows[i].confirmed));
-    }
-    return rows;
+    this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString())
+      .subscribe( reportrows => { this.filteredrows = reportrows; this.reportrows = reportrows;},
+      error => console.error(error));
   }
 
   filterReport() {
-    
-    this.filteredrows = this.filterRows();
+    let rows: TranslatedWordsReportRow[] = new Array();
+    for (var i = 0; i < this.reportrows.length; i++) {
+      if ((this.userName == undefined || this.userName == null || this.reportrows[i].name.indexOf(this.userName) != -1)
+        && (this.userLang === "Все языки" || this.userLang == undefined || this.reportrows[i].language.indexOf(this.userLang) != -1))
+        rows.push(new TranslatedWordsReportRow(this.reportrows[i].name, this.reportrows[i].language, this.reportrows[i].translations, this.reportrows[i].confirmed));
+    }
+    this.filteredrows = rows;
   }
 
   setHeaderMsg() {
@@ -60,7 +54,8 @@ export class TranslatedWordsComponent{
   }
 
   clickEvent() {
-    this.getRows();
+    while (!this.getRows())
+      this.filterReport();
     this.setHeaderMsg();
   }
 

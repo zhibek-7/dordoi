@@ -1,5 +1,3 @@
-
-
 <div name="date-range" class="dateHolder">
   Диапазон дат<br>
   <label>
@@ -22,21 +20,22 @@
   </button>
 </div>
 
-<div  class="reportFilter" *ngIf="reportrows">
-  <select [(ngModel)]="userLang" #UserLanguage="ngModel" value="{{userLang}}"  (ngModelChange) = "filterReport()" name="userLang">
-  <option *ngFor="let lang of languageList" value="{{lang.itemName}}" name ="langOption">  {{lang.itemName}}</option>
+<div class="reportFilter" *ngIf="filteredrows">
+  <select [(ngModel)]="userLang" value="{{userLang}}" (ngModelChange)="filterReport()" name="userLang">
+    <option value="Все языки" name ="langOption">Все языки</option>
+    <option *ngFor="let lang of Languages" value="{{lang.name}}" name="langOption"> {{lang.name}}</option>
   </select>
+
   <input type="text"
          name="userName"
          [(ngModel)]="userName"
          id="idFilter"
          placeholder="Search users (by name or surname)"
          value="{{userName}}"
-         #UserNameField="ngModel"
-         (ngModelChange) = "filterReport()">
+         (ngModelChange)="filterReport()">
 </div>
 
-  <table [(ngModel)]="filteredrows" class='table' *ngIf="filteredrows">
+  <table class='table' *ngIf="filteredrows">
     <thead>
       <tr>
         <th>Имя пользователя</th>
@@ -45,7 +44,7 @@
         <th>Утверждено</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody [(ngModel)]="filteredrows">
       <tr *ngFor="let row of filteredrows">
         <td>{{ row.name }}</td>
         <td>{{ row.language }}</td>

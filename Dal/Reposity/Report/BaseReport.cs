@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using DAL.Context;
 using Models.Reports;
-using Remotion.Linq.Clauses;
 
 namespace DAL.Reposity.Report
 {
@@ -27,6 +26,6 @@ namespace DAL.Reposity.Report
         /// Функция получения строк отчета удовлетворяющих датам
         /// </summary>
         /// <returns>Список строк отчета</returns>
-        public abstract IEnumerable<T> Get();
+        public abstract IEnumerable<T> Get(string dateFrom, string dateTo);
     }
 }

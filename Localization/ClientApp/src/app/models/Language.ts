@@ -1,5 +1,7 @@
 // Модель языков
-export interface Language {
-    name: string;
-  }
-  
+export class Language {
+  name: string;
+  description: string;
+  flag: string;
+}
+

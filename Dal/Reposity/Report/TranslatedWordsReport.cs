@@ -8,46 +8,43 @@ using Models.Reports;
 
 namespace DAL.Reposity.Report
 {
+
+    /// <summary>
+    /// Для работы с БД
+    /// </summary>
     public class TranslatedWordsReport: BaseReport<TranslatedWordsReportRow>
     {
         /// <summary>
         /// Функция получения строк отчета удовлетворяющих датам
         /// </summary>
         /// <returns>Список строк отчета</returns>
-        public override IEnumerable<TranslatedWordsReportRow> Get()
+        public override IEnumerable<TranslatedWordsReportRow> Get(string dateFrom, string dateTo)
         {
             using (IDbConnection dbConnection = Context.Connection)
             {
                 dbConnection.Open();
-                IEnumerable<TranslatedWordsReportRow> rows = 
-                    dbConnection.Query<TranslatedWordsReportRow>(
-                        "select " +
-                        "u.\"Name\" as Name, " +
-                        "l.\"Name\" as Language, " +
-                        "count(t.\"ID_Locale\") as Translations, " +
-                        "t.\"Confirmed\" as Confirmed " +
-                        "from " +
-                        "public.\"Translations\" t, " +
-                        "public.\"Users\" u, " +
-                        "public.\"Locales\" l, " +
-                        "public.\"TranslationSubstrings\" s " +
-                        "where " +
-                        "t.\"ID_User\" = u.\"ID\" " +
-                        "and t.\"ID_Locale\" = l.\"ID\" " +
-                        "and t.\"ID_String\" = s.\"ID\" " +
-                        "group by " +
-                        "Name, " +
-                        "Language, " +
-                        "Confirmed"
-                        );
+                var sqlQuery = "select " +
+                               "u.\"Name\" as Name, " +
+                               "l.\"Name\" as Language, " +
+                               "count(t.\"ID_Locale\") as Translations, " +
+                               "t.\"Confirmed\" as Confirmed " +
+                               "from " +
+                               "public.\"Translations\" t, " +
+                               "public.\"Users\" u, " +
+                               "public.\"Locales\" l, " +
+                               "public.\"TranslationSubstrings\" s " +
+                               "where " +
+                               "t.\"ID_User\" = u.\"ID\" " +
+                               "and t.\"ID_Locale\" = l.\"ID\" " +
+                               "and t.\"ID_String\" = s.\"ID\" " +
+                               "and t.\"DateTime\" > \'" + dateFrom + "\' and t.\"DateTime\" < \'" + dateTo + "\'" +
+                               "group by " +
+                               "Name, " +
+                               "Language, " +
+                               "Confirmed";
+                IEnumerable<TranslatedWordsReportRow> rows = dbConnection.Query<TranslatedWordsReportRow>(sqlQuery);
                 return rows;
             }
-            //List<TranslatedWordsReportRow> res = new List<TranslatedWordsReportRow>();
-            //    res.Add(new TranslatedWordsReportRow(){Name = "Иван Иванов", Language = "Английский", Translations = 1200, Confirmed = true});
-            //    res.Add(new TranslatedWordsReportRow() { Name = "Петр Петров", Language = "Французский", Translations = 1200, Confirmed = false });
-            //    res.Add(new TranslatedWordsReportRow() { Name = "Никовай Николаев", Language = "Немецкий", Translations = 1200, Confirmed = true });
-            //    res.Add(new TranslatedWordsReportRow() { Name = "Никита Никитин", Language = "Испанский", Translations = 1200, Confirmed = false });
-            //return res;
         }       
     }
 }
