@@ -32,7 +32,7 @@ const routes: Routes = [
       component: UserAccountComponent
     },
     {
-      path: 'glossaries',
+      path: 'Glossaries',
       loadChildren: '../glossaries/glossaries.model#GlossariesModule'
     },
     {
