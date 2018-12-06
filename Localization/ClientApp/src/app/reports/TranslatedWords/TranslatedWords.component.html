@@ -21,7 +21,7 @@
 </div>
 
 <div class="reportFilter" *ngIf="filteredrows">
-  <select [(ngModel)]="userLang" value="{{userLang}}" (ngModelChange)="filterReport()" name="userLang">
+  <select [(ngModel)]="userLang" value="{{userLang}}" (mouseup)="filterReport()" name="userLang">
     <option value="Все языки" name ="langOption">Все языки</option>
     <option *ngFor="let lang of Languages" value="{{lang.name}}" name="langOption"> {{lang.name}}</option>
   </select>
@@ -32,7 +32,7 @@
          id="idFilter"
          placeholder="Search users (by name or surname)"
          value="{{userName}}"
-         (ngModelChange)="filterReport()">
+         (keypress)="filterReport()" (change)="filterReport()">
 </div>
 
   <table class='table' *ngIf="filteredrows">
