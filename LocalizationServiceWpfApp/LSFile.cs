@@ -303,24 +303,24 @@ namespace LocalizationServiceWpfApp
         private void ParseAsXml(NpgsqlConnection connection)
         {
             string simpleRowPattern = "<string\\W+(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*\\W*name\\W*=\\W*\"([^\"]*)\"\\W*(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*>([^<]*)</string\\W*>";
-            string arrayPattern = "<string-array\\W+(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*\\W*name\\W*=\\W*\"([^\"]*)\"\\W*(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*>(\\W*<item\\W*>.*</item\\W*>\\W*)</string-array\\W*>";
-            string arrayItemPattern = "\\W*<item\\W*>([^<]*)</item\\W*>\\W*";
-            MatchCollection matches = Regex.Matches(this.OriginalFullText, simpleRowPattern);
+            string arrayPattern = "<string-array\\W+(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*\\W*name\\W*=\\W*\"([^\"]*)\"\\W*(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*>((?:(?!</string-array).)*)</string-array\\W*>";
+            string arrayItemPattern = "<item\\W*>((?:(?!</item).)*)</item\\W*>";
+            MatchCollection matches = Regex.Matches(this.OriginalFullText, simpleRowPattern,RegexOptions.Singleline);
             foreach (Match m in matches)
             {
                 this.TranslationSubstrings.Add(new TranslationSubstring(connection, m.Groups[2].Value, m.Groups[1].Value, this.ID, m.Groups[2].Value, m.Groups[2].Index));
             }
-            matches = Regex.Matches(this.OriginalFullText, arrayPattern);
+            matches = Regex.Matches(this.OriginalFullText, arrayPattern, RegexOptions.Singleline);
             foreach (Match m in matches)
             {
                 string context = m.Groups[1].Value;
-                MatchCollection itemMatches = Regex.Matches(m.Groups[2].Value, arrayItemPattern);
+                MatchCollection itemMatches = Regex.Matches(m.Groups[2].Value, arrayItemPattern,RegexOptions.Singleline);
                 foreach (Match m2 in itemMatches) this.TranslationSubstrings.Add(new TranslationSubstring(connection, m2.Groups[1].Value, m.Groups[1].Value, this.ID, m2.Groups[1].Value, m.Groups[2].Index + m2.Groups[1].Index));
             }
         }
 
-        //private static ObservableCollection<TranslationSubstring> phpFileParse(db_Entities context, string text, int id_FileOwner, int? defaultTranslationMaxLength)
-        //{
+        private void ParseAsPhp(NpgsqlConnection connection)
+        {
         //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
         //    var ex = Regex.Matches(text, @"\\'");
         //    text = Regex.Replace(text, @"\\'", "##");
@@ -398,7 +398,7 @@ namespace LocalizationServiceWpfApp
         //        strings.Add(new TranslationSubstring(context, null, id_FileOwner, lastRowNumber + i, lastStrings[i] + '\n'));
         //    }
         //    return strings;
-        //}
+        }
 
         //private static ObservableCollection<TranslationSubstring> resxFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
         //{

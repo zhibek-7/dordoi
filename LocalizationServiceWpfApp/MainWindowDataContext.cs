@@ -130,7 +130,7 @@ namespace LocalizationServiceWpfApp
                     if (r.IsDBNull(8)) ID_FolderOwner = null; else ID_FolderOwner = r.GetInt32(8);
                     string LSFEncoding = r[9] == DBNull.Value ? null : r.GetString(9);
                     bool IsFolder = r.GetBoolean(10);
-                    string OriginalFullText = r.GetString(11);
+                    string OriginalFullText = r.IsDBNull(11) ? null : r.GetString(11);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         LSFiles.Add(new LSFile(ID, ID_LocalizationProject, Name, Description, DateOfChange, StringsCount, Version, Priority, ID_FolderOwner, LSFEncoding, IsFolder, OriginalFullText));
