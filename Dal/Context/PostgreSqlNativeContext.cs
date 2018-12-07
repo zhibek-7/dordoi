@@ -11,7 +11,7 @@ namespace DAL.Context
         private static PostgreSqlNativeContext instance;
         private static object obj = new object();
 
-        private string connectionString = "User ID=postgres;Password=post123;Host=coderlink02.taximaxim.local;Port=5432;Database=localizationservice;Pooling=true;";
+        private string connectionString = "User ID=postgres;Password=post123;Host=10.145.251.74;Port=5432;Database=localizationservice;Pooling=true;";
 
         private PostgreSqlNativeContext() { }
 
