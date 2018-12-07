@@ -37,7 +37,7 @@ namespace LocalizationServiceWpfApp
                 {
                     this._SelectedLSFile = value;
                     OnPropertyChanged("isFileSelected");
-                    if (this._SelectedLSFile != null)
+                    if (this._SelectedLSFile != null && !this._SelectedLSFile.IsFolder)
                     {
                         if (!this._SelectedLSFile.IsFileContentLoaded)
                         {
@@ -52,6 +52,7 @@ namespace LocalizationServiceWpfApp
                         }
                         else this.TranslationSubstrings = this._SelectedLSFile.TranslationSubstrings;
                     }
+                    else this.TranslationSubstrings = null;
                 }
                 catch (Exception ex)
                 {
@@ -69,7 +70,7 @@ namespace LocalizationServiceWpfApp
 
         public bool isFileSelected
         {
-            get { return this._SelectedLSFile != null; }
+            get { return this._SelectedLSFile != null && !this._SelectedLSFile.IsFolder; }
         }
 
         private bool _isLoadingInProgress;

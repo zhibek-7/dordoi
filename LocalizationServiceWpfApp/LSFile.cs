@@ -155,21 +155,21 @@ namespace LocalizationServiceWpfApp
                         ParseAsXml(conn);
                         break;
                     }
-                //case "php":
-                //    {
-                //        this.LSStrings = phpFileParse(context, text, this.ID, null);
-                //        break;
-                //    }
-                //case "resx":
-                //    {
-                //        this.LSStrings = resxFileParse(context, Lines, this.ID, null);
-                //        break;
-                //    }
-                //case "string":
-                //    {
-                //        this.LSStrings = stringFileParse(context, Lines, this.ID, null);
-                //        break;
-                //    }
+                case "php":
+                    {
+                        ParseAsPhp(conn);
+                        break;
+                    }
+                    //case "resx":
+                    //    {
+                    //        this.LSStrings = resxFileParse(context, Lines, this.ID, null);
+                    //        break;
+                    //    }
+                    //case "string":
+                    //    {
+                    //        this.LSStrings = stringFileParse(context, Lines, this.ID, null);
+                    //        break;
+                    //    }
 
             }
             conn.Close();
@@ -321,83 +321,24 @@ namespace LocalizationServiceWpfApp
 
         private void ParseAsPhp(NpgsqlConnection connection)
         {
-        //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
-        //    var ex = Regex.Matches(text, @"\\'");
-        //    text = Regex.Replace(text, @"\\'", "##");
-        //    var m = Regex.Matches(text, "'([^']*)'|(\\d+)\\s*=>");
-        //    List<string> LScontextParts = new List<string>();
-        //    int rightBorder = 0;
-        //    int lastRowNumber = 0;
-        //    for (int i = 0; i < m.Count; i++)
-        //    {
-        //        int n = m[i].Index - 1;
-        //        while (n >= 0)
-        //        {
-        //            if (text[n] == '[' || text[n] == '(')
-        //            {
-        //                LScontextParts.Add(m[i].Groups[2].Value == string.Empty ? m[i].Value : m[i].Groups[2].Value);
-        //                break;
-        //            }
-        //            if (text[n] == ',')
-        //            {
-        //                LScontextParts.RemoveAt(LScontextParts.Count - 1);
-        //                if (Regex.IsMatch(text.Substring(0, n).Trim().Last().ToString(), "\\]|\\)")) LScontextParts.RemoveAt(LScontextParts.Count - 1);
-        //                LScontextParts.Add(m[i].Groups[2].Value == string.Empty ? m[i].Value : m[i].Groups[2].Value);
-        //                break;
-        //            }
-        //            if (text[n] == '>' && n > 0 && text[n - 1] == '=')
-        //            {
-        //                n = rightBorder;
-        //                rightBorder = m[i].Index + m[i].Length;
-        //                while (text[rightBorder] != '\n') rightBorder++;
-        //                string subtext = text.Substring(n, rightBorder - n);
-        //                var suspicions = Regex.Matches(subtext, "##");
-        //                if (suspicions.Count > 0)
-        //                {
-        //                    StringBuilder sb = new StringBuilder(subtext);
-        //                    foreach (Match suspicion in suspicions)
-        //                    {
-        //                        for (int j = 0; j < ex.Count; j++)
-        //                        {
-        //                            if (suspicion.Index + n == ex[j].Index)
-        //                            {
-        //                                sb.Remove(suspicion.Index, 2);
-        //                                sb.Insert(suspicion.Index, "\\'");
-        //                                break;
-        //                            }
-        //                        }
-        //                    }
-        //                    subtext = sb.ToString();
-        //                }
-        //                string[] lines = subtext.Split('\n');
-        //                int linesNumber = lines.Length;
-        //                if (m[i].Value.Contains('\n'))
-        //                {
-        //                    int eolsNumber = m[i].Value.Count(c => c == '\n');
-        //                    for (int j = 0; j < eolsNumber; j++)
-        //                    {
-        //                        lines[lines.Length - 2] += '\n' + lines[lines.Length - 1];
-        //                        Array.Resize(ref lines, lines.Length - 1);
-        //                    }
-        //                }
-        //                for (int j = 0; j < lines.Length - 1; j++) strings.Add(new TranslationSubstring(context, null, id_FileOwner, lastRowNumber + j, lines[j] + '\n'));
-        //                string LSContext = "array";
-        //                for (int j = 0; j < LScontextParts.Count; j++) LSContext += "[" + LScontextParts[j] + "]";
-        //                int posInLine = m[i].Groups[1].Index - strings.Sum(str => str.OriginalStringWithoutEOL.Length) - (strings.Count - 1);
-        //                strings.Add(new TranslationSubstring(context, m[i].Groups[1].Value, null, LSContext, defaultTranslationMaxLength, id_FileOwner, lastRowNumber + lines.Length - 1, lines.Last() + '\n', m[i].Groups[1].Value, posInLine));
-        //                lastRowNumber += linesNumber;
-        //                rightBorder++;
-        //                break;
-        //            }
-        //            n--;
-        //        }
-        //    }
-        //    string[] lastStrings = text.Substring(rightBorder).Split('\n');
-        //    for (int i = 0; i < lastStrings.Length; i++)
-        //    {
-        //        strings.Add(new TranslationSubstring(context, null, id_FileOwner, lastRowNumber + i, lastStrings[i] + '\n'));
-        //    }
-        //    return strings;
+            //bmmarket.php wrong parsing
+            MatchCollection matches = Regex.Matches(this.OriginalFullText, "(array\\W*[(]|[[]|(?:[)]|[]])?\\W*,|=>)\\W*((?<!\\\\)'((?:(?<=\\\\)'|[^'])*)(?<!\\\\)'|\\d+)", RegexOptions.Singleline);
+            List<string> contextParts = new List<string>();
+            for (int i = 0; i < matches.Count; i++)
+            {
+                string context = "array";
+                for (int j = 0; j < contextParts.Count; j++) context += string.Format("[{0}]", contextParts[j]);
+                if (Regex.IsMatch(matches[i].Groups[1].Value, "=>"))
+                {
+                    this.TranslationSubstrings.Add(new TranslationSubstring(connection, matches[i].Groups[3].Value, context, this.ID, matches[i].Groups[3].Value, matches[i].Groups[3].Index));
+                    contextParts.RemoveAt(contextParts.Count - 1);
+                }
+                else
+                {
+                    if (Regex.IsMatch(matches[i].Groups[1].Value, "(?:[)]|[]])\\W*,")) contextParts.RemoveAt(contextParts.Count - 1);
+                    contextParts.Add(matches[i].Groups[2].Value);
+                }
+            }
         }
 
         //private static ObservableCollection<TranslationSubstring> resxFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
