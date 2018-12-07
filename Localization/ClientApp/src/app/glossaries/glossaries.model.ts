@@ -33,7 +33,7 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     DeleteTermConfirmationComponent,
     DeleteTermsConfirmationComponent,
     EditTermFormComponent,
-    PaginationComponent
+    PaginationComponent,
   ],
   providers: [
     RequestDataReloadService,

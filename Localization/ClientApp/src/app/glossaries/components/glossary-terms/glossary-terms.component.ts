@@ -22,6 +22,7 @@ export class GlossaryTermsComponent implements OnInit {
   set termViewModels(value) {
     this._termViewModels = value;
     this.allDispayedTermsSelectedCheckboxChecked = this.termViewModels.every(termViewModel => termViewModel.isSelected);
+    console.log(value, 555)
   }
 
   get termViewModels() {
@@ -43,7 +44,7 @@ export class GlossaryTermsComponent implements OnInit {
     private requestDataReloadService: RequestDataReloadService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   deleteTerm(term: String) {
     this.glossariesService.deleteTerm(this.glossary.id, term.id)
