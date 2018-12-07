@@ -5,6 +5,7 @@ import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
 import { SortingArgs } from 'src/app/glossaries/models/sorting.args';
+import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
 
 @Component({
   selector: 'app-glossary-terms',
@@ -34,6 +35,8 @@ export class GlossaryTermsComponent implements OnInit {
   @Output() sortByRequested = new EventEmitter<SortingArgs>();
 
   lastSortColumnName = '';
+
+  @Input() partsOfSpeech: PartOfSpeech[];
 
   constructor(
     private glossariesService: GlossariesService,

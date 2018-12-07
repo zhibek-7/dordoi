@@ -27,14 +27,31 @@ export class PaginationComponent implements OnInit, OnChanges {
     return Math.ceil(Math.max(this.totalCount, 1) / Math.max(this.pageSize, 1));
   }
 
-  get pages(): Observable<number[]> {
+  get pagesArray(): number[] {
     let possiblePageNumbers = new Array<number>();
     for (let i = 0; i < this.displayedPagesRange * 2 + 1; i++) {
       possiblePageNumbers.push(this.currentPage - this.displayedPagesRange + i);
     }
-    return of(
-      possiblePageNumbers.filter(
-        pageNumber => this.isValidPageNumber(pageNumber)));
+    while (possiblePageNumbers.some(possiblePageNumber => possiblePageNumber <= 0)) {
+      possiblePageNumbers = possiblePageNumbers.map(possiblePageNumber => possiblePageNumber + 1);
+    }
+    while (possiblePageNumbers.some(possiblePageNumber => possiblePageNumber > this.totalPages)) {
+      possiblePageNumbers = possiblePageNumbers.map(possiblePageNumber => possiblePageNumber - 1);
+    }
+    return possiblePageNumbers.filter(
+        pageNumber => this.isValidPageNumber(pageNumber));
+  }
+
+  get pages(): Observable<number[]> {
+    return of(this.pagesArray);
+  }
+
+  get firstDisplayedPage() {
+    return this.pagesArray[0];
+  }
+
+  get lastDisplayedPage() {
+    return this.pagesArray[this.pagesArray.length - 1];
   }
 
   isValidPageNumber(pageNumber: number): boolean {

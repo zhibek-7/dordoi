@@ -1,10 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
 import { String } from 'src/app/models/database-entities/string.type';
-import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
 import { ModalComponent } from 'src/app/glossaries/components/modal/modal.component';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
-import { Glossary } from 'src/app/models/database-entities/glossary.type';
 
 @Component({
   selector: 'app-edit-term-form-modal',
@@ -13,23 +11,11 @@ import { Glossary } from 'src/app/models/database-entities/glossary.type';
 })
 export class EditTermFormComponent extends ModalComponent implements OnInit {
 
-  partsOfSpeech: PartOfSpeech[];
+  @Input() partsOfSpeech: PartOfSpeech[];
 
   _originalTermReference: String;
 
   _term: String = new String();
-
-  @Input()
-  set glossary(value: Glossary) {
-    if (!value)
-      return;
-
-    this.partsOfSpeechService.getListByGlossaryId(value.id)
-      .subscribe(
-        partsOfSpeech => this.partsOfSpeech = partsOfSpeech,
-        error => console.log(error)
-      );
-  }
 
   @Input()
   set term(value: String) {
@@ -39,7 +25,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
   @Output() termUpdateConfirmed = new EventEmitter<String>();
 
-  constructor(private partsOfSpeechService: PartsOfSpeechService) { super(); }
+  constructor() { super(); }
 
   ngOnInit() {
   }

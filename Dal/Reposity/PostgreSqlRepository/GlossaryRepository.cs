@@ -170,9 +170,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 if (sortBy.Any())
                 {
                     var columnNamesToSort = sortBy
+                        .Select(x => x.ToLower())
                         .Distinct()
                         .Where(x => GlossaryRepository.TermsSortColumnNamesMapping.ContainsKey(x))
-                        .Select(x => GlossaryRepository.TermsSortColumnNamesMapping[x.ToLower()])
+                        .Select(x => GlossaryRepository.TermsSortColumnNamesMapping[x])
                         .ToArray();
                     if (columnNamesToSort.Any())
                         query = sortAscending? query.OrderBy(columnNamesToSort) : query.OrderByDesc(columnNamesToSort);
