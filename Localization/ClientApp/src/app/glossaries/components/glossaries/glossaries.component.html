@@ -4,7 +4,7 @@
       <div>Выберите глоссарий</div>
     </button>
     <div class="dropdown-menu m-1" aria-labelledby="dropdownMenuButton">
-      <button *ngFor="let glossary of glossaries" class="dropdown-item" [routerLink]="['/glossaries', glossary.id]">{{glossary.name}}</button>
+      <button *ngFor="let glossary of glossaries" class="dropdown-item" [routerLink]="['./', glossary.id]">{{glossary.name}}</button>
     </div>
   </div>
 </div>
