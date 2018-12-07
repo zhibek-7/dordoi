@@ -27,11 +27,11 @@ export class CurrentProjectSettingsComponent implements OnInit {
     this.route.params
       .subscribe((params: Params) => {
         this.currentProject = this.projectService.projects.find((element) => {
-          return element.id === this.route.snapshot.params['id']
+          return element.id === this.route.snapshot.params['id'];
         });
         this.wasChanged = moment(this.currentProject.changed).fromNow();
-        this.wasCreated = moment(this.currentProject.created).fromNow()
-      })
+        this.wasCreated = moment(this.currentProject.created).fromNow();
+      });
   }
 
 }

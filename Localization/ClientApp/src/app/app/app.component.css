@@ -19,8 +19,8 @@
 }
 
 .divider {
-    height: 5rem;
+    height: 0.5rem;
 }
-.navbar {
-    padding: 0rem 20rem;
+.nav-link {
+  padding: 0px;
 }
