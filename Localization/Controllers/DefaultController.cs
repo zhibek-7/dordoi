@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Localization.Controllers
+namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
