@@ -17,6 +17,17 @@ import { SharePhraseService } from './localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from './localServices/share-translated-phrase.service';
 import { TranslationService } from '../services/accessToDatabase/translationService.service';
 
+import {
+  MatIconModule,
+  MatInputModule,
+  MatButtonModule,
+  MatButtonToggleModule,
+  MatRadioModule,
+  MatSelectModule,
+  MatOptionModule,
+  MatCheckboxModule,
+  MatTableModule} from '@angular/material';
+
 @NgModule({
     declarations: [
         WorkPanelComponent,
@@ -26,14 +37,15 @@ import { TranslationService } from '../services/accessToDatabase/translationServ
         TranslationComponent,
         FilterPhrasesPipe
     ],
-    imports: [ 
+    imports: [
         CommonModule,
         HttpClientModule,
         FormsModule,
-        WorkPanelRoutingModule
+        WorkPanelRoutingModule,
+        MatIconModule,
     ],
     exports: [
-        
+      
     ],
     providers: [
         SharePhraseService,

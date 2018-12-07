@@ -15,7 +15,8 @@ import { CurrentProjectSettingsComponent } from '../current-project-settings/cur
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
 
-import { MatIconModule,
+import {
+  MatIconModule,
   MatInputModule,
   MatButtonModule,
   MatButtonToggleModule,
@@ -49,7 +50,7 @@ import { MatIconModule,
 
     ],
     declarations: [
-  	      NotFoundComponent,
+  	    NotFoundComponent,
         HeaderComponent,
         CurrentProjectSettingsComponent,
         NewProjectComponent,

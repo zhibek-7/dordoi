@@ -1,4 +1,5 @@
 import { Component, OnInit} from '@angular/core';
+import { MatIconModule } from '@angular/material'
 
 import { String } from 'src/app/models/database-entities/string.type';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
@@ -15,7 +16,7 @@ export class PhrasesComponent implements OnInit {
     phrasesList: Array<String>;
     phrasesOnPages: String[][];
     currentPageOfPhrases: String[];
-    filtredPhrases: String[]; 
+    filtredPhrases: String[];
 
     pickedPhrase: String;
 
@@ -30,12 +31,12 @@ export class PhrasesComponent implements OnInit {
         this.getStrings();
      }
 
-    async getStrings(){
+    async getStrings() {
         this.phrasesList = await this.stringService.getStrings();
         this.countPages();
     }
 
-     async countPages(){
+     async countPages() {
         let maxPhrasesOnOnePage = 70;
         this.phrasesOnPages = [];
 
@@ -79,7 +80,7 @@ export class PhrasesComponent implements OnInit {
 
     choosePhrase(phrase){
         this.pickedPhrase = phrase;
-        this.sharePhraseService.addSharedPhrase(this.pickedPhrase);        
+        this.sharePhraseService.addSharedPhrase(this.pickedPhrase);
         this.sharePhraseService.getTranslationsOfPickedPhrase();
     }
 

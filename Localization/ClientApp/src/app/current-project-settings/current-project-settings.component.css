@@ -32,8 +32,9 @@ h1 {
     margin-top: 2rem;
 }
 
-.table {
+tr>td:first-child {
     width: 33%;
+    padding-bottom: 10px;
 }
 
 .mat-raised-button {
@@ -56,4 +57,10 @@ h1 {
     color: green;
     border: 1px solid green;
     border-radius: 5px;
+}
+
+.second-col {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
 }
