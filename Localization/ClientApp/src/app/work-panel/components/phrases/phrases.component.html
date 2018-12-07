@@ -1,9 +1,9 @@
 <div class="phrasesBlock">
 
   <div class="searchBlock">
-    <div class="container align-center">
-      <div class="row">
-        <div class="col-2 align-center" (click)="getString()">
+    <div class="container align-center" style="padding:0px;">
+      <div class="row" style="width: 100%;">
+        <div class="col-2 align-center" (click)="getString()" style="padding:0px;">
           <mat-icon>search</mat-icon>
         </div>
         <form class="col-8">
@@ -12,7 +12,7 @@
               class="col-9">
           </div>
         </form>
-        <div class="col-2 float-right align-center">
+        <div class="col-2 float-right align-center" style="padding:0px;">
           <mat-icon (click)="filterPhrasesClick()">filter_list</mat-icon>
         </div>
       </div>
