@@ -55,7 +55,7 @@ export class GlossaryDetailsComponent implements OnInit {
     private requestDataReloadService: RequestDataReloadService,
     private partsOfSpeechService: PartsOfSpeechService)
   {
-    this.requestDataReloadService.updateRequested.subscribe(() => this.loadTerms());
+    this.requestDataReloadService.updateRequested.subscribe(() => this.loadTerms(this.currentPage));
   }
 
   ngOnInit() {
