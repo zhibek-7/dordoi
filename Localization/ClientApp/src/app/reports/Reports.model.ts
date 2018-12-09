@@ -4,10 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ReportsRoutingModule } from './Reports-routing.module';
-import { ReportsComponent } from "./Reports.component";
-import { TranslatedWordsComponent } from "./TranslatedWords/TranslatedWords.component";
-import { ReportService } from "../services/reports.service";
+import { ReportsComponent } from './Reports.component';
+import { TranslatedWordsComponent } from './TranslatedWords/TranslatedWords.component';
+import { StatusReportComponent } from './status-report/status-report.component';
+import { CostsReportComponent } from './costs-report/costs-report.component';
+import { TranslationsCostComponent } from './translations-cost/translations-cost.component';
+import { FoulsTranslationComponent } from './fouls-translation/fouls-translation.component';
+import { ReportService } from '../services/reports.service';
 import { LanguageService } from '../services/languages.service';
+import { from } from 'rxjs';
 
 @NgModule({
   imports: [
@@ -19,6 +24,13 @@ import { LanguageService } from '../services/languages.service';
   exports: [
   ],
   providers: [ReportService, LanguageService],
-  declarations: [ReportsComponent, TranslatedWordsComponent]
+  declarations: [
+    ReportsComponent,
+    TranslatedWordsComponent,
+    StatusReportComponent,
+    CostsReportComponent,
+    TranslationsCostComponent,
+    FoulsTranslationComponent
+  ]
 })
 export class ReportsModule { }
