@@ -7,8 +7,8 @@
     <label class="m-1">Термин</label>
     <input class="form-control m-1" [(ngModel)]="newTerm.value" type="text" />
     <label class="m-1">Часть речи</label>
-    <select class="form-control m-1">
-      <option *ngFor="let partOfSpeech of partsOfSpeech">{{partOfSpeech.name}}</option>
+    <select class="form-control m-1" [(ngModel)]="newTerm.partOfSpeechId">
+      <option *ngFor="let partOfSpeech of partsOfSpeech" [ngValue]="partOfSpeech.id">{{partOfSpeech.name}}</option>
     </select>
     <label class="m-1">Описание</label>
     <textarea style="resize:none" class="form-control m-1" [(ngModel)]="newTerm.description" rows="4"></textarea>
