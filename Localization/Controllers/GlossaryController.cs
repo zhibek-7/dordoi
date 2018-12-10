@@ -36,17 +36,6 @@ namespace Localization.WebApi
             return this._glossaryRepository.GetByID(id: glossaryId);
         }
 
-        [HttpGet("{glossaryId}/terms/count")]
-        public int GetAssotiatedTerms(
-            int glossaryId,
-            [FromQuery] string termSearch)
-        {
-            return this._glossaryRepository
-                .GetAssotiatedTermsCount(
-                    glossaryId: glossaryId,
-                    termPart: termSearch);
-        }
-
         [HttpGet("{glossaryId}/terms")]
         public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(
             int glossaryId,
@@ -56,6 +45,11 @@ namespace Localization.WebApi
             [FromQuery] string[] sortBy,
             [FromQuery] bool? sortAscending)
         {
+            this.Response.Headers.Add(
+                key: "totalCount",
+                value: this._glossaryRepository.GetAssotiatedTermsCount(
+                    glossaryId: glossaryId,
+                    termPart: termSearch).ToString());
             return this._glossaryRepository
                 .GetAssotiatedTermsByGlossaryId(
                     glossaryId: glossaryId,

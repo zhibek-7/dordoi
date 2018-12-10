@@ -72,15 +72,13 @@ export class GlossaryDetailsComponent implements OnInit {
     if (!this.glossary)
       return;
 
-    this.glossariesService.getAssotiatedTermsTotalCount(this.glossary.id, this.termSearchString)
-      .subscribe(
-        totalCount => this.totalCount = totalCount,
-        error => console.log(error));
-
     this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, pageNumber, [this.sortByColumnName], this.ascending)
       .subscribe(
-        terms => {
+        response => {
+          let terms = response.body;
           this.termViewModels = terms.map(term => new TermViewModel(term, false));
+          let totalCount = +response.headers.get('totalCount');
+          this.totalCount = totalCount;
           this.currentPage = pageNumber;
         },
         error => console.log(error));
