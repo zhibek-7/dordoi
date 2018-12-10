@@ -12,6 +12,7 @@ import { TranslationsCostComponent } from './translations-cost/translations-cost
 import { FoulsTranslationComponent } from './fouls-translation/fouls-translation.component';
 import { ReportService } from '../services/reports.service';
 import { LanguageService } from '../services/languages.service';
+import { UserService } from '../services/user.service';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,7 +32,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatInputModule,
     MatSelectModule
   ],
-  providers: [ReportService, LanguageService],
+  providers: [ReportService, LanguageService, UserService],
   declarations: [
     ReportsComponent,
     TranslatedWordsComponent,

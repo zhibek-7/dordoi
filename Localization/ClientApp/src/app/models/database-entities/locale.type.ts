@@ -1,4 +1,4 @@
-export class Local {
+export class Locale {
     id: number;
     name: string;
     description: string;

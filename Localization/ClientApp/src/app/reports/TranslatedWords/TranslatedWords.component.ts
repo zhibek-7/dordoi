@@ -2,8 +2,10 @@ import { Component, ViewChild} from '@angular/core';
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
-import { Language } from '../../models/Language';
+import { UserService } from '../../services/user.service';
+import { Locale } from '../../models/database-entities/locale.type';
 import { MatTableDataSource } from '@angular/material';
+import { User} from "../../models/database-entities/user.type";
 
 @Component({
   selector: 'translated-words-report',
@@ -12,44 +14,43 @@ import { MatTableDataSource } from '@angular/material';
 })
 
 export class TranslatedWordsComponent {
+  //Строки отчета
   public reportrows: TranslatedWordsReportRow[];
+  //Фильтрованные строки отчета
   public filteredrows: TranslatedWordsReportRow[];
-  public Languages: Language[];
+
+  //Список языков из БД
+  public Languages: Locale[];
+  //Список пользователей из БД
+  public Users: User[];
+
+  //Название отчета
   msg: string = "Лучшие участники";
+
+  //Переменные для выборки
   userName: string;
   userLang: string;
+
+  //Переменные для фильтьрации
   from: Date;
   to: Date;
-  languageList = [];
+
+  //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
-  constructor(private reportService: ReportService, private languagesService: LanguageService) {
+  constructor(private reportService: ReportService, private languagesService: LanguageService, private userService: UserService) {
    
     this.languagesService.getLanguageList()
       .subscribe(Languages => { this.Languages = Languages; },
       error => console.error(error));
+
+    this.userService.getUserList()
+      .subscribe(Users => { this.Users = Users; },
+        error => console.error(error));
     
   }
 
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
-
-  ELEMENT_DATA: TranslatedWordsReportRow[] = [
-    { language: "Английский", name: 'Hydrogen', translations:  "1.0079", confirmed: "true" },
-    { language: "Английский", name: 'Helium', translations:  "4.0026", confirmed: "true" },
-    { language: "Английский", name: 'Lithium', translations:  "6.941", confirmed: "true" },
-    { language: "Английский", name: 'Beryllium', translations:  "9.0122", confirmed: "true" },
-    { language: "Английский", name: 'Boron', translations:  "10.811", confirmed: "true" },
-    { language: "Английский", name: 'Carbon', translations:  "12.0107", confirmed: "true" },
-    { language: "Английский", name: 'Nitrogen', translations:  "14.0067", confirmed: "true" },
-    { language: "Английский", name: 'Oxygen', translations:  "15.9994", confirmed: "true" },
-    { language: "Английский", name: 'Fluorine', translations:  "18.9984", confirmed: "true" },
-    { language: "Английский", name: 'Neon', translations:  "20.1797", confirmed: "true" },
-    { language: "Английский", name: 'Soldium', translations:  "1.0079", confirmed: "true" },
-    { language: "Английский", name: 'Magnesium', translations:  "4.0026", confirmed: "true" },
-    { language: "Английский", name: 'Aluminium', translations:  "6.941", confirmed: "true" },
-    { language: "Английский", name: 'Silicon', translations:  "9.0122", confirmed: "true" },
-    { language: "Английский", name: 'Phosphorous', translations:  "10.811", confirmed: "true" },
-  ];
 
   async getRows() {
     this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString())
