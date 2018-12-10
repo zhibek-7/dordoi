@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -85,6 +86,25 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public int? GetTermPartOfSpeechId(int glossaryId, int termId)
+        {
+            var glossary = this.GetByID(id: glossaryId);
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var getTermPartOfSpeechIdSql =
+                    "SELECT \"ID_PartOfSpeech\" FROM \"GlossariesStrings\" WHERE \"ID_Glossary\"=@GlossaryId AND \"ID_String\"=@StringId";
+                var getTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = termId };
+                this._logger.WriteDebug($"Query {getTermPartOfSpeechIdSql}, param: {getTermPartOfSpeechIdParam}");
+                var partOfSpeechId = dbConnection
+                    .ExecuteScalar<int?>(
+                        sql: getTermPartOfSpeechIdSql,
+                        param: getTermPartOfSpeechIdParam);
+                dbConnection.Close();
+                return partOfSpeechId;
+            }
+        }
+
         public void DeleteTerm(int glossaryId, int termId)
         {
             using (var dbConnection = this._context.Connection)
@@ -111,7 +131,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public void AddNewTerm(int glossaryId, Models.DatabaseEntities.String newTerm)
+        public void AddNewTerm(int glossaryId, Models.DatabaseEntities.String newTerm, int? partOfSpeechId)
         {
             var glossary = this.GetByID(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
@@ -147,8 +167,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         param: insertNewStingParam);
 
                 var instertGlossaryStringAssotiationSql =
-                    "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\") VALUES (@GlossaryId, @StringId)";
-                var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm };
+                    "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\",\"ID_PartOfSpeech\") VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
+                var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm, PartsOfSpeechId = partOfSpeechId };
                 this._logger.WriteDebug($"Query {instertGlossaryStringAssotiationSql}, param: {instertGlossaryStringAssotiationParam}");
                 dbConnection
                     .Execute(
@@ -158,9 +178,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public void UpdateTerm(Models.DatabaseEntities.String updatedTerm)
+        public void UpdateTerm(int glossaryId, Models.DatabaseEntities.String updatedTerm, int? partOfSpeechId)
         {
-            //TODO: call this._stringsRepository to do this
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
@@ -179,6 +198,16 @@ namespace DAL.Reposity.PostgreSqlRepository
                 dbConnection.Execute(
                     sql: updateTermSql,
                     param: updateTermParam);
+
+                var updateTermPartOfSpeechIdSql =
+                    "UPDATE \"GlossariesStrings\" SET " +
+                    "\"ID_PartOfSpeech\"=@PartOfSpeechId " +
+                    "WHERE \"ID_String\"=@StringId, \"ID_Glossary\"=@GlossaryId";
+                var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartsOfSpeechId = partOfSpeechId };
+                this._logger.WriteDebug($"Query {updateTermPartOfSpeechIdSql}, param: {updateTermPartOfSpeechIdParam}");
+                dbConnection.Execute(
+                    sql: updateTermPartOfSpeechIdSql,
+                    param: updateTermPartOfSpeechIdParam);
                 dbConnection.Close();
             }
         }
@@ -232,7 +261,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsSql = getGlossaryTermsCompiledQuery.Sql;
                 var getGlossaryTermsParam = getGlossaryTermsCompiledQuery.NamedBindings;
-                this._logger.WriteDebug($"Query {getGlossaryTermsSql}, param: {getGlossaryTermsParam}");
+                this._logger.WriteDebug($"Query {getGlossaryTermsSql}, param: {this.DictionaryToString(getGlossaryTermsParam)}");
                 var assotiatedTerms = dbConnection.Query<Models.DatabaseEntities.String>(
                     sql: getGlossaryTermsSql,
                     param: getGlossaryTermsParam
@@ -251,7 +280,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
                 var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
-                this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {getGlossaryTermsCountParam}");
+                this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {this.DictionaryToString(getGlossaryTermsCountParam)}");
                 var assotiatedTerms = dbConnection.ExecuteScalar<int>(
                     sql: getGlossaryTermsCountSql,
                     param: getGlossaryTermsCountParam
@@ -277,6 +306,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 query = query.WhereLike("Value", patternString);
             }
             return query;
+        }
+
+        private string DictionaryToString(Dictionary<string, object> dictionary)
+        {
+            var stringBuilder =
+                dictionary.SkipLast(1)
+                .Aggregate(
+                    seed: new StringBuilder("{ "),
+                    func: (seed, pair) => seed.Append($"{pair.Key} = {pair.Value}, "));
+            return dictionary.TakeLast(1)
+                .Select(pair => stringBuilder.Append($"{pair.Key} = {pair.Value} }}"))
+                .FirstOrDefault()?.ToString() ?? "null";
         }
 
     }

@@ -66,16 +66,46 @@ export class GlossariesService {
         });
   }
 
-  addNewTerm(glossaryId: number, newTerm: String): Observable<Object> {
-    return this.httpClient.post(GlossariesService.connectionUrl + glossaryId + '/terms', newTerm);
+  addNewTerm(glossaryId: number, newTerm: String, partOfSpeechId: number | null): Observable<Object> {
+    let params = null;
+    let paramsObject: any = {};
+    if (partOfSpeechId !== null) {
+      paramsObject.partOfSpeechId = partOfSpeechId;
+    }
+    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
+      params = new HttpParams({
+        fromObject: paramsObject
+      });
+    }
+    return this.httpClient.post(GlossariesService.connectionUrl + glossaryId + '/terms', newTerm,
+      {
+        params: params
+      });
   }
 
   deleteTerm(glossaryId: number, termId: number): Observable<Object> {
     return this.httpClient.delete(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId);
   }
 
-  updateTerm(glossaryId: number, updatedTerm: String): Observable<Object> {
-    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + updatedTerm.id, updatedTerm);
+  updateTerm(glossaryId: number, updatedTerm: String, partOfSpeechId: number | null): Observable<Object> {
+    let params = null;
+    let paramsObject: any = {};
+    if (partOfSpeechId !== null) {
+      paramsObject.partOfSpeechId = partOfSpeechId;
+    }
+    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
+      params = new HttpParams({
+        fromObject: paramsObject
+      });
+    }
+    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + updatedTerm.id, updatedTerm,
+      {
+        params: params
+      });
+  }
+
+  getTermPartOfSpeechId(glossaryId: number, termId: number): Observable<number> {
+    return this.httpClient.get<number>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/part_of_speech');
   }
 
 }

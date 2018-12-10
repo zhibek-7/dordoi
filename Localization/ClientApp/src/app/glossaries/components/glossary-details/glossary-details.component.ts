@@ -10,6 +10,7 @@ import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
 import { SortingArgs } from 'src/app/glossaries/models/sorting.args';
 import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
+import { Term } from 'src/app/models/Glossaries/term.type';
 
 @Component({
   selector: 'app-glossary-details',
@@ -87,16 +88,19 @@ export class GlossaryDetailsComponent implements OnInit {
   loadPartsOfSpeech() {
     this.partsOfSpeechService.getListByGlossaryId(this.glossary.id)
       .subscribe(
-        partsOfSpeech => this.partsOfSpeech = partsOfSpeech,
+        partsOfSpeech => {
+          this.partsOfSpeech = [new PartOfSpeech(null, null, 'Не выбрано')];
+          partsOfSpeech.forEach(element => this.partsOfSpeech.push(element));
+        },
         error => console.log(error)
       );
   }
 
-  addNewTerm(newTerm: String) {
+  addNewTerm(newTerm: Term) {
     if (!this.glossary)
       return;
 
-    this.glossariesService.addNewTerm(this.glossary.id, newTerm)
+    this.glossariesService.addNewTerm(this.glossary.id, newTerm, newTerm.partOfSpeechId)
       .subscribe(
         () => this.requestDataReloadService.requestUpdate(),
         error => console.log(error));
