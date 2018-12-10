@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -232,7 +233,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsSql = getGlossaryTermsCompiledQuery.Sql;
                 var getGlossaryTermsParam = getGlossaryTermsCompiledQuery.NamedBindings;
-                this._logger.WriteDebug($"Query {getGlossaryTermsSql}, param: {getGlossaryTermsParam}");
+                this._logger.WriteDebug($"Query {getGlossaryTermsSql}, param: {this.DictionaryToString(getGlossaryTermsParam)}");
                 var assotiatedTerms = dbConnection.Query<Models.DatabaseEntities.String>(
                     sql: getGlossaryTermsSql,
                     param: getGlossaryTermsParam
@@ -251,7 +252,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
                 var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
-                this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {getGlossaryTermsCountParam}");
+                this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {this.DictionaryToString(getGlossaryTermsCountParam)}");
                 var assotiatedTerms = dbConnection.ExecuteScalar<int>(
                     sql: getGlossaryTermsCountSql,
                     param: getGlossaryTermsCountParam
@@ -277,6 +278,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 query = query.WhereLike("Value", patternString);
             }
             return query;
+        }
+
+        private string DictionaryToString(Dictionary<string, object> dictionary)
+        {
+            var stringBuilder =
+                dictionary.SkipLast(1)
+                .Aggregate(
+                    seed: new StringBuilder("{ "),
+                    func: (seed, pair) => seed.Append($"{pair.Key} = {pair.Value}, "));
+            return dictionary.TakeLast(1)
+                .Select(pair => stringBuilder.Append($"{pair.Key} = {pair.Value} }}"))
+                .FirstOrDefault()?.ToString() ?? "null";
         }
 
     }
