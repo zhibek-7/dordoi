@@ -25,11 +25,27 @@
     </select>
   </nav>
   <div>
-    
+
   </div>
 </div>
 
 
 <div *ngIf="showTranslatedWords">
   <translated-words-report></translated-words-report>
+</div>
+
+<div *ngIf="showProjectStatus">
+  <app-status-report></app-status-report>
+</div>
+
+<div *ngIf="showFoulsTranslation">
+  <app-fouls-translation></app-fouls-translation>
+</div>
+
+<div *ngIf="showCostSumm">
+  <app-costs-report></app-costs-report>
+</div>
+
+<div *ngIf="showTranslationCost">
+  <app-translations-cost></app-translations-cost>
 </div>

@@ -3,14 +3,14 @@
 }
 
 .noPadding {
-    padding-left: 0% !important;
+    /* padding-left: 0% !important; */
     padding-right: 0% !important;
 }
 
 .middleBlock {
-    overflow-y: scroll;
-    overflow-x: hidden; 
-    -webkit-overflow-scrolling: touch;
+    /* overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; */
 }
 
 .middleBlockAndRight {
@@ -18,5 +18,6 @@
 }
 
 .translationBlock {
-    height: 50vh;
+  width: 100%;
+  /* text-align: center; */
 }

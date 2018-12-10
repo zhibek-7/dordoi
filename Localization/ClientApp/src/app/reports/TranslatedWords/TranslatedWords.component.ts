@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
-import { Language  } from '../../models/Language';
+import { Language } from '../../models/Language';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'translated-words-report',
@@ -10,7 +11,7 @@ import { Language  } from '../../models/Language';
   styleUrls: ['./TranslatedWords.component.css']
 })
 
-export class TranslatedWordsComponent{
+export class TranslatedWordsComponent implements OnInit{
   public reportrows: TranslatedWordsReportRow[];
   public filteredrows: TranslatedWordsReportRow[];
   public Languages: Language[];
@@ -20,13 +21,26 @@ export class TranslatedWordsComponent{
   from: Date;
   to: Date;
   languageList = [];
+  dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
   constructor(private reportService: ReportService, private languagesService: LanguageService) {
     this.languagesService.getLanguageList()
       .subscribe( Languages => { this.Languages = Languages; },
                   error => console.error(error));
   }
-  
+
+  displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
+  ngOnInit() {
+    this.dataSource = new MatTableDataSource(this.filteredrows);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+
   async getRows() {
     this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString())
       .subscribe( reportrows => { this.filteredrows = reportrows; this.reportrows = reportrows;},

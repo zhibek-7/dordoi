@@ -8,16 +8,20 @@ import { Component } from '@angular/core';
 
 export class ReportsComponent {
 
-  showProjectState: boolean = false;
+  showProjectStatus: boolean = false;
   showCostSumm: boolean = false;
   showTranslationCost: boolean = false;
   showTranslatedWords: boolean = false;
-  showViolations: boolean = false;
+  showFoulsTranslation: boolean = false;
 
   constructor() { }
 
   public showReport(type: Number) {
-    this.showTranslatedWords = (type == 4);
+    this.showProjectStatus    = (type === 1);
+    this.showCostSumm         = (type === 2);
+    this.showTranslationCost  = (type === 3);
+    this.showTranslatedWords  = (type === 4);
+    this.showFoulsTranslation = (type === 5);
   }
 
 }
