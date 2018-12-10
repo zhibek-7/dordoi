@@ -125,16 +125,16 @@ namespace LocalizationServiceWpfApp
             this.TranslationSubstrings = new ObservableCollection<TranslationSubstring>();
             switch (extension)
             {
-                //case "po":
-                //    {
-                //        this.LSStrings = poFileParse(context, Lines, this.ID, null);
-                //        break;
-                //    }
-                //case "properties":
-                //    {
-                //        this.LSStrings = propertiesFileParse(context, Lines, this.ID, null);
-                //        break;
-                //    }
+                case "po":
+                    {
+                        this.ParseAsPo(conn);
+                        break;
+                    }
+                case "properties":
+                    {
+                        this.ParseAsProperties(conn);
+                        break;
+                    }
                 //case "json":
                 //    {
                 //        this.LSStrings = jsonFileParse(context, Lines, this.ID, null);
@@ -175,80 +175,27 @@ namespace LocalizationServiceWpfApp
             conn.Close();
         }
 
-        //private string[] ReadAllLinesWithEOLs(string text)
-        //{
-        //    List<string> ans = new List<string>();
-        //    int leftBorder = 0;
-        //    for (int i = 0; i < text.Length; i++)
-        //    {
-        //        if (text[i] == '\r')
-        //        {
-        //            if (i < text.Length - 1 && text[i + 1] == '\n')
-        //            {
-        //                ans.Add(text.Substring(leftBorder, i + 2 - leftBorder));
-        //                leftBorder = i + 2;
-        //                i++;
-        //            }
-        //            else
-        //            {
-        //                ans.Add(text.Substring(leftBorder, i + 1 - leftBorder));
-        //                leftBorder = i + 1;
-        //            }
-        //            continue;
-        //        }
-        //        if (text[i] == '\n')
-        //        {
-        //            ans.Add(text.Substring(leftBorder, i + 1 - leftBorder));
-        //            leftBorder = i + 1;
-        //        }
-        //    }
-        //    if (leftBorder < text.Length) ans.Add(text.Substring(leftBorder, text.Length - leftBorder));
-        //    return ans.ToArray();
-        //}
+        private void ParseAsPo(NpgsqlConnection connection)
+        {
+            ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
+            string pattern = "(?:msgctxt\\s+\"([^\"]*)\"\\s+)?msgid\\s+\"([^\"]*)\"\\s+msgstr\\s+\"([^\"]*)\"";
+            MatchCollection matches = Regex.Matches(this.OriginalFullText, pattern, RegexOptions.Singleline);
+            foreach (Match m in matches)
+            {
+                this.TranslationSubstrings.Add(new TranslationSubstring(connection, m.Groups[2].Value, m.Groups[1].Value, this.ID, m.Groups[3].Value, m.Groups[3].Index));
+            }
+        }
 
-        //private static ObservableCollection<TranslationSubstring> poFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
-        //{
-        //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
-        //    string contextPattern = "msgctxt(?:\\s)*\"(.*)\"";
-        //    string originalSubstringPattern = "msgid(?:\\s)*\"(.*)\"";
-        //    string translationSubstringPattern = "msgstr(?:\\s)*\"(.*)\"";
-        //    //long stringID = context.LSString.Count() > 0 ? context.LSString.Select(lss => lss.ID).Max() + 1 : 0;
-        //    for (int i = 0; i < lines.Length - 1; i++)
-        //    {
-        //        Match m_originalSubstring = Regex.Match(lines[i], originalSubstringPattern);
-        //        Match m_translationSubstring = Regex.Match(lines[i + 1], translationSubstringPattern);
-        //        if (m_originalSubstring.Success && m_translationSubstring.Success)
-        //        {
-        //            Match m_context = Regex.Match(i > 0 ? lines[i - 1] : string.Empty, contextPattern);
-        //            if (m_context.Success) strings.Add(new TranslationSubstring(context, string.Empty, id_FileOwner, i - 1, lines[i - 1]));
-        //            strings.Add(new TranslationSubstring(context, string.Empty, id_FileOwner, i, lines[i]));
-        //            strings.Add(new TranslationSubstring(context, m_originalSubstring.Groups[1].Value, string.Empty, m_context.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i + 1, lines[i + 1], m_translationSubstring.Groups[1].Value, m_translationSubstring.Groups[1].Index));
-        //            i++;
-        //        }
-        //        else
-        //        {
-        //            Match m_context = Regex.Match(lines[i], contextPattern);
-        //            if (!m_context.Success) strings.Add(new TranslationSubstring(context, string.Empty, id_FileOwner, i, lines[i]));
-        //        }
-        //    }
-        //    return strings;
-        //}
-
-        //private static ObservableCollection<TranslationSubstring> propertiesFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
-        //{
-        //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
-        //    string pattern = "(.*)(?:\\s)*=(?:\\s)*(.*)";
-        //    for (int i = 0; i < lines.Length; i++)
-        //    {
-        //        Match m = Regex.Match(lines[i], pattern);
-        //        if (m.Success)
-        //        {
-        //            strings.Add(new TranslationSubstring(context, m.Groups[2].Value, null, m.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m.Groups[2].Value, m.Groups[2].Index));
-        //        }
-        //        else strings.Add(new TranslationSubstring(context, null, id_FileOwner, i, lines[i]));
-        //    }
-        //    return strings;
-        //}
+        private void ParseAsProperties(NpgsqlConnection connection)
+        {
+            ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
+            string pattern = "(.*)=(.*)\\s";
+            MatchCollection matches = Regex.Matches(this.OriginalFullText, pattern);
+            foreach (Match m in matches)
+            {
+                this.TranslationSubstrings.Add(new TranslationSubstring(connection, m.Groups[2].Value, m.Groups[1].Value, this.ID, m.Groups[2].Value, m.Groups[2].Index));
+            }
+        }
 
         //private static ObservableCollection<TranslationSubstring> jsonFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
         //{
@@ -302,9 +249,9 @@ namespace LocalizationServiceWpfApp
 
         private void ParseAsXml(NpgsqlConnection connection)
         {
-            string simpleRowPattern = "<string\\W+(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*\\W*name\\W*=\\W*\"([^\"]*)\"\\W*(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*>([^<]*)</string\\W*>";
-            string arrayPattern = "<string-array\\W+(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*\\W*name\\W*=\\W*\"([^\"]*)\"\\W*(?:\\W*\\w+\\W*=\\W*\"[^\"]*\"\\W*)*>((?:(?!</string-array).)*)</string-array\\W*>";
-            string arrayItemPattern = "<item\\W*>((?:(?!</item).)*)</item\\W*>";
+            string simpleRowPattern = "<string\\W+(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>([^<]*)</string\\s*>";
+            string arrayPattern = "<string-array\\W+(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>((?:(?!</string-array).)*)</string-array\\s*>";
+            string arrayItemPattern = "<item\\s*>((?:(?!</item).)*)</item\\s*>";
             MatchCollection matches = Regex.Matches(this.OriginalFullText, simpleRowPattern,RegexOptions.Singleline);
             foreach (Match m in matches)
             {
@@ -321,21 +268,20 @@ namespace LocalizationServiceWpfApp
 
         private void ParseAsPhp(NpgsqlConnection connection)
         {
-            //bmmarket.php wrong parsing
-            MatchCollection matches = Regex.Matches(this.OriginalFullText, "(array\\W*[(]|[[]|(?:[)]|[]])?\\W*,|=>)\\W*((?<!\\\\)'((?:(?<=\\\\)'|[^'])*)(?<!\\\\)'|\\d+)", RegexOptions.Singleline);
+            MatchCollection matches = Regex.Matches(this.OriginalFullText, "(array\\s*[(]|[[]|=>|(?:[)]|[]])?\\s*,)\\s*((?<!\\\\)'((?:(?<=\\\\)'|[^'])*)(?<!\\\\)'|\\d+)", RegexOptions.Singleline);
             List<string> contextParts = new List<string>();
             for (int i = 0; i < matches.Count; i++)
             {
                 string context = "array";
-                for (int j = 0; j < contextParts.Count; j++) context += string.Format("[{0}]", contextParts[j]);
                 if (Regex.IsMatch(matches[i].Groups[1].Value, "=>"))
                 {
+                    for (int j = 0; j < contextParts.Count; j++) context += string.Format("[{0}]", contextParts[j]);
                     this.TranslationSubstrings.Add(new TranslationSubstring(connection, matches[i].Groups[3].Value, context, this.ID, matches[i].Groups[3].Value, matches[i].Groups[3].Index));
                     contextParts.RemoveAt(contextParts.Count - 1);
                 }
                 else
                 {
-                    if (Regex.IsMatch(matches[i].Groups[1].Value, "(?:[)]|[]])\\W*,")) contextParts.RemoveAt(contextParts.Count - 1);
+                    if (contextParts.Count > 0 && Regex.IsMatch(matches[i].Groups[1].Value, "(?:[)]|[]])\\s*,\\s*$")) contextParts.RemoveAt(contextParts.Count - 1);
                     contextParts.Add(matches[i].Groups[2].Value);
                 }
             }
