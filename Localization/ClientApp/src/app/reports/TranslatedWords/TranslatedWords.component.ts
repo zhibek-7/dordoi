@@ -21,7 +21,7 @@ export class TranslatedWordsComponent implements OnInit{
   from: Date;
   to: Date;
   languageList = [];
-  dataSource: MatTableDataSource;
+  dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
   constructor(private reportService: ReportService, private languagesService: LanguageService) {
     this.languagesService.getLanguageList()
