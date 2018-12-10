@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, ViewChild} from '@angular/core';
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
 import { Language } from '../../models/Language';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'translated-words-report',
@@ -11,7 +11,7 @@ import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
   styleUrls: ['./TranslatedWords.component.css']
 })
 
-export class TranslatedWordsComponent implements OnInit{
+export class TranslatedWordsComponent {
   public reportrows: TranslatedWordsReportRow[];
   public filteredrows: TranslatedWordsReportRow[];
   public Languages: Language[];
@@ -24,27 +24,40 @@ export class TranslatedWordsComponent implements OnInit{
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
   constructor(private reportService: ReportService, private languagesService: LanguageService) {
+   
     this.languagesService.getLanguageList()
-      .subscribe( Languages => { this.Languages = Languages; },
-                  error => console.error(error));
+      .subscribe(Languages => { this.Languages = Languages; },
+      error => console.error(error));
+    
   }
 
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.filteredrows);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
+  ELEMENT_DATA: TranslatedWordsReportRow[] = [
+    { language: "Английский", name: 'Hydrogen', translations:  "1.0079", confirmed: "true" },
+    { language: "Английский", name: 'Helium', translations:  "4.0026", confirmed: "true" },
+    { language: "Английский", name: 'Lithium', translations:  "6.941", confirmed: "true" },
+    { language: "Английский", name: 'Beryllium', translations:  "9.0122", confirmed: "true" },
+    { language: "Английский", name: 'Boron', translations:  "10.811", confirmed: "true" },
+    { language: "Английский", name: 'Carbon', translations:  "12.0107", confirmed: "true" },
+    { language: "Английский", name: 'Nitrogen', translations:  "14.0067", confirmed: "true" },
+    { language: "Английский", name: 'Oxygen', translations:  "15.9994", confirmed: "true" },
+    { language: "Английский", name: 'Fluorine', translations:  "18.9984", confirmed: "true" },
+    { language: "Английский", name: 'Neon', translations:  "20.1797", confirmed: "true" },
+    { language: "Английский", name: 'Soldium', translations:  "1.0079", confirmed: "true" },
+    { language: "Английский", name: 'Magnesium', translations:  "4.0026", confirmed: "true" },
+    { language: "Английский", name: 'Aluminium', translations:  "6.941", confirmed: "true" },
+    { language: "Английский", name: 'Silicon', translations:  "9.0122", confirmed: "true" },
+    { language: "Английский", name: 'Phosphorous', translations:  "10.811", confirmed: "true" },
+  ];
 
   async getRows() {
     this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString())
-      .subscribe( reportrows => { this.filteredrows = reportrows; this.reportrows = reportrows;},
-      error => console.error(error));
+      .subscribe(reportrows => {
+          this.filteredrows = reportrows;
+        this.reportrows = reportrows;
+        },
+      error => console.error(error));   
   }
 
   filterReport() {
