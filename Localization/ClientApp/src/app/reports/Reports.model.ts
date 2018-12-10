@@ -12,16 +12,23 @@ import { TranslationsCostComponent } from './translations-cost/translations-cost
 import { FoulsTranslationComponent } from './fouls-translation/fouls-translation.component';
 import { ReportService } from '../services/reports.service';
 import { LanguageService } from '../services/languages.service';
-import { from } from 'rxjs';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, MatSortModule } from '@angular/material';
 
 @NgModule({
   imports: [
     CommonModule,
     HttpClientModule,
     FormsModule,
-    ReportsRoutingModule
+    ReportsRoutingModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule
   ],
   exports: [
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [ReportService, LanguageService],
   declarations: [
