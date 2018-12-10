@@ -6,6 +6,7 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
 import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
 import { SortingArgs } from 'src/app/glossaries/models/sorting.args';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
+import { Term } from 'src/app/models/Glossaries/term.type';
 
 @Component({
   selector: 'app-glossary-terms',
@@ -52,11 +53,11 @@ export class GlossaryTermsComponent implements OnInit {
         error => console.log(error));
   }
 
-  updateTerm(updatedTerm: String) {
+  updateTerm(updatedTerm: Term) {
     if (!this.glossary)
       return;
 
-    this.glossariesService.updateTerm(this.glossary.id, updatedTerm)
+    this.glossariesService.updateTerm(this.glossary.id, updatedTerm, updatedTerm.partOfSpeechId)
       .subscribe(
         () => this.requestDataReloadService.requestUpdate(),
         error => console.log(error));

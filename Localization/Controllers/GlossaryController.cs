@@ -61,9 +61,19 @@ namespace Localization.WebApi
         }
 
         [HttpPost("{glossaryId}/terms")]
-        public void AddTerm(int glossaryId, [FromBody] Models.DatabaseEntities.String newTerm)
+        public void AddTerm(int glossaryId, [FromBody] Models.DatabaseEntities.String newTerm, [FromQuery] int? partOfSpeechId)
         {
-            this._glossaryRepository.AddNewTerm(glossaryId: glossaryId, newTerm: newTerm);
+            this._glossaryRepository
+                .AddNewTerm(
+                    glossaryId: glossaryId,
+                    newTerm: newTerm,
+                    partOfSpeechId: partOfSpeechId);
+        }
+
+        [HttpGet("{glossaryId}/terms/{termId}/part_of_speech")]
+        public int? GetTermPartOfSpeech(int glossaryId, int termId)
+        {
+            return this._glossaryRepository.GetTermPartOfSpeechId(glossaryId: glossaryId, termId: termId);
         }
 
         [HttpDelete("{glossaryId}/terms/{termId}")]
@@ -73,10 +83,14 @@ namespace Localization.WebApi
         }
 
         [HttpPut("{glossaryId}/terms/{termId}")]
-        public void UpdateTerm(int glossaryId, int termId, [FromBody] Models.DatabaseEntities.String updatedTerm)
+        public void UpdateTerm(int glossaryId, int termId, [FromBody] Models.DatabaseEntities.String updatedTerm, [FromQuery] int? partOfSpeechId)
         {
             updatedTerm.ID = termId;
-            this._glossaryRepository.UpdateTerm(updatedTerm: updatedTerm);
+            this._glossaryRepository
+                .UpdateTerm(
+                    glossaryId: glossaryId,
+                    updatedTerm: updatedTerm,
+                    partOfSpeechId: partOfSpeechId);
         }
 
     }
