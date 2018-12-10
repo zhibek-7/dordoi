@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -19,6 +20,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly IRepository<Models.DatabaseEntities.String> _stringsRepository;
 
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
+
+        private readonly LogTools _logger = new LogTools();
 
         public GlossaryRepository(IRepository<Models.DatabaseEntities.String> stringsRepository)
         {
@@ -36,7 +39,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var glossaries = dbConnection.Query<Glossary>("SELECT * FROM \"Glossaries\"");
+                var selectAllGlossariesSql = "SELECT * FROM \"Glossaries\"";
+                this._logger.WriteDebug($"Query {selectAllGlossariesSql}");
+                var glossaries = dbConnection.Query<Glossary>(selectAllGlossariesSql);
                 dbConnection.Close();
                 return glossaries;
             }
@@ -47,9 +52,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1";
+                var getGlossaryByIdParam = new { GlossaryId = id };
+                this._logger.WriteDebug($"Query {getGlossaryByIdSql}, param: {getGlossaryByIdParam}");
                 var glossary = dbConnection.QueryFirst<Glossary>(
-                    sql: "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1",
-                    param: new { GlossaryId = id });
+                    sql: getGlossaryByIdSql,
+                    param: getGlossaryByIdParam);
                 dbConnection.Close();
                 return glossary;
             }
@@ -65,10 +73,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var updateGlossarySql =
+                    "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
+                    "WHERE \"ID\"=@ID";
+                var updateGlossaryParam = item;
+                this._logger.WriteDebug($"Query {updateGlossarySql}, param: {updateGlossaryParam}");
                 dbConnection.Execute(
-                    sql: "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
-                    "WHERE \"ID\"=@ID",
-                    param: item);
+                    sql: updateGlossarySql,
+                    param: updateGlossaryParam);
                 dbConnection.Close();
             }
         }
@@ -78,14 +90,23 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var deleteGlossaryStingAssotiationSql =
+                    "DELETE FROM \"GlossariesStrings\" " +
+                    "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
+                var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
+                this._logger.WriteDebug($"Query {deleteGlossaryStingAssotiationSql}, param: {deleteGlossaryStingAssotiationParam}");
                 dbConnection
                     .Execute(
-                        sql: "DELETE FROM \"GlossariesStrings\" WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId",
-                        param: new { GlossaryId = glossaryId, TermId = termId });
+                        sql: deleteGlossaryStingAssotiationSql,
+                        param: deleteGlossaryStingAssotiationParam);
+
+                var deleteStingSql = "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId";
+                var deleteStingParam = new { TermId = termId };
+                this._logger.WriteDebug($"Query {deleteStingSql}, param: {deleteStingParam}");
                 dbConnection
                     .Execute(
-                        sql: "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId",
-                        param: new { TermId = termId });
+                        sql: deleteStingSql,
+                        param: deleteStingParam);
                 dbConnection.Close();
             }
         }
@@ -97,20 +118,42 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var insertNewStingSql =
+                    "INSERT INTO \"TranslationSubstrings\" " +
+                    "(" +
+                    "\"SubstringToTranslate\", " +
+                    "\"Description\", " +
+                    "\"Context\", " +
+                    "\"TranslationMaxLength\", " +
+                    "\"ID_FileOwner\", " +
+                    "\"Value\", " +
+                    "\"PositionInText\"" +
+                    ") VALUES " +
+                    "(" +
+                    "@SubstringToTranslate, " +
+                    "@Description, " +
+                    "@Context, " +
+                    "@TranslationMaxLength, " +
+                    "@ID_FileOwner, " +
+                    "@Value, " +
+                    "@PositionInText" +
+                    ") " +
+                    "RETURNING \"ID\"";
+                var insertNewStingParam = newTerm;
+                this._logger.WriteDebug($"Query {insertNewStingSql}, param: {insertNewStingParam}");
                 var idOfNewTerm = dbConnection
                     .ExecuteScalar<int>(
-                        sql: "INSERT INTO \"TranslationSubstrings\" " +
-                        "(\"SubstringToTranslate\", \"Description\", \"Context\", " +
-                        "\"TranslationMaxLength\", \"ID_FileOwner\", \"Value\", " +
-                        "\"PositionInText\") VALUES " +
-                        "(@SubstringToTranslate, @Description, @Context, @TranslationMaxLength, " +
-                        "@ID_FileOwner, @Value, @PositionInText) " +
-                        "RETURNING \"ID\"",
-                        param: newTerm);
+                        sql: insertNewStingSql,
+                        param: insertNewStingParam);
+
+                var instertGlossaryStringAssotiationSql =
+                    "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\") VALUES (@GlossaryId, @StringId)";
+                var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm };
+                this._logger.WriteDebug($"Query {instertGlossaryStringAssotiationSql}, param: {instertGlossaryStringAssotiationParam}");
                 dbConnection
                     .Execute(
-                        sql: "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\") VALUES (@GlossaryId, @StringId)",
-                        param: new { GlossaryId = glossaryId, StringId = idOfNewTerm });
+                        sql: instertGlossaryStringAssotiationSql,
+                        param: instertGlossaryStringAssotiationParam);
                 dbConnection.Close();
             }
         }
@@ -121,13 +164,21 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                dbConnection.Execute(
-                    sql: "UPDATE \"TranslationSubstrings\" SET " +
-                    "\"SubstringToTranslate\"=@SubstringToTranslate, \"Description\"=@Description, \"Context\"=@Context, " +
-                    "\"TranslationMaxLength\"=@TranslationMaxLength, \"ID_FileOwner\"=@ID_FileOwner, \"Value\"=@Value, " +
+                var updateTermSql =
+                    "UPDATE \"TranslationSubstrings\" SET " +
+                    "\"SubstringToTranslate\"=@SubstringToTranslate, " +
+                    "\"Description\"=@Description, " +
+                    "\"Context\"=@Context, " +
+                    "\"TranslationMaxLength\"=@TranslationMaxLength, " +
+                    "\"ID_FileOwner\"=@ID_FileOwner, " +
+                    "\"Value\"=@Value, " +
                     "\"PositionInText\"=@PositionInText " +
-                    "WHERE \"ID\"=@ID",
-                    param: updatedTerm);
+                    "WHERE \"ID\"=@ID";
+                var updateTermParam = updatedTerm;
+                this._logger.WriteDebug($"Query {updateTermSql}, param: {updateTermParam}");
+                dbConnection.Execute(
+                    sql: updateTermSql,
+                    param: updateTermParam);
                 dbConnection.Close();
             }
         }
@@ -178,7 +229,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     if (columnNamesToSort.Any())
                         query = sortAscending? query.OrderBy(columnNamesToSort) : query.OrderByDesc(columnNamesToSort);
                 }
-                var assotiatedTerms = query.Get<Models.DatabaseEntities.String>();
+                var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
+                var getGlossaryTermsSql = getGlossaryTermsCompiledQuery.Sql;
+                var getGlossaryTermsParam = getGlossaryTermsCompiledQuery.NamedBindings;
+                this._logger.WriteDebug($"Query {getGlossaryTermsSql}, param: {getGlossaryTermsParam}");
+                var assotiatedTerms = dbConnection.Query<Models.DatabaseEntities.String>(
+                    sql: getGlossaryTermsSql,
+                    param: getGlossaryTermsParam
+                    );
                 dbConnection.Close();
                 return assotiatedTerms;
             }
@@ -190,6 +248,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 dbConnection.Open();
                 var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
+                var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
+                var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
+                var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
+                this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {getGlossaryTermsCountParam}");
+                var assotiatedTerms = dbConnection.ExecuteScalar<int>(
+                    sql: getGlossaryTermsCountSql,
+                    param: getGlossaryTermsCountParam
+                    );
                 var assotiatedTermsCount = query.Count<int>();
                 dbConnection.Close();
                 return assotiatedTermsCount;

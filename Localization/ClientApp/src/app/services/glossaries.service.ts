@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
@@ -20,34 +20,13 @@ export class GlossariesService {
     return this.httpClient.get<Glossary[]>(GlossariesService.connectionUrl);
   }
 
-  getAssotiatedTermsTotalCount(
-    glossaryId: number,
-    termPart?: string): Observable<number>
-  {
-    let params = null;
-    let paramsObject: any = {};
-    if (termPart && termPart != '') {
-      paramsObject.termSearch = termPart;
-    }
-    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
-      params = new HttpParams({
-        fromObject: paramsObject
-      });
-    }
-    return this.httpClient.get<number>(
-        GlossariesService.connectionUrl + glossaryId + '/terms/count',
-        {
-          params: params
-        });
-  }
-
   getAssotiatedTerms(
     glossaryId: number,
     termPart?: string,
     pageSize?: number,
     pageNumber?: number,
     sortBy?: string[],
-    sortAscending?: boolean): Observable<String[]>
+    sortAscending?: boolean): Observable<HttpResponse<String[]>>
   {
     let params = null;
     let paramsObject: any = {};
@@ -82,7 +61,8 @@ export class GlossariesService {
       .get<String[]>(
         GlossariesService.connectionUrl + glossaryId + '/terms',
         {
-          params: params
+          params: params,
+          observe: 'response'
         });
   }
 
