@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { Language } from '../models/Language';
+import { Locale } from '../models/database-entities/locale.type';
 import { Project } from '../models/Project';
 import { LanguageService } from '../services/languages.service';
 import { ProjectsService } from '../services/projects.service';
@@ -21,7 +21,7 @@ export class NewProjectComponent implements OnInit {
 
   checkedLanguages = [];
 
-  languages: Language[];
+  languages: Locale[];
 
   myForm = new FormGroup({
     name: new FormControl(null),
@@ -32,8 +32,9 @@ export class NewProjectComponent implements OnInit {
   constructor(private languageService: LanguageService, private projectsService: ProjectsService, private httpClient: HttpClient) { }
 
   ngOnInit() {
-    console.log('new-project.component ngOnInit ---!!!!!!!!!');
-    this.languages = this.languageService.languages;
+    this.languageService.getLanguageList()
+      .subscribe(Languages => { this.languages = Languages; },
+        error => console.error(error));
     //console.log(this.newProject);
   }
 

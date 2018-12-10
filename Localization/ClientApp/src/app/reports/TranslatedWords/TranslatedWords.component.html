@@ -6,11 +6,22 @@
   <label>
     <input [(ngModel)]="to" value="{{to}}" type="date">
   </label>
+  <mat-form-field>
+    <mat-select [(value)]="locale" (selectionChange)="filterReport()" placeholder="Select language">
+      <mat-option value="Все языки">Все языки</mat-option>
+      <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select [(value)]="user" placeholder="Select user">
+      <mat-option value="Все">Все</mat-option>
+      <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name}}"</mat-option>
+    </mat-select>
+  </mat-form-field>
   <button (click)="clickEvent()">
     Generate
   </button>
 </div>
-
 
 <div class="reportHeader">
   <div>{{msg}}</div>
@@ -21,46 +32,42 @@
 </div>
 
 <div class="reportFilter" *ngIf="filteredrows">
-  <select [(ngModel)]="userLang" value="{{userLang}}" (mouseup)="filterReport()" name="userLang">
-    <option value="Все языки" name ="langOption">Все языки</option>
-    <option *ngFor="let lang of Languages" value="{{lang.name}}" name="langOption"> {{lang.name}}</option>
-  </select>
-
-  <input matInput type="text"
-         name="userName"
-         [(ngModel)]="userName"
-         id="idFilter"
-         placeholder="Search users (by name or surname)"
-         value="{{userName}}"
-         (keypress)="filterReport()" (change)="filterReport()">
+  <mat-form-field>
+    <mat-select [(value)]="userLang" (selectionChange)="filterReport()" placeholder="Select language" >
+      <mat-option value="Все языки">Все языки</mat-option>
+      <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
+    </mat-select>
+  </mat-form-field>
+    <mat-form-field>
+      <input matInput type="text" name="userName" [(ngModel)]="userName" placeholder="Search users (by name or surname)" value="{{userName}}" (keyup)="filterReport()">
+    </mat-form-field>
 </div>
 
 <div *ngIf="filteredrows">
-  <table mat-table [dataSource]="filteredrows" matSort class="mat-elevation-z8">
+  <table mat-table [dataSource]="filteredrows" class="mat-elevation-z8">
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Имя пользовател </th>
+      <th mat-header-cell *matHeaderCellDef> Имя пользовател </th>
       <td mat-cell *matCellDef="let element"> {{element.name}} </td>
     </ng-container>
 
     <ng-container matColumnDef="language">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Языки </th>
+      <th mat-header-cell *matHeaderCellDef> Языки </th>
       <td mat-cell *matCellDef="let element"> {{element.language}} </td>
     </ng-container>
 
     <ng-container matColumnDef="translations">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Переведено </th>
+      <th mat-header-cell *matHeaderCellDef> Переведено </th>
       <td mat-cell *matCellDef="let element"> {{element.translations}} </td>
     </ng-container>
 
     <ng-container matColumnDef="confirmed">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Утверждено </th>
+      <th mat-header-cell *matHeaderCellDef> Утверждено </th>
       <td mat-cell *matCellDef="let element"> {{confimed(element.confirmed.toString())}} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
 </div>
 
 

@@ -1,9 +1,11 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, ViewChild} from '@angular/core';
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
-import { Language } from '../../models/Language';
-import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { UserService } from '../../services/user.service';
+import { Locale } from '../../models/database-entities/locale.type';
+import { MatTableDataSource } from '@angular/material';
+import { User} from "../../models/database-entities/user.type";
 
 @Component({
   selector: 'translated-words-report',
@@ -11,40 +13,52 @@ import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
   styleUrls: ['./TranslatedWords.component.css']
 })
 
-export class TranslatedWordsComponent implements OnInit{
+export class TranslatedWordsComponent {
+  //Строки отчета
   public reportrows: TranslatedWordsReportRow[];
+  //Фильтрованные строки отчета
   public filteredrows: TranslatedWordsReportRow[];
-  public Languages: Language[];
+
+  //Список языков из БД
+  public Languages: Locale[];
+  //Список пользователей из БД
+  public Users: User[];
+
+  //Название отчета
   msg: string = "Лучшие участники";
+
+  //Переменные для выборки
   userName: string;
   userLang: string;
+
+  //Переменные для фильтьрации
   from: Date;
   to: Date;
-  languageList = [];
+
+  //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
-  constructor(private reportService: ReportService, private languagesService: LanguageService) {
+  constructor(private reportService: ReportService, private languagesService: LanguageService, private userService: UserService) {
+   
     this.languagesService.getLanguageList()
-      .subscribe( Languages => { this.Languages = Languages; },
-                  error => console.error(error));
+      .subscribe(Languages => { this.Languages = Languages; },
+      error => console.error(error));
+
+    this.userService.getUserList()
+      .subscribe(Users => { this.Users = Users; },
+        error => console.error(error));
+    
   }
 
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
-  ngOnInit() {
-    this.dataSource = new MatTableDataSource(this.filteredrows);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
-
   async getRows() {
     this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString())
-      .subscribe( reportrows => { this.filteredrows = reportrows; this.reportrows = reportrows;},
-      error => console.error(error));
+      .subscribe(reportrows => {
+          this.filteredrows = reportrows;
+        this.reportrows = reportrows;
+        },
+      error => console.error(error));   
   }
 
   filterReport() {

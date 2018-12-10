@@ -12,8 +12,10 @@ import { TranslationsCostComponent } from './translations-cost/translations-cost
 import { FoulsTranslationComponent } from './fouls-translation/fouls-translation.component';
 import { ReportService } from '../services/reports.service';
 import { LanguageService } from '../services/languages.service';
+import { UserService } from '../services/user.service';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, MatSortModule } from '@angular/material';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -21,16 +23,16 @@ import { MatPaginatorModule, MatSortModule } from '@angular/material';
     HttpClientModule,
     FormsModule,
     ReportsRoutingModule,
-  MatTableModule,
-  MatPaginatorModule,
-  MatSortModule
+    MatTableModule,
+    MatInputModule,
+    MatSelectModule
   ],
   exports: [
     MatTableModule,
-    MatPaginatorModule,
-    MatSortModule
+    MatInputModule,
+    MatSelectModule
   ],
-  providers: [ReportService, LanguageService],
+  providers: [ReportService, LanguageService, UserService],
   declarations: [
     ReportsComponent,
     TranslatedWordsComponent,
