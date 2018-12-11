@@ -5,7 +5,9 @@ import { LanguageService } from '../../services/languages.service';
 import { UserService } from '../../services/user.service';
 import { Locale } from '../../models/database-entities/locale.type';
 import { MatTableDataSource } from '@angular/material';
-import { User} from "../../models/database-entities/user.type";
+import { User } from "../../models/database-entities/user.type";
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { Moment } from 'moment';
 
 @Component({
   selector: 'translated-words-report',
@@ -32,8 +34,7 @@ export class TranslatedWordsComponent {
   userLang: string;
 
   //Переменные для фильтьрации
-  from: Date;
-  to: Date;
+  selected: { from: Moment, to: Moment };
 
   //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
@@ -53,7 +54,7 @@ export class TranslatedWordsComponent {
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
 
   async getRows() {
-    this.reportService.getTranslatedWordsReport(this.from.toString(), this.to.toString())
+    this.reportService.getTranslatedWordsReport(this.selected.from.format("DD-MM-YYYY"), this.selected.to.format("DD-MM-YYYY"))
       .subscribe(reportrows => {
           this.filteredrows = reportrows;
         this.reportrows = reportrows;
@@ -75,11 +76,11 @@ export class TranslatedWordsComponent {
 
   setHeaderMsg() {
     let fromStr = "";
-    if (this.from != undefined && this.from != null)
-      fromStr = this.from.toString();
+    if (this.selected.from != undefined && this.selected.from != null)
+      fromStr = this.selected.from.format("DD-MM-YYYY");
     let toStr = "";
-    if (this.to != undefined && this.to != null)
-      toStr = " - " + this.to;
+    if (this.selected.to != undefined && this.selected.to != null)
+      toStr = " - " + this.selected.to.format("DD-MM-YYYY");
     this.msg = "Лучшие участники:  " + fromStr + toStr;
   }
 
@@ -95,7 +96,7 @@ export class TranslatedWordsComponent {
   }
 
   download() {
-    this.reportService.getTranslatedWordsReportExcel(this.from.toString(), this.to.toString());
+    this.reportService.getTranslatedWordsReportExcel(this.selected.from.format("DD-MM-YYYY"), this.selected.to.format("DD-MM-YYYY"));
   }
 }
 

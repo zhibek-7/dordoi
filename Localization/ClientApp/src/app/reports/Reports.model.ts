@@ -13,9 +13,8 @@ import { FoulsTranslationComponent } from './fouls-translation/fouls-translation
 import { ReportService } from '../services/reports.service';
 import { LanguageService } from '../services/languages.service';
 import { UserService } from '../services/user.service';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule, MatTableModule, MatInputModule, MatSelectModule, MatButtonModule, } from '@angular/material';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 @NgModule({
   imports: [
@@ -25,12 +24,12 @@ import { MatSelectModule } from '@angular/material/select';
     ReportsRoutingModule,
     MatTableModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatButtonModule,
+  NgxDaterangepickerMd
   ],
   exports: [
-    MatTableModule,
-    MatInputModule,
-    MatSelectModule
   ],
   providers: [ReportService, LanguageService, UserService],
   declarations: [

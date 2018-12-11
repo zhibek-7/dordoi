@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-reports',
@@ -6,7 +8,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./Reports.component.css'],
 })
 
-export class ReportsComponent {
+export class ReportsComponent implements OnInit {
+
+  public projectId: number;
 
   showProjectStatus: boolean = false;
   showCostSumm: boolean = false;
@@ -14,7 +18,11 @@ export class ReportsComponent {
   showTranslatedWords: boolean = false;
   showFoulsTranslation: boolean = false;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, private location: Location) { }
+
+  ngOnInit() {
+    this.projectId = this.route.snapshot.params['id'];
+  }
 
   public showReport(type: Number) {
     this.showProjectStatus    = (type === 1);
@@ -24,5 +32,8 @@ export class ReportsComponent {
     this.showFoulsTranslation = (type === 5);
   }
 
+  goBack(): void {
+    this.location.back();
+  }
 }
 

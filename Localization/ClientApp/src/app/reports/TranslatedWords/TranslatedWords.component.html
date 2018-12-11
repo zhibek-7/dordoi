@@ -1,26 +1,33 @@
 <div name="date-range" class="dateHolder">
-  Диапазон дат<br>
-  <label>
-    <input [(ngModel)]="from" value="{{from}}" type="date">
-  </label>
-  <label>
-    <input [(ngModel)]="to" value="{{to}}" type="date">
-  </label>
-  <mat-form-field>
-    <mat-select [(value)]="locale" (selectionChange)="filterReport()" placeholder="Select language">
-      <mat-option value="Все языки">Все языки</mat-option>
-      <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-select [(value)]="user" placeholder="Select user">
-      <mat-option value="Все">Все</mat-option>
-      <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name}}"</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button (click)="clickEvent()">
-    Generate
-  </button>
+
+      
+      
+      <div>
+        <span>Диапазон дат</span><br>
+
+        <input type="text" matInput
+               ngxDaterangepickerMd
+               [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}"
+               startKey="from"
+               endKey="to"
+               [(ngModel)]="selected"
+               name="daterange" style="border: solid 1px darkgray; width: 180px"/>
+      </div>
+      <mat-form-field>
+        <mat-select [(value)]="locale" (selectionChange)="filterReport()" placeholder="Select language">
+          <mat-option value="Все языки">Все языки</mat-option>
+          <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select [(value)]="user" placeholder="Select user">
+          <mat-option value="Все">Все</mat-option>
+          <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name}}"</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button (click)="clickEvent()">
+        Generate
+      </button>
 </div>
 
 <div class="reportHeader">
