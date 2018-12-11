@@ -5,11 +5,11 @@ import { FormGroup } from '@angular/forms';
 //import { ListFilterPipe } from 'angular2-multiselect-dropdown';
 //import { FilterPipe }from './filter.pipe';
 @Component({
-  selector: 'app-crowdin',
-  templateUrl: './crowdin.component.html',
-  styleUrls: ['./crowdin.component.css'],
+  selector: 'app-create_project',
+  templateUrl: './create_project.component.html',
+  styleUrls: ['./create_project.component.css'],
 })
-export class CrowdinComponent implements OnInit{
+export class Create_projectComponent implements OnInit{
   args='ascending';
   searchText='';
   form: FormGroup;

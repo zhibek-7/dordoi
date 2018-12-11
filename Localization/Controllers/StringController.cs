@@ -23,19 +23,39 @@ namespace Localization.WebApi
             stringRepository = new StringRepository();
         }
 
+        /// <summary>
+        /// GET api/strings       
+        /// </summary>
+        /// <returns>Список всех фраз</returns>
         [HttpGet]
-        public List<Models.DatabaseEntities.String> GetStrings()
+        public async Task<ActionResult<IEnumerable<Models.DatabaseEntities.String>>> GetStrings()
         {
-            List<Models.DatabaseEntities.String> strings = stringRepository.GetAll().ToList();
-            return strings;
+            var strings = await stringRepository.GetAll();
+
+            if (strings == null)
+            {
+                return BadRequest("Strings not found");
+            }
+
+            return Ok(strings);
         }
 
+        /// <summary>
+        /// // GET api/files/:id
+        /// </summary>
+        /// <param name="id">id фразы</param>
+        /// <returns>Фраза с необходимым id</returns>
         [HttpGet("{id}")]
-        //[EnableCors("AllowSpecificOrigin")]
-        public Models.DatabaseEntities.String GetStringById(int id)
+        public async Task<ActionResult<Models.DatabaseEntities.String>> GetStringById(int id)
         {
-            Models.DatabaseEntities.String foundedString = stringRepository.GetByID(id);
-            return foundedString;
+            Models.DatabaseEntities.String foundedString = await stringRepository.GetByID(id);
+
+            if (foundedString == null)
+            {
+                return BadRequest("String not found");
+            }
+
+            return Ok(foundedString);
         }
 
     }

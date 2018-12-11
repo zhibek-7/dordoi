@@ -22,10 +22,11 @@ namespace Localization.WebApi
             commentRepository = new CommentRepository();
         }
 
-        public List<Comments> GetComments()
+        
+        public async Task<ActionResult<IEnumerable<Comments>>>  GetComments()
         {
-            List<Comments> comments = commentRepository.GetAll().ToList();
-            return comments;
+            IEnumerable<Comments> comments = await commentRepository.GetAll();
+            return Ok(comments);
         }
     }
 }

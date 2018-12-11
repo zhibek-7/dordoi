@@ -1,8 +1,9 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
-import { TranslationService } from '../../services/accessToDatabase/translationService.service';
+import { TranslationService } from '../../services/translationService.service';
 
-import { String } from 'src/app/models/database-entities/string.type';
+import { String } from '../../models/database-entities/string.type';
+
 
 @Injectable()
 export class SharePhraseService {

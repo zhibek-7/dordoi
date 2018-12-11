@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -18,13 +19,13 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly PostgreSqlNativeContext _context;
 
-        private readonly IRepository<Models.DatabaseEntities.String> _stringsRepository;
+        private readonly IRepositoryAsync<Models.DatabaseEntities.String> _stringsRepository;
 
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
         private readonly LogTools _logger = new LogTools();
 
-        public GlossaryRepository(IRepository<Models.DatabaseEntities.String> stringsRepository)
+        public GlossaryRepository(IRepositoryAsync<Models.DatabaseEntities.String> stringsRepository)
         {
             this._context = PostgreSqlNativeContext.getInstance();
             this._stringsRepository = stringsRepository;
@@ -64,7 +65,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public void Remove(int id)
+        public bool Remove(int id)
         {
             throw new NotImplementedException();
         }
@@ -276,16 +277,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
+                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart).AsCount();
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
                 var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
                 this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {this.DictionaryToString(getGlossaryTermsCountParam)}");
-                var assotiatedTerms = dbConnection.ExecuteScalar<int>(
+                var assotiatedTermsCount = dbConnection.ExecuteScalar<int>(
                     sql: getGlossaryTermsCountSql,
                     param: getGlossaryTermsCountParam
                     );
-                var assotiatedTermsCount = query.Count<int>();
                 dbConnection.Close();
                 return assotiatedTermsCount;
             }

@@ -1,15 +1,24 @@
-div.dateHolder {
+div.reportParamHolder {
   background: #f5f5f5;
   overflow: hidden;
   margin-top: 20px;
   padding: 20px;
 }
 
-  div.dateHolder button {
+  div.reportParamHolder button {
     background: #90a100;
     padding-left: 10px;
     color: #f5f5f5;
   }
+
+input.daterangePicker {
+  border: solid 1px darkgray;
+  width: 180px
+}
+
+div.daterangePicker {
+  margin: 10px;
+}
 
 div.reportHeader {
   overflow: hidden;
@@ -23,11 +32,6 @@ div.reportHeader {
     width: 100%;
     margin-right: -50%;
     padding-left: 10px;
-  }
-
-  div.reportHeader button {
-    float: right;
-    background: #fff;
   }
 
 div.reportFilter select {

@@ -1,46 +1,91 @@
-<div name="date-range" class="dateHolder">
-  Диапазон дат<br>
-  <label>
-    <input [(ngModel)]="from" value="{{from}}" type="date">
-  </label>
-  <label>
-    <input [(ngModel)]="to" value="{{to}}" type="date">
-  </label>
-  <mat-form-field>
-    <mat-select [(value)]="locale" (selectionChange)="filterReport()" placeholder="Select language">
-      <mat-option value="Все языки">Все языки</mat-option>
-      <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-select [(value)]="user" placeholder="Select user">
-      <mat-option value="Все">Все</mat-option>
-      <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name}}"</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button (click)="clickEvent()">
-    Generate
-  </button>
+<div class="reportParamHolder">
+  <p class="daterangePicker">
+    <span>Диапазон дат</span><br>
+    <input type="text" matInput
+           ngxDaterangepickerMd
+           [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}"
+           startKey="from"
+           endKey="to"
+           [(ngModel)]="selected"
+           name="daterange"
+           class="daterangePicker" />
+  </p>
+  <div>
+    <div stile="display: inline-block;">
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>Пользователь</mat-label>
+          <mat-select [(value)]="user" placeholder="Пользователь">
+            <mat-option value="Все" selected>Все пользователи</mat-option>
+            <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name}}"</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Язык перевода</mat-label>
+          <mat-select [(value)]="locale" placeholder="Язык перевода">
+            <mat-option value="Все" selected>Все языки</mat-option>
+            <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Вид работ</mat-label>
+          <mat-select [(value)]="workType" placeholder="Вид работы">
+            <mat-option value="Все" selected>Все</mat-option>
+            <mat-option value="Перевод">Перевод</mat-option>
+            <mat-option value="Редактура">Редактура</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>Подсчет объема по</mat-label>
+          <mat-select [(value)]="volumeCalcType" placeholder="Подсчет объема по">
+            <mat-option value="словам" selected>словам</mat-option>
+            <mat-option value="знакам">знакам с пробелами</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Основа для подсчета</mat-label>
+          <mat-select [(value)]="calcBasisType" placeholder="Основа для подсчета">
+            <mat-option value="Исходный" selected>Исходный язык</mat-option>
+            <mat-option value="Перевода">Язык перевода</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Начальная папк</mat-label>
+          <mat-select [(value)]="initialFolder" placeholder="Начальная папка">
+            <mat-option value="Все">Все языки</mat-option>
+            <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
+    </div>
+    <div>
+      <button (click)="clickEvent()">
+        Построить отчет
+      </button>
+      <button (click)="download()">
+        Экспорт отчетов
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <div class="reportHeader">
-  <div>{{msg}}</div>
-
-  <button (click)="download()">
-    Экспорт переводов
-  </button>
+  <h2>{{msg}}</h2>
 </div>
 
 <div class="reportFilter" *ngIf="filteredrows">
   <mat-form-field>
-    <mat-select [(value)]="userLang" (selectionChange)="filterReport()" placeholder="Select language" >
+    <mat-select [(value)]="userLang" (selectionChange)="filterReport()" placeholder="Select language">
       <mat-option value="Все языки">Все языки</mat-option>
       <mat-option *ngFor="let lang of Languages" value="{{lang.name}}">"{{lang.name}}"</mat-option>
     </mat-select>
   </mat-form-field>
-    <mat-form-field>
-      <input matInput type="text" name="userName" [(ngModel)]="userName" placeholder="Search users (by name or surname)" value="{{userName}}" (keyup)="filterReport()">
-    </mat-form-field>
+  <mat-form-field>
+    <input matInput type="text" name="userName" [(ngModel)]="userName" placeholder="Search users (by name or surname)" value="{{userName}}" (keyup)="filterReport()">
+  </mat-form-field>
 </div>
 
 <div *ngIf="filteredrows">

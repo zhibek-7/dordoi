@@ -1,3 +1,71 @@
 li.navbar-item div {
   cursor: pointer;
 }
+
+.breadcrumb {
+  display: inline-flex;
+  padding: .2rem 1rem;
+  border-radius: 0rem;
+}
+
+.nav-link, .navbar {
+  padding: 0rem 2rem;
+}
+
+.nav-link {
+  padding: 0rem 0rem;
+}
+
+h1 {
+  font-weight: 600;
+}
+
+.navbar-category {
+  border: 1px solid #e9ecef;
+  height: 3rem;
+
+}
+
+.navbar-custom {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.download, .table {
+  margin-top: 2rem;
+}
+
+tr>td:first-child {
+  width: 33%;
+  padding-bottom: 10px;
+}
+
+.mat-raised-button {
+  margin-left: 15px;
+}
+
+.table td {
+  border-top: none;
+  padding: 0px;
+  font-weight: 600;
+}
+
+.table .error-block {
+  color: red;
+  border: 1px solid red;
+  border-radius: 5px;
+}
+
+.table .none-error-block {
+  color: green;
+  border: 1px solid green;
+  border-radius: 5px;
+}
+
+.second-col {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+}
+

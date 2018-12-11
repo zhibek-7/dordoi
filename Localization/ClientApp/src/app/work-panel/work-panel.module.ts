@@ -15,7 +15,7 @@ import { TranslationComponent } from './components/translation/translation.compo
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
 import { SharePhraseService } from './localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from './localServices/share-translated-phrase.service';
-import { TranslationService } from '../services/accessToDatabase/translationService.service';
+import { TranslationService } from '../services/translationService.service';
 
 import {
   MatIconModule,
