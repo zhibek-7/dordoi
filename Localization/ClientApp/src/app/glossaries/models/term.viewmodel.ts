@@ -1,10 +1,13 @@
 import { String } from "src/app/models/database-entities/string.type";
+import { Selectable } from "src/app/glossaries/models/selectable.model";
 
-export class TermViewModel {
+export class TermViewModel extends Selectable<String> {
 
   constructor(
     public term: String,
-    public isSelected: boolean
-  ) { }
+    isSelected: boolean
+  ) {
+      super(term, isSelected);
+  }
 
 }

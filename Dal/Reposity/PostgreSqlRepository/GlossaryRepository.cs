@@ -308,6 +308,25 @@ namespace DAL.Reposity.PostgreSqlRepository
             return query;
         }
 
+        public Locale GetLocaleById(int glossaryId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var getGlossaryLocaleSql = "SELECT * FROM \"Locales\" WHERE \"ID\" IN " +
+                    "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
+                    "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" WHERE \"ID_Glossary\"=@GlossaryId))";
+                var getGlossaryLocaleParam = new { GlossaryId = glossaryId };
+                this.LogQuery(getGlossaryLocaleSql, getGlossaryLocaleParam);
+                var locale = dbConnection
+                    .QueryFirst<Locale>(
+                        sql: getGlossaryLocaleSql,
+                        param: getGlossaryLocaleParam);
+                dbConnection.Close();
+                return locale;
+            }
+        }
+
         private void LogQuery(string sql)
         {
             this._logger.WriteDebug($"Query {sql}");

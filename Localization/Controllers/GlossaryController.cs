@@ -36,6 +36,12 @@ namespace Localization.WebApi
             return this._glossaryRepository.GetByID(id: glossaryId);
         }
 
+        [HttpGet("{glossaryId}/locale")]
+        public Locale GetGlossaryLocale(int glossaryId)
+        {
+            return this._glossaryRepository.GetLocaleById(glossaryId: glossaryId);
+        }
+
         [HttpGet("{glossaryId}/terms")]
         public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(
             int glossaryId,

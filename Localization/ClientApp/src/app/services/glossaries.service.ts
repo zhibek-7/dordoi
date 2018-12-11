@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { String } from 'src/app/models/database-entities/string.type';
+import { Locale } from 'src/app/models/database-entities/locale.type';
 
 @Injectable()
 export class GlossariesService {
@@ -106,6 +107,10 @@ export class GlossariesService {
 
   getTermPartOfSpeechId(glossaryId: number, termId: number): Observable<number> {
     return this.httpClient.get<number>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/part_of_speech');
+  }
+
+  getGlossaryLocale(glossaryId: number): Observable<Locale> {
+    return this.httpClient.get<Locale>(GlossariesService.connectionUrl + glossaryId + '/locale');
   }
 
 }

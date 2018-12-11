@@ -16,7 +16,11 @@ import { AddTermFormComponent } from 'src/app/glossaries/components/add-term-for
 import { DeleteTermConfirmationComponent } from 'src/app/glossaries/components/delete-term-confirmation-modal/delete-term-confirmation-modal.component';
 import { DeleteTermsConfirmationComponent } from 'src/app/glossaries/components/delete-terms-confirmation-modal/delete-terms-confirmation-modal.component';
 import { EditTermFormComponent } from 'src/app/glossaries/components/edit-term-form-modal/edit-term-form-modal.component';
-import { PaginationComponent } from './components/pagination/pagination.component';
+import { PaginationComponent } from 'src/app/glossaries/components/pagination/pagination.component';
+import { SetLanguagesFormModalComponent } from 'src/app/glossaries/components/set-languages-form-modal/set-languages-form-modal.component';
+import { LanguageService } from 'src/app/services/languages.service';
+import { FilterSelectableLocalesPipe } from 'src/app/glossaries/pipes/filterSelectableLocales.pipe';
+import { OrderByPipe } from 'src/app/glossaries/pipes/orderBy.pipe';
 
 @NgModule({
   imports: [
@@ -34,11 +38,15 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     DeleteTermsConfirmationComponent,
     EditTermFormComponent,
     PaginationComponent,
+    SetLanguagesFormModalComponent,
+    FilterSelectableLocalesPipe,
+    OrderByPipe,
   ],
   providers: [
     RequestDataReloadService,
     GlossariesService,
-    PartsOfSpeechService
+    PartsOfSpeechService,
+    LanguageService
   ]
 })
 export class GlossariesModule { }
