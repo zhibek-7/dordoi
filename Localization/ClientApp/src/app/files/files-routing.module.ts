@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CrowdinComponent } from './crowdin.component';
+
+import { FilesComponent } from '../files/files.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: CrowdinComponent
-
+    component: FilesComponent
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CrowdinRoutingModule { }
+export class FilesRoutingModule { }

@@ -276,16 +276,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
+                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart).AsCount();
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
                 var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
                 this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {this.DictionaryToString(getGlossaryTermsCountParam)}");
-                var assotiatedTerms = dbConnection.ExecuteScalar<int>(
+                var assotiatedTermsCount = dbConnection.ExecuteScalar<int>(
                     sql: getGlossaryTermsCountSql,
                     param: getGlossaryTermsCountParam
                     );
-                var assotiatedTermsCount = query.Count<int>();
                 dbConnection.Close();
                 return assotiatedTermsCount;
             }

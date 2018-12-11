@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from "rxjs/operators";
 
-//import { TreeNode } from "primeng/api";
+import { TreeNode } from "primeng/api";
 import { File as FileData } from '../models/database-entities/file.type';
 
 @Injectable({
@@ -16,32 +16,32 @@ export class FileService {
 
   constructor(private http: HttpClient) { }
 
-  //getFiles(): Observable<TreeNode[]> {
-  //  const url = `${this.apiUrl}/${this.filesEndpoint}`;
+  getFiles(): Observable<TreeNode[]> {
+    const url = `${this.apiUrl}/${this.filesEndpoint}`;
 
-  //  return this.http.get<TreeNode[]>(url)
-  //    .pipe(
-  //      // tap(response => console.log(response)),
-  //      catchError(this.handleError('Get files', []))
-  //    );
-  //}
+    return this.http.get<TreeNode[]>(url)
+      .pipe(
+        // tap(response => console.log(response)),
+        catchError(this.handleError('Get files', []))
+      );
+  }
 
-  //addFile(file: File, parentId?: number): Observable<TreeNode> {
-  //  const url = `${this.apiUrl}/${this.filesEndpoint}/add/file`;
+  addFile(file: File, parentId?: number): Observable<TreeNode> {
+    const url = `${this.apiUrl}/${this.filesEndpoint}/add/file`;
 
-  //  const formData = new FormData();
+    const formData = new FormData();
 
-  //  formData.append('file', file, file.name);
-  //  formData.append('parentId', parentId.toString());
+    formData.append('file', file, file.name);
+    formData.append('parentId', parentId.toString());
 
-  //  return this.http.post<TreeNode>(url, formData);
-  //}
+    return this.http.post<TreeNode>(url, formData);
+  }
 
-  //addFolder(name: string, parentId?: number): Observable<TreeNode> {
-  //  const url = `${this.apiUrl}/${this.filesEndpoint}/add/folder`;
+  addFolder(name: string, parentId?: number): Observable<TreeNode> {
+    const url = `${this.apiUrl}/${this.filesEndpoint}/add/folder`;
 
-  //  return this.http.post<TreeNode>(url, { name, parentId });
-  //}
+    return this.http.post<TreeNode>(url, { name, parentId });
+  }
 
   updateNode(data: FileData): Observable<any> {
     const url = `${this.apiUrl}/${this.filesEndpoint}/update/${data.id}`;
