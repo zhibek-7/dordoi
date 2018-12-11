@@ -112,9 +112,9 @@ namespace LocalizationServiceWpfApp
                 sr.Peek();
                 this.LSFEncoding = sr.CurrentEncoding.HeaderName;
             }
-            NpgsqlConnection conn = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["LocaliztionService"].ConnectionString);
-            conn.Open();
-            NpgsqlCommand comm = new NpgsqlCommand("INSERT INTO \"Files\" (\"ID_LocalizationProject\", \"Name\" ,\"StringsCount\", \"Encoding\", \"IsFolder\", \"OriginalFullText\") VALUES (@ID_LocalizationProject, @Name , @StringsCount, @Encoding, @IsFolder, @OriginalFullText) RETURNING \"ID\"", conn);
+            NpgsqlConnection connection = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["LocaliztionService"].ConnectionString);
+            connection.Open();
+            NpgsqlCommand comm = new NpgsqlCommand("INSERT INTO \"Files\" (\"ID_LocalizationProject\", \"Name\" ,\"StringsCount\", \"Encoding\", \"IsFolder\", \"OriginalFullText\") VALUES (@ID_LocalizationProject, @Name , @StringsCount, @Encoding, @IsFolder, @OriginalFullText) RETURNING \"ID\"", connection);
             comm.Parameters.AddWithValue("@ID_LocalizationProject", 0);
             comm.Parameters.AddWithValue("@Name", this.Name);
             comm.Parameters.AddWithValue("@StringsCount", this.StringsCount);
@@ -127,44 +127,44 @@ namespace LocalizationServiceWpfApp
             {
                 case "po":
                     {
-                        this.ParseAsPo(conn);
+                        this.ParseAsPo(connection);
                         break;
                     }
                 case "properties":
                     {
-                        this.ParseAsProperties(conn);
+                        this.ParseAsProperties(connection);
                         break;
                     }
-                //case "json":
-                //    {
-                //        this.LSStrings = jsonFileParse(context, Lines, this.ID, null);
-                //        break;
-                //    }
-                //case "strings":
-                //    {
-                //        this.LSStrings = stringsFileParse(context, Lines, this.ID, null);
-                //        break;
-                //    }
-                //case "csv":
-                //    {
-                //        this.LSStrings = csvFileParse(context, Lines, this.ID, null);
-                //        break;
-                //    }
+                case "json":
+                    {
+                        this.ParseAsJson(connection);
+                        break;
+                    }
+                case "strings":
+                    {
+                        this.ParseAsStrings(connection);
+                        break;
+                    }
+                case "csv":
+                    {
+                        this.ParseAsCsv(connection);
+                        break;
+                    }
                 case "xml":
                     {
-                        ParseAsXml(conn);
+                        ParseAsXml(connection);
                         break;
                     }
                 case "php":
                     {
-                        ParseAsPhp(conn);
+                        ParseAsPhp(connection);
                         break;
                     }
-                    //case "resx":
-                    //    {
-                    //        this.LSStrings = resxFileParse(context, Lines, this.ID, null);
-                    //        break;
-                    //    }
+                //case "resx":
+                //    {
+                //        ParseAsResx(connection);
+                //        break;
+                //    }
                     //case "string":
                     //    {
                     //        this.LSStrings = stringFileParse(context, Lines, this.ID, null);
@@ -172,7 +172,7 @@ namespace LocalizationServiceWpfApp
                     //    }
 
             }
-            conn.Close();
+            connection.Close();
         }
 
         private void ParseAsPo(NpgsqlConnection connection)
@@ -197,55 +197,36 @@ namespace LocalizationServiceWpfApp
             }
         }
 
-        //private static ObservableCollection<TranslationSubstring> jsonFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
-        //{
-        //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
-        //    string pattern = "\"(.*)\"(?:\\s)*:(?:\\s)*\"(.*)\"(?:,)?";
-        //    for (int i = 0; i < lines.Length; i++)
-        //    {
-        //        Match m = Regex.Match(lines[i], pattern);
-        //        if (m.Success)
-        //        {
-        //            bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
-        //            strings.Add(new TranslationSubstring(context, m.Groups[isLatin ? 2 : 1].Value, null, m.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m.Groups[2].Value, m.Groups[2].Index));
-        //        }
-        //        else strings.Add(new TranslationSubstring(context, null, id_FileOwner, i, lines[i]));
+        private void ParseAsJson(NpgsqlConnection connection)
+        {
+            string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*:\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
+            var matches = Regex.Matches(this.OriginalFullText, pattern, RegexOptions.Singleline);
+            foreach (Match m in matches)
+            {
+                bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
+                this.TranslationSubstrings.Add(new TranslationSubstring(connection, m.Groups[isLatin ? 2 : 1].Value, m.Groups[1].Value, this.ID, m.Groups[2].Value, m.Groups[2].Index));
+            }
+        }
 
-        //    }
-        //    return strings;
-        //}
+        private void ParseAsStrings(NpgsqlConnection connection)
+        {
+            string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*=\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
+            var matches = Regex.Matches(this.OriginalFullText, pattern, RegexOptions.Singleline);
+            foreach (Match m in matches)
+            {
+                this.TranslationSubstrings.Add(new TranslationSubstring(connection, m.Groups[2].Value, m.Groups[1].Value, this.ID, m.Groups[2].Value, m.Groups[2].Index));
+            }
+        }
 
-        //private static ObservableCollection<TranslationSubstring> stringsFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
-        //{
-        //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
-        //    string pattern = "\"(.*)\"(?:\\s)*=(?:\\s)*\"(.*)\";";
-        //    for (int i = 0; i < lines.Length; i++)
-        //    {
-        //        Match m = Regex.Match(lines[i], pattern);
-        //        if (m.Success)
-        //        {
-        //            strings.Add(new TranslationSubstring(context, m.Groups[2].Value, null, m.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m.Groups[2].Value, m.Groups[2].Index));
-        //        }
-        //        else strings.Add(new TranslationSubstring(context, null, id_FileOwner, i, lines[i]));
-        //    }
-        //    return strings;
-        //}
-
-        //private static ObservableCollection<TranslationSubstring> csvFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
-        //{
-        //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
-        //    string pattern = "\"(.*)\";\"(.*)\";\"(.*)\";(?:.)*";
-        //    for (int i = 0; i < lines.Length; i++)
-        //    {
-        //        Match m = Regex.Match(lines[i], pattern);
-        //        if (m.Success)
-        //        {
-        //            strings.Add(new TranslationSubstring(context, m.Groups[2].Value, null, m.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m.Groups[3].Value, m.Groups[3].Index));
-        //        }
-        //        else strings.Add(new TranslationSubstring(context, null, id_FileOwner, i, lines[i]));
-        //    }
-        //    return strings;
-        //}
+        private void ParseAsCsv(NpgsqlConnection connection)
+        {
+            string pattern = "(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"(?:(?<=\")\"|[^\"])*(?<!\")\"";
+            var matches = Regex.Matches(this.OriginalFullText, pattern);
+            foreach (Match m in matches)
+            {
+                this.TranslationSubstrings.Add(new TranslationSubstring(connection, m.Groups[2].Value, m.Groups[1].Value, this.ID, m.Groups[3].Value, m.Groups[3].Index));
+            }
+        }
 
         private void ParseAsXml(NpgsqlConnection connection)
         {
@@ -287,39 +268,15 @@ namespace LocalizationServiceWpfApp
             }
         }
 
-        //private static ObservableCollection<TranslationSubstring> resxFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
-        //{
-        //    ObservableCollection<TranslationSubstring> strings = new ObservableCollection<TranslationSubstring>();
-        //    string contextPattern = "name[\\s]*=[\\s]*\"(.*)\"";
-        //    string translationPattern = "<value>(.*)</value>";
-        //    for (int i = 0; i < lines.Length; i++)
-        //    {
-        //        Match m_context = Regex.Match(lines[i], contextPattern);
-        //        if (m_context.Success)
-        //        {
-        //            Match m_translation = Regex.Match(lines[i], translationPattern);
-        //            if (m_translation.Success)
-        //            {
-        //                strings.Add(new TranslationSubstring(context, m_translation.Groups[1].Value, null, m_context.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i, lines[i], m_translation.Groups[1].Value, m_translation.Groups[1].Index));
-        //            }
-        //            else
-        //            {
-        //                strings.Add(new TranslationSubstring(context, null, id_FileOwner, i, lines[i]));
-        //                if (!Regex.IsMatch(lines[i + 1], contextPattern))
-        //                {
-        //                    m_translation = Regex.Match(lines[i + 1], translationPattern);
-        //                    if (m_translation.Success)
-        //                    {
-        //                        strings.Add(new TranslationSubstring(context, m_translation.Groups[1].Value, null, m_context.Groups[1].Value, defaultTranslationMaxLength, id_FileOwner, i + 1, lines[i + 1], m_translation.Groups[1].Value, m_translation.Groups[1].Index));
-        //                        i++;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        else strings.Add(new TranslationSubstring(context, null, id_FileOwner, i, lines[i]));
-        //    }
-        //    return strings;
-        //}
+        private void ParseAsResx(NpgsqlConnection connection)
+        {
+            string pattern = "<data\\s+(?:[^\"]*\\s*=\\s*\"[^\"]*\")*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:[^\"]*\\s*=\\s*\"[^\"]*\")*\\s*>\\s*<value\\s*>([^<]*)</value\\s*>\\s*</data\\s*>";
+            var matches = Regex.Matches(this.OriginalFullText, pattern, RegexOptions.Singleline);
+            foreach (Match m in matches)
+            {
+                this.TranslationSubstrings.Add(new TranslationSubstring(connection, m.Groups[2].Value, m.Groups[1].Value, this.ID, m.Groups[3].Value, m.Groups[3].Index));
+            }
+        }
 
         //private static ObservableCollection<TranslationSubstring> stringFileParse(db_Entities context, string[] lines, int id_FileOwner, int? defaultTranslationMaxLength)
         //{
