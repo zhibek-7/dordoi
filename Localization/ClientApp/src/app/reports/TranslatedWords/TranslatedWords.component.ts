@@ -29,9 +29,17 @@ export class TranslatedWordsComponent {
   //Название отчета
   msg: string = "Лучшие участники";
 
-  //Переменные для выборки
+  //Переменные для фильтра выборки
   userName: string;
   userLang: string;
+
+  //Переменные для выборки
+  user: string = "Все";
+  locale: string = "Все";
+  workType: string = "Все";
+  volumeCalcType: string = "словам";
+  calcBasisType: string = "Исходный";
+  initialFolder: string;
 
   //Переменные для фильтьрации
   selected: { from: Moment, to: Moment };
@@ -68,7 +76,7 @@ export class TranslatedWordsComponent {
     if (this.userName != undefined && this.userName != null)
       rows = rows.filter(s => s.name.indexOf(this.userName) != -1);
 
-    if (this.userLang != "Все языки" && this.userLang != undefined)
+    if (this.userLang != "Все" && this.userLang != undefined)
       rows = rows.filter(s => s.language.indexOf(this.userLang) != -1);
 
     this.filteredrows = rows;
