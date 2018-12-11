@@ -21,18 +21,7 @@ namespace Localization.WebApi.work_panel
         public WorkPanelController(PostgreSqlEFContext context)
         {
             this.context = context;
-        }
-
-        [HttpGet]
-        public IEnumerable<User> GetUsers()
-        {
-            //List<Models.DatabaseEntities.String> strings = context.Strings.ToList();
-            List<Models.DatabaseEntities.String> strings = stringRepository.GetAll().ToList(); // получаем через нативный sql
-            Models.DatabaseEntities.String foundedString = stringRepository.GetByID(5);
-            List<User> users = context.Users.ToList(); //получаем через EF
-            users = userRepository.GetAll().ToList(); // получаем через нативный sql
-            return users;
-        }
+        }        
 
     }
 }

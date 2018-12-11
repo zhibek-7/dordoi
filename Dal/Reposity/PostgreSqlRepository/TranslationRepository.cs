@@ -6,10 +6,14 @@ using System.Data;
 using Dapper;
 using Models.DatabaseEntities;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class TranslationRepository : IRepository<Translation>
+    /// <summary>
+    /// Репозиторий для работы с вариантами перевода фраз
+    /// </summary>
+    public class TranslationRepository : IRepositoryAsync<Translation>
     {
         private PostgreSqlNativeContext context;
 
@@ -18,51 +22,140 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public void Add(Translation item)
+        /// <summary>
+        /// Функция добавления варианта перевода
+        /// </summary>
+        /// <param name="item">Вариант перевода</param>
+        public async Task<int> Add(Translation item)
         {
-            using (IDbConnection dbConnection = context.Connection)
+            var query = "INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\")" +
+                        "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime)";
+
+            try
             {
-                dbConnection.Open();
-                dbConnection.Query<Translation>("INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\") VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime)", item);
-                dbConnection.Close();
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var numberOfInsertedRows = await dbConnection.ExecuteAsync(query, item);
+                    dbConnection.Close();
+                    return numberOfInsertedRows;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return 0;
             }
         }
 
-        public IEnumerable<Translation> GetAll()
+        /// <summary>
+        /// Функция получения всех переводов
+        /// </summary>
+        /// <returns>Список переводов</returns>
+        public async Task<IEnumerable<Translation>> GetAll()
         {
-            using (IDbConnection dbConnection = context.Connection)
+            var query = @"SELECT * FROM 'Translations'";
+
+            try
             {
-                dbConnection.Open();
-                IEnumerable<Translation> translations = dbConnection.Query<Translation>("SELECT * FROM \"Translations\"").ToList();
-                dbConnection.Close();
-                return translations;
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query);
+                    dbConnection.Close();
+                    return translations;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
             }
         }
 
-        public Translation GetByID(int id)
+
+        /// <summary>
+        /// Функция получения варианта перевода по конкретному id
+        /// </summary>
+        /// <param name="id">id необходимого варианта перевода</param>
+        /// <returns>Вариант перевода</returns>
+        public Task<Translation> GetByID(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Remove(int id)
+        /// <summary>
+        /// Функция удаления варианта перевода по конкретному id
+        /// </summary>
+        /// <param name="id">id варианта перевода который нужно удалить</param>
+        public async Task<bool> Remove(int id)
         {
-            throw new NotImplementedException();
-        }
+            var query = "DELETE " +
+                        "FROM \"Translations\" AS T " +
+                        "WHERE T.\"ID\" = @id";
 
-        public void Update(Translation item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Translation> GetAllTranslationsInStringByID(int idString)
-        {
-            using (IDbConnection dbConnection = context.Connection)
+            try
             {
-                dbConnection.Open();
-                IEnumerable<Translation> translations = dbConnection.Query<Translation>("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @Id ", new { Id = idString }).ToList();
-                dbConnection.Close();
-                return translations;
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var deletedRows = await dbConnection.ExecuteAsync(query, new { id });
+                    dbConnection.Close();
+
+                    return deletedRows > 0;
+                }
+            }            
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return false;
             }
         }
+
+        /// <summary>
+        /// Функция обновления варианта перевода
+        /// </summary>
+        /// <param name="item">Обновленный вариант перевода</param>
+        public Task<bool> Update(Translation item)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Функция получения всех вариантов перевода конкретной фразы
+        /// </summary>
+        /// <param name="idString">id фразы, варианты перевода которой необходимы</param>
+        /// <returns>Список вариантов перевода</returns>
+        public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByID(int idString)
+        {
+            var query = "SELECT * " +
+                        "FROM \"Translations\" " +
+                        "WHERE \"ID_String\" = @Id";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query, new { Id = idString });
+                    dbConnection.Close();
+                    return translations;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
     }
 }

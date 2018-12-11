@@ -7,10 +7,11 @@ using Models.DatabaseEntities;
 using DAL.Context;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class CommentRepository : IRepository<Comments>
+    public class CommentRepository : IRepositoryAsync<Comments>
     {
         private PostgreSqlNativeContext context;
 
@@ -19,33 +20,46 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public void Add(Comments item)
+        public Task<int> Add(Comments item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Comments> GetAll()
+        public async Task<IEnumerable<Comments>> GetAll()
         {
-            using (IDbConnection dbConnection = context.Connection)
+            var query = "SELECT * FROM \"Comments\"";
+
+            try
             {
-                dbConnection.Open();
-                IEnumerable<Comments> comments = dbConnection.Query<Comments>("SELECT * FROM \"Comments\"").ToList();
-                dbConnection.Close();
-                return comments;
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Comments> comments = await dbConnection.QueryAsync<Comments>(query);
+                    dbConnection.Close();
+                    return comments;
+                }
             }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+
         }
 
-        public Comments GetByID(int id)
+        public Task<Comments> GetByID(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Remove(int id)
+        public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Comments item)
+        public Task<bool> Update(Comments item)
         {
             throw new NotImplementedException();
         }

@@ -27,7 +27,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-        public void Remove(int id)
+        public bool Remove(int id)
         {
             throw new NotImplementedException();
         }

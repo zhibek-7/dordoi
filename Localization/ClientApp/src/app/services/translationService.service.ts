@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
-import { Translation } from 'src/app/models/database-entities/translation.type';
+import { Translation } from '../models/database-entities/translation.type';
 
 @Injectable()
 export class TranslationService {
 
-    // private url = "http://localhost:50872/api/translation/";
     private url: string = document.getElementsByTagName('base')[0].href + "api/translation/";
 
     constructor(private http: HttpClient) {
@@ -20,6 +19,10 @@ export class TranslationService {
     async getAllTranslationsInStringById(idString: number){
         let translations: Translation[] = await this.http.get<Translation[]>(this.url + '/InString/' + idString).toPromise();
         return translations;
+    }
+
+    async rejectTranslate(idTranslation: number){
+        await this.http.delete(this.url + '/RejectTranslation/' + idTranslation).toPromise();
     }
 
 }
