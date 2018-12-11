@@ -12,8 +12,8 @@ const routes: Routes = [
         loadChildren: '../work-panel/work-panel.module#WorkPanelModule'
     },
     {
-      path: 'crowdin',                                          // 1. Поменять название модуля
-      loadChildren: '../crowdin/crowdin.module#CrowdinModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
+      path: 'create_project',                                          // 1. Поменять название модуля
+      loadChildren: '../create_project/create_project.module#Create_projectModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
     },
     {
       path: 'Reports',
