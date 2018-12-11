@@ -36,6 +36,14 @@ const routes: Routes = [
       loadChildren: '../glossaries/glossaries.model#GlossariesModule'
     },
     {
+      path: 'example',
+      loadChildren: '../example/example.model#ExampleModule'
+    },
+    {
+      path: 'example2',
+      loadChildren: '../example2/example2.model#Example2Module'
+    },
+    {
         path: '**',
         component: NotFoundComponent
     }
