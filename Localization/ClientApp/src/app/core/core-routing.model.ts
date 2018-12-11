@@ -42,11 +42,15 @@ const routes: Routes = [
     {
       path: 'example2',
       loadChildren: '../example2/example2.model#Example2Module'
-    },
+  },
+  {
+    path: 'Files',
+    loadChildren: '../files/files.module#FilesModule'
+  },
     {
         path: '**',
         component: NotFoundComponent
-    }
+  }
 ];
 
 @NgModule({
