@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.DatabaseEntities
 {
@@ -7,16 +8,16 @@ namespace Models.DatabaseEntities
     /// </summary>
     public class Locale : BaseEntity
     {
-        //[Key]
+        [Key]
         public int ID { get; set; }
 
-        //[Required]
+        [Required]
         public string Name { get; set; }
 
-        //[Required]
-        public string description { get; set; }
+        [Required]
+        public string Description { get; set; }
 
-        //[Required]
-        public string flag { get; set; }
+        [Required]
+        public string Flag { get; set; }
     }
 }
