@@ -42,7 +42,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 dbConnection.Open();
                 var selectAllGlossariesSql = "SELECT * FROM \"Glossaries\"";
-                this._logger.WriteDebug($"Query {selectAllGlossariesSql}");
+                this.LogQuery(selectAllGlossariesSql);
                 var glossaries = dbConnection.Query<Glossary>(selectAllGlossariesSql);
                 dbConnection.Close();
                 return glossaries;
@@ -56,7 +56,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 dbConnection.Open();
                 var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1";
                 var getGlossaryByIdParam = new { GlossaryId = id };
-                this._logger.WriteDebug($"Query {getGlossaryByIdSql}, param: {getGlossaryByIdParam}");
+                this.LogQuery(getGlossaryByIdSql, getGlossaryByIdParam);
                 var glossary = dbConnection.QueryFirst<Glossary>(
                     sql: getGlossaryByIdSql,
                     param: getGlossaryByIdParam);
@@ -79,7 +79,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
                     "WHERE \"ID\"=@ID";
                 var updateGlossaryParam = item;
-                this._logger.WriteDebug($"Query {updateGlossarySql}, param: {updateGlossaryParam}");
+                this.LogQuery(updateGlossarySql, updateGlossaryParam);
                 dbConnection.Execute(
                     sql: updateGlossarySql,
                     param: updateGlossaryParam);
@@ -96,7 +96,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getTermPartOfSpeechIdSql =
                     "SELECT \"ID_PartOfSpeech\" FROM \"GlossariesStrings\" WHERE \"ID_Glossary\"=@GlossaryId AND \"ID_String\"=@StringId";
                 var getTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = termId };
-                this._logger.WriteDebug($"Query {getTermPartOfSpeechIdSql}, param: {getTermPartOfSpeechIdParam}");
+                this.LogQuery(getTermPartOfSpeechIdSql, getTermPartOfSpeechIdParam);
                 var partOfSpeechId = dbConnection
                     .ExecuteScalar<int?>(
                         sql: getTermPartOfSpeechIdSql,
@@ -115,7 +115,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "DELETE FROM \"GlossariesStrings\" " +
                     "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
                 var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
-                this._logger.WriteDebug($"Query {deleteGlossaryStingAssotiationSql}, param: {deleteGlossaryStingAssotiationParam}");
+                this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
                 dbConnection
                     .Execute(
                         sql: deleteGlossaryStingAssotiationSql,
@@ -123,7 +123,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 var deleteStingSql = "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId";
                 var deleteStingParam = new { TermId = termId };
-                this._logger.WriteDebug($"Query {deleteStingSql}, param: {deleteStingParam}");
+                this.LogQuery(deleteStingSql, deleteStingParam);
                 dbConnection
                     .Execute(
                         sql: deleteStingSql,
@@ -161,7 +161,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     ") " +
                     "RETURNING \"ID\"";
                 var insertNewStingParam = newTerm;
-                this._logger.WriteDebug($"Query {insertNewStingSql}, param: {insertNewStingParam}");
+                this.LogQuery(insertNewStingSql, insertNewStingParam);
                 var idOfNewTerm = dbConnection
                     .ExecuteScalar<int>(
                         sql: insertNewStingSql,
@@ -170,7 +170,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var instertGlossaryStringAssotiationSql =
                     "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\",\"ID_PartOfSpeech\") VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
                 var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm, PartsOfSpeechId = partOfSpeechId };
-                this._logger.WriteDebug($"Query {instertGlossaryStringAssotiationSql}, param: {instertGlossaryStringAssotiationParam}");
+                this.LogQuery(instertGlossaryStringAssotiationSql, instertGlossaryStringAssotiationParam);
                 dbConnection
                     .Execute(
                         sql: instertGlossaryStringAssotiationSql,
@@ -195,7 +195,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "\"PositionInText\"=@PositionInText " +
                     "WHERE \"ID\"=@ID";
                 var updateTermParam = updatedTerm;
-                this._logger.WriteDebug($"Query {updateTermSql}, param: {updateTermParam}");
+                this.LogQuery(updateTermSql, updateTermParam);
                 dbConnection.Execute(
                     sql: updateTermSql,
                     param: updateTermParam);
@@ -205,7 +205,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "\"ID_PartOfSpeech\"=@PartOfSpeechId " +
                     "WHERE \"ID_String\"=@StringId, \"ID_Glossary\"=@GlossaryId";
                 var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartsOfSpeechId = partOfSpeechId };
-                this._logger.WriteDebug($"Query {updateTermPartOfSpeechIdSql}, param: {updateTermPartOfSpeechIdParam}");
+                this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
                 dbConnection.Execute(
                     sql: updateTermPartOfSpeechIdSql,
                     param: updateTermPartOfSpeechIdParam);
@@ -262,7 +262,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsSql = getGlossaryTermsCompiledQuery.Sql;
                 var getGlossaryTermsParam = getGlossaryTermsCompiledQuery.NamedBindings;
-                this._logger.WriteDebug($"Query {getGlossaryTermsSql}, param: {this.DictionaryToString(getGlossaryTermsParam)}");
+                this.LogQuery(getGlossaryTermsSql, this.DictionaryToString(getGlossaryTermsParam));
                 var assotiatedTerms = dbConnection.Query<Models.DatabaseEntities.String>(
                     sql: getGlossaryTermsSql,
                     param: getGlossaryTermsParam
@@ -281,7 +281,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
                 var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
-                this._logger.WriteDebug($"Query {getGlossaryTermsCountSql}, param: {this.DictionaryToString(getGlossaryTermsCountParam)}");
+                this.LogQuery(getGlossaryTermsCountSql, this.DictionaryToString(getGlossaryTermsCountParam));
                 var assotiatedTermsCount = dbConnection.ExecuteScalar<int>(
                     sql: getGlossaryTermsCountSql,
                     param: getGlossaryTermsCountParam
@@ -306,6 +306,16 @@ namespace DAL.Reposity.PostgreSqlRepository
                 query = query.WhereLike("Value", patternString);
             }
             return query;
+        }
+
+        private void LogQuery(string sql)
+        {
+            this._logger.WriteDebug($"Query {sql}");
+        }
+
+        private void LogQuery(string sql, object param)
+        {
+            this._logger.WriteDebug($"Query {sql}, param: {param}");
         }
 
         private string DictionaryToString(Dictionary<string, object> dictionary)
