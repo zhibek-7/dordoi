@@ -17,7 +17,7 @@ export class NewProjectComponent implements OnInit {
 
   value = '';
 
-  newProject = new ProjectsService(this.httpClient);
+  newProject: Project;// = new ProjectsService(this.httpClient);
 
   checkedLanguages = [];
 

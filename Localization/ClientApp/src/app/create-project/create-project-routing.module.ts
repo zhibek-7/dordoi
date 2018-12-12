@@ -4,7 +4,7 @@ import { CreateProjectComponent } from './create-project.component';
 
 
 import { SettingsComponent } from './components/settings/settings.component';
-import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
+//import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
 
 const routes: Routes = [
 
@@ -18,11 +18,11 @@ const routes: Routes = [
     component: SettingsComponent
 
   },
-  {
-    path: 'delete',
-    component: DeleteProjectComponent
+  //{
+  //  path: 'delete',
+  //  component: DeleteProjectComponent
 
-  }
+  //}
  
 
 ];

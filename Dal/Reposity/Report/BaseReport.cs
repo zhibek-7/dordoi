@@ -23,9 +23,11 @@ namespace DAL.Reposity.Report
         public DateTime To { get; set; }
 
         /// <summary>
-        /// Функция получения строк отчета удовлетворяющих датам
+        /// Функция получения строк отчета удовлетворяющих параметрам
         /// </summary>
+        /// <param name="dateFrom"></param>
+        /// <param name="dateTo"></param>
         /// <returns>Список строк отчета</returns>
-        public abstract IEnumerable<T> Get(string dateFrom, string dateTo);
+        public abstract IEnumerable<T> GetRows(DateTime dateFrom, DateTime dateTo);
     }
 }
