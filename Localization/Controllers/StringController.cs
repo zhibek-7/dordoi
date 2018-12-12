@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DAL.Context; // EF
 using DAL.Reposity.PostgreSqlRepository; // Native
 using Models.DatabaseEntities;
 using Microsoft.AspNetCore.Cors;
