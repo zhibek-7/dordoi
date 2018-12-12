@@ -19,10 +19,34 @@ namespace Utilities.Logs
 
         protected Logger log;
 
-        /**
-         * Получение базового лога
-         */
-        protected Logger getLog()
+
+        /// <summary>
+        /// Получение класса для логирования
+        /// </summary>
+        /// <returns></returns>
+        public static LogTools GetDebugLog()
+        {
+            LogTools lt = new LogTools();
+            return lt;
+        }
+
+        /// <summary>
+        /// Получение класса для логирования с 
+        /// </summary>
+        /// <param name="logNameIn"></param>
+        /// <returns></returns>
+        public static LogTools GetErrorLog()
+        {
+            LogTools lt = new LogTools("exceptionlog");
+            return lt;
+        }
+
+
+        /// <summary>
+        /// Получение базового лога
+        /// </summary>
+        /// <returns></returns>
+        protected Logger GetLog()
         {
             if (log == null)
             {
@@ -32,34 +56,40 @@ namespace Utilities.Logs
         }
 
 
-        /**
-         * Получение  лога с заданными именем
-         */
-        protected Logger getLog(String logNameIn)
+
+        /// <summary>
+        ///  Получение лога с заданными именем
+        /// </summary>
+        /// <param name="logNameIn"></param>
+        /// <returns></returns>
+        protected Logger GetLog(String logNameIn)
         {
             log = LogManager.GetLogger(logNameIn);
             return log;
         }
 
-        // Создание debuglogs лога
+        /// <summary>
+        /// Создание LogTools debuglogs лога
+        /// </summary>
         public LogTools()
         {
             logName = "debuglogs";
         }
 
 
-        // Создание лога с базовым контекстом
+        /// <summary>
+        /// Создание лога с нужным типом
+        /// </summary>        
         public LogTools(String logNameIn)
         {
-            getLog(logNameIn);
+            GetLog(logNameIn);
             logName = logNameIn;
         }
 
-        /**
-        * Текущая дата время в формате dd.MM.yyyy HH:mm:ss
-        * 
-        * @return
-         */
+        /// <summary>
+        /// Получить текущую дату время в формате dd.MM.yyyy HH:mm:ss
+        /// </summary>
+        /// <returns></returns>
         protected String getDate()
         {
             DateTime currentDate = DateTime.Now;
@@ -67,20 +97,34 @@ namespace Utilities.Logs
             return currentDate.ToString(df_dateonly_full);
         }
 
-
-        /**
-        * Запись информации в лог + дата + текущий пользователь
-        * 
-        * @param str
-        */
+        /// <summary>
+        /// Запись информации в лог + дата + текущий пользователь
+        /// </summary>
+        /// <param name="str"></param>
         protected void WriteLn(Object str)
         {
-            StringBuilder sb = getStr(str);
+            StringBuilder sb = GetStr(str);
 
-            getLog().Info(sb.ToString());
+            GetLog().Info(sb.ToString());
         }
 
-        private StringBuilder getStr(object str)
+        /// <summary>
+        /// Запись информации в лог + дата + текущий пользователь
+        /// </summary>
+        /// <param name="str"></param>
+        public void WriteDebug(Object str)
+        {
+            StringBuilder sb = GetStr(str);
+
+            GetLog().Info(sb.ToString());
+        }
+
+        /// <summary>
+        /// Получить строку
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private StringBuilder GetStr(object str)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -90,27 +134,15 @@ namespace Utilities.Logs
             return sb;
         }
 
-        public void WriteDebug(Object str)
-        {
-            StringBuilder sb = getStr(str);
-
-            getLog().Info(sb.ToString());
-        }
-
+        /// <summary>
+        /// Запись в лог сообщения с Exception
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="err"></param>
         public void WriteExceprion(Object str, Exception err)
         {
-            StringBuilder sb = getStr(str);
-            getLog().Error(err, sb.ToString());
-
-
-            /*
-                        logger.Trace("trace message");
-                        logger.Debug("debug message");
-                        logger.Info("info message");
-                        logger.Warn("warn message");
-                        logger.Error("error message");
-                        logger.Fatal("fatal message");
-                        */
+            StringBuilder sb = GetStr(str);
+            GetLog().Error(err, sb.ToString());
         }
 
     }

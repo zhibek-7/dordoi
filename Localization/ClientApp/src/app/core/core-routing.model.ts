@@ -24,15 +24,15 @@ const routes: Routes = [
     loadChildren: '../reports/Reports.model#ReportsModule'
   },
   {
-    path: 'projects/:id',
+    path: 'Projects/:id',
     component: CurrentProjectSettingsComponent
   },
   {
-    path: 'new-project',
+    path: 'New-project',
     component: NewProjectComponent
   },
   {
-    path: 'profile',
+    path: 'Profile',
     component: UserAccountComponent
   },
   {
