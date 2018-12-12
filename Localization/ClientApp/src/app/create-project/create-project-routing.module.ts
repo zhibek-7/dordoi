@@ -4,7 +4,7 @@ import { CreateProjectComponent } from './create-project.component';
 
 
 import { SettingsComponent } from './components/settings/settings.component';
-
+import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
 
 const routes: Routes = [
 
@@ -17,7 +17,13 @@ const routes: Routes = [
     path: 'settings',
     component: SettingsComponent
 
+  },
+  {
+    path: 'delete',
+    component: DeleteProjectComponent
+
   }
+ 
 
 ];
 

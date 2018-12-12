@@ -10,9 +10,10 @@ import { FilterPipe} from './filter.pipe';
 import { OrderByPipe } from './order-by.pipe';
 
 import { SettingsComponent } from './components/settings/settings.component';
+import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
 @NgModule({
   declarations: [
-    CreateProjectComponent, FilterPipe, OrderByPipe, SettingsComponent
+    CreateProjectComponent, FilterPipe, OrderByPipe, SettingsComponent, DeleteProjectComponent
   ],
   imports: [
     CreateProjectRoutingModule,
