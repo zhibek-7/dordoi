@@ -87,25 +87,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public int? GetTermPartOfSpeechId(int glossaryId, int termId)
-        {
-            var glossary = this.GetByID(id: glossaryId);
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                var getTermPartOfSpeechIdSql =
-                    "SELECT \"ID_PartOfSpeech\" FROM \"GlossariesStrings\" WHERE \"ID_Glossary\"=@GlossaryId AND \"ID_String\"=@StringId";
-                var getTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = termId };
-                this.LogQuery(getTermPartOfSpeechIdSql, getTermPartOfSpeechIdParam);
-                var partOfSpeechId = dbConnection
-                    .ExecuteScalar<int?>(
-                        sql: getTermPartOfSpeechIdSql,
-                        param: getTermPartOfSpeechIdParam);
-                dbConnection.Close();
-                return partOfSpeechId;
-            }
-        }
-
         public void DeleteTerm(int glossaryId, int termId)
         {
             using (var dbConnection = this._context.Connection)
@@ -216,17 +197,17 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private static readonly Dictionary<string, string> TermsSortColumnNamesMapping = new Dictionary<string, string>()
         {
-            { "id", "ID" },
-            { "substringtotranslate", "SubstringToTranslate" },
-            { "description", "Description" },
-            { "context", "Context" },
-            { "translationmaxlength", "TranslationMaxLength" },
-            { "id_fileowner", "ID_FileOwner" },
-            { "value", "Value" },
-            { "positionintext", "PositionInText" },
+            { "id", "TranslationSubstrings.ID" },
+            { "substringtotranslate", "TranslationSubstrings.SubstringToTranslate" },
+            { "description", "TranslationSubstrings.Description" },
+            { "context", "TranslationSubstrings.Context" },
+            { "translationmaxlength", "TranslationSubstrings.TranslationMaxLength" },
+            { "id_fileowner", "TranslationSubstrings.ID_FileOwner" },
+            { "value", "TranslationSubstrings.Value" },
+            { "positionintext", "TranslationSubstrings.PositionInText" },
         };
 
-        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTermsByGlossaryId(
+        public IEnumerable<Models.Glossaries.Term> GetAssotiatedTermsByGlossaryId(
             int glossaryId,
             int pageSize,
             int pageNumber,
@@ -264,7 +245,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var getGlossaryTermsSql = getGlossaryTermsCompiledQuery.Sql;
                 var getGlossaryTermsParam = getGlossaryTermsCompiledQuery.NamedBindings;
                 this.LogQuery(getGlossaryTermsSql, this.DictionaryToString(getGlossaryTermsParam));
-                var assotiatedTerms = dbConnection.Query<Models.DatabaseEntities.String>(
+                var assotiatedTerms = dbConnection.Query<Models.Glossaries.Term>(
                     sql: getGlossaryTermsSql,
                     param: getGlossaryTermsParam
                     );
@@ -296,15 +277,28 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query =
                 new XQuery(dbConnection, this._compiler)
-                    .From("TranslationSubstrings")
-                    .WhereIn("ID",
-                        new Query("GlossariesStrings")
-                            .Select("ID_String")
-                            .Where("ID_Glossary", glossaryId));
+                    .From("GlossariesStrings")
+                    .LeftJoin("TranslationSubstrings", "TranslationSubstrings.ID", "GlossariesStrings.ID_String")
+                    .Where("GlossariesStrings.ID_Glossary", glossaryId)
+                    .Select(
+                        "TranslationSubstrings.ID",
+                        "TranslationSubstrings.SubstringToTranslate",
+                        "TranslationSubstrings.Description",
+                        "TranslationSubstrings.Context",
+                        "TranslationSubstrings.TranslationMaxLength",
+                        "TranslationSubstrings.ID_FileOwner",
+                        "TranslationSubstrings.Value",
+                        "TranslationSubstrings.PositionInText",
+                        "GlossariesStrings.ID_PartOfSpeech as PartOfSpeechId")
+                    .Select(
+                        new Query("Translations")
+                            .SelectRaw("COUNT(\"Translated\") > 0")
+                            .Where("Translated", "<>", "''"),
+                        "IsEditable");
             if (!string.IsNullOrEmpty(termPart))
             {
                 var patternString = $"%{termPart}%";
-                query = query.WhereLike("Value", patternString);
+                query = query.WhereLike("TranslationSubstrings.Value", patternString);
             }
             return query;
         }

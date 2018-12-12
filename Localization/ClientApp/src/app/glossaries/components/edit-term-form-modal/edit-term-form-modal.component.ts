@@ -18,12 +18,12 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
   @Input() partsOfSpeech: PartOfSpeech[];
 
-  _originalTermReference: String;
+  _originalTermReference: Term;
 
   _term: Term = new Term();
 
   @Input()
-  set term(value: String) {
+  set term(value: Term) {
     this._originalTermReference = value;
   }
 
@@ -45,24 +45,10 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
   }
 
   resetTermViewModel() {
-    this.glossariesService.getTermPartOfSpeechId(this.glossary.id, this._originalTermReference.id)
-      .subscribe(partOfSpeechId => {
-          let termStringClone = (JSON.parse(JSON.stringify(this._originalTermReference)));
-          this._term = new Term(
-            termStringClone.id,
-            termStringClone.substringToTranslate,
-            termStringClone.description,
-            termStringClone.context,
-            termStringClone.id_fileOwner,
-            termStringClone.translationMaxLength,
-            termStringClone.value,
-            termStringClone.positionInText,
-            partOfSpeechId);
-          if (!this._term.partOfSpeechId) {
-            this._term.partOfSpeechId = null;
-          }
-        },
-        error => console.log(error));
+    this._term = (JSON.parse(JSON.stringify(this._originalTermReference)));
+    if (!this._term.partOfSpeechId) {
+      this._term.partOfSpeechId = null;
+    }
   }
 
 }
