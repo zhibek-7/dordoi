@@ -28,17 +28,18 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="item">Вариант перевода</param>
         public async Task<int> Add(Translation item)
         {
-            var query = "INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\")" +
-                        "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime)";
+            var query = "INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\", \"ID_Locale\")" +
+                        "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime, 300) " + //ID_Locale нужно будет поменять на id реального языка, когда он появится
+                        "RETURNING  \"Translations\".\"ID\"";   
 
             try
             {
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var numberOfInsertedRows = await dbConnection.ExecuteAsync(query, item);
+                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, item);
                     dbConnection.Close();
-                    return numberOfInsertedRows;
+                    return idOfInsertedRow;
                 }
             }
             catch (Exception exception)
@@ -83,9 +84,29 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id необходимого варианта перевода</param>
         /// <returns>Вариант перевода</returns>
-        public Task<Translation> GetByID(int id)
+        public async Task<Translation> GetByID(int id)
         {
-            throw new NotImplementedException();
+            var query = "SELECT * FROM \"Translations\" WHERE \"ID\" = @id";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var translation = await dbConnection.QuerySingleOrDefaultAsync<Translation>(query, new { id });
+                    dbConnection.Close();
+
+                    return translation;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+
         }
 
         /// <summary>
@@ -154,6 +175,68 @@ namespace DAL.Reposity.PostgreSqlRepository
                 Console.WriteLine(exception.Message);
 
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Принять перевод
+        /// </summary>
+        /// <param name="idTranslation">id перевода</param>
+        /// <returns></returns>
+        public async Task<bool> AcceptTranslation(int idTranslation)
+        {
+            var query = "UPDATE \"Translations\" " +
+                        "SET \"Confirmed\" = true " +
+                        "WHERE \"ID\" = @Id";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var updatedRows = await dbConnection.ExecuteAsync(query, new { Id = idTranslation });
+                    dbConnection.Close();
+
+                    return updatedRows > 0;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Отклонить перевод
+        /// </summary>
+        /// <param name="idTranslation">id Перевода</param>
+        /// <returns></returns>
+        public async Task<bool> RejectTranslation(int idTranslation)
+        {
+            var query = "UPDATE \"Translations\" " +
+                        "SET \"Confirmed\" = false " +
+                        "WHERE \"ID\" = @Id";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var updatedRows = await dbConnection.ExecuteAsync(query, new { Id = idTranslation });
+                    dbConnection.Close();
+
+                    return updatedRows > 0;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return false;
             }
         }
 

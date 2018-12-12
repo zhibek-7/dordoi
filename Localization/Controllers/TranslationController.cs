@@ -39,8 +39,8 @@ namespace Localization.WebApi
                 return BadRequest("Модель не соответсвует");
             }
 
-            await translationRepository.Add(translation);
-            return Ok(translation);
+            int insertedTranslationId = await translationRepository.Add(translation);
+            return Ok(insertedTranslationId);
         }
 
         /// <summary>
@@ -63,6 +63,14 @@ namespace Localization.WebApi
         [Route("InString/{idString}")]
         public async Task<ActionResult<IEnumerable<Translation>>> GetTranslationsInString(int idString)
         {
+            // Check if string by id exists in database
+            //var foundedTranslation = await filesRepository.GetByID(id);
+
+            // if (foundedFile == null)
+            // {
+            //     return NotFound($"File by id \"{id}\" not found");
+            // }
+
             IEnumerable<Translation> translations = await translationRepository.GetAllTranslationsInStringByID(idString);
             return Ok(translations);
         }
@@ -73,22 +81,66 @@ namespace Localization.WebApi
         /// <param name="idTranslation">id варианта перевода, который необходимо удалить</param>
         /// <returns>Статус ответа</returns>
         [HttpDelete]
-        [Route("RejectTranslation/{idTranslation}")]
-        public async Task<IActionResult> RejectTranslate(int idTranslation)
+        [Route("DeleteTranslation/{idTranslation}")]
+        public async Task<IActionResult> DeleteTranslate(int idTranslation)
         {
-            // Check if file by id exists in database
-            // var foundedTranslation = await filesRepository.GetByID(id);
+            //Check if file by id exists in database
+            var foundedTranslation = await translationRepository.GetByID(idTranslation);
 
-            // if (foundedFile == null)
-            // {
-            //     return NotFound($"File by id \"{id}\" not found");
-            // }
+            if (foundedTranslation == null)
+            {
+                return NotFound($"Translation by id \"{idTranslation}\" not found");
+            }
 
             var deleteResult = await translationRepository.Remove(idTranslation);
 
             if (!deleteResult)
             {
-                return BadRequest($"Failed to remove file with id \"{ idTranslation }\" from database");
+                return BadRequest($"Failed to remove translation with id \"{ idTranslation }\" from database");
+            }
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("AcceptTranslation/{idTranslation}")]
+        public async Task<IActionResult> AcceptTranslate(int idTranslation)
+        {
+            //Check if file by id exists in database
+            var foundedTranslation = await translationRepository.GetByID(idTranslation);
+
+            if (foundedTranslation == null)
+            {
+                return NotFound($"Translation by id \"{idTranslation}\" not found");
+            }
+
+            var updateResult = await translationRepository.AcceptTranslation(idTranslation);
+
+            if (!updateResult)
+            {
+                return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
+            }
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("RejectTranslation/{idTranslation}")]
+        public async Task<IActionResult> RejectTranslate(int idTranslation)
+        {
+            //Check if file by id exists in database
+            var foundedTranslation = await translationRepository.GetByID(idTranslation);
+
+            if (foundedTranslation == null)
+            {
+                return NotFound($"Translation by id \"{idTranslation}\" not found");
+            }
+
+            var updateResult = await translationRepository.RejectTranslation(idTranslation);
+
+            if (!updateResult)
+            {
+                return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
 
             return Ok();
