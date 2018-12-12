@@ -203,8 +203,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var updateTermPartOfSpeechIdSql =
                     "UPDATE \"GlossariesStrings\" SET " +
                     "\"ID_PartOfSpeech\"=@PartOfSpeechId " +
-                    "WHERE \"ID_String\"=@StringId, \"ID_Glossary\"=@GlossaryId";
-                var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartsOfSpeechId = partOfSpeechId };
+                    "WHERE \"ID_String\"=@StringId " +
+                    "AND \"ID_Glossary\"=@GlossaryId";
+                var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartOfSpeechId = partOfSpeechId };
                 this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
                 dbConnection.Execute(
                     sql: updateTermPartOfSpeechIdSql,
