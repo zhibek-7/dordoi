@@ -292,7 +292,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "GlossariesStrings.ID_PartOfSpeech as PartOfSpeechId")
                     .Select(
                         new Query("Translations")
-                            .SelectRaw("COUNT(\"Translated\") > 0")
+                            .SelectRaw("COUNT(\"Translated\") = 0")
                             .Where("Translated", "<>", "''")
                             .WhereRaw("\"ID_String\"=\"TranslationSubstrings\".\"ID\""),
                         "IsEditable");
