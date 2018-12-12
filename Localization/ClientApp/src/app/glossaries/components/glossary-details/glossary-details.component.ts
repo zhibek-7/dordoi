@@ -40,7 +40,7 @@ export class GlossaryDetailsComponent implements OnInit {
 
   termViewModels = new Array<TermViewModel>();
 
-  get selectedTerms(): String[] {
+  get selectedTerms(): Term[] {
     return this.termViewModels
       .filter(termViewModel => termViewModel.isSelected)
       .map(termViewModel => termViewModel.term);

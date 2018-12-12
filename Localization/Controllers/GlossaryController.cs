@@ -43,7 +43,7 @@ namespace Localization.WebApi
         }
 
         [HttpGet("{glossaryId}/terms")]
-        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(
+        public IEnumerable<Models.Glossaries.Term> GetAssotiatedTerms(
             int glossaryId,
             [FromQuery] string termSearch,
             [FromQuery] int? pageSize,
@@ -74,12 +74,6 @@ namespace Localization.WebApi
                     glossaryId: glossaryId,
                     newTerm: newTerm,
                     partOfSpeechId: partOfSpeechId);
-        }
-
-        [HttpGet("{glossaryId}/terms/{termId}/part_of_speech")]
-        public int? GetTermPartOfSpeech(int glossaryId, int termId)
-        {
-            return this._glossaryRepository.GetTermPartOfSpeechId(glossaryId: glossaryId, termId: termId);
         }
 
         [HttpDelete("{glossaryId}/terms/{termId}")]

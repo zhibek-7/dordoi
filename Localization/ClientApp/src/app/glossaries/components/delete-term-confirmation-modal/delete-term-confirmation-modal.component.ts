@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
-import { String } from 'src/app/models/database-entities/string.type';
+import { Term } from 'src/app/models/Glossaries/term.type';
 import { ModalComponent } from 'src/app/glossaries/components/modal/modal.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { ModalComponent } from 'src/app/glossaries/components/modal/modal.compon
 })
 export class DeleteTermConfirmationComponent extends ModalComponent implements OnInit {
 
-  @Input() term: String;
+  @Input() term: Term;
 
   @Output() deleteTermConfirmed = new EventEmitter();
 
