@@ -293,7 +293,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Select(
                         new Query("Translations")
                             .SelectRaw("COUNT(\"Translated\") > 0")
-                            .Where("Translated", "<>", "''"),
+                            .Where("Translated", "<>", "''")
+                            .WhereRaw("\"ID_String\"=\"TranslationSubstrings\".\"ID\""),
                         "IsEditable");
             if (!string.IsNullOrEmpty(termPart))
             {
