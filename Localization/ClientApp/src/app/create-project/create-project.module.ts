@@ -2,24 +2,25 @@ import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
 
-import { Create_projectComponent } from './Create_project.component';
-import { Create_projectRoutingModule } from './create_project-routing.module';
+import { CreateProjectComponent } from './create-project.component';
+import { CreateProjectRoutingModule } from './create-project-routing.module';
 import { FormsModule }   from '@angular/forms';
 
 import { FilterPipe} from './filter.pipe';
 import { OrderByPipe } from './order-by.pipe';
 
 import { SettingsComponent } from './components/settings/settings.component';
+import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
 @NgModule({
   declarations: [
-    Create_projectComponent, FilterPipe, OrderByPipe, SettingsComponent
+    CreateProjectComponent, FilterPipe, OrderByPipe, SettingsComponent, DeleteProjectComponent
   ],
   imports: [
-    Create_projectRoutingModule,
+    CreateProjectRoutingModule,
     FormsModule,
     HttpModule,
     CommonModule
   ],
   providers: []
 })
-export class Create_projectModule { }
+export class CreateProjectModule { }

@@ -5,11 +5,11 @@ import { FormGroup } from '@angular/forms';
 //import { ListFilterPipe } from 'angular2-multiselect-dropdown';
 //import { FilterPipe }from './filter.pipe';
 @Component({
-  selector: 'app-create_project',
-  templateUrl: './create_project.component.html',
-  styleUrls: ['./create_project.component.css'],
+  selector: 'app-create-project',
+  templateUrl: './create-project.component.html',
+  styleUrls: ['./create-project.component.css'],
 })
-export class Create_projectComponent implements OnInit{
+export class CreateProjectComponent implements OnInit{
   args='ascending';
   searchText='';
   form: FormGroup;
