@@ -16,8 +16,8 @@ const routes: Routes = [
     loadChildren: '../reports/Reports.model#ReportsModule'
   },
   {
-    path: 'create_project',                                          // 1. Поменять название модуля
-    loadChildren: '../create_project/create_project.module#Create_projectModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
+    path: 'create-project',                                          // 1. Поменять название модуля
+    loadChildren: '../create-project/create-project.module#CreateProjectModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
   },
   {
     path: 'Reports',

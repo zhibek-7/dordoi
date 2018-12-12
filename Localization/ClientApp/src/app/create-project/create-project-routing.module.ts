@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { Create_projectComponent } from './Create_project.component';
+import { CreateProjectComponent } from './create-project.component';
 
 
 import { SettingsComponent } from './components/settings/settings.component';
@@ -10,7 +10,7 @@ const routes: Routes = [
 
   {
     path: '',
-    component: Create_projectComponent
+    component: CreateProjectComponent
 
   },
   {
@@ -27,4 +27,4 @@ const routes: Routes = [
 })
 
 
-export class Create_projectRoutingModule { }
+export class CreateProjectRoutingModule { }
