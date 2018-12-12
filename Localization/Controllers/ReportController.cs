@@ -14,20 +14,27 @@ namespace Localization.WebApi
     public class ReportController : ControllerBase
     {
         [HttpGet]
-        [Route("TranslatedWords:{dateFrom}:{dateTo}")]
-        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(string dateFrom, string dateTo)
+        [Route("TranslatedWords")]
+        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(
+            [FromQuery] string start,
+            [FromQuery] string end,
+            [FromQuery] string volumeCalcType,
+            [FromQuery] string calcBasisType,
+            [FromQuery] int? userId,
+            [FromQuery] int? localeId,
+            [FromQuery] string workType,
+            [FromQuery] int? initialFolderId)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.Get(dateFrom, dateTo).ToList();
-            return reportRows;
+            return TranslatedWords.GetRows(DateTime.Parse(start), DateTime.Parse(end));
         }
 
         [HttpGet]
         [Route("TranslatedWordsExcel:{dateFrom}:{dateTo}")]
-        public FileResult GetTranslatedWordsReportExcel(string dateFrom, string dateTo)
+        public FileResult GetTranslatedWordsReportExcel(DateTime dateFrom, DateTime dateTo)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.Get(dateFrom, dateTo).ToList();
+            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRows(dateFrom, dateTo).ToList();
             byte[] bin;
             HttpResponseMessage result = null;
 
