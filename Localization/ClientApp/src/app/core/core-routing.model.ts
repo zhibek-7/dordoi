@@ -12,16 +12,12 @@ const routes: Routes = [
     loadChildren: '../work-panel/work-panel.module#WorkPanelModule'
   },
   {
-    path: 'projects/:id/reports',
+    path: 'Projects/:id/reports',
     loadChildren: '../reports/Reports.model#ReportsModule'
   },
   {
     path: 'create-project',                                          // 1. Поменять название модуля
     loadChildren: '../create-project/create-project.module#CreateProjectModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
-  },
-  {
-    path: 'Reports',
-    loadChildren: '../reports/Reports.model#ReportsModule'
   },
   {
     path: 'Projects/:id',

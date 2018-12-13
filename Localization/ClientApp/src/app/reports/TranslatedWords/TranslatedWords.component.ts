@@ -1,11 +1,16 @@
-import { Component, ViewChild} from '@angular/core';
-import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
+import { Component, OnInit, Input } from '@angular/core';
+
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
 import { UserService } from '../../services/user.service';
+import { FileService } from '../../services/file.service';
+
+import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { Locale } from '../../models/database-entities/locale.type';
-import { MatTableDataSource } from '@angular/material';
+import { File } from '../../models/database-entities/file.type';
 import { User } from "../../models/database-entities/user.type";
+
+import { MatTableDataSource } from '@angular/material';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { Moment } from 'moment';
 
@@ -15,7 +20,13 @@ import { Moment } from 'moment';
   styleUrls: ['./TranslatedWords.component.css']
 })
 
-export class TranslatedWordsComponent {
+export class TranslatedWordsComponent implements OnInit {
+
+  @Input() projectId: number;
+
+  ngOnInit() {
+  }
+
   //Строки отчета
   public reportrows: TranslatedWordsReportRow[];
 
@@ -23,6 +34,8 @@ export class TranslatedWordsComponent {
   public Languages: Locale[];
   //Список пользователей из БД
   public Users: User[];
+  //Список папок проекта
+  public Folders: File[];
 
   //Название отчета
   msg: string = "Лучшие участники";
@@ -45,8 +58,7 @@ export class TranslatedWordsComponent {
   //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
-  constructor(private reportService: ReportService, private languagesService: LanguageService, private userService: UserService) {
-   
+  constructor(private reportService: ReportService, private languagesService: LanguageService, private userService: UserService, private fileService: FileService) {
     this.languagesService.getLanguageList()
       .subscribe(Languages => { this.Languages = Languages; },
       error => console.error(error));
@@ -54,7 +66,10 @@ export class TranslatedWordsComponent {
     this.userService.getUserList()
       .subscribe(Users => { this.Users = Users; },
         error => console.error(error));
-    
+
+    this.fileService.getInitialProjectFolders(this.projectId)
+      .subscribe(folders => { this.Folders = folders; },
+        error => console.error(error));
   }
 
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];

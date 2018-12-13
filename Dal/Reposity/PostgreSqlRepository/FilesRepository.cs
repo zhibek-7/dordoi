@@ -108,6 +108,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        //Нужно для формирования отчетов
+        public IEnumerable<File> GetInitialFolders(int projectId)
+        {
+            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL";
+
+            try
+            {
+                // Using new posgresql connection
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    // Execute select query and return enumerable of file objects
+                    return connection.Query<File>(sqlString, new { projectId });
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                // Custom logging
+                Console.WriteLine(exception.ErrorCode);
+
+                return null;
+            }
+            catch (Exception exception)
+            {
+                // Custom logging
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
         public async Task<int> Add(File file)
         {
             // Sql string to insert query

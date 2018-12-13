@@ -54,8 +54,8 @@
         <mat-form-field appearance="outline">
           <mat-label>Начальная папк</mat-label>
           <mat-select [(value)]="initialFolderId" placeholder="Начальная папка">
-            <mat-option value="0">Все языки</mat-option>
-            <mat-option *ngFor="let lang of Languages" value="{{lang.id}}">"{{lang.name}}"</mat-option>
+            <mat-option value="0">Все</mat-option>
+            <mat-option *ngFor="let folder of Folders" value="{{folder.id}}">"{{folder.name}}"</mat-option>
           </mat-select>
         </mat-form-field>
       </p>
