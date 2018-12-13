@@ -49,7 +49,7 @@ export class TranslatedWordsComponent implements OnInit {
 
     this.projectsService.getProject(this.projectId)
       .subscribe(project => { this.project = project; console.log(this.project.name); },
-        error => console.error(error));
+      error => console.error(error));
   }
 
   public project: Project;

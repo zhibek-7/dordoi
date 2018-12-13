@@ -31,10 +31,10 @@ namespace Localization.WebApi
 
         [HttpGet]
         [Route("TranslatedWordsExcel:{dateFrom}:{dateTo}")]
-        public FileResult GetTranslatedWordsReportExcel(DateTime dateFrom, DateTime dateTo)
+        public FileResult GetTranslatedWordsReportExcel(string dateFrom, string dateTo)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRows(dateFrom, dateTo).ToList();
+            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRows(DateTime.Parse(dateFrom), DateTime.Parse(dateTo)).ToList();
             byte[] bin;
             HttpResponseMessage result = null;
 
