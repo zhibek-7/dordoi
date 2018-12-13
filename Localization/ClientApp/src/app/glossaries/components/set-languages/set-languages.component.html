@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col">
+    <div class="input-group">
+      <div class="custom-file">
+        <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Фильтровать языки">
+      </div>
+      <div class="input-group-append">
+        <button style="height: 38px;" type="button" class="btn btn-outline-secondary" (click)="args='ascending';reverse=!reverse">
+          <i class="material-icons">sort_by_alpha</i>
+        </button>
+      </div>
+    </div>
+    <div class="input-group">
+      <div class="col-md" size="4" style="height: 10em; overflow: auto;">
+        <div class="form-check" *ngFor="let locale of availableLocales|filterLocales:searchText|orderBy:args:reverse">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" [ngModel]="locale.isSelected" (ngModelChange)="toggleSelection(locale)">{{locale.model.name}}
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="input-group">
+      <div class="btn-group mr-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="selectAll()">Выбрать все</button>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div>
+      <label>Выбрано:</label>
+    </div>
+    <label class="form-check-label" *ngIf="isNoneSelected">Ничего не выбрано</label>
+    <div class="col-md" size="4" style="height: 10em; overflow: auto;">
+      <div class="form-check" *ngFor="let locale of selectedLocales">
+        <label class="form-check-label">{{locale.name}}</label>
+      </div>
+    </div>
+  </div>
+</div>

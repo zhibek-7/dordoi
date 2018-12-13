@@ -26,7 +26,30 @@ export class TranslatedWordsComponent implements OnInit {
 
   @Input() projectId: number;
 
+  constructor(private reportService: ReportService,
+    private languagesService: LanguageService,
+    private userService: UserService,
+    private fileService: FileService,
+    private projectsService: ProjectsService) {}
+
+
   ngOnInit() {
+
+    this.languagesService.getLanguageList()
+      .subscribe(Languages => { this.Languages = Languages; },
+        error => console.error(error));
+
+    this.userService.getUserList()
+      .subscribe(Users => { this.Users = Users; },
+        error => console.error(error));
+
+    this.fileService.getInitialProjectFolders(this.projectId)
+      .subscribe(folders => { this.Folders = folders; },
+        error => console.error(error));
+
+    this.projectsService.getProject(this.projectId)
+      .subscribe(project => { this.project = project; console.log(this.project.name); },
+      error => console.error(error));
   }
 
   public project: Project;
@@ -62,28 +85,7 @@ export class TranslatedWordsComponent implements OnInit {
   //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
-  constructor(private reportService: ReportService,
-    private languagesService: LanguageService,
-    private userService: UserService,
-    private fileService: FileService,
-    private projectsService: ProjectsService) {
-
-    this.languagesService.getLanguageList()
-      .subscribe(Languages => { this.Languages = Languages; },
-      error => console.error(error));
-
-    this.userService.getUserList()
-      .subscribe(Users => { this.Users = Users; },
-        error => console.error(error));
-
-    this.fileService.getInitialProjectFolders(this.projectId)
-      .subscribe(folders => { this.Folders = folders; },
-      error => console.error(error));
-
-    this.projectsService.getProject (this.projectId)
-      .subscribe(project => { this.project = project; },
-        error => console.error(error));
-  }
+  
 
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
 

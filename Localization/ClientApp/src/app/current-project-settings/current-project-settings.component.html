@@ -8,7 +8,7 @@
                   <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
                 </a>
               </li>
-              <li class="breadcrumb-item active" aria-current="page">{{ currentProject.name }}</li>
+              <li *ngIf="currentProject" class="breadcrumb-item active" aria-current="page">{{ currentProject.name }}</li>
             </ol>
           </nav>
     </div>
@@ -20,8 +20,8 @@
 </div>
 
 <h1>
-  <span>
-    {{currentProject.name}}
+  <span *ngIf="currentProject">
+    {{ currentProject.name }}
   </span>
 
   настройки
@@ -34,7 +34,7 @@
       <a class="nav-item nav-link active" href="./Translation">Переводы</a>
       <a class="nav-item nav-link" href="./Files">Файлы</a>
       <a class="nav-item nav-link" href="#">Переводчики</a>
-      <a class="nav-item nav-link" routerLink="./reports">Отчеты</a>
+      <a class="nav-item nav-link" routerLink="reports">Отчеты</a>
       <a class="nav-item nav-link" href="#">TM & MT</a>
       <a class="nav-item nav-link" href="#">Скриншоты</a>
       <a class="nav-item nav-link" href="./Glossaries">Словарь</a>
@@ -82,8 +82,8 @@
   <tr>
     <td>Контроль качества</td>
     <td>
-      <p *ngIf="currentProject.itsErr" [ngClass]="{'error-block': currentProject.itsErr}">НАЙДЕНЫ ОШИБКИ</p>
-      <p *ngIf="!currentProject.itsErr" [ngClass]="{'none-error-block': !currentProject.itsErr}">ОШИБОК НЕ ОБНАРУЖЕНО</p>
+      <!--<p *ngIf="currentProject.itsErr" [ngClass]="{'error-block': currentProject.itsErr}">НАЙДЕНЫ ОШИБКИ</p>
+      <p *ngIf="!currentProject.itsErr" [ngClass]="{'none-error-block': !currentProject.itsErr}">ОШИБОК НЕ ОБНАРУЖЕНО</p>-->
     </td>
   </tr>
 </table>

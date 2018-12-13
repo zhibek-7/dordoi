@@ -4,14 +4,7 @@
     <button type="button" class="close" (click)="hide()">&times;</button>
   </div>
   <div class="app-modal-body">
-    <label class="m-1">Термин</label>
-    <input class="form-control m-1" [(ngModel)]="_term.value" type="text" [disabled]="!_term.isEditable" />
-    <label class="m-1">Часть речи</label>
-    <select class="form-control m-1" [(ngModel)]="_term.partOfSpeechId" [disabled]="!_term.isEditable">
-      <option *ngFor="let partOfSpeech of partsOfSpeech" [ngValue]="partOfSpeech.id">{{partOfSpeech.name}}</option>
-    </select>
-    <label class="m-1">Описание</label>
-    <textarea style="resize:none" class="form-control m-1" rows="4" [(ngModel)]="_term.description" [disabled]="!_term.isEditable"></textarea>
+    <app-term-details-editable [glossary]="glossary" [term]="_term" [triggerLoading]="visible"></app-term-details-editable>
   </div>
   <div class="app-modal-footer">
     <button class="btn btn-primary m-1" (click)="confirmTermUpdate()">Готово</button>

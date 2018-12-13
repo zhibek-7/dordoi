@@ -25,7 +25,7 @@
           <a *ngFor="let project of projects"
               class="dropdown-item"
               (click)="getCurrentProject(project)"
-              routerLink= '/Projects/{{ project.id }}'>
+              href= '/Projects/{{ project.id }}'>
               {{ project.name }}</a>
           <a class="dropdown-item" routerLink='/Profile'>Все проекты</a>
           <div class="dropdown-divider"></div>
