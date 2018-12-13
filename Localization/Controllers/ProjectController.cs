@@ -12,19 +12,27 @@ namespace Localization.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        private readonly LocaleRepository localeRepository;
+        private readonly LocalizationProjectRepository _localizationProjectRepository;
 
         public ProjectController()
         {
-            localeRepository = new LocaleRepository();
+            _localizationProjectRepository = new LocalizationProjectRepository();
         }
 
         [HttpGet]
         [Route("List")]
-        public List<Locale> GetProjects()
+        public List<LocalizationProject> GetProjects()
         {
-            List<Locale> lacale = localeRepository.GetAll().ToList();
-            return lacale;
+            var projects = _localizationProjectRepository.GetAll().ToList();
+            return projects;
+        }
+
+        [HttpGet]
+        [Route("{Id}")]
+        public LocalizationProject GetProjectById(int Id)
+        {
+            var project = _localizationProjectRepository.GetByID(Id);
+            return project;
         }
     }
 }

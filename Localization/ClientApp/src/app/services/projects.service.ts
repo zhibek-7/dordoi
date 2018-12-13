@@ -1,24 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Project } from '../models/Project';
+import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class ProjectsService {
 
   private controllerUrl: string = "api/Project/";
 
-    name: string;
-    id: string;
-    url: string;
-    owner: string;
-    created: Date;
-    changed: Date;
-    hasErr: boolean;
-    type: string;
-    sourceLanguage: string;
+    //name: string;
+    //id: string;
+    //url: string;
+    //owner: string;
+    //created: Date;
+    //changed: Date;
+    //hasErr: boolean;
+    //type: string;
+    //sourceLanguage: string;
 
     constructor(private httpClient: HttpClient) {}
 
+    //Тестовые данные потом не забыть удалить
     projects: Project[] = [
         {
             name: 'Тестовый проект',
@@ -69,9 +71,12 @@ export class ProjectsService {
         }
     ];
 
-    getProjects(userName: string) {
-        const getUrl = ''; // тут формируем строку подключения к БД для получения проектов
-        return this.httpClient.get<Project[]>(this.controllerUrl);
+    getProjects(): Observable<Project[]> {
+        return this.httpClient.get<Project[]>(this.controllerUrl + "List");
+    }
+
+    getProject(id: number): Observable<Project> {
+        return this.httpClient.get<Project>(this.controllerUrl + id);
     }
 
     addProject(project: Project) {

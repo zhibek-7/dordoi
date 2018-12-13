@@ -6,7 +6,7 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Проект локализации
     /// </summary>
-    public class LocalizationProjects : BaseEntity
+    public class LocalizationProject : BaseEntity
     {
         [Required]
         public string Name { get; set; }

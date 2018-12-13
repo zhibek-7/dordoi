@@ -3,12 +3,14 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
 import { UserService } from '../../services/user.service';
-import { FileService } from '../../services/file.service';
+import { FileService } from '../../services/file.service'; 
+import { ProjectsService } from '../../services/projects.service';
 
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { Locale } from '../../models/database-entities/locale.type';
 import { File } from '../../models/database-entities/file.type';
 import { User } from "../../models/database-entities/user.type";
+import { Project } from '../../models/Project';
 
 import { MatTableDataSource } from '@angular/material';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
@@ -26,6 +28,8 @@ export class TranslatedWordsComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  public project: Project;
 
   //Строки отчета
   public reportrows: TranslatedWordsReportRow[];
@@ -58,7 +62,12 @@ export class TranslatedWordsComponent implements OnInit {
   //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
-  constructor(private reportService: ReportService, private languagesService: LanguageService, private userService: UserService, private fileService: FileService) {
+  constructor(private reportService: ReportService,
+    private languagesService: LanguageService,
+    private userService: UserService,
+    private fileService: FileService,
+    private projectsService: ProjectsService) {
+
     this.languagesService.getLanguageList()
       .subscribe(Languages => { this.Languages = Languages; },
       error => console.error(error));
@@ -69,6 +78,10 @@ export class TranslatedWordsComponent implements OnInit {
 
     this.fileService.getInitialProjectFolders(this.projectId)
       .subscribe(folders => { this.Folders = folders; },
+      error => console.error(error));
+
+    this.projectsService.getProject (this.projectId)
+      .subscribe(project => { this.project = project; },
         error => console.error(error));
   }
 

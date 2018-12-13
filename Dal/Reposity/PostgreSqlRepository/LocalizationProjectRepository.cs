@@ -6,10 +6,11 @@ using System.Text;
 using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectRepository: IRepository<LocalizationProjects>
+    public class LocalizationProjectRepository: IRepository<LocalizationProject>
     {
         private PostgreSqlNativeContext context;
 
@@ -18,24 +19,72 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public void Add(LocalizationProjects locale)
+        public void Add(LocalizationProject locale)
         {
             throw new NotImplementedException();
         }
 
-        public LocalizationProjects GetByID(int Id)
+        public LocalizationProject GetByID(int Id)
         {
-            throw new NotImplementedException();
-        }
+            // Sql string to select all rows
+            var sqlString = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @Id";
 
-        public IEnumerable<LocalizationProjects> GetAll()
-        {
-            using (IDbConnection dbConnection = context.Connection)
+            try
             {
-                dbConnection.Open();
-                IEnumerable<LocalizationProjects> users = dbConnection.Query<LocalizationProjects>("SELECT * FROM \"Locales\"").ToList();
-                dbConnection.Close();
-                return users;
+                // Using new posgresql connection
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var project = dbConnection.Query<LocalizationProject>(sqlString, new {Id}).FirstOrDefault();
+                    dbConnection.Close();
+                    return project;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                // Custom logging
+                Console.WriteLine(exception.ErrorCode);
+
+                return null;
+            }
+            catch (Exception exception)
+            {
+                // Custom logging
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
+        public IEnumerable<LocalizationProject> GetAll()
+        {
+            // Sql string to select all rows
+            var sqlString = "SELECT * FROM \"LocalizationProjects\"";
+
+            try
+            {
+                // Using new posgresql connection
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<LocalizationProject> users = dbConnection.Query<LocalizationProject>(sqlString);
+                    dbConnection.Close();
+                    return users;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                // Custom logging
+                Console.WriteLine(exception.ErrorCode);
+
+                return null;
+            }
+            catch (Exception exception)
+            {
+                // Custom logging
+                Console.WriteLine(exception.Message);
+
+                return null;
             }
         }
 
@@ -44,7 +93,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-        public void Update(LocalizationProjects user)
+        public void Update(LocalizationProject user)
         {
             throw new NotImplementedException();
         }
