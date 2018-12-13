@@ -24,14 +24,24 @@ export class CurrentProjectSettingsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private projectService: ProjectsService) {}
 
   ngOnInit() {
-    this.route.params
-      .subscribe((params: Params) => {
-        this.currentProject = this.projectService.projects.find((element) => {
-          return element.id === this.route.snapshot.params['id'];
-        });
-        this.wasChanged = moment(this.currentProject.changed).fromNow();
-        this.wasCreated = moment(this.currentProject.created).fromNow();
-      });
+    this.getProject();
   }
 
+  getProject()
+  {
+    this.route.params
+      .subscribe((params: Params) => {
+        this.projectService.getProject(this.route.snapshot.params['id'])
+          .subscribe(project => {
+              this.currentProject = project; 
+              this.wasChanged = this.currentProject.dateOfCreation;
+              this.wasCreated = this.currentProject.lastActivity;
+            },
+          error => console.error(error));
+        console.log(this.route.snapshot.params['id']);
+        
+      });
+
+    
+  }
 }
