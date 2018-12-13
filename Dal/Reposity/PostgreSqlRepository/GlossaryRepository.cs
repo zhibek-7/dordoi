@@ -14,7 +14,7 @@ using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class GlossaryRepository : IRepository<Glossary>
+    public class GlossaryRepository : BaseRepository, IRepository<Glossary>
     {
 
         private readonly PostgreSqlNativeContext _context;
@@ -415,28 +415,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 }
                 dbConnection.Close();
             }
-        }
-
-        private void LogQuery(string sql)
-        {
-            this._logger.WriteDebug($"Query {sql}");
-        }
-
-        private void LogQuery(string sql, object param)
-        {
-            this._logger.WriteDebug($"Query {sql}, param: {param}");
-        }
-
-        private string DictionaryToString(Dictionary<string, object> dictionary)
-        {
-            var stringBuilder =
-                dictionary.SkipLast(1)
-                .Aggregate(
-                    seed: new StringBuilder("{ "),
-                    func: (seed, pair) => seed.Append($"{pair.Key} = {pair.Value}, "));
-            return dictionary.TakeLast(1)
-                .Select(pair => stringBuilder.Append($"{pair.Key} = {pair.Value} }}"))
-                .FirstOrDefault()?.ToString() ?? "null";
         }
 
     }
