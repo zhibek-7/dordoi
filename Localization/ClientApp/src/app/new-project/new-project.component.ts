@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { Language } from '../models/Language';
+import { Locale } from '../models/database-entities/locale.type';
 import { Project } from '../models/Project';
 import { LanguageService } from '../services/languages.service';
 import { ProjectsService } from '../services/projects.service';
@@ -17,11 +17,11 @@ export class NewProjectComponent implements OnInit {
 
   value = '';
 
-  newProject = new ProjectsService(this.httpClient);
+  newProject: Project;// = new ProjectsService(this.httpClient);
 
   checkedLanguages = [];
 
-  languages: Language[];
+  languages: Locale[];
 
   myForm = new FormGroup({
     name: new FormControl(null),
@@ -32,8 +32,9 @@ export class NewProjectComponent implements OnInit {
   constructor(private languageService: LanguageService, private projectsService: ProjectsService, private httpClient: HttpClient) { }
 
   ngOnInit() {
-    console.log('new-project.component ngOnInit ---!!!!!!!!!');
-    this.languages = this.languageService.languages;
+    this.languageService.getLanguageList()
+      .subscribe(Languages => { this.languages = Languages; },
+        error => console.error(error));
     //console.log(this.newProject);
   }
 
@@ -56,14 +57,8 @@ export class NewProjectComponent implements OnInit {
     console.log('addProject ---!!!!!!!!!');
 
     this.newProject.name = this.myForm.get('name').value;
-   this.newProject.id = (Math.floor(Math.random() * 10000) + 1).toString();
+   this.newProject.id = Math.floor(Math.random() * 10000) + 1;
     this.newProject.url = this.myForm.get('url').value;
-    this.newProject.owner = 'Я';
-    this.newProject.created = new Date;
-    this.newProject.changed = new Date;
-    this.newProject.hasErr = false;
-    this.newProject.type = 'public';
-    this.newProject.sourceLanguage = this.myForm.get('language').value;
 
     this.projectsService.addProject(this.newProject);
   }

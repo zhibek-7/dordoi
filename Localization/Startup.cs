@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+п»їusing Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using DAL.Reposity.PostgreSqlRepository;
 
 namespace Localization
 {
@@ -23,8 +24,13 @@ namespace Localization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // 
+            var connectionString = Configuration.GetConnectionString("MyWebApiConnection");
 
-            ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////
+            // 
+            services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
+
+            ////Р”Р°РЅРЅС‹Р№ Р±Р»РѕРє РєРѕРґР° РІРєР»СЋС‡Р°РµС‚ РґРѕСЃС‚СѓРї Рє СЃРµСЂРІРµСЂСѓ СЃ Р»СЋР±РѕРіРѕ РїРѕСЂС‚Р°(РЅСѓР¶РµРЅ РґР»СЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ СЃ РЅРµСЃРєРѕР»СЊРєРёС… РєР»РёРµРЅС‚РѕРІ)///////
             var corsBuilder = new CorsPolicyBuilder();
             corsBuilder.AllowAnyHeader();
             corsBuilder.AllowAnyMethod();
@@ -36,10 +42,10 @@ namespace Localization
             {
                 options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
             });
-            //////////////Данный блок заканчивается
+            //////////////Р”Р°РЅРЅС‹Р№ Р±Р»РѕРє Р·Р°РєР°РЅС‡РёРІР°РµС‚СЃСЏ
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddEntityFrameworkNpgsql().AddDbContext<PostgreSqlEFContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("MyWebApiConnection"))); // тут подключаем нашу удаленную бд
+            services.AddEntityFrameworkNpgsql().AddDbContext<PostgreSqlEFContext>(opt => opt.UseNpgsql(connectionString)); // С‚СѓС‚ РїРѕРґРєР»СЋС‡Р°РµРј РЅР°С€Сѓ СѓРґР°Р»РµРЅРЅСѓСЋ Р±Рґ
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -73,7 +79,7 @@ namespace Localization
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseCors("SiteCorsPolicy"); // это тоже для нескольких портов(см. выше)
+            app.UseCors("SiteCorsPolicy"); // СЌС‚Рѕ С‚РѕР¶Рµ РґР»СЏ РЅРµСЃРєРѕР»СЊРєРёС… РїРѕСЂС‚РѕРІ(СЃРј. РІС‹С€Рµ)
             
             app.UseSpa(spa =>
             {

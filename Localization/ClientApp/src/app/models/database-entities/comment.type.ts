@@ -1,5 +1,6 @@
 export class Comment {
-    id: number;
+    commentId: number;
     comment: string;
+    userId: number;
     dateTime: Date;
 }

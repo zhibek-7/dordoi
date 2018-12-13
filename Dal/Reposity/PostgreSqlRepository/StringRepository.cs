@@ -6,10 +6,11 @@ using DAL.Context;
 using System.Data;
 using Dapper;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class StringRepository : IRepository<Models.DatabaseEntities.String>
+    public class StringRepository : IRepositoryAsync<Models.DatabaseEntities.String>
     {
         private PostgreSqlNativeContext context;
 
@@ -18,39 +19,81 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public void Add(Models.DatabaseEntities.String item)
+        /// <summary>
+        /// Добавляет новую фразу
+        /// </summary>
+        /// <param name="item">Новая фраза</param>
+        /// <returns>Кол-во добавленных фраз</returns>
+        public Task<int> Add(Models.DatabaseEntities.String item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Models.DatabaseEntities.String> GetAll()
+        /// <summary>
+        /// Получает все фразы
+        /// </summary>
+        /// <returns>Список фраз</returns>
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetAll()
         {
-            using (IDbConnection dbConnection = context.Connection)
+            var query = "SELECT * FROM \"TranslationSubstrings\"";
+
+            try
             {
-                dbConnection.Open();
-                IEnumerable<Models.DatabaseEntities.String> strings = dbConnection.Query<Models.DatabaseEntities.String>("SELECT * FROM \"TranslationSubstrings\"").ToList();
-                dbConnection.Close();
-                return strings;
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Models.DatabaseEntities.String> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    dbConnection.Close();
+                    return strings;
+                }
             }
+            catch(Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+            
         }
 
-        public Models.DatabaseEntities.String GetByID(int id)
+        /// <summary>
+        /// Получает запись с конкретным 
+        /// </summary>
+        /// <param name="id">id необходимой фразы</param>
+        /// <returns>Запись с необходимым id</returns>
+        public async Task<Models.DatabaseEntities.String> GetByID(int id)
         {
-            using (IDbConnection dbConnection = context.Connection)
+            var query = "SELECT * " +
+                        "FROM \"TranslationSubstrings\" " +
+                        "WHERE \"ID\" = @Id";
+
+            try
             {
-                dbConnection.Open();
-                Models.DatabaseEntities.String foundedString = dbConnection.Query<Models.DatabaseEntities.String>("SELECT * FROM \"Strings\" WHERE \"ID\" = @Id", new { Id = id }).FirstOrDefault();
-                dbConnection.Close();
-                return foundedString;
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.String>(query, new { Id = id });
+                    dbConnection.Close();
+                    return foundedString;
+                }
             }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+            
         }
 
-        public void Remove(int id)
+        public Task<bool> Remove(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Models.DatabaseEntities.String item)
+        public Task<bool> Update(Models.DatabaseEntities.String item)
         {
             throw new NotImplementedException();
         }

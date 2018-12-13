@@ -1,9 +1,9 @@
 import { Component, OnInit} from '@angular/core';
 import { MatIconModule } from '@angular/material'
 
-import { String } from 'src/app/models/database-entities/string.type';
+import { String } from '../../../models/database-entities/string.type';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
-import { StringService } from '../../../services/accessToDatabase/stringService.service';
+import { StringService } from '../../../services/stringService.service';
 
 @Component({
     selector: 'phrases-component',

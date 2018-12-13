@@ -6,6 +6,7 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
 import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
 import { SortingArgs } from 'src/app/glossaries/models/sorting.args';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
+import { Term } from 'src/app/models/Glossaries/term.type';
 
 @Component({
   selector: 'app-glossary-terms',
@@ -22,7 +23,6 @@ export class GlossaryTermsComponent implements OnInit {
   set termViewModels(value) {
     this._termViewModels = value;
     this.allDispayedTermsSelectedCheckboxChecked = this.termViewModels.every(termViewModel => termViewModel.isSelected);
-    console.log(value, 555)
   }
 
   get termViewModels() {
@@ -44,20 +44,10 @@ export class GlossaryTermsComponent implements OnInit {
     private requestDataReloadService: RequestDataReloadService
   ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  deleteTerm(term: String) {
+  deleteTerm(term: Term) {
     this.glossariesService.deleteTerm(this.glossary.id, term.id)
-      .subscribe(
-        () => this.requestDataReloadService.requestUpdate(),
-        error => console.log(error));
-  }
-
-  updateTerm(updatedTerm: String) {
-    if (!this.glossary)
-      return;
-
-    this.glossariesService.updateTerm(this.glossary.id, updatedTerm)
       .subscribe(
         () => this.requestDataReloadService.requestUpdate(),
         error => console.log(error));

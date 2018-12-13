@@ -10,6 +10,7 @@ import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
 import { SortingArgs } from 'src/app/glossaries/models/sorting.args';
 import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
+import { Term } from 'src/app/models/Glossaries/term.type';
 
 @Component({
   selector: 'app-glossary-details',
@@ -33,13 +34,12 @@ export class GlossaryDetailsComponent implements OnInit {
   set glossary(value) {
     this._glossary = value;
     this.loadTerms();
-    this.loadPartsOfSpeech();
   }
   get glossary() { return this._glossary; }
 
   termViewModels = new Array<TermViewModel>();
 
-  get selectedTerms(): String[] {
+  get selectedTerms(): Term[] {
     return this.termViewModels
       .filter(termViewModel => termViewModel.isSelected)
       .map(termViewModel => termViewModel.term);
@@ -47,14 +47,11 @@ export class GlossaryDetailsComponent implements OnInit {
 
   termSearchString: string;
 
-  partsOfSpeech: PartOfSpeech[];
-
   constructor(
     private route: ActivatedRoute,
     private glossariesService: GlossariesService,
-    private requestDataReloadService: RequestDataReloadService,
-    private partsOfSpeechService: PartsOfSpeechService)
-  {
+    private requestDataReloadService: RequestDataReloadService
+  ) {
     this.requestDataReloadService.updateRequested.subscribe(() => this.loadTerms(this.currentPage));
   }
 
@@ -72,33 +69,23 @@ export class GlossaryDetailsComponent implements OnInit {
     if (!this.glossary)
       return;
 
-    this.glossariesService.getAssotiatedTermsTotalCount(this.glossary.id, this.termSearchString)
-      .subscribe(
-        totalCount => this.totalCount = totalCount,
-        error => console.log(error));
-
     this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, pageNumber, [this.sortByColumnName], this.ascending)
       .subscribe(
-        terms => {
+        response => {
+          let terms = response.body;
           this.termViewModels = terms.map(term => new TermViewModel(term, false));
+          let totalCount = +response.headers.get('totalCount');
+          this.totalCount = totalCount;
           this.currentPage = pageNumber;
         },
         error => console.log(error));
   }
 
-  loadPartsOfSpeech() {
-    this.partsOfSpeechService.getListByGlossaryId(this.glossary.id)
-      .subscribe(
-        partsOfSpeech => this.partsOfSpeech = partsOfSpeech,
-        error => console.log(error)
-      );
-  }
-
-  addNewTerm(newTerm: String) {
+  addNewTerm(newTerm: Term) {
     if (!this.glossary)
       return;
 
-    this.glossariesService.addNewTerm(this.glossary.id, newTerm)
+    this.glossariesService.addNewTerm(this.glossary.id, newTerm, newTerm.partOfSpeechId)
       .subscribe(
         () => this.requestDataReloadService.requestUpdate(),
         error => console.log(error));

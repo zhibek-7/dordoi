@@ -1,5 +1,7 @@
 export class PartOfSpeech {
-    id: number;
-    localeId: number;
-    name: string;
+  public constructor(
+    public id: number,
+    public localeId: number,
+    public name: string
+  ) { }
 }

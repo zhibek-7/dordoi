@@ -7,9 +7,6 @@ namespace Models.DatabaseEntities
 {
     public class Comments: BaseEntity
     {
-        [Key]
-        public int ID { get; set; }
-
         public int ID_Translation { get; set; }
 
         public int ID_User { get; set; }

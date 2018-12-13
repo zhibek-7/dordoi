@@ -1,4 +1,3 @@
-.translationBlock {}
 
 .controlBlock {
     font-size: 1.5em;
@@ -68,9 +67,7 @@
     resize: none;
 }
 
-.arrowIcon {
-    height: 40px;
-    width: 40px;
+.arrowIcon {   
     cursor: pointer;
 }
 
@@ -89,8 +86,13 @@
 .arrowsIcons {
     padding-left: 2%;
 }
+.translationBlockWithoutPhrase {
+    margin-top: 35%;    
+}
 
 .phraseUndifinedBlock {
     font-size: 2em;
     color: gray;
 }
+
+

@@ -8,19 +8,24 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class GlossaryRepository : IRepository<Glossary>
+    public class GlossaryRepository : BaseRepository, IRepository<Glossary>
     {
 
         private readonly PostgreSqlNativeContext _context;
 
-        private readonly IRepository<Models.DatabaseEntities.String> _stringsRepository;
+        private readonly IRepositoryAsync<Models.DatabaseEntities.String> _stringsRepository;
 
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
-        public GlossaryRepository(IRepository<Models.DatabaseEntities.String> stringsRepository)
+        private readonly LogTools _logger = new LogTools();
+
+        public GlossaryRepository(IRepositoryAsync<Models.DatabaseEntities.String> stringsRepository)
         {
             this._context = PostgreSqlNativeContext.getInstance();
             this._stringsRepository = stringsRepository;
@@ -36,7 +41,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var glossaries = dbConnection.Query<Glossary>("SELECT * FROM \"Glossaries\"");
+                var selectAllGlossariesSql = "SELECT * FROM \"Glossaries\"";
+                this.LogQuery(selectAllGlossariesSql);
+                var glossaries = dbConnection.Query<Glossary>(selectAllGlossariesSql);
                 dbConnection.Close();
                 return glossaries;
             }
@@ -47,15 +54,18 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1";
+                var getGlossaryByIdParam = new { GlossaryId = id };
+                this.LogQuery(getGlossaryByIdSql, getGlossaryByIdParam);
                 var glossary = dbConnection.QueryFirst<Glossary>(
-                    sql: "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1",
-                    param: new { GlossaryId = id });
+                    sql: getGlossaryByIdSql,
+                    param: getGlossaryByIdParam);
                 dbConnection.Close();
                 return glossary;
             }
         }
 
-        public void Remove(int id)
+        public bool Remove(int id)
         {
             throw new NotImplementedException();
         }
@@ -65,10 +75,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var updateGlossarySql =
+                    "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
+                    "WHERE \"ID\"=@ID";
+                var updateGlossaryParam = item;
+                this.LogQuery(updateGlossarySql, updateGlossaryParam);
                 dbConnection.Execute(
-                    sql: "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
-                    "WHERE \"ID\"=@ID",
-                    param: item);
+                    sql: updateGlossarySql,
+                    param: updateGlossaryParam);
                 dbConnection.Close();
             }
         }
@@ -78,73 +92,122 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var deleteGlossaryStingAssotiationSql =
+                    "DELETE FROM \"GlossariesStrings\" " +
+                    "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
+                var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
+                this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
                 dbConnection
                     .Execute(
-                        sql: "DELETE FROM \"GlossariesStrings\" WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId",
-                        param: new { GlossaryId = glossaryId, TermId = termId });
+                        sql: deleteGlossaryStingAssotiationSql,
+                        param: deleteGlossaryStingAssotiationParam);
+
+                var deleteStingSql = "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId";
+                var deleteStingParam = new { TermId = termId };
+                this.LogQuery(deleteStingSql, deleteStingParam);
                 dbConnection
                     .Execute(
-                        sql: "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId",
-                        param: new { TermId = termId });
+                        sql: deleteStingSql,
+                        param: deleteStingParam);
                 dbConnection.Close();
             }
         }
 
-        public void AddNewTerm(int glossaryId, Models.DatabaseEntities.String newTerm)
+        public void AddNewTerm(int glossaryId, Models.DatabaseEntities.String newTerm, int? partOfSpeechId)
         {
             var glossary = this.GetByID(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var insertNewStingSql =
+                    "INSERT INTO \"TranslationSubstrings\" " +
+                    "(" +
+                    "\"SubstringToTranslate\", " +
+                    "\"Description\", " +
+                    "\"Context\", " +
+                    "\"TranslationMaxLength\", " +
+                    "\"ID_FileOwner\", " +
+                    "\"Value\", " +
+                    "\"PositionInText\"" +
+                    ") VALUES " +
+                    "(" +
+                    "@SubstringToTranslate, " +
+                    "@Description, " +
+                    "@Context, " +
+                    "@TranslationMaxLength, " +
+                    "@ID_FileOwner, " +
+                    "@Value, " +
+                    "@PositionInText" +
+                    ") " +
+                    "RETURNING \"ID\"";
+                var insertNewStingParam = newTerm;
+                this.LogQuery(insertNewStingSql, insertNewStingParam);
                 var idOfNewTerm = dbConnection
                     .ExecuteScalar<int>(
-                        sql: "INSERT INTO \"TranslationSubstrings\" " +
-                        "(\"SubstringToTranslate\", \"Description\", \"Context\", " +
-                        "\"TranslationMaxLength\", \"ID_FileOwner\", \"Value\", " +
-                        "\"PositionInText\") VALUES " +
-                        "(@SubstringToTranslate, @Description, @Context, @TranslationMaxLength, " +
-                        "@ID_FileOwner, @Value, @PositionInText) " +
-                        "RETURNING \"ID\"",
-                        param: newTerm);
+                        sql: insertNewStingSql,
+                        param: insertNewStingParam);
+
+                var instertGlossaryStringAssotiationSql =
+                    "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\",\"ID_PartOfSpeech\") VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
+                var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm, PartsOfSpeechId = partOfSpeechId };
+                this.LogQuery(instertGlossaryStringAssotiationSql, instertGlossaryStringAssotiationParam);
                 dbConnection
                     .Execute(
-                        sql: "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\") VALUES (@GlossaryId, @StringId)",
-                        param: new { GlossaryId = glossaryId, StringId = idOfNewTerm });
+                        sql: instertGlossaryStringAssotiationSql,
+                        param: instertGlossaryStringAssotiationParam);
                 dbConnection.Close();
             }
         }
 
-        public void UpdateTerm(Models.DatabaseEntities.String updatedTerm)
+        public void UpdateTerm(int glossaryId, Models.DatabaseEntities.String updatedTerm, int? partOfSpeechId)
         {
-            //TODO: call this._stringsRepository to do this
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                dbConnection.Execute(
-                    sql: "UPDATE \"TranslationSubstrings\" SET " +
-                    "\"SubstringToTranslate\"=@SubstringToTranslate, \"Description\"=@Description, \"Context\"=@Context, " +
-                    "\"TranslationMaxLength\"=@TranslationMaxLength, \"ID_FileOwner\"=@ID_FileOwner, \"Value\"=@Value, " +
+                var updateTermSql =
+                    "UPDATE \"TranslationSubstrings\" SET " +
+                    "\"SubstringToTranslate\"=@SubstringToTranslate, " +
+                    "\"Description\"=@Description, " +
+                    "\"Context\"=@Context, " +
+                    "\"TranslationMaxLength\"=@TranslationMaxLength, " +
+                    "\"ID_FileOwner\"=@ID_FileOwner, " +
+                    "\"Value\"=@Value, " +
                     "\"PositionInText\"=@PositionInText " +
-                    "WHERE \"ID\"=@ID",
-                    param: updatedTerm);
+                    "WHERE \"ID\"=@ID";
+                var updateTermParam = updatedTerm;
+                this.LogQuery(updateTermSql, updateTermParam);
+                dbConnection.Execute(
+                    sql: updateTermSql,
+                    param: updateTermParam);
+
+                var updateTermPartOfSpeechIdSql =
+                    "UPDATE \"GlossariesStrings\" SET " +
+                    "\"ID_PartOfSpeech\"=@PartOfSpeechId " +
+                    "WHERE \"ID_String\"=@StringId " +
+                    "AND \"ID_Glossary\"=@GlossaryId";
+                var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartOfSpeechId = partOfSpeechId };
+                this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
+                dbConnection.Execute(
+                    sql: updateTermPartOfSpeechIdSql,
+                    param: updateTermPartOfSpeechIdParam);
                 dbConnection.Close();
             }
         }
 
         private static readonly Dictionary<string, string> TermsSortColumnNamesMapping = new Dictionary<string, string>()
         {
-            { "id", "ID" },
-            { "substringtotranslate", "SubstringToTranslate" },
-            { "description", "Description" },
-            { "context", "Context" },
-            { "translationmaxlength", "TranslationMaxLength" },
-            { "id_fileowner", "ID_FileOwner" },
-            { "value", "Value" },
-            { "positionintext", "PositionInText" },
+            { "id", "TranslationSubstrings.ID" },
+            { "substringtotranslate", "TranslationSubstrings.SubstringToTranslate" },
+            { "description", "TranslationSubstrings.Description" },
+            { "context", "TranslationSubstrings.Context" },
+            { "translationmaxlength", "TranslationSubstrings.TranslationMaxLength" },
+            { "id_fileowner", "TranslationSubstrings.ID_FileOwner" },
+            { "value", "TranslationSubstrings.Value" },
+            { "positionintext", "TranslationSubstrings.PositionInText" },
         };
 
-        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTermsByGlossaryId(
+        public IEnumerable<Models.Glossaries.Term> GetAssotiatedTermsByGlossaryId(
             int glossaryId,
             int pageSize,
             int pageNumber,
@@ -178,7 +241,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     if (columnNamesToSort.Any())
                         query = sortAscending? query.OrderBy(columnNamesToSort) : query.OrderByDesc(columnNamesToSort);
                 }
-                var assotiatedTerms = query.Get<Models.DatabaseEntities.String>();
+                var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
+                var getGlossaryTermsSql = getGlossaryTermsCompiledQuery.Sql;
+                var getGlossaryTermsParam = getGlossaryTermsCompiledQuery.NamedBindings;
+                this.LogQuery(getGlossaryTermsSql, this.DictionaryToString(getGlossaryTermsParam));
+                var assotiatedTerms = dbConnection.Query<Models.Glossaries.Term>(
+                    sql: getGlossaryTermsSql,
+                    param: getGlossaryTermsParam
+                    );
                 dbConnection.Close();
                 return assotiatedTerms;
             }
@@ -189,8 +259,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
-                var assotiatedTermsCount = query.Count<int>();
+                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart).AsCount();
+                var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
+                var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
+                var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
+                this.LogQuery(getGlossaryTermsCountSql, this.DictionaryToString(getGlossaryTermsCountParam));
+                var assotiatedTermsCount = dbConnection.ExecuteScalar<int>(
+                    sql: getGlossaryTermsCountSql,
+                    param: getGlossaryTermsCountParam
+                    );
                 dbConnection.Close();
                 return assotiatedTermsCount;
             }
@@ -200,17 +277,144 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query =
                 new XQuery(dbConnection, this._compiler)
-                    .From("TranslationSubstrings")
-                    .WhereIn("ID",
-                        new Query("GlossariesStrings")
-                            .Select("ID_String")
-                            .Where("ID_Glossary", glossaryId));
+                    .From("GlossariesStrings")
+                    .LeftJoin("TranslationSubstrings", "TranslationSubstrings.ID", "GlossariesStrings.ID_String")
+                    .Where("GlossariesStrings.ID_Glossary", glossaryId)
+                    .Select(
+                        "TranslationSubstrings.ID",
+                        "TranslationSubstrings.SubstringToTranslate",
+                        "TranslationSubstrings.Description",
+                        "TranslationSubstrings.Context",
+                        "TranslationSubstrings.TranslationMaxLength",
+                        "TranslationSubstrings.ID_FileOwner",
+                        "TranslationSubstrings.Value",
+                        "TranslationSubstrings.PositionInText",
+                        "GlossariesStrings.ID_PartOfSpeech as PartOfSpeechId")
+                    .Select(
+                        new Query("Translations")
+                            .SelectRaw("COUNT(\"Translated\") = 0")
+                            .Where("Translated", "<>", "''")
+                            .WhereRaw("\"ID_String\"=\"TranslationSubstrings\".\"ID\""),
+                        "IsEditable");
             if (!string.IsNullOrEmpty(termPart))
             {
                 var patternString = $"%{termPart}%";
-                query = query.WhereLike("Value", patternString);
+                query = query.WhereLike("TranslationSubstrings.Value", patternString);
             }
             return query;
+        }
+
+        public Locale GetLocaleById(int glossaryId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var getGlossaryLocaleSql = "SELECT * FROM \"Locales\" WHERE \"ID\" IN " +
+                    "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
+                    "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" WHERE \"ID_Glossary\"=@GlossaryId))";
+                var getGlossaryLocaleParam = new { GlossaryId = glossaryId };
+                this.LogQuery(getGlossaryLocaleSql, getGlossaryLocaleParam);
+                var locale = dbConnection
+                    .QueryFirst<Locale>(
+                        sql: getGlossaryLocaleSql,
+                        param: getGlossaryLocaleParam);
+                dbConnection.Close();
+                return locale;
+            }
+        }
+
+        public IEnumerable<Locale> GetTranslationLocalesForTerm(int glossaryId, int termId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var getTranslationLocalesForTermQuery =
+                    new Query("Locales")
+                    .WhereIn("ID",
+                        new Query("TranslationsubStringsLocales")
+                        .Select("Id_Locales")
+                        .Where("Id_TranslationSubStrings", termId));
+                var getTranslationLocalesForTermCompiledQuery = this._compiler.Compile(getTranslationLocalesForTermQuery);
+                var getTranslationLocalesForTermSql = getTranslationLocalesForTermCompiledQuery.Sql;
+                var getTranslationLocalesForTermParam = getTranslationLocalesForTermCompiledQuery.NamedBindings;
+                this.LogQuery(getTranslationLocalesForTermSql, this.DictionaryToString(getTranslationLocalesForTermParam));
+                var translationLocalesForTerm = dbConnection.Query<Locale>(
+                    sql: getTranslationLocalesForTermSql,
+                    param: getTranslationLocalesForTermParam);
+                dbConnection.Close();
+                return translationLocalesForTerm;
+            }
+        }
+
+        public IEnumerable<Locale> GetTranslationLocales(int glossaryId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var getTranslationLocalesQuery =
+                    new Query("Locales")
+                    .WhereIn("ID",
+                        new Query("GlossariesLocales")
+                        .Select("ID_Locale")
+                        .Where("ID_Glossary", glossaryId));
+                var getTranslationLocalesmCompiledQuery = this._compiler.Compile(getTranslationLocalesQuery);
+                var getTranslationLocalesmSql = getTranslationLocalesmCompiledQuery.Sql;
+                var getTranslationLocalesmParam = getTranslationLocalesmCompiledQuery.NamedBindings;
+                this.LogQuery(getTranslationLocalesmSql, this.DictionaryToString(getTranslationLocalesmParam));
+                var translationLocalesForTerm = dbConnection.Query<Locale>(
+                    sql: getTranslationLocalesmSql,
+                    param: getTranslationLocalesmParam);
+                dbConnection.Close();
+                return translationLocalesForTerm;
+            }
+        }
+
+        public IEnumerable<Locale> DeleteTranslationLocalesForTerm(int termId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var deleteTranslationLocalesForTermQuery =
+                    new Query("TranslationsubStringsLocales")
+                    .Where("Id_TranslationSubStrings", termId)
+                    .AsDelete();
+                var deleteTranslationLocalesForTermCompiledQuery = this._compiler.Compile(deleteTranslationLocalesForTermQuery);
+                var deleteTranslationLocalesForTermSql = deleteTranslationLocalesForTermCompiledQuery.Sql;
+                var deleteTranslationLocalesForTermParam = deleteTranslationLocalesForTermCompiledQuery.NamedBindings;
+                this.LogQuery(deleteTranslationLocalesForTermSql, this.DictionaryToString(deleteTranslationLocalesForTermParam));
+                var translationLocalesForTerm = dbConnection.Query<Locale>(
+                    sql: deleteTranslationLocalesForTermSql,
+                    param: deleteTranslationLocalesForTermParam);
+                dbConnection.Close();
+                return translationLocalesForTerm;
+            }
+        }
+
+        public void SetTranslationLocalesForTerm(int termId, IEnumerable<int> localesIds)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                foreach(var localeId in localesIds)
+                {
+                    var getTranslationLocalesForTermSql =
+                        "INSERT INTO \"TranslationsubStringsLocales\" " +
+                        "(" +
+                        "\"Id_TranslationSubStrings\", " +
+                        "\"Id_Locales\"" +
+                        ") VALUES " +
+                        "(" +
+                        "@Id_TranslationSubStrings, " +
+                        "@Id_Locales" +
+                        ")";
+                    var getTranslationLocalesForTermParam = new { Id_TranslationSubStrings = termId, Id_Locales = localeId };
+                    this.LogQuery(getTranslationLocalesForTermSql, getTranslationLocalesForTermParam);
+                    dbConnection.Execute(
+                        sql: getTranslationLocalesForTermSql,
+                        param: getTranslationLocalesForTermParam);
+                }
+                dbConnection.Close();
+            }
         }
 
     }

@@ -4,4 +4,5 @@ export class User {
     password: string;
     photo: string; // поменять потом
     email: string;
+    joined: boolean;
 }

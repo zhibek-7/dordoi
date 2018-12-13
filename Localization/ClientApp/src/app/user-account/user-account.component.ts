@@ -19,10 +19,12 @@ export class UserAccountComponent implements OnInit {
   constructor(private projectsService: ProjectsService) { }
 
   ngOnInit() {
-    this.projectsArr = this.projectsService.projects;
+    this.projectsService.getProjects ()
+      .subscribe(project => { this.projectsArr = project; },
+      error => console.error(error));
+
     this.projectsArr.forEach((element)=>{
-      element.changed = moment(element.changed).fromNow();
-      element.created = moment(element.created).fromNow();
+      element.lastActivity = moment(element.lastActivity).fromNow();
     })
     // this.projectsArr = this.projectsService.getProjects() - метод возвращающий массив проетов. Отбор по юзеру не реализован
   }

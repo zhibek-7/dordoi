@@ -7,9 +7,6 @@ namespace Models.DatabaseEntities
 {
     public class User: BaseEntity
     {
-        //[Key]
-        public int ID { get; set; }
-
         //[Required]
         public string Name { get; set; }
 

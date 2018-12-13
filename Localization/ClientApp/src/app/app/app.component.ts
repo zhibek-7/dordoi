@@ -15,7 +15,9 @@ export class AppComponent implements OnInit{
   constructor(private projectService: ProjectsService) {}
 
   ngOnInit() {
-    this.projects = this.projectService.projects;
+    this.projectService.getProjects()
+      .subscribe(projects => { this.projects = projects; },
+        error => console.error(error)); 
     console.log('app ngOnInit ---!!!!!!!!!');
   }
 

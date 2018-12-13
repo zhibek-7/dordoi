@@ -19,7 +19,17 @@ namespace DAL.Context
         {
             get
             {
-                return new NpgsqlConnection(connectionString);
+                try
+                {
+                    return new NpgsqlConnection(connectionString);
+                }
+                catch(NpgsqlException exception)
+                {
+                    //внесение записи в журанал логирования
+                    Console.WriteLine(exception.ErrorCode);
+
+                    return null;
+                }
             }
         }
 

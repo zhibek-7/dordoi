@@ -40,7 +40,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public void Remove(int Id)
+        public bool Remove(int Id)
         {
             throw new NotImplementedException();
         }
