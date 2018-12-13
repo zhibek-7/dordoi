@@ -39,10 +39,10 @@
     <p class="numberOfPages col-8">Page {{currentPageNumber}} <span *ngIf="currentPageNumber>1">of {{maxNumberOfPages}}
       </span></p>
     <div class="arrowsIcons col-4 row align-center">
-      <div>
+      <div class="arrowIcon">
         <mat-icon (click)="previuosPage()">keyboard_arrow_left</mat-icon>
       </div>
-      <div>
+      <div class="arrowIcon">
         <mat-icon (click)="nextPage()">keyboard_arrow_right</mat-icon>
       </div>
     </div>

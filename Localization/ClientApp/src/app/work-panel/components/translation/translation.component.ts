@@ -74,10 +74,13 @@ export class TranslationComponent implements OnInit {
     }
 
     async submitTranslate(){
-        this.translatedPhrase = new Translation(this.translatedText, this.phraseForTranslate.id, 10123);  //поменять потом на реальный id пользователя
-        let createdTranslate: Translation = await this.translationService.createTranslate(this.translatedPhrase);
+        this.translatedPhrase = new Translation(this.translatedText, this.phraseForTranslate.id, 10123, 300);  //поменять потом на реальный id пользователя и id языка
+        let insertedTranslationId = await this.translationService.createTranslate(this.translatedPhrase);        
+        this.translatedPhrase.id = insertedTranslationId;
+
         await this.translationService.getAllTranslationsInStringById(this.phraseForTranslate.id);
-        this.shareTranslatedPhraseService.sumbitTranslatedPhrase(createdTranslate);
+        this.shareTranslatedPhraseService.sumbitTranslatedPhrase(this.translatedPhrase);
+
         this.translatedText = null;
         this.translatedPhrase = null;       
         $("#btnSave").attr("disabled", true); 

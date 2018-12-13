@@ -18,8 +18,6 @@ import { Moment } from 'moment';
 export class TranslatedWordsComponent {
   //Строки отчета
   public reportrows: TranslatedWordsReportRow[];
-  //Фильтрованные строки отчета
-  public filteredrows: TranslatedWordsReportRow[];
 
   //Список языков из БД
   public Languages: Locale[];
@@ -34,12 +32,12 @@ export class TranslatedWordsComponent {
   userLang: string;
 
   //Переменные для выборки
-  user: string = "Все";
-  locale: string = "Все";
+  userId: number = 0;
+  localeId: number = 0;
   workType: string = "Все";
   volumeCalcType: string = "словам";
   calcBasisType: string = "Исходный";
-  initialFolder: string;
+  initialFolderId: number = 0;
 
   //Переменные для фильтьрации
   selected: { from: Moment, to: Moment };
@@ -62,24 +60,18 @@ export class TranslatedWordsComponent {
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
 
   async getRows() {
-    this.reportService.getTranslatedWordsReport(this.selected.from.format("DD-MM-YYYY"), this.selected.to.format("DD-MM-YYYY"))
-      .subscribe(reportrows => {
-          this.filteredrows = reportrows;
-        this.reportrows = reportrows;
-        },
-      error => console.error(error));   
-  }
-
-  filterReport() {
-    let rows: TranslatedWordsReportRow[] = this.reportrows;
-
-    if (this.userName != undefined && this.userName != null)
-      rows = rows.filter(s => s.name.indexOf(this.userName) != -1);
-
-    if (this.userLang != "Все" && this.userLang != undefined)
-      rows = rows.filter(s => s.language.indexOf(this.userLang) != -1);
-
-    this.filteredrows = rows;
+    this.reportService.getTranslatedWordsReport(
+        this.selected.from.format("DD.MM.YYYY"),
+        this.selected.to.format("DD.MM.YYYY"),
+        this.volumeCalcType,
+        this.calcBasisType,
+        this.userId,
+        this.localeId,
+        this.workType,
+        this.initialFolderId)
+      .subscribe(
+        reportrows => this.reportrows = reportrows,
+      error => console.log(error));
   }
 
   setHeaderMsg() {
@@ -93,14 +85,8 @@ export class TranslatedWordsComponent {
   }
 
   clickEvent() {
-    while (!this.getRows())
-      this.filterReport();
+    this.getRows();
     this.setHeaderMsg();
-  }
-
-  confimed(val: string) : string {
-    if (val === "true") return "Да";
-    else return "Нет";
   }
 
   download() {

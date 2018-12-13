@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
+
 import { Translation } from '../models/database-entities/translation.type';
 
 @Injectable()
@@ -12,8 +13,7 @@ export class TranslationService {
     }
 
     async createTranslate(translate: Translation){
-        let asyncResult = await this.http.post(this.url, translate).toPromise();
-        return asyncResult;
+        return await this.http.post<number>(this.url, translate).toPromise();
     }
 
     async getAllTranslationsInStringById(idString: number){
@@ -21,8 +21,16 @@ export class TranslationService {
         return translations;
     }
 
-    async rejectTranslate(idTranslation: number){
-        await this.http.delete(this.url + '/RejectTranslation/' + idTranslation).toPromise();
+    async deleteTranslate(idTranslation: number){
+        await this.http.delete(this.url + '/DeleteTranslation/' + idTranslation).toPromise();
+    }
+
+    async acceptTranslate(translationId: number){
+        await this.http.put(this.url + '/AcceptTranslation/' + translationId, true).toPromise();
+    }
+
+    async rejectTranslate(translationId: number){
+        await this.http.put(this.url + '/RejectTranslation/' + translationId, false).toPromise();
     }
 
 }

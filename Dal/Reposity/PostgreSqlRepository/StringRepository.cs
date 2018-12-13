@@ -19,11 +19,20 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
+        /// <summary>
+        /// Добавляет новую фразу
+        /// </summary>
+        /// <param name="item">Новая фраза</param>
+        /// <returns>Кол-во добавленных фраз</returns>
         public Task<int> Add(Models.DatabaseEntities.String item)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Получает все фразы
+        /// </summary>
+        /// <returns>Список фраз</returns>
         public async Task<IEnumerable<Models.DatabaseEntities.String>> GetAll()
         {
             var query = "SELECT * FROM \"TranslationSubstrings\"";
@@ -48,10 +57,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             
         }
 
+        /// <summary>
+        /// Получает запись с конкретным 
+        /// </summary>
+        /// <param name="id">id необходимой фразы</param>
+        /// <returns>Запись с необходимым id</returns>
         public async Task<Models.DatabaseEntities.String> GetByID(int id)
         {
             var query = "SELECT * " +
-                        "FROM \"Strings\" " +
+                        "FROM \"TranslationSubstrings\" " +
                         "WHERE \"ID\" = @Id";
 
             try

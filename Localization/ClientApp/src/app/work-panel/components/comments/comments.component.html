@@ -4,7 +4,7 @@
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link active" id="nav-comment-tab" data-toggle="tab" href="#nav-comment" role="tab" aria-controls="nav-comment" aria-selected="true">Комментарии</a>
-                <a class="nav-item nav-link" id="nav-condition-tab" data-toggle="tab" href="#nav-condition" role="tab" aria-controls="nav-condition" aria-selected="false">Условия</a>
+                <a class="nav-item nav-link" id="nav-condition-tab" data-toggle="tab" href="#nav-condition" role="tab" aria-controls="nav-condition" aria-selected="false">Глоссарий</a>
             </div>
         </nav>
     </div>
@@ -16,7 +16,36 @@
                     <div class="panel-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
-                                <div> {{comment.text}} </div>
+                                <div class="oneCommentBlock">                                 
+                                    <div class="row">
+                                        <div class="col-6 userNameRow">{{comment.userName}}</div>
+                                    </div>
+                                    <div *ngIf="!commentEdited">
+                                        <div class="row">
+                                            <div class="col-12">{{comment.comment}} </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">{{comment.dateTime | date: 'd MMMM H:m'}}</div>
+                                            <div class="col-3"><div class="controlText" (click)="changeCommentClick(comment)">Изменить</div></div>
+                                            <div class="col-3"><div class="controlText" (click)="deleteCommentClick(comment.commentId)">Удалить</div></div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="commentEdited">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <textarea class="form-control" rows="2"
+                                                        [(ngModel)]="changedComment" ></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4"><button class="btn" (click)="loadScrinshot()">Скриншоты</button></div>
+                                            <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment.commentId)">Сохранить</button></div>
+                                            <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.commentId)">Отменить</button></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -32,7 +61,7 @@
 
             <div class="tab-pane fade" id="nav-condition" role="tabpanel" aria-labelledby="nav-condition-tab">
                 <div class="conditionsBlock">
-                    <div>Условия еще не прописаны</div>
+                    <div>Глоссарий пуст</div>
                 </div>
             </div>
 

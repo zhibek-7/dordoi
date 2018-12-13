@@ -46,7 +46,7 @@ export class GlossaryTermsComponent implements OnInit {
 
   ngOnInit() { }
 
-  deleteTerm(term: String) {
+  deleteTerm(term: Term) {
     this.glossariesService.deleteTerm(this.glossary.id, term.id)
       .subscribe(
         () => this.requestDataReloadService.requestUpdate(),

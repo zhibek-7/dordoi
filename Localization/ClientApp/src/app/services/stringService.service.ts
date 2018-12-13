@@ -18,7 +18,6 @@ export class StringService {
 
     async getStrings(){
         let strings: String[] = await this.http.get<String[]>(this.url).toPromise();
-        console.log(strings);
         return strings;
     }
 }

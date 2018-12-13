@@ -3,7 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Project } from '../models/Project';
 
 @Injectable()
-export class ProjectsService  implements Project{
+export class ProjectsService {
+
+  private controllerUrl: string = "api/Project/";
+
     name: string;
     id: string;
     url: string;
@@ -26,7 +29,20 @@ export class ProjectsService  implements Project{
             changed: new Date(2018, 9, 10),
             hasErr: true,
             type: 'privat',
-            sourceLanguage: 'English'
+            sourceLanguage: 'English',
+
+            description: 'Test project not from DB',
+            visibility: true,
+            dateOfCreation: new Date(2018, 8, 28),
+            lastActivity: new Date(2018, 9, 10),
+            ID_SourceLocale: 300,
+            ableToDownload: true,
+            ableToLeftErrors: true,
+            defaultString: "",
+            notifyNew: true,
+            notifyFinish: true,
+            notifyConfirm: true,
+            logo: undefined
         },
         {
             name: 'Тестовый проект 2',
@@ -37,13 +53,25 @@ export class ProjectsService  implements Project{
             changed: new  Date(2018, 9, 10),
             hasErr: false,
             type: 'public',
-            sourceLanguage: 'Spanish'
+            sourceLanguage: 'Spanish',
+            description: 'Test project not from DB',
+            visibility: true,
+            dateOfCreation: new Date(2018, 9, 5),
+            lastActivity: new Date(2018, 9, 10),
+            ID_SourceLocale: 300,
+            ableToDownload: true,
+            ableToLeftErrors: true,
+            defaultString: "",
+            notifyNew: true,
+            notifyFinish: true,
+            notifyConfirm: true,
+            logo: undefined
         }
     ];
 
     getProjects(userName: string) {
         const getUrl = ''; // тут формируем строку подключения к БД для получения проектов
-        return this.httpClient.get(getUrl);
+        return this.httpClient.get<Project[]>(this.controllerUrl);
     }
 
     addProject(project: Project) {

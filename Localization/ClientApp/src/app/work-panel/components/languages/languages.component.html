@@ -24,14 +24,13 @@
                                 </div>
                                 <div class="align-self-end translationInfo">
                                     <div class="row">
-                                        <div class="col-xl-2 col-lg-4">(Срок)</div>
-                                        <div class="col-xl-4 col-lg-4"> назад пользователем </div>
+                                        <div class="col-xl-4 col-lg-6">{{translation.dateTime | date: 'd MMMM H:m'}}</div>
                                         <div class="col-xl-4 col-lg-4 userLogin">(Имя пользователя)</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-1 align-self-center"><img (click)="acceptTranslateClick()" class="utilitiesIcon" src="../../../assets/icons/main/tick.png"></div>
-                            <div class="col-1 align-self-center"><img (click)="rejectTranslateClick(translation.id)" class="utilitiesIcon" src="../../../assets/icons/main/bin.png"></div>
+                            <div class="col-1 "> <input type="checkbox" class="form-check-input" [(ngModel)]="translation.confirmed" (change)="changeTranslate(translation)"> </div>
+                            <div class="col-1 align-self-center"><img (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon" src="../../../assets/icons/main/bin.png"></div>
                         </div>
                     </li>
                 </ul>

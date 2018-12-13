@@ -1,7 +1,6 @@
 import { String } from "src/app/models/database-entities/string.type";
 
 export class Term extends String {
-  public partOfSpeechId: number;
   constructor(
     id?: number,
     substringToTranslate?: string,
@@ -11,7 +10,8 @@ export class Term extends String {
     translationMaxLength?: number,
     value?: string,
     positionInText?: number,
-    partOfSpeechId?: number,
+    public partOfSpeechId?: number,
+    public isEditable?: boolean,
   ) {
       super(
         id,
@@ -22,6 +22,5 @@ export class Term extends String {
         translationMaxLength,
         value,
         positionInText);
-    this.partOfSpeechId = partOfSpeechId;
   }
 }

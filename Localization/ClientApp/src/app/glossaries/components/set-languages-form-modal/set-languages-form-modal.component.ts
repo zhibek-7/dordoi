@@ -21,7 +21,7 @@ export class SetLanguagesFormModalComponent extends ModalComponent implements On
 
   @Input() glossary: Glossary;
 
-  @Input() term: String;
+  @Input() term: Term;
 
   availableLocales: Selectable<Locale>[] = [];
 
