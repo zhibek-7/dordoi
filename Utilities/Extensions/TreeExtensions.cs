@@ -22,7 +22,7 @@ namespace Utilities.Extensions
             // Get child nodes by parent node id 
             var childFiles = files.Where(file => file.ID_FolderOwner == parentId)
                 .OrderByDescending(file => file.IsFolder)
-                .ThenBy(file => file.Id);
+                .ThenBy(file => file.ID);
 
             foreach (var file in childFiles)
             {
@@ -32,7 +32,7 @@ namespace Utilities.Extensions
                 var node = createFactory(file, icon);
 
                 // Get excepted files
-                var childItems = files.Except(childFiles).ToTree(createFactory, iconFactory, file.Id);
+                var childItems = files.Except(childFiles).ToTree(createFactory, iconFactory, file.ID);
 
                 // Add child nodes in node
                 node.Children.AddRange(childItems);
