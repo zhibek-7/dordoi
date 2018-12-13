@@ -6,6 +6,8 @@ import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type
 import { Term } from 'src/app/models/Glossaries/term.type';
 import { GlossariesService } from 'src/app/services/glossaries.service';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
+import { Locale } from 'src/app/models/database-entities/locale.type';
+import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
 
 @Component({
   selector: 'app-edit-term-form-modal',
@@ -15,8 +17,6 @@ import { Glossary } from 'src/app/models/database-entities/glossary.type';
 export class EditTermFormComponent extends ModalComponent implements OnInit {
 
   @Input() glossary: Glossary;
-
-  @Input() partsOfSpeech: PartOfSpeech[];
 
   _originalTermReference: Term;
 
@@ -29,7 +29,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
   @Output() termUpdateConfirmed = new EventEmitter<Term>();
 
-  constructor(private glossariesService: GlossariesService) { super(); }
+  constructor() { super(); }
 
   ngOnInit() {
   }
@@ -40,8 +40,8 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
   }
 
   show() {
-    super.show();
     this.resetTermViewModel();
+    super.show();
   }
 
   resetTermViewModel() {

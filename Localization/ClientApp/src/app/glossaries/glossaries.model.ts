@@ -22,6 +22,7 @@ import { LanguageService } from 'src/app/services/languages.service';
 import { FilterSelectableLocalesPipe } from 'src/app/glossaries/pipes/filterSelectableLocales.pipe';
 import { OrderByPipe } from 'src/app/glossaries/pipes/orderBy.pipe';
 import { SetLanguagesComponent } from 'src/app/glossaries/components/set-languages/set-languages.component';
+import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term-details-editable/term-details-editable.component';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import { SetLanguagesComponent } from 'src/app/glossaries/components/set-languag
     SetLanguagesComponent,
     FilterSelectableLocalesPipe,
     OrderByPipe,
+    TermDetailsEditableComponent,
   ],
   providers: [
     RequestDataReloadService,
