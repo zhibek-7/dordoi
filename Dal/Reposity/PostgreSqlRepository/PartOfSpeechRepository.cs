@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class PartOfSpeechRepository : IRepository<PartOfSpeech>
+    public class PartOfSpeechRepository : BaseRepository, IRepository<PartOfSpeech>
     {
 
         private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
@@ -42,14 +42,19 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
+                var getByGlossaryIdSql = "SELECT * FROM \"PartsOfSpeech\" WHERE \"LocaleID\" IN " +
+                    "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
+                    "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" " +
+                        "WHERE \"ID_Glossary\"=@GlossaryId))";
+                var getByGlossaryIdParam = new
+                {
+                    GlossaryId = glossaryId
+                };
+                this.LogQuery(sql: getByGlossaryIdSql, param: getByGlossaryIdParam);
                 var partsOfSpeechForLocale = dbConnection
                     .Query<PartOfSpeech>(
-                        sql: "SELECT * FROM \"PartsOfSpeech\" WHERE \"LocaleID\" IN " +
-                        "(SELECT \"ID_Locale\" FROM \"GlossariesLocales\" WHERE \"ID_Glossary\"=@GlossaryId)",
-                        param: new
-                        {
-                            GlossaryId = glossaryId
-                        });
+                        sql: getByGlossaryIdSql,
+                        param: getByGlossaryIdParam);
                 dbConnection.Close();
                 return partsOfSpeechForLocale;
             }
