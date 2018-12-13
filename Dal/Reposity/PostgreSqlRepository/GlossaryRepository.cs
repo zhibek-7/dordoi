@@ -323,6 +323,100 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public IEnumerable<Locale> GetTranslationLocalesForTerm(int glossaryId, int termId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var getTranslationLocalesForTermQuery =
+                    new Query("Locales")
+                    .WhereIn("ID",
+                        new Query("TranslationsubStringsLocales")
+                        .Select("Id_Locales")
+                        .Where("Id_TranslationSubStrings", termId));
+                var getTranslationLocalesForTermCompiledQuery = this._compiler.Compile(getTranslationLocalesForTermQuery);
+                var getTranslationLocalesForTermSql = getTranslationLocalesForTermCompiledQuery.Sql;
+                var getTranslationLocalesForTermParam = getTranslationLocalesForTermCompiledQuery.NamedBindings;
+                this.LogQuery(getTranslationLocalesForTermSql, this.DictionaryToString(getTranslationLocalesForTermParam));
+                var translationLocalesForTerm = dbConnection.Query<Locale>(
+                    sql: getTranslationLocalesForTermSql,
+                    param: getTranslationLocalesForTermParam);
+                dbConnection.Close();
+                return translationLocalesForTerm;
+            }
+        }
+
+        public IEnumerable<Locale> GetTranslationLocales(int glossaryId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var getTranslationLocalesQuery =
+                    new Query("Locales")
+                    .WhereIn("ID",
+                        new Query("GlossariesLocales")
+                        .Select("ID_Locale")
+                        .Where("ID_Glossary", glossaryId));
+                var getTranslationLocalesmCompiledQuery = this._compiler.Compile(getTranslationLocalesQuery);
+                var getTranslationLocalesmSql = getTranslationLocalesmCompiledQuery.Sql;
+                var getTranslationLocalesmParam = getTranslationLocalesmCompiledQuery.NamedBindings;
+                this.LogQuery(getTranslationLocalesmSql, this.DictionaryToString(getTranslationLocalesmParam));
+                var translationLocalesForTerm = dbConnection.Query<Locale>(
+                    sql: getTranslationLocalesmSql,
+                    param: getTranslationLocalesmParam);
+                dbConnection.Close();
+                return translationLocalesForTerm;
+            }
+        }
+
+        public IEnumerable<Locale> DeleteTranslationLocalesForTerm(int termId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var deleteTranslationLocalesForTermQuery =
+                    new Query("TranslationsubStringsLocales")
+                    .Where("Id_TranslationSubStrings", termId)
+                    .AsDelete();
+                var deleteTranslationLocalesForTermCompiledQuery = this._compiler.Compile(deleteTranslationLocalesForTermQuery);
+                var deleteTranslationLocalesForTermSql = deleteTranslationLocalesForTermCompiledQuery.Sql;
+                var deleteTranslationLocalesForTermParam = deleteTranslationLocalesForTermCompiledQuery.NamedBindings;
+                this.LogQuery(deleteTranslationLocalesForTermSql, this.DictionaryToString(deleteTranslationLocalesForTermParam));
+                var translationLocalesForTerm = dbConnection.Query<Locale>(
+                    sql: deleteTranslationLocalesForTermSql,
+                    param: deleteTranslationLocalesForTermParam);
+                dbConnection.Close();
+                return translationLocalesForTerm;
+            }
+        }
+
+        public void SetTranslationLocalesForTerm(int termId, IEnumerable<int> localesIds)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                foreach(var localeId in localesIds)
+                {
+                    var getTranslationLocalesForTermSql =
+                        "INSERT INTO \"TranslationsubStringsLocales\" " +
+                        "(" +
+                        "\"Id_TranslationSubStrings\", " +
+                        "\"Id_Locales\"" +
+                        ") VALUES " +
+                        "(" +
+                        "@Id_TranslationSubStrings, " +
+                        "@Id_Locales" +
+                        ")";
+                    var getTranslationLocalesForTermParam = new { Id_TranslationSubStrings = termId, Id_Locales = localeId };
+                    this.LogQuery(getTranslationLocalesForTermSql, getTranslationLocalesForTermParam);
+                    dbConnection.Execute(
+                        sql: getTranslationLocalesForTermSql,
+                        param: getTranslationLocalesForTermParam);
+                }
+                dbConnection.Close();
+            }
+        }
+
         private void LogQuery(string sql)
         {
             this._logger.WriteDebug($"Query {sql}");

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Localization.WebApi
 {
@@ -91,6 +92,36 @@ namespace Localization.WebApi
                     glossaryId: glossaryId,
                     updatedTerm: updatedTerm,
                     partOfSpeechId: partOfSpeechId);
+        }
+
+        [HttpGet("{glossaryId}/terms/{termId}/locales")]
+        public IEnumerable<Locale> GetTranslationLocalesForTerm(int glossaryId, int termId)
+        {
+            var translationLocalesForTerm = this._glossaryRepository.GetTranslationLocalesForTerm(glossaryId, termId);
+            if (!translationLocalesForTerm.Any())
+            {
+                translationLocalesForTerm = this._glossaryRepository.GetTranslationLocales(glossaryId: glossaryId);
+            }
+            return translationLocalesForTerm;
+        }
+
+        [HttpPut("{glossaryId}/terms/{termId}/locales")]
+        public void SetTranslationLocalesForTerm(int glossaryId, int termId, [FromBody] IEnumerable<int> localesIds)
+        {
+            var newLocalesIds = localesIds.ToHashSet();
+            var glossaryTranslationLocalesIds =
+                this._glossaryRepository
+                    .GetTranslationLocales(glossaryId: glossaryId)
+                    .Select(locale => locale.ID)
+                    .ToHashSet();
+            this._glossaryRepository.DeleteTranslationLocalesForTerm(termId: termId);
+            if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
+                && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
+                && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
+            {
+                return;
+            }
+            this._glossaryRepository.SetTranslationLocalesForTerm(termId: termId, localesIds: newLocalesIds);
         }
 
     }

@@ -110,4 +110,12 @@ export class GlossariesService {
     return this.httpClient.get<Locale>(GlossariesService.connectionUrl + glossaryId + '/locale');
   }
 
+  getTranslationLocalesForTerm(glossaryId: number, termId: number): Observable<Locale[]> {
+    return this.httpClient.get<Locale[]>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales');
+  }
+
+  setTranslationLocalesForTerm(glossaryId: number, termId: number, localesIds: number[]): Observable<Object> {
+    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales', localesIds);
+  }
+
 }
