@@ -22,6 +22,7 @@ namespace Models.DatabaseEntities
         [Required]
         public DateTime DateTime { get; set; }
 
+        [Required]
         public int ID_Locale { get; set; }
     }
 }

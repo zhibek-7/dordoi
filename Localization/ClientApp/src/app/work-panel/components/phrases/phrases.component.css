@@ -38,9 +38,7 @@
     margin-bottom: .2rem;
 }
 
-.arrowIcon {
-    height: 40px;
-    width: 40px;
+.arrowIcon {    
     cursor: pointer;
 }
 .align-center {

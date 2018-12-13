@@ -9,7 +9,7 @@ namespace Utilities.Logs
     {
         public ExceptionLog() : base("exceptionlog")
         {
-            getLog();
+            GetLog();
         }
     }
 }

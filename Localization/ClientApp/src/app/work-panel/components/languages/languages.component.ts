@@ -26,21 +26,8 @@ export class LanguagesComponent implements OnInit {
     }
 
 
-    ngOnInit(): void { }
-
-    acceptTranslateClick(){
-        alert("Перевод принят");
-    }
-
-    async rejectTranslateClick(translationId: number){        
-        await this.translationService.rejectTranslate(translationId);
-        for(var i = 0; i < this.listOfTranslations.length; i++) {
-            if(this.listOfTranslations[i].id == translationId) {
-                this.listOfTranslations.splice(i, 1);
-                break;
-            }
-        }
-    }
+    ngOnInit(): void { }    
+    
 
     checkPhrase(): boolean{
         if(this.sharePhraseService.getSharedPhrase() === undefined) {
@@ -57,6 +44,29 @@ export class LanguagesComponent implements OnInit {
         }
         else {
             return true;
+        }
+    }
+
+    async changeTranslate(translation: Translation){
+        if(translation.confirmed == false){
+            this.translationService.rejectTranslate(translation.id);
+        }
+        else {
+            this.translationService.acceptTranslate(translation.id);
+        }
+    }
+
+    // acceptTranslate(translation: Translation){
+    //     this.translationService.acceptTranslate(translation.id);
+    // }
+
+    async deleteTranslateClick(translationId: number){        
+        await this.translationService.deleteTranslate(translationId);
+        for(var i = 0; i < this.listOfTranslations.length; i++) {
+            if(this.listOfTranslations[i].id == translationId) {
+                this.listOfTranslations.splice(i, 1);
+                break;
+            }
         }
     }
 
