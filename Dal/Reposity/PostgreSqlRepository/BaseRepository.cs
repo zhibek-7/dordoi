@@ -9,7 +9,7 @@ namespace DAL.Reposity.PostgreSqlRepository
     public abstract class BaseRepository
     {
 
-        private readonly LogTools _logger = new LogTools();
+        protected readonly LogTools _logger = new LogTools();
 
         protected void LogQuery(string sql)
         {

@@ -146,5 +146,16 @@ namespace Localization.WebApi
             return Ok();
         }
 
+        [HttpPut("{translationId}")]
+        public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
+        {
+            updatedTranslation.ID = translationId;
+            var updatedSuccessfuly = await translationRepository.Update(updatedTranslation);
+            if (!updatedSuccessfuly)
+                return this.BadRequest();
+
+            return this.Ok();
+        }
+
     }
 }

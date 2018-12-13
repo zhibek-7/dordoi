@@ -6,6 +6,7 @@ import { GlossariesRoutingModule } from 'src/app/glossaries/glossaries-routing.m
 
 import { GlossariesService } from 'src/app/services/glossaries.service';
 import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
+import { TranslationService } from 'src/app/services/translationService.service';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
 import { GlossariesComponent } from 'src/app/glossaries/components/glossaries/glossaries.component';
@@ -50,7 +51,8 @@ import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term
     RequestDataReloadService,
     GlossariesService,
     PartsOfSpeechService,
-    LanguageService
+    LanguageService,
+    TranslationService,
   ]
 })
 export class GlossariesModule { }

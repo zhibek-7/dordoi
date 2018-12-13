@@ -24,7 +24,7 @@
     <td>
       <div class="btn-group">
         <button class="btn" (click)="editTermFormModal.show()">Изменить</button>
-        <app-edit-term-form-modal #editTermFormModal [glossary]="glossary" [term]="termViewModel.term" (termUpdateConfirmed)="updateTerm($event)" ></app-edit-term-form-modal>
+        <app-edit-term-form-modal #editTermFormModal [glossary]="glossary" [term]="termViewModel.term"></app-edit-term-form-modal>
         <button class="btn" (click)="deleteTermModal.show()">Удалить</button>
         <app-delete-term-confirmation-modal #deleteTermModal [term]="termViewModel.term" (deleteTermConfirmed)="deleteTerm(termViewModel.term)"></app-delete-term-confirmation-modal>
         <button class="btn" (click)="setLanguagesFormModal.show()">Задать язык</button>
