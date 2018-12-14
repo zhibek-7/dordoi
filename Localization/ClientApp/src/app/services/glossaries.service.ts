@@ -26,7 +26,7 @@ export class GlossariesService {
     glossaryId: number,
     termPart?: string,
     pageSize?: number,
-    pageNumber?: number,
+    offset?: number,
     sortBy?: string[],
     sortAscending?: boolean): Observable<HttpResponse<Term[]>>
   {
@@ -38,8 +38,8 @@ export class GlossariesService {
     if (pageSize) {
       paramsObject.pageSize = pageSize;
     }
-    if (pageNumber) {
-      paramsObject.pageNumber = pageNumber;
+    if (offset) {
+      paramsObject.offset = offset;
     }
     if (sortBy && sortBy.length > 0) {
       let clearedSortBy = new Array<string>();

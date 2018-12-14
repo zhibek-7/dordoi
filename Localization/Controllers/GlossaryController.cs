@@ -49,7 +49,7 @@ namespace Localization.WebApi
             int glossaryId,
             [FromQuery] string termSearch,
             [FromQuery] int? pageSize,
-            [FromQuery] int? pageNumber,
+            [FromQuery] int? offset,
             [FromQuery] string[] sortBy,
             [FromQuery] bool? sortAscending)
         {
@@ -63,7 +63,7 @@ namespace Localization.WebApi
                     glossaryId: glossaryId,
                     termPart: termSearch,
                     pageSize: pageSize ?? 25,
-                    pageNumber: pageNumber ?? 1,
+                    offset: offset ?? 0,
                     sortBy: sortBy,
                     sortAscending: sortAscending ?? true);
         }

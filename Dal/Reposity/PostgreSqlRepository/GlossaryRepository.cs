@@ -209,7 +209,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsByGlossaryIdAsync(
             int glossaryId,
             int pageSize,
-            int pageNumber,
+            int offset,
             string termPart = null,
             string[] sortBy = null,
             bool sortAscending = true)
@@ -221,9 +221,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 dbConnection.Open();
                 var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
-                if (pageSize > 0 && pageNumber > 0)
+                if (offset > 0)
                 {
-                    query = query.Skip(pageSize * (pageNumber - 1));
+                    query = query.Skip(offset);
                 }
                 if (pageSize > 0)
                 {

@@ -8,7 +8,7 @@ import { Observable, of } from 'rxjs';
 })
 export class PaginationComponent implements OnInit, OnChanges {
 
-  @Input() currentPage: number = 1;
+  @Input() offset: number = 0;
   @Input() pageSize: number = 1;
   @Input() totalCount: number = 1;
   @Input() displayedPagesRange: number = 2;
@@ -21,6 +21,10 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
+  }
+
+  get currentPage(): number {
+    return Math.floor(this.offset / this.pageSize) + 1;
   }
 
   get totalPages() {
@@ -60,7 +64,7 @@ export class PaginationComponent implements OnInit, OnChanges {
 
   selectPage(pageNumber: number) {
     if (this.isValidPageNumber(pageNumber)) {
-      this.pageChanged.emit(pageNumber);
+      this.pageChanged.emit((pageNumber - 1) * this.pageSize);
     }
     else {
       console.log('ERROR: Page number is not valid!');
