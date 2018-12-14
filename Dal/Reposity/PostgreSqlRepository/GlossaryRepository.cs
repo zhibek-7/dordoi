@@ -23,8 +23,6 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
-        private readonly LogTools _logger = new LogTools();
-
         public GlossaryRepository(IRepositoryAsync<Models.DatabaseEntities.String> stringsRepository)
         {
             this._context = PostgreSqlNativeContext.getInstance();
