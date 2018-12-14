@@ -18,7 +18,9 @@ export class CommentsComponent implements OnInit {
     stringId: number;
     commentEdited = false;
     changedComment = "";
-    fileToUpload: File = null
+
+    fileToUpload: File = null;
+    imageUrl: string = undefined;
 
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService ) { 
 
@@ -61,26 +63,38 @@ export class CommentsComponent implements OnInit {
         this.endEditingMode();
     }        
 
-    saveChangedComment(comment: Comment){
-        comment.comment = this.changedComment;
-        comment.dateTime = new Date(Date.now());
-        // comment.id_User = userId              когда добавится авторизация нужно будет прописать реальный id. Т.к. комментарии могут менять разные пользователи
-        this.commentService.updateComment(comment);
-        this.endEditingMode();
+    async saveChangedComment(comment: CommentWithUser) {
+      // comment.id_User = userId              РєРѕРіРґР° РґРѕР±Р°РІРёС‚СЃСЏ Р°РІС‚РѕСЂРёР·Р°С†РёСЏ РЅСѓР¶РЅРѕ Р±СѓРґРµС‚ РїСЂРѕРїРёСЃР°С‚СЊ СЂРµР°Р»СЊРЅС‹Р№ id. Рў.Рє. РєРѕРјРјРµРЅС‚Р°СЂРёРё РјРѕРіСѓС‚ РјРµРЅСЏС‚СЊ СЂР°Р·РЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё
+      let updatedComment: Comment = new Comment(301, this.stringId, this.changedComment, new Date(Date.now()), comment.commentId);
+
+      await this.commentService.updateComment(updatedComment);
+      if (this.fileToUpload != null) {
+        this.loadScrinshot();
+      }
+      this.endEditingMode();
     }
 
-    endEditingMode(){
-        this.commentEdited = false;
-        this.changedComment = "";
-        this.getComments(this.stringId);
+    endEditingMode() {
+      this.commentEdited = false;
+      this.changedComment = "";
+      this.fileToUpload = null;
+      this.imageUrl = undefined;
+      this.getComments(this.stringId);
     }
 
-    loadScrinshot(){
-
+    loadScrinshot() {
+      this.commentService.uploadImage(this.fileToUpload);
     }
 
-    handleFileInput(file: FileList){
-        this.fileToUpload = file.item(0);
+    handleFileInput(file: FileList) {
+      this.fileToUpload = file.item(0);
+
+      var reader = new FileReader();
+      reader.onload = (event: any) => {
+        this.imageUrl = event.target.result;
+        console.log(this.imageUrl);
+      }
+      reader.readAsDataURL(this.fileToUpload);
     }
 
     deleteCommentClick(commentId: number){

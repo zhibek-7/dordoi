@@ -31,20 +31,27 @@
                                         </div>
                                     </div>
                                     <div *ngIf="commentEdited">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <textarea class="form-control" rows="2"
-                                                        [(ngModel)]="changedComment" ></textarea>
-                                                </div>
-                                            </div>
+                                      <div class="row">
+                                        <div class="col-12">
+                                          <div class="form-group">
+                                            <textarea class="form-control" rows="2"
+                                                      [(ngModel)]="changedComment"></textarea>
+                                          </div>
                                         </div>
-                                        <div class="row">
-                                            <div><input class="col-4" (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>
-                                            <!-- <div class="col-4"><button class="btn" (click)="loadScrinshot()">Скриншоты</button></div> -->
-                                            <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
-                                            <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.commentId)">Отменить</button></div>
+                                      </div>
+
+                                      <div class="fileBlock mb-2">
+                                        <div class=""><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>
+                                        <div *ngIf="imageUrl" class="blockWithImages m-1">
+                                          <img [src]="imageUrl" class="appendedImage">
                                         </div>
+                                      </div>
+
+                                      <div class="row">
+                                        <!-- <div class="col-4"><button class="btn" (click)="loadScrinshot()">Скриншоты</button></div> -->
+                                        <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
+                                        <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.commentId)">Отменить</button></div>
+                                      </div>
                                     </div>
                                 </div>
                             </li>

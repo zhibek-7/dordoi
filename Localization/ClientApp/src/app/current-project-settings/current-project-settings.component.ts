@@ -6,9 +6,9 @@ import * as moment from "moment";
 moment.locale("ru");
 
 @Component({
-  selector: 'app-current-project-settings',
-  templateUrl: './current-project-settings.component.html',
-  styleUrls: ['./current-project-settings.component.css']
+  selector: "app-current-project-settings",
+  templateUrl: "./current-project-settings.component.html",
+  styleUrls: ["./current-project-settings.component.css"]
 })
 export class CurrentProjectSettingsComponent implements OnInit {
   currentProject: Project;
@@ -27,21 +27,27 @@ export class CurrentProjectSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.getProject();
-    this.wasChanged = this.currentProject.dateOfCreation;
-    this.wasCreated = this.currentProject.lastActivity;
+
+    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
+    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+    console.log('Projec=' + sessionStorage.getItem('Projec'));
+
+
   }
 
   getProject() {
     this.route.params.subscribe((params: Params) => {
       this.projectService
-        .getProject(this.route.snapshot.params['id'])
+        .getProject(this.route.snapshot.params["id"])
         .subscribe(
           project => {
             this.currentProject = project;
+            this.wasChanged = this.currentProject.dateOfCreation;
+            this.wasCreated = this.currentProject.lastActivity;
           },
           error => console.error(error)
         );
-      console.log(this.route.snapshot.params['id']);
+      console.log('snapshot='+this.route.snapshot.params["id"]);
     });
   }
 }

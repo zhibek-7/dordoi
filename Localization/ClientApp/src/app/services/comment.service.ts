@@ -21,6 +21,13 @@ export class CommentService {
         return asyncResult;
     }
 
+    uploadImage(fileToUpload: File) {
+      const formData: FormData = new FormData();
+      formData.append('Image', fileToUpload);
+
+      return this.http.post(this.url + "UploadImage", formData).toPromise();
+    }
+
     getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{        
         return this.http.get<CommentWithUser[]>(this.url + '/InString/' + idString)
                 .pipe(

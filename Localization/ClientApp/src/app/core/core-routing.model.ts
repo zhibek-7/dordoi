@@ -17,17 +17,14 @@ const routes: Routes = [
     loadChildren: '../reports/Reports.model#ReportsModule'
   },
   {
-    path: 'create-project',                                          // 1. Поменять название модуля
-    loadChildren: '../create-project/create-project.module#CreateProjectModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
+    path: 'create-project',
+    loadChildren: '../create-project/create-project.module#CreateProjectModule'
   },
   {
     path: 'Projects/:id',
     component: CurrentProjectSettingsComponent
   },
-  {
-    path: ':id',
-    component: ProjectPageComponent
-  },
+
   {
     path: 'New-project',
     component: NewProjectComponent
@@ -51,6 +48,10 @@ const routes: Routes = [
   {
     path: 'Files',
     loadChildren: '../files/files.module#FilesModule'
+  },
+  {
+    path: ':id',
+    component: ProjectPageComponent
   },
   {
     path: '**',
