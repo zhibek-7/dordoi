@@ -23,7 +23,6 @@ export class ProjectPageComponent implements OnInit {
             error => console.error(error));
         console.log(this.route.snapshot.params['id']);
       });
-    });
   }
 
 }
