@@ -35,7 +35,7 @@ namespace Localization.WebApi
         public async Task<ActionResult<IEnumerable<CommentWithUserInfo>>> GetCommentsInString(int idString)
         {
             // Check if string by id exists in database
-            var foundedString = await stringRepository.GetByID(idString);
+            var foundedString = await stringRepository.GetByIDAsync(idString);
 
             if (foundedString == null)
             {
@@ -52,7 +52,7 @@ namespace Localization.WebApi
         /// <returns>Список комментариев</returns>
         public async Task<ActionResult<IEnumerable<Comments>>>  GetComments()
         {
-            IEnumerable<Comments> comments = await commentRepository.GetAll();
+            IEnumerable<Comments> comments = await commentRepository.GetAllAsync();
             return Ok(comments);
         }
 
@@ -67,14 +67,14 @@ namespace Localization.WebApi
         public async Task<IActionResult> DeleteComment(int idComment)
         {
             // Check if string by id exists in database
-            var foundedComment = await commentRepository.GetByID(idComment);
+            var foundedComment = await commentRepository.GetByIDAsync(idComment);
 
             if (foundedComment == null)
             {
                 return NotFound($"File by id \"{ idComment }\" not found");
             }
 
-            var deleteResult = await commentRepository.Remove(idComment);
+            var deleteResult = await commentRepository.RemoveAsync(idComment);
 
             if (!deleteResult)
             {

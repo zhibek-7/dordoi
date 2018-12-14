@@ -20,12 +20,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public Task<int> Add(Comments item)
+        public Task<int> AddAsync(Comments item)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Comments>> GetAll()
+        public async Task<IEnumerable<Comments>> GetAllAsync()
         {
             var query = "SELECT * FROM \"Comments\"";
 
@@ -81,7 +81,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<Comments> GetByID(int id)
+        public async Task<Comments> GetByIDAsync(int id)
         {
             var query = "SELECT * FROM \"Comments\" WHERE \"ID\" = @id";
 
@@ -105,7 +105,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<bool> Remove(int id)
+        public async Task<bool> RemoveAsync(int id)
         {
             var query = "DELETE " +
                         "FROM \"Comments\" AS C " +
@@ -131,7 +131,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public Task<bool> Update(Comments item)
+        public Task<bool> UpdateAsync(Comments item)
         {
             throw new NotImplementedException();
         }

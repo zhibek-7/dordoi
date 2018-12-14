@@ -24,7 +24,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="item">Новая фраза</param>
         /// <returns>Кол-во добавленных фраз</returns>
-        public Task<int> Add(Models.DatabaseEntities.String item)
+        public Task<int> AddAsync(Models.DatabaseEntities.String item)
         {
             throw new NotImplementedException();
         }
@@ -33,7 +33,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Получает все фразы
         /// </summary>
         /// <returns>Список фраз</returns>
-        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetAll()
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetAllAsync()
         {
             var query = "SELECT * FROM \"TranslationSubstrings\"";
 
@@ -62,7 +62,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id необходимой фразы</param>
         /// <returns>Запись с необходимым id</returns>
-        public async Task<Models.DatabaseEntities.String> GetByID(int id)
+        public async Task<Models.DatabaseEntities.String> GetByIDAsync(int id)
         {
             var query = "SELECT * " +
                         "FROM \"TranslationSubstrings\" " +
@@ -88,12 +88,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             
         }
 
-        public Task<bool> Remove(int id)
+        public Task<bool> RemoveAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(Models.DatabaseEntities.String item)
+        public Task<bool> UpdateAsync(Models.DatabaseEntities.String item)
         {
             throw new NotImplementedException();
         }
