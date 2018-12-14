@@ -6,8 +6,10 @@ using System.Text;
 namespace Models.DatabaseEntities
 {
     public class Comments: BaseEntity
-    {
-        public int ID_Translation { get; set; }
+    {        
+        public DateTime DateTime { get; set; }
+
+        public int ID_TranslationSubstrings { get; set; }
 
         public int ID_User { get; set; }
 

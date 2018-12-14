@@ -25,6 +25,24 @@ namespace Localization.WebApi
             stringRepository = new StringRepository();
         }
 
+        [HttpPost]
+        [Route("AddComment")]
+        public async Task<IActionResult> CreateComment([FromBody] Comments comment)
+        {
+            if (comment == null)
+            {
+                return BadRequest("Запрос с пустыми параметрами");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Модель не соответсвует");
+            }
+
+            int insertedCommentId = await commentRepository.Add(comment);
+            CommentWithUserInfo commentWithUserInfo = await commentRepository.GetByIDWithUserInfo(insertedCommentId);
+            return Ok(commentWithUserInfo);
+        }
+
         /// <summary>
         /// Получает все комментарии которые есть данной фразы
         /// </summary>
@@ -71,7 +89,7 @@ namespace Localization.WebApi
 
             if (foundedComment == null)
             {
-                return NotFound($"File by id \"{ idComment }\" not found");
+                return NotFound($"Comment by id \"{ idComment }\" not found");
             }
 
             var deleteResult = await commentRepository.RemoveAsync(idComment);
@@ -81,6 +99,29 @@ namespace Localization.WebApi
                 return BadRequest($"Failed to remove comment with id \"{ idComment }\" from database");
             }
 
+            return Ok();
+        }
+
+        [HttpPut("UpdateComment/{idComment}")]
+        public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
+        {
+            // Check if comment by id exists in database
+            var foundedComment = await commentRepository.GetByID(idComment);
+
+            if (foundedComment == null)
+            {
+                return NotFound($"Comment by id \"{ idComment }\" not found");
+            }
+
+            // Update file in database
+            var updateResult = await commentRepository.Update(comment);
+
+            if (!updateResult)
+            {
+                return BadRequest($"Failed to update comment with id \"{idComment}\" in database");
+            }
+
+            // Return ok result
             return Ok();
         }
 
