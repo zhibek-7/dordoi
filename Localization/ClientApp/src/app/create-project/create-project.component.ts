@@ -11,6 +11,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class CreateProjectComponent implements OnInit{
   args='ascending';
+  reverse=false;
   searchText='';
   form: FormGroup;
   title = 'Создание проекта Crowdin';
