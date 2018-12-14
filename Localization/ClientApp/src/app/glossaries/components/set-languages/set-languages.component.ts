@@ -18,6 +18,7 @@ import { Selectable } from 'src/app/glossaries/models/selectable.model';
 export class SetLanguagesComponent extends ModalComponent implements OnInit {
   args = 'ascending';
   searchText: string = '';
+  reverse=false;
 
   @Input() availableLocales: Selectable<Locale>[] = [];
 

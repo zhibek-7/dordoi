@@ -26,7 +26,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Функция добавления варианта перевода
         /// </summary>
         /// <param name="item">Вариант перевода</param>
-        public async Task<int> Add(Translation item)
+        public async Task<int> AddAsync(Translation item)
         {
             var query = "INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\", \"ID_Locale\")" +
                         "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime, @ID_Locale) " +
@@ -55,7 +55,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Функция получения всех переводов
         /// </summary>
         /// <returns>Список переводов</returns>
-        public async Task<IEnumerable<Translation>> GetAll()
+        public async Task<IEnumerable<Translation>> GetAllAsync()
         {
             var query = @"SELECT * FROM 'Translations'";
 
@@ -84,7 +84,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id необходимого варианта перевода</param>
         /// <returns>Вариант перевода</returns>
-        public async Task<Translation> GetByID(int id)
+        public async Task<Translation> GetByIDAsync(int id)
         {
             var query = "SELECT * FROM \"Translations\" WHERE \"ID\" = @id";
 
@@ -113,7 +113,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Функция удаления варианта перевода по конкретному id
         /// </summary>
         /// <param name="id">id варианта перевода который нужно удалить</param>
-        public async Task<bool> Remove(int id)
+        public async Task<bool> RemoveAsync(int id)
         {
             var query = "DELETE " +
                         "FROM \"Translations\" AS T " +
@@ -143,7 +143,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Функция обновления варианта перевода
         /// </summary>
         /// <param name="item">Обновленный вариант перевода</param>
-        public async Task<bool> Update(Translation item)
+        public async Task<bool> UpdateAsync(Translation item)
         {
             try
             {

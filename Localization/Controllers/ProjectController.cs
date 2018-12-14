@@ -43,18 +43,17 @@ namespace Localization.Controllers
         {
               _localizationProjectRepository.InsertProject(project);
             return project;
-
         }
 
 
         [HttpGet]
-        [Route("{Id}")]
+        [Route("delete/{Id}")]
         public void DeleteProject(int Id)
         {
          _localizationProjectRepository.DeleteProject(Id);
         }
         [HttpGet]
-        [Route("{Id}")]
+        [Route("edit/{Id}")]
         public LocalizationProject EditProject(LocalizationProject project, int Id)
         {
           _localizationProjectRepository.UpdateProject(project);

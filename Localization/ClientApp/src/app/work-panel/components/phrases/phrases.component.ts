@@ -13,6 +13,7 @@ import { StringService } from '../../../services/stringService.service';
 })
 export class PhrasesComponent implements OnInit {
 
+    searchText: string = '';
     phrasesList: Array<String>;
     phrasesOnPages: String[][];
     currentPageOfPhrases: String[];
