@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommentService } from '../../../services/comment.service';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 
+import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
  
 @Component({
@@ -17,6 +18,7 @@ export class CommentsComponent implements OnInit {
     stringId: number;
     commentEdited = false;
     changedComment = "";
+    fileToUpload: File = null
 
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService ) { 
 
@@ -35,10 +37,10 @@ export class CommentsComponent implements OnInit {
         });        
     };
 
-    public addComment(textFromInput: string){
-        // let lastElement = this.commentsList[this.commentsList.length - 1];
-        // let idOfTheNewElement = Number(lastElement.id) + 1;
-        // this.commentsList.push(new Comment(idOfTheNewElement, textFromInput));
+    public async addComment(textFromInput: string){
+        let comment: Comment = new Comment(301, this.stringId, textFromInput);        // поменять на id реального пользователя, когда появится
+        let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
+        this.commentsList.push(insertedComment);
     }
 
     onEnterPress(event: any){
@@ -56,17 +58,29 @@ export class CommentsComponent implements OnInit {
     }
 
     cancelChangingComment(commentId: number){
+        this.endEditingMode();
+    }        
+
+    saveChangedComment(comment: Comment){
+        comment.comment = this.changedComment;
+        comment.dateTime = new Date(Date.now());
+        // comment.id_User = userId              когда добавится авторизация нужно будет прописать реальный id. Т.к. комментарии могут менять разные пользователи
+        this.commentService.updateComment(comment);
+        this.endEditingMode();
+    }
+
+    endEditingMode(){
         this.commentEdited = false;
         this.changedComment = "";
         this.getComments(this.stringId);
     }
-    
+
     loadScrinshot(){
 
     }
 
-    saveChangedComment(){
-
+    handleFileInput(file: FileList){
+        this.fileToUpload = file.item(0);
     }
 
     deleteCommentClick(commentId: number){

@@ -43,7 +43,6 @@ namespace Localization.Controllers
         {
               _localizationProjectRepository.InsertProject(project);
             return project;
-
         }
 
 
