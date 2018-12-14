@@ -38,8 +38,8 @@ namespace Localization.WebApi
                 return BadRequest("Модель не соответсвует");
             }
 
-            int insertedCommentId = await commentRepository.Add(comment);
-            CommentWithUserInfo commentWithUserInfo = await commentRepository.GetByIDWithUserInfo(insertedCommentId);
+            int insertedCommentId = await commentRepository.AddAsync(comment);
+            CommentWithUserInfo commentWithUserInfo = await commentRepository.GetByIDWithUserInfoAsync(insertedCommentId);
             return Ok(commentWithUserInfo);
         }
 
@@ -106,7 +106,7 @@ namespace Localization.WebApi
         public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
         {
             // Check if comment by id exists in database
-            var foundedComment = await commentRepository.GetByID(idComment);
+            var foundedComment = await commentRepository.GetByIDAsync(idComment);
 
             if (foundedComment == null)
             {
@@ -114,7 +114,7 @@ namespace Localization.WebApi
             }
 
             // Update file in database
-            var updateResult = await commentRepository.Update(comment);
+            var updateResult = await commentRepository.UpdateAsync(comment);
 
             if (!updateResult)
             {
