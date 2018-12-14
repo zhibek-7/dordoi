@@ -18,7 +18,7 @@ namespace DAL.Reposity.Report
         /// Функция получения строк отчета удовлетворяющих датам
         /// </summary>
         /// <returns>Список строк отчета</returns>
-        public override IEnumerable<TranslatedWordsReportRow> Get(string dateFrom, string dateTo)
+        public override IEnumerable<TranslatedWordsReportRow> GetRows(DateTime dateFrom, DateTime dateTo)
         {
             using (IDbConnection dbConnection = Context.Connection)
             {
@@ -37,12 +37,14 @@ namespace DAL.Reposity.Report
                                "t.\"ID_User\" = u.\"ID\" " +
                                "and t.\"ID_Locale\" = l.\"ID\" " +
                                "and t.\"ID_String\" = s.\"ID\" " +
-                               "and t.\"DateTime\" > \'" + dateFrom + "\' and t.\"DateTime\" < \'" + dateTo + "\'" +
+                               "and t.\"DateTime\" > @dateFrom  " +
+                               "and t.\"DateTime\" < @dateTo " +
                                "group by " +
                                "Name, " +
                                "Language, " +
                                "Confirmed";
-                IEnumerable<TranslatedWordsReportRow> rows = dbConnection.Query<TranslatedWordsReportRow>(sqlQuery);
+                var rows = dbConnection.Query<TranslatedWordsReportRow>(sqlQuery, new { dateFrom, dateTo }).ToList();
+                dbConnection.Close();
                 return rows;
             }
         }       

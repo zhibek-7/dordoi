@@ -17,7 +17,7 @@ export class NewProjectComponent implements OnInit {
 
   value = '';
 
-  newProject = new ProjectsService(this.httpClient);
+  newProject: Project;// = new ProjectsService(this.httpClient);
 
   checkedLanguages = [];
 
@@ -57,14 +57,8 @@ export class NewProjectComponent implements OnInit {
     console.log('addProject ---!!!!!!!!!');
 
     this.newProject.name = this.myForm.get('name').value;
-   this.newProject.id = (Math.floor(Math.random() * 10000) + 1).toString();
+   this.newProject.id = Math.floor(Math.random() * 10000) + 1;
     this.newProject.url = this.myForm.get('url').value;
-    this.newProject.owner = 'Я';
-    this.newProject.created = new Date;
-    this.newProject.changed = new Date;
-    this.newProject.hasErr = false;
-    this.newProject.type = 'public';
-    this.newProject.sourceLanguage = this.myForm.get('language').value;
 
     this.projectsService.addProject(this.newProject);
   }

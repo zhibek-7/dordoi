@@ -13,7 +13,7 @@ namespace DAL.Reposity.PostgreSqlRepository
     /// <summary>
     /// Репозиторий для работы с вариантами перевода фраз
     /// </summary>
-    public class TranslationRepository : IRepositoryAsync<Translation>
+    public class TranslationRepository : BaseRepository, IRepositoryAsync<Translation>
     {
         private PostgreSqlNativeContext context;
 
@@ -29,7 +29,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> Add(Translation item)
         {
             var query = "INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\", \"ID_Locale\")" +
-                        "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime, 300) " + //ID_Locale нужно будет поменять на id реального языка, когда он появится
+                        "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime, @ID_Locale) " +
                         "RETURNING  \"Translations\".\"ID\"";   
 
             try
@@ -143,9 +143,36 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Функция обновления варианта перевода
         /// </summary>
         /// <param name="item">Обновленный вариант перевода</param>
-        public Task<bool> Update(Translation item)
+        public async Task<bool> Update(Translation item)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var dbConnection = this.context.Connection)
+                {
+                    dbConnection.Open();
+                    var updateTranslationSql =
+                        "UPDATE \"Translations\" SET " +
+                        "\"ID_String\"=@ID_String, " +
+                        "\"Translated\"=@Translated, " +
+                        "\"Confirmed\"=@Confirmed " +
+                        "\"ID_User\"=@ID_User " +
+                        "\"DateTime\"=@DateTime " +
+                        "\"ID_Locale\"=@ID_Locale " +
+                        "WHERE \"ID\"=@ID";
+                    var updateTranslationParam = item;
+                    this.LogQuery(updateTranslationSql, updateTranslationParam);
+                    await dbConnection.ExecuteAsync(
+                        sql: updateTranslationSql,
+                        param: updateTranslationParam);
+                    dbConnection.Close();
+                    return true;
+                }
+            }
+            catch (Exception exception)
+            {
+                this._logger.WriteExceprion("Exception on trying to update translation.", exception);
+                return false;
+            }
         }
 
         /// <summary>

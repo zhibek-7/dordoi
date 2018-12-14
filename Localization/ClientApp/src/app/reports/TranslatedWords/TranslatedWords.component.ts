@@ -1,11 +1,18 @@
-import { Component, ViewChild} from '@angular/core';
-import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
+import { Component, OnInit, Input } from '@angular/core';
+
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
 import { UserService } from '../../services/user.service';
+import { FileService } from '../../services/file.service'; 
+import { ProjectsService } from '../../services/projects.service';
+
+import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { Locale } from '../../models/database-entities/locale.type';
-import { MatTableDataSource } from '@angular/material';
+import { File } from '../../models/database-entities/file.type';
 import { User } from "../../models/database-entities/user.type";
+import { Project } from '../../models/Project';
+
+import { MatTableDataSource } from '@angular/material';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { Moment } from 'moment';
 
@@ -15,16 +22,47 @@ import { Moment } from 'moment';
   styleUrls: ['./TranslatedWords.component.css']
 })
 
-export class TranslatedWordsComponent {
+export class TranslatedWordsComponent implements OnInit {
+
+  @Input() projectId: number;
+
+  constructor(private reportService: ReportService,
+    private languagesService: LanguageService,
+    private userService: UserService,
+    private fileService: FileService,
+    private projectsService: ProjectsService) {}
+
+
+  ngOnInit() {
+
+    this.languagesService.getLanguageList()
+      .subscribe(Languages => { this.Languages = Languages; },
+        error => console.error(error));
+
+    this.userService.getUserList()
+      .subscribe(Users => { this.Users = Users; },
+        error => console.error(error));
+
+    this.fileService.getInitialProjectFolders(this.projectId)
+      .subscribe(folders => { this.Folders = folders; },
+        error => console.error(error));
+
+    this.projectsService.getProject(this.projectId)
+      .subscribe(project => { this.project = project; console.log(this.project.name); },
+      error => console.error(error));
+  }
+
+  public project: Project;
+
   //Строки отчета
   public reportrows: TranslatedWordsReportRow[];
-  //Фильтрованные строки отчета
-  public filteredrows: TranslatedWordsReportRow[];
 
   //Список языков из БД
   public Languages: Locale[];
   //Список пользователей из БД
   public Users: User[];
+  //Список папок проекта
+  public Folders: File[];
 
   //Название отчета
   msg: string = "Лучшие участники";
@@ -34,12 +72,12 @@ export class TranslatedWordsComponent {
   userLang: string;
 
   //Переменные для выборки
-  user: string = "Все";
-  locale: string = "Все";
+  userId: number = 0;
+  localeId: number = 0;
   workType: string = "Все";
   volumeCalcType: string = "словам";
   calcBasisType: string = "Исходный";
-  initialFolder: string;
+  initialFolderId: number = 0;
 
   //Переменные для фильтьрации
   selected: { from: Moment, to: Moment };
@@ -47,39 +85,23 @@ export class TranslatedWordsComponent {
   //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
-  constructor(private reportService: ReportService, private languagesService: LanguageService, private userService: UserService) {
-   
-    this.languagesService.getLanguageList()
-      .subscribe(Languages => { this.Languages = Languages; },
-      error => console.error(error));
-
-    this.userService.getUserList()
-      .subscribe(Users => { this.Users = Users; },
-        error => console.error(error));
-    
-  }
+  
 
   displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
 
   async getRows() {
-    this.reportService.getTranslatedWordsReport(this.selected.from.format("DD-MM-YYYY"), this.selected.to.format("DD-MM-YYYY"))
-      .subscribe(reportrows => {
-          this.filteredrows = reportrows;
-        this.reportrows = reportrows;
-        },
-      error => console.error(error));   
-  }
-
-  filterReport() {
-    let rows: TranslatedWordsReportRow[] = this.reportrows;
-
-    if (this.userName != undefined && this.userName != null)
-      rows = rows.filter(s => s.name.indexOf(this.userName) != -1);
-
-    if (this.userLang != "Все" && this.userLang != undefined)
-      rows = rows.filter(s => s.language.indexOf(this.userLang) != -1);
-
-    this.filteredrows = rows;
+    this.reportService.getTranslatedWordsReport(
+        this.selected.from.format("DD.MM.YYYY"),
+        this.selected.to.format("DD.MM.YYYY"),
+        this.volumeCalcType,
+        this.calcBasisType,
+        this.userId,
+        this.localeId,
+        this.workType,
+        this.initialFolderId)
+      .subscribe(
+        reportrows => this.reportrows = reportrows,
+      error => console.log(error));
   }
 
   setHeaderMsg() {
@@ -93,14 +115,8 @@ export class TranslatedWordsComponent {
   }
 
   clickEvent() {
-    while (!this.getRows())
-      this.filterReport();
+    this.getRows();
     this.setHeaderMsg();
-  }
-
-  confimed(val: string) : string {
-    if (val === "true") return "Да";
-    else return "Нет";
   }
 
   download() {

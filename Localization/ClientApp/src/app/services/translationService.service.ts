@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 
 import { Translation } from '../models/database-entities/translation.type';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class TranslationService {
@@ -31,6 +32,10 @@ export class TranslationService {
 
     async rejectTranslate(translationId: number){
         await this.http.put(this.url + '/RejectTranslation/' + translationId, false).toPromise();
+    }
+
+    updateTranslation(updatedTranslation: Translation): Observable<Object> {
+        return this.http.put(this.url + updatedTranslation.id, updatedTranslation);
     }
 
 }

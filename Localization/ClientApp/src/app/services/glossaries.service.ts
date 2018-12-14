@@ -4,6 +4,8 @@ import { Observable, of } from 'rxjs';
 
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { String } from 'src/app/models/database-entities/string.type';
+import { Locale } from 'src/app/models/database-entities/locale.type';
+import { Term } from 'src/app/models/Glossaries/term.type';
 
 @Injectable()
 export class GlossariesService {
@@ -26,7 +28,7 @@ export class GlossariesService {
     pageSize?: number,
     pageNumber?: number,
     sortBy?: string[],
-    sortAscending?: boolean): Observable<HttpResponse<String[]>>
+    sortAscending?: boolean): Observable<HttpResponse<Term[]>>
   {
     let params = null;
     let paramsObject: any = {};
@@ -58,7 +60,7 @@ export class GlossariesService {
       });
     }
     return this.httpClient
-      .get<String[]>(
+      .get<Term[]>(
         GlossariesService.connectionUrl + glossaryId + '/terms',
         {
           params: params,
@@ -104,8 +106,16 @@ export class GlossariesService {
       });
   }
 
-  getTermPartOfSpeechId(glossaryId: number, termId: number): Observable<number> {
-    return this.httpClient.get<number>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/part_of_speech');
+  getGlossaryLocale(glossaryId: number): Observable<Locale> {
+    return this.httpClient.get<Locale>(GlossariesService.connectionUrl + glossaryId + '/locale');
+  }
+
+  getTranslationLocalesForTerm(glossaryId: number, termId: number): Observable<Locale[]> {
+    return this.httpClient.get<Locale[]>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales');
+  }
+
+  setTranslationLocalesForTerm(glossaryId: number, termId: number, localesIds: number[]): Observable<Object> {
+    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales', localesIds);
   }
 
 }

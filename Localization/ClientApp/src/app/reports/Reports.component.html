@@ -8,7 +8,7 @@
               <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
             </a>
           </li>
-          <li class="breadcrumb-item">{{projectId}}</li>
+          <li *ngIf="project" class="breadcrumb-item">{{project.id}}</li>
           <li class="breadcrumb-item active" aria-current="page">Отчеты</li>
         </ol>
       </nav>
@@ -20,8 +20,8 @@
 </div>
 
 <h1>
-  <span>
-    Отчеты проекта {{projectId}}
+  <span *ngIf="project">
+    Отчеты проекта {{project.name}}
   </span>
 </h1>
 
@@ -39,7 +39,7 @@
           <div (click)="showReport(3)" class="nav-link">Стоимость переводов</div>
         </li>
         <li class="navbar-item">
-          <div (click)="showReport(4)" class="nav-link">Лучшие участники</div>
+          <div (click)="showReport(4)" class="nav-link">Отчет по работам</div>
         </li>
         <li class="navbar-item">
           <div (click)="showReport(5)" class="nav-link">Нарушения</div>
@@ -51,7 +51,7 @@
 </div>
 
 <div *ngIf="showTranslatedWords">
-  <translated-words-report></translated-words-report>
+  <translated-words-report [projectId]="project.id"></translated-words-report>
 </div>
 
 <div *ngIf="showProjectStatus">

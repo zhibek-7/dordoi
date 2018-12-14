@@ -11,23 +11,27 @@ import { File as FileData } from '../models/database-entities/file.type';
 })
 
 export class FileService {
-  private apiUrl = 'https://localhost:5001/api';
-  private filesEndpoint = 'files';
+  private _url = 'api/files';
 
   constructor(private http: HttpClient) { }
 
   getFiles(): Observable<TreeNode[]> {
-    const url = `${this.apiUrl}/${this.filesEndpoint}`;
 
-    return this.http.get<TreeNode[]>(url)
+    return this.http.get<TreeNode[]>(this._url)
       .pipe(
         // tap(response => console.log(response)),
         catchError(this.handleError('Get files', []))
       );
   }
 
+  //Нужно для формирования отчетов
+  getInitialProjectFolders(projectId: number): Observable<FileData[]> {
+    const url = `${this._url}/ForProject:${projectId}`;
+    return this.http.get<FileData[]>(url);
+  }
+
   addFile(file: File, parentId?: number): Observable<TreeNode> {
-    const url = `${this.apiUrl}/${this.filesEndpoint}/add/file`;
+    const url = `${this._url}/add/file`;
 
     const formData = new FormData();
 
@@ -38,20 +42,20 @@ export class FileService {
   }
 
   addFolder(name: string, parentId?: number): Observable<TreeNode> {
-    const url = `${this.apiUrl}/${this.filesEndpoint}/add/folder`;
+    const url = `${this._url}/add/folder`;
 
     return this.http.post<TreeNode>(url, { name, parentId });
   }
 
   updateNode(data: FileData): Observable<any> {
-    const url = `${this.apiUrl}/${this.filesEndpoint}/update/${data.id}`;
+    const url = `${this._url}/update/${data.id}`;
 
     return this.http.put(url, data)
       .pipe(catchError(this.handleError('Update node')));
   }
 
   deleteNode(data: FileData): Observable<any> {
-    const url = `${this.apiUrl}/${this.filesEndpoint}/delete/${data.id}`;
+    const url = `${this._url}/delete/${data.id}`;
 
     return this.http.delete(url)
       .pipe(catchError(this.handleError('Delete node')));

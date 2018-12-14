@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Localization.WebApi
 {
@@ -36,8 +37,14 @@ namespace Localization.WebApi
             return this._glossaryRepository.GetByID(id: glossaryId);
         }
 
+        [HttpGet("{glossaryId}/locale")]
+        public Locale GetGlossaryLocale(int glossaryId)
+        {
+            return this._glossaryRepository.GetLocaleById(glossaryId: glossaryId);
+        }
+
         [HttpGet("{glossaryId}/terms")]
-        public IEnumerable<Models.DatabaseEntities.String> GetAssotiatedTerms(
+        public IEnumerable<Models.Glossaries.Term> GetAssotiatedTerms(
             int glossaryId,
             [FromQuery] string termSearch,
             [FromQuery] int? pageSize,
@@ -70,12 +77,6 @@ namespace Localization.WebApi
                     partOfSpeechId: partOfSpeechId);
         }
 
-        [HttpGet("{glossaryId}/terms/{termId}/part_of_speech")]
-        public int? GetTermPartOfSpeech(int glossaryId, int termId)
-        {
-            return this._glossaryRepository.GetTermPartOfSpeechId(glossaryId: glossaryId, termId: termId);
-        }
-
         [HttpDelete("{glossaryId}/terms/{termId}")]
         public void DeleteTerm(int glossaryId, int termId)
         {
@@ -91,6 +92,36 @@ namespace Localization.WebApi
                     glossaryId: glossaryId,
                     updatedTerm: updatedTerm,
                     partOfSpeechId: partOfSpeechId);
+        }
+
+        [HttpGet("{glossaryId}/terms/{termId}/locales")]
+        public IEnumerable<Locale> GetTranslationLocalesForTerm(int glossaryId, int termId)
+        {
+            var translationLocalesForTerm = this._glossaryRepository.GetTranslationLocalesForTerm(glossaryId, termId);
+            if (!translationLocalesForTerm.Any())
+            {
+                translationLocalesForTerm = this._glossaryRepository.GetTranslationLocales(glossaryId: glossaryId);
+            }
+            return translationLocalesForTerm;
+        }
+
+        [HttpPut("{glossaryId}/terms/{termId}/locales")]
+        public void SetTranslationLocalesForTerm(int glossaryId, int termId, [FromBody] IEnumerable<int> localesIds)
+        {
+            var newLocalesIds = localesIds.ToHashSet();
+            var glossaryTranslationLocalesIds =
+                this._glossaryRepository
+                    .GetTranslationLocales(glossaryId: glossaryId)
+                    .Select(locale => locale.ID)
+                    .ToHashSet();
+            this._glossaryRepository.DeleteTranslationLocalesForTerm(termId: termId);
+            if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
+                && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
+                && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
+            {
+                return;
+            }
+            this._glossaryRepository.SetTranslationLocalesForTerm(termId: termId, localesIds: newLocalesIds);
         }
 
     }

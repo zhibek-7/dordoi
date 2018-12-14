@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { NotFoundComponent } from './not-found/not-found.component';
 import { CurrentProjectSettingsComponent } from '../current-project-settings/current-project-settings.component';
+import { ProjectPageComponent } from '../project-page/project-page.component';
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
 
@@ -12,27 +13,27 @@ const routes: Routes = [
     loadChildren: '../work-panel/work-panel.module#WorkPanelModule'
   },
   {
-    path: 'projects/:id/reports',
+    path: 'Projects/:id/reports',
     loadChildren: '../reports/Reports.model#ReportsModule'
   },
   {
-    path: 'create_project',                                          // 1. Поменять название модуля
-    loadChildren: '../create_project/create_project.module#Create_projectModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
+    path: 'create-project',                                          // 1. Поменять название модуля
+    loadChildren: '../create-project/create-project.module#CreateProjectModule'   // 2. Привести организацию модуля к общей структуре(папки, названия и тд)
   },
   {
-    path: 'Reports',
-    loadChildren: '../reports/Reports.model#ReportsModule'
-  },
-  {
-    path: 'projects/:id',
+    path: 'Projects/:id',
     component: CurrentProjectSettingsComponent
   },
   {
-    path: 'new-project',
+    path: ':id',
+    component: ProjectPageComponent
+  },
+  {
+    path: 'New-project',
     component: NewProjectComponent
   },
   {
-    path: 'profile',
+    path: 'Profile',
     component: UserAccountComponent
   },
   {

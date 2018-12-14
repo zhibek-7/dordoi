@@ -34,13 +34,12 @@ export class GlossaryDetailsComponent implements OnInit {
   set glossary(value) {
     this._glossary = value;
     this.loadTerms();
-    this.loadPartsOfSpeech();
   }
   get glossary() { return this._glossary; }
 
   termViewModels = new Array<TermViewModel>();
 
-  get selectedTerms(): String[] {
+  get selectedTerms(): Term[] {
     return this.termViewModels
       .filter(termViewModel => termViewModel.isSelected)
       .map(termViewModel => termViewModel.term);
@@ -48,14 +47,11 @@ export class GlossaryDetailsComponent implements OnInit {
 
   termSearchString: string;
 
-  partsOfSpeech: PartOfSpeech[];
-
   constructor(
     private route: ActivatedRoute,
     private glossariesService: GlossariesService,
-    private requestDataReloadService: RequestDataReloadService,
-    private partsOfSpeechService: PartsOfSpeechService)
-  {
+    private requestDataReloadService: RequestDataReloadService
+  ) {
     this.requestDataReloadService.updateRequested.subscribe(() => this.loadTerms(this.currentPage));
   }
 
@@ -83,17 +79,6 @@ export class GlossaryDetailsComponent implements OnInit {
           this.currentPage = pageNumber;
         },
         error => console.log(error));
-  }
-
-  loadPartsOfSpeech() {
-    this.partsOfSpeechService.getListByGlossaryId(this.glossary.id)
-      .subscribe(
-        partsOfSpeech => {
-          this.partsOfSpeech = [new PartOfSpeech(null, null, 'Не выбрано')];
-          partsOfSpeech.forEach(element => this.partsOfSpeech.push(element));
-        },
-        error => console.log(error)
-      );
   }
 
   addNewTerm(newTerm: Term) {

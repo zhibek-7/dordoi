@@ -4,8 +4,6 @@ namespace Models.DatabaseEntities
 {
     public class File : BaseEntity
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime? DateOfChange { get; set; }

@@ -48,6 +48,14 @@ namespace Localization.WebApi
             return Ok(foundedFile);
         }
 
+        // GET api/files/ForProject:ProjectId
+        [HttpGet("ForProject:{projectId}")]
+        public IEnumerable<File> GetInitialFolders(int projectId)
+        {
+            var projectFolders = filesRepository.GetInitialFolders(projectId);
+            return projectFolders;
+        }
+
         // POST api/files/add/file
         [HttpPost("add/file")]
         public async Task<ActionResult<Node<File>>> AddFile(IFormFile file, [FromForm] int? parentId)

@@ -1,13 +1,18 @@
 // Модель проектов
-export interface Project {
+export class Project {
+    id: number;
     name: string;
-    id: string;
+    description: string;
     url: string;
-    owner: string;
-    created: any;
-    changed: any;
-    hasErr: boolean;
-    type: string;
-    sourceLanguage: string;
-  }
-  
+    visibility: boolean;
+    dateOfCreation: any;
+    lastActivity: any;
+    ID_SourceLocale: number;
+    ableToDownload: boolean;
+    ableToLeftErrors: boolean;
+    defaultString: string;
+    notifyNew: boolean;
+    notifyFinish: boolean;
+    notifyConfirm: boolean;
+    logo: any;
+}

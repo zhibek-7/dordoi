@@ -13,6 +13,6 @@ namespace DAL.Reposity.PostgreSqlRepository
         Task<IEnumerable<File>> GetAll();
         Task<File> GetByID(int id);
         Task<File> GetByNameAndParentId(string name, int? parentId);
-
+        IEnumerable<File> GetInitialFolders(int projectId);
     }
 }

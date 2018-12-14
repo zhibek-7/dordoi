@@ -7,9 +7,6 @@ namespace Models.DatabaseEntities
 {
     public class Translation: BaseEntity
     {
-        [Key]
-        public int ID { get; set; }
-
         [Required]
         public int ID_String { get; set; }
 

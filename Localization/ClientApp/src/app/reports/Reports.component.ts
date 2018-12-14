@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { Project } from '../models/Project';
+
+import { ProjectsService } from '../services/projects.service';
 
 @Component({
   selector: 'app-reports',
@@ -11,6 +14,7 @@ import { Location } from '@angular/common';
 export class ReportsComponent implements OnInit {
 
   public projectId: number;
+  public project: Project;
 
   showProjectStatus: boolean = false;
   showCostSumm: boolean = false;
@@ -18,10 +22,18 @@ export class ReportsComponent implements OnInit {
   showTranslatedWords: boolean = false;
   showFoulsTranslation: boolean = false;
 
-  constructor(private route: ActivatedRoute, private location: Location) { }
+  constructor(private route: ActivatedRoute, private location: Location, private projectsService: ProjectsService) { }
 
   ngOnInit() {
-    this.projectId = this.route.snapshot.params['id'];
+    
+      this.projectsService.getProject(this.route.snapshot.params['id'])
+      .subscribe(project => {
+          this.project = project;
+        this.projectId = project.id;
+        console.log(this.projectId);
+          },
+      error => console.error(error));
+
   }
 
   public showReport(type: Number) {
