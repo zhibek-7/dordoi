@@ -4,16 +4,19 @@ using System.Threading.Tasks;
 using Dapper;
 using Models.DatabaseEntities;
 using Npgsql;
+using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : IFilesRepository
     {
         private readonly string connectionString;
+        private ILogTools _log;
 
         public FilesRepository(string connectionString)
         {
             this.connectionString = connectionString;
+            _log = ExceptionLog.GetLog();
         }
 
         public async Task<IEnumerable<File>> GetAll()
@@ -26,21 +29,24 @@ namespace DAL.Reposity.PostgreSqlRepository
                 // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
+
+                    Task<IEnumerable<File>> quer = connection.QueryAsync<File>(sqlString);
+
                     // Execute select query and return enumerable of file objects
-                    return await connection.QueryAsync<File>(sqlString);
+                    return await quer;
                 }
             }
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в GetAll NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в GetAll exception ", exception);
 
                 return null;
             }
@@ -63,14 +69,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в GetByID NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в GetByID exception ", exception);
 
                 return null;
             }
@@ -95,14 +101,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в GetByNameAndParentId NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в GetByNameAndParentId exception ", exception);
 
                 return null;
             }
@@ -125,14 +131,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в GetInitialFolders NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
-                // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в GetInitialFolders exception ", exception);
 
                 return null;
             }
@@ -159,15 +164,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в Add NpgsqlException ", exception);
 
                 return 0;
             }
             catch (Exception exception)
             {
-                // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в Add Exception ", exception);
 
                 return 0;
             }
@@ -192,15 +195,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в Remove NpgsqlException ", exception);
 
                 return false;
             }
             catch (Exception exception)
             {
-                // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в Remove exception ", exception);
 
                 return false;
             }
@@ -228,15 +229,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в Update NpgsqlException ", exception);
 
                 return false;
             }
             catch (Exception exception)
             {
-                // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в Update exception ", exception);
 
                 return false;
             }

@@ -16,11 +16,14 @@ namespace DAL.Reposity.PostgreSqlRepository
     {
         private PostgreSqlNativeContext context;
 
-        private readonly LogTools _logger = new LogTools();
+        private ILogTools _log;
+        private ILogTools _loggerError;
 
         public CommentRepository()
         {
             context = PostgreSqlNativeContext.getInstance();
+            _log = LogTools.GetLog();
+            _log = ExceptionLog.GetLog();
         }
 
         public async Task<int> AddAsync(Comments comment)
@@ -42,7 +45,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                _loggerError.WriteLn("Ошибка в AddAsync ", exception);
 
                 return 0;
             }
@@ -65,7 +68,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                _loggerError.WriteLn("Ошибка в GetAllAsync ", exception);
 
                 return null;
             }
@@ -98,7 +101,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                _loggerError.WriteLn("Ошибка в GetAllCommentsInStringByID ", exception);
 
                 return null;
             }
@@ -122,7 +125,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                _loggerError.WriteLn("Ошибка в GetByIDAsync ", exception);
+
 
                 return null;
             }
@@ -151,7 +155,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                _loggerError.WriteLn("Ошибка в GetByIDWithUserInfoAsync ", exception);
 
                 return null;
             }
@@ -177,8 +181,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                _loggerError.WriteLn("Ошибка в RemoveAsync ", exception);
                 return false;
             }
         }
@@ -188,7 +191,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             var query = "UPDATE \"Comments\" SET " +
                         "\"DateTime\"=@DateTime, " +
                         "\"ID_User\"=@ID_User, " +
-                        "\"Comment\"=@Comment " +                        
+                        "\"Comment\"=@Comment " +
                         "WHERE \"ID\"=@ID";
 
             try
@@ -206,7 +209,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 //Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                _loggerError.WriteLn("Ошибка в UpdateAsync ", exception);
                 return false;
             }
         }

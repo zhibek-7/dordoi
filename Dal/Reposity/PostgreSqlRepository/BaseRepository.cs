@@ -9,16 +9,17 @@ namespace DAL.Reposity.PostgreSqlRepository
     public abstract class BaseRepository
     {
 
-        protected readonly LogTools _logger = new LogTools();
+        protected readonly ILogTools _logger = new LogTools();
+        protected readonly ILogTools _loggerError = new ExceptionLog();
 
         protected void LogQuery(string sql)
         {
-            this._logger.WriteDebug($"Query {sql}");
+            this._logger.WriteLn($"Query {sql}");
         }
 
         protected void LogQuery(string sql, object param)
         {
-            this._logger.WriteDebug($"Query {sql}, param: {param}");
+            this._logger.WriteLn($"Query {sql}, param: {param}");
         }
 
         protected string DictionaryToString(Dictionary<string, object> dictionary)

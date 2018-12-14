@@ -11,5 +11,19 @@ namespace Utilities.Logs
         {
             GetLog();
         }
+
+
+        /// <summary>
+        /// Получение класса для логирования с 
+        /// </summary>
+        /// <param name="logNameIn"></param>
+        /// <returns></returns>
+        public static ILogTools GetLog()
+        {
+            ILogTools lt = new LogTools("exceptionlog");
+            return lt;
+        }
+
+
     }
 }

@@ -9,7 +9,7 @@ namespace Utilities.Logs
      * Класс для логирования.
      * В приложении необходимо установить пакеты: NLog и NLog.Config
      */
-    public class LogTools
+    public class LogTools : ILogTools
     {
         protected String logName = "debuglogs";
         protected String logDefaultName = "Default";
@@ -20,24 +20,14 @@ namespace Utilities.Logs
         protected Logger log;
 
 
+
         /// <summary>
         /// Получение класса для логирования
         /// </summary>
         /// <returns></returns>
-        public static LogTools GetDebugLog()
+        public static ILogTools GetLog()
         {
-            LogTools lt = new LogTools();
-            return lt;
-        }
-
-        /// <summary>
-        /// Получение класса для логирования с 
-        /// </summary>
-        /// <param name="logNameIn"></param>
-        /// <returns></returns>
-        public static LogTools GetErrorLog()
-        {
-            LogTools lt = new LogTools("exceptionlog");
+            ILogTools lt = new LogTools();
             return lt;
         }
 
@@ -46,7 +36,7 @@ namespace Utilities.Logs
         /// Получение базового лога
         /// </summary>
         /// <returns></returns>
-        protected Logger GetLog()
+        protected Logger GetCurrenLog()
         {
             if (log == null)
             {
@@ -62,7 +52,7 @@ namespace Utilities.Logs
         /// </summary>
         /// <param name="logNameIn"></param>
         /// <returns></returns>
-        protected Logger GetLog(String logNameIn)
+        protected Logger GetCurrenLog(String logNameIn)
         {
             log = LogManager.GetLogger(logNameIn);
             return log;
@@ -82,7 +72,7 @@ namespace Utilities.Logs
         /// </summary>        
         public LogTools(String logNameIn)
         {
-            GetLog(logNameIn);
+            GetCurrenLog(logNameIn);
             logName = logNameIn;
         }
 
@@ -101,22 +91,37 @@ namespace Utilities.Logs
         /// Запись информации в лог + дата + текущий пользователь
         /// </summary>
         /// <param name="str"></param>
-        protected void WriteLn(Object str)
-        {
-            StringBuilder sb = GetStr(str);
+        //protected void WriteLn(Object str)
+        //{
+        //    StringBuilder sb = GetStr(str);
 
-            GetLog().Info(sb.ToString());
-        }
+        //    GetCurrenLog().Info(sb.ToString());
+        //}
 
         /// <summary>
         /// Запись информации в лог + дата + текущий пользователь
         /// </summary>
         /// <param name="str"></param>
-        public void WriteDebug(Object str)
+        public void WriteLn(Object str)
         {
             StringBuilder sb = GetStr(str);
+            GetCurrenLog().Info(sb.ToString());
 
-            GetLog().Info(sb.ToString());
+            Console.WriteLine(".." + str);
+        }
+
+
+        /// <summary>
+        /// Запись в лог сообщения с Exception
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="err"></param>
+        public void WriteLn(Object str, Exception err)
+        {
+            StringBuilder sb = GetStr(str);
+            GetCurrenLog().Error(err, sb.ToString());
+
+            Console.WriteLine(".." + str + err.Message);
         }
 
         /// <summary>
@@ -124,7 +129,7 @@ namespace Utilities.Logs
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private StringBuilder GetStr(object str)
+        protected StringBuilder GetStr(object str)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -133,18 +138,5 @@ namespace Utilities.Logs
             sb.Append(str);
             return sb;
         }
-
-        /// <summary>
-        /// Запись в лог сообщения с Exception
-        /// </summary>
-        /// <param name="str"></param>
-        /// <param name="err"></param>
-        public void WriteExceprion(Object str, Exception err)
-        {
-            StringBuilder sb = GetStr(str);
-            GetLog().Error(err, sb.ToString());
-        }
-
     }
-
 }
