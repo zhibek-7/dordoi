@@ -34,14 +34,14 @@ export class CurrentProjectSettingsComponent implements OnInit {
   getProject() {
     this.route.params.subscribe((params: Params) => {
       this.projectService
-        .getProject(this.route.snapshot.params['id'])
+        .getProject(this.route.snapshot.params["id"])
         .subscribe(
           project => {
             this.currentProject = project;
           },
           error => console.error(error)
         );
-      console.log(this.route.snapshot.params['id']);
+      console.log(this.route.snapshot.params["id"]);
     });
   }
 }
