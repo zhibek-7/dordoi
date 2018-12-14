@@ -14,11 +14,20 @@ export class ProjectPageComponent implements OnInit {
   constructor(private route: ActivatedRoute, private projectService: ProjectsService) { }
 
   ngOnInit() {
-    this.route.params
-    .subscribe((params: Params) => {
-      this.currentProject = this.projectService.projects.find((element) => {
-        return element.id === this.route.snapshot.params['id'];
-      });
+    this.getProject();
+  }
+
+  getProject() {
+    this.route.params.subscribe((params: Params) => {
+      this.projectService
+        .getProject(this.route.snapshot.params['id'])
+        .subscribe(
+          project => {
+            this.currentProject = project;
+          },
+          error => console.error(error)
+        );
+      console.log(this.route.snapshot.params['id']);
     });
   }
 
