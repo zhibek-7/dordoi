@@ -10,24 +10,32 @@ import { ProjectsService } from '../services/projects.service';
 })
 export class ProjectPageComponent implements OnInit {
   currentProject: Project;
+  name: string;
+  projectId: number;
 
   constructor(private route: ActivatedRoute, private projectService: ProjectsService) { }
 
   ngOnInit() {
+    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
+    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+
     this.getProject();
   }
 
   getProject() {
+
+    this.projectId = Number(sessionStorage.getItem('ProjecID'));
+
     this.route.params.subscribe((params: Params) => {
       this.projectService
-        .getProject(this.route.snapshot.params['id'])
+        .getProject(this.projectId)
         .subscribe(
           project => {
             this.currentProject = project;
           },
           error => console.error(error)
         );
-      console.log(this.route.snapshot.params['id']);
+      console.log('snapshot=' + this.route.snapshot.params['id']);
     });
   }
 

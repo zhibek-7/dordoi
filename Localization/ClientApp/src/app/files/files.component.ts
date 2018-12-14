@@ -25,6 +25,11 @@ export class FilesComponent implements OnInit {
   constructor(private fileService: FileService) { }
 
   ngOnInit(): void {
+
+    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
+    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+    console.log('Projec=' + sessionStorage.getItem('Projec'));
+
     this.cols = [
       { field: 'name', header: 'Name' },
       { field: 'stringsCount', header: 'Strings', width: '100px', textalign: 'right' },

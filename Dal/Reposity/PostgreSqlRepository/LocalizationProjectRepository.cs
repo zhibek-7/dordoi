@@ -10,7 +10,7 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectRepository: IRepository<LocalizationProject>
+    public class LocalizationProjectRepository : IRepository<LocalizationProject>
     {
         private PostgreSqlNativeContext context;
 
@@ -35,7 +35,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var project = dbConnection.Query<LocalizationProject>(sqlString, new {Id}).FirstOrDefault();
+                    var project = dbConnection.Query<LocalizationProject>(sqlString, new { Id }).FirstOrDefault();
                     dbConnection.Close();
                     return project;
                 }

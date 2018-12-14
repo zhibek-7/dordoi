@@ -27,6 +27,12 @@ export class CurrentProjectSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.getProject();
+
+    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
+    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+    console.log('Projec=' + sessionStorage.getItem('Projec'));
+
+
   }
 
   getProject() {
@@ -41,7 +47,7 @@ export class CurrentProjectSettingsComponent implements OnInit {
           },
           error => console.error(error)
         );
-      console.log(this.route.snapshot.params["id"]);
+      console.log('snapshot='+this.route.snapshot.params["id"]);
     });
   }
 }
