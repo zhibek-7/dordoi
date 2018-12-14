@@ -197,9 +197,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     dbConnection.Open();
 
-                    //Внесение записи в журнал логирования
-                    this.LogQuery(query, comment);
-
                     await dbConnection.ExecuteAsync(query, comment);
 
                     dbConnection.Close();
@@ -209,7 +206,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 //Внесение записи в журнал логирования
-                this._logger.WriteExceprion("Exception on trying to update translation.", exception);
+                Console.WriteLine(exception.Message);
                 return false;
             }
         }
