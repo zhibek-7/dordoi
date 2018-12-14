@@ -154,9 +154,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "UPDATE \"Translations\" SET " +
                         "\"ID_String\"=@ID_String, " +
                         "\"Translated\"=@Translated, " +
-                        "\"Confirmed\"=@Confirmed " +
-                        "\"ID_User\"=@ID_User " +
-                        "\"DateTime\"=@DateTime " +
+                        "\"Confirmed\"=@Confirmed, " +
+                        "\"ID_User\"=@ID_User, " +
+                        "\"DateTime\"=@DateTime, " +
                         "\"ID_Locale\"=@ID_Locale " +
                         "WHERE \"ID\"=@ID";
                     var updateTranslationParam = item;
