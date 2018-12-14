@@ -23,7 +23,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public Task<int> AddAsync(Comments item)
+        public async Task<int> AddAsync(Comments comment)
         {
             var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
                         "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
@@ -128,6 +128,35 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(int id)
+        {
+            var query = "SELECT \"Users\".\"ID\" AS \"UserId\", \"Users\".\"Name\" AS \"UserName\"," +
+                        " \"Comments\".\"ID\" AS \"CommentId\", \"Comments\".\"DateTime\" AS \"DateTime\"," +
+                        " \"Comments\".\"Comment\" AS \"Comment\" " +
+                        "FROM \"Comments\" " +
+                        "INNER JOIN \"Users\" ON \"Comments\".\"ID_User\" = \"Users\".\"ID\" " +
+                        "WHERE \"Comments\".\"ID\" = @Id";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var comment = await dbConnection.QuerySingleOrDefaultAsync<CommentWithUserInfo>(query, new { id });
+                    dbConnection.Close();
+
+                    return comment;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
         public async Task<bool> RemoveAsync(int id)
         {
             var query = "DELETE " +
@@ -154,7 +183,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public Task<bool> UpdateAsync(Comments item)
+        public async Task<bool> UpdateAsync(Comments comment)
         {
             var query = "UPDATE \"Comments\" SET " +
                         "\"DateTime\"=@DateTime, " +
