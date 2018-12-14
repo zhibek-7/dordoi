@@ -9,8 +9,6 @@ namespace Models.DatabaseEntities
     public class LocalizationProject : BaseEntity
     {
         [Required]
-        public int ID { get; set; }
-        [Required]
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }

@@ -30,7 +30,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = "INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\", \"ID_Locale\")" +
                         "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime, @ID_Locale) " +
-                        "RETURNING  \"Translations\".\"ID\"";   
+                        "RETURNING  \"Translations\".\"ID\"";
 
             try
             {
@@ -129,7 +129,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     return deletedRows > 0;
                 }
-            }            
+            }
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
@@ -170,7 +170,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (Exception exception)
             {
-                this._logger.WriteExceprion("Exception on trying to update translation.", exception);
+                this._loggerError.WriteLn("Exception on trying to update translation.", exception);
                 return false;
             }
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using Utilities.Logs;
 
 namespace DAL.Context
 {
@@ -25,8 +26,10 @@ namespace DAL.Context
                 }
                 catch (NpgsqlException exception)
                 {
+
+
                     //внесение записи в журанал логирования
-                    Console.WriteLine(exception.ErrorCode);
+                    LogTools.GetLog().WriteLn("Ошибка в Connection ", exception);
 
                     return null;
                 }
