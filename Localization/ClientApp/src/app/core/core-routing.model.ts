@@ -50,6 +50,10 @@ const routes: Routes = [
     loadChildren: '../files/files.module#FilesModule'
   },
   {
+    path: 'Participants',
+    loadChildren: '../participants/participants.module#ParticipantsModule'
+  },
+  {
     path: ':id',
     component: ProjectPageComponent
   },
