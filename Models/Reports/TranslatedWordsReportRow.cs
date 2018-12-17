@@ -20,13 +20,13 @@ namespace Models.Reports
         public string Language { get; set; }
 
         /// <summary>
+        /// Вид работы
+        /// </summary>
+        public string workType { get; set; }
+
+        /// <summary>
         /// Количество переводов
         /// </summary>
         public int Translations { get; set; }
-
-        /// <summary>
-        /// Утвержденные переводы
-        /// </summary>
-        public bool Confirmed { get; set; }
     }
 }
