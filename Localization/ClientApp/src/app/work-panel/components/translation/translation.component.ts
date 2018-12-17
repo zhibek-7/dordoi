@@ -71,8 +71,8 @@ export class TranslationComponent implements OnInit {
 
     importFileClick(){
         alert("Импортируем файл");
-    }
-
+    }        
+    
     async submitTranslate(){
         this.translatedPhrase = new Translation(this.translatedText, this.phraseForTranslate.id, 10123, 300);  //поменять потом на реальный id пользователя и id языка
         let insertedTranslationId = await this.translationService.createTranslate(this.translatedPhrase);        
@@ -94,6 +94,6 @@ export class TranslationComponent implements OnInit {
         else {
             return true;
         }
-    }
+    }    
 
 }

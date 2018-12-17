@@ -39,6 +39,19 @@ namespace Localization.WebApi
             return Ok(strings);
         }
 
+        [HttpGet("InFile/{idFile}")]
+        public async Task<ActionResult<IEnumerable<Models.DatabaseEntities.String>>> GetStringsInFile(int idFile)
+        {
+            var strings = await stringRepository.GetStringsByFileIdAsync(idFile);
+
+            if (strings == null)
+            {
+                return BadRequest("Strings not found");
+            }
+
+            return Ok(strings);
+        }
+
         /// <summary>
         /// // GET api/files/:id
         /// </summary>

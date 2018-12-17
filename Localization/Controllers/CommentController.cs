@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
 using Models.Comments;
+using System.Net.Http;
+using System.IO;
 
 namespace Localization.WebApi
 {
@@ -102,6 +104,12 @@ namespace Localization.WebApi
             return Ok();
         }
 
+        /// <summary>
+        /// Обновляет комментарий
+        /// </summary>
+        /// <param name="idComment">id комментария, который нужно обновить</param>
+        /// <param name="comment">обновленный комментарий</param>
+        /// <returns></returns>
         [HttpPut("UpdateComment/{idComment}")]
         public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
         {
@@ -122,6 +130,20 @@ namespace Localization.WebApi
             }
 
             // Return ok result
+            return Ok();
+        }
+
+        /// <summary>
+        /// Загружает картинку прикрепленную к комментарию
+        /// </summary>
+        /// <param name="idComment">id комментария к которому приложена картинка</param>
+        /// <returns></returns>
+        [HttpPost("UploadImage")]
+        public async Task<ActionResult> UploadImage()
+        {           
+
+            var content = Request.Form.Files["Image"];
+
             return Ok();
         }
 

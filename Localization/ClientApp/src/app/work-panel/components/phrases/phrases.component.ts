@@ -32,8 +32,14 @@ export class PhrasesComponent implements OnInit {
         this.getStrings();
      }
 
-    async getStrings() {
-        this.phrasesList = await this.stringService.getStrings();
+    getStrings() {
+        this.stringService.getStringsInFile(300)
+            .subscribe(
+                stringsInFile => {
+                    this.phrasesList = stringsInFile;
+                },
+                error => console.error(error)
+            );
         this.countPages();
     }
 
@@ -51,9 +57,9 @@ export class PhrasesComponent implements OnInit {
         let numberOfPages = Math.ceil(allPhrases/maxPhrasesOnOnePage);
         this.phrasesList = StringsFromNullValue;
 
-        for(var i: number = 0; i < numberOfPages; i++){
+        for(let i: number = 0; i < numberOfPages; i++){
             this.phrasesOnPages[i] = [];
-            for(var j: number = 0; j < maxPhrasesOnOnePage; j++){
+            for(let j: number = 0; j < maxPhrasesOnOnePage; j++){
                 let position: number = ( (i)*maxPhrasesOnOnePage + j );
                 if(this.phrasesList[position] != undefined){
                     this.phrasesOnPages[i][j] = StringsFromNullValue[position];

@@ -16,6 +16,8 @@ export class LanguagesComponent implements OnInit {
     listOfTranslations: Translation[];
     newTranslation: Translation;
 
+    searchByMemory: string = "";
+
     constructor(private sharePhraseService: SharePhraseService, private shareTranslatedPhraseService: ShareTranslatedPhraseService,
                 private translationService: TranslationService) {
         
@@ -55,10 +57,6 @@ export class LanguagesComponent implements OnInit {
             this.translationService.acceptTranslate(translation.id);
         }
     }
-
-    // acceptTranslate(translation: Translation){
-    //     this.translationService.acceptTranslate(translation.id);
-    // }
 
     async deleteTranslateClick(translationId: number){        
         await this.translationService.deleteTranslate(translationId);

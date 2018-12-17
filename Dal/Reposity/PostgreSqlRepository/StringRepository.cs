@@ -58,7 +58,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Получает запись с конкретным 
+        /// Получает запись с конкретным id
         /// </summary>
         /// <param name="id">id необходимой фразы</param>
         /// <returns>Запись с необходимым id</returns>
@@ -84,8 +84,108 @@ namespace DAL.Reposity.PostgreSqlRepository
                 Console.WriteLine(exception.Message);
 
                 return null;
+            }            
+        }
+
+
+        /// <summary>
+        /// Фильтрует список строк по определенной фразе
+        /// </summary>
+        /// <param name="filtredString">фраза по которой происходит фильтрация</param>
+        /// <param name="filtredListOfStrings">список строк среди которых происходит фильтрация</param>
+        /// <returns>список строк содержащихся в списке строк </returns>
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> FilterByString(string filtredString , IEnumerable<Models.DatabaseEntities.String> filtredListOfStrings)
+        {
+            var query = "SELECT * " +
+                        "FROM \"TranslationSubstrings\" AS TS " +
+                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
+                        "INNER JOIN \"LocalizationProjects\" AS LP " +
+                        "WHERE LP.\"ID\" = @Id " +
+                        "OR LP.\"Visibility\" = true ";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Models.DatabaseEntities.String> filtredStrings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    dbConnection.Close();
+                    return filtredStrings;
+                }
             }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Получает записи из определенного и открытых проектов
+        /// </summary>
+        /// <param name="fileId">id определенного проекта</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId)
+        {
+            var query = "SELECT * " +
+                        "FROM \"TranslationSubstrings\" AS TS " +
+                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
+                        "INNER JOIN \"LocalizationProjects\" AS LP " +
+                        "WHERE LP.\"ID\" = @Id " +
+                        "OR LP.\"Visibility\" = true ";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Models.DatabaseEntities.String> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    dbConnection.Close();
+                    return strings;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Получает записи из определенного файла по id файла
+        /// </summary>
+        /// <param name="fileId">id файла</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetStringsByFileIdAsync(int fileId)
+        {
+            var query = "SELECT * " +
+                        "FROM \"TranslationSubstrings\" AS TS " +
+                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
+                        "WHERE F.\"ID\" = @Id";
             
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Models.DatabaseEntities.String> stringsInFile = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    dbConnection.Close();
+                    return stringsInFile;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
         }
 
         public Task<bool> RemoveAsync(int id)
