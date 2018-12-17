@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using DAL.Reposity.PostgreSqlRepository;
 using DAL.Reposity.Report;
 using Microsoft.AspNetCore.Mvc;
 using Models.Reports;
@@ -13,6 +14,13 @@ namespace Localization.WebApi
     [ApiController]
     public class ReportController : ControllerBase
     {
+        private readonly IFilesRepository _filesRepository;
+
+        public ReportController(IFilesRepository filesRepository)
+        {
+            _filesRepository = filesRepository;
+        }
+
         [HttpGet]
         [Route("TranslatedWords")]
         public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(
@@ -30,13 +38,20 @@ namespace Localization.WebApi
         }
 
         [HttpGet]
-        [Route("TranslatedWordsExcel:{dateFrom}:{dateTo}")]
-        public FileResult GetTranslatedWordsReportExcel(string dateFrom, string dateTo)
+        [Route("TranslatedWordsExcel")]
+        public FileResult GetTranslatedWordsReportExcel(
+            [FromQuery] string start,
+            [FromQuery] string end,
+            [FromQuery] string volumeCalcType,
+            [FromQuery] string calcBasisType,
+            [FromQuery] int? userId,
+            [FromQuery] int? localeId,
+            [FromQuery] string workType,
+            [FromQuery] int? initialFolderId)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRows(DateTime.Parse(dateFrom), DateTime.Parse(dateTo)).ToList();
+            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRows(DateTime.Parse(start), DateTime.Parse(end)).ToList();
             byte[] bin;
-            HttpResponseMessage result = null;
 
             FileResult res;
 
@@ -51,18 +66,18 @@ namespace Localization.WebApi
                 var rowNum = 1;
 
                 // шапка
-                sheet.Cells[rowNum, 1].Value = "Имя пользователя";
+                sheet.Cells[rowNum, 1].Value = "Пользователь";
                 sheet.Cells[rowNum, 2].Value = "Языки";
-                sheet.Cells[rowNum, 3].Value = "Переведено";
-                sheet.Cells[rowNum, 4].Value = "Утверждено";
+                sheet.Cells[rowNum, 3].Value = "Вид работ";
+                sheet.Cells[rowNum, 4].Value = "Переведено";
 
                 foreach (var row in reportRows)
                 {
                     rowNum++;
                     sheet.Cells[rowNum, 1].Value = row.Name;
                     sheet.Cells[rowNum, 2].Value = row.Language;
-                    sheet.Cells[rowNum, 3].Value = row.Translations;
-                    sheet.Cells[rowNum, 4].Value = row.Confirmed;
+                    sheet.Cells[rowNum, 3].Value = row.workType;
+                    sheet.Cells[rowNum, 4].Value = row.Translations;
 
                     // указываем что в этой ячейке число
                     //sheet.Cells[row, 3].Style.Numberformat.Format = @"#,##0.00_ ;\-#,##0.00_ ;0.00_ ;";
