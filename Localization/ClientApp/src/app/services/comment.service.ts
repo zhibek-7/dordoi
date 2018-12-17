@@ -22,10 +22,10 @@ export class CommentService {
     }
 
     uploadImage(fileToUpload: File) {
-      const formData: FormData = new FormData();
-      formData.append('Image', fileToUpload);
-
-      return this.http.post(this.url + "UploadImage", formData).toPromise();
+        const formData: FormData = new FormData();
+        formData.append('Image', fileToUpload);
+        
+        return this.http.post(this.url + "UploadImage", formData).toPromise();
     }
 
     getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{        

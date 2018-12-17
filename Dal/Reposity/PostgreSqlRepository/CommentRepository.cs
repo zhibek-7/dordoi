@@ -186,6 +186,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+
         public async Task<bool> UpdateAsync(Comments comment)
         {
             var query = "UPDATE \"Comments\" SET " +
@@ -211,6 +212,31 @@ namespace DAL.Reposity.PostgreSqlRepository
                 //Внесение записи в журнал логирования
                 _loggerError.WriteLn("Ошибка в UpdateAsync ", exception);
                 return false;
+            }
+        }
+
+        public async Task<int> UploadImageAsync(Byte[] image)
+        {
+            var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
+                        "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
+                        "RETURNING  \"Comments\".\"ID\"";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, image);
+                    dbConnection.Close();
+                    return idOfInsertedRow;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                _loggerError.WriteLn("Ошибка в AddAsync ", exception);
+
+                return 0;
             }
         }
 
