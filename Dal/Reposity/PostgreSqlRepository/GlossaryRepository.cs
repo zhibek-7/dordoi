@@ -221,32 +221,23 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 dbConnection.Open();
                 var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
-                if (offset > 0)
-                {
-                    query = query.Skip(offset);
-                }
-                if (pageSize > 0)
-                {
-                    query = query.Take(pageSize);
-                }
-                if (sortBy.Any())
-                {
-                    var columnNamesToSort = sortBy
-                        .Select(x => x.ToLower())
-                        .Distinct()
-                        .Where(x => GlossaryRepository.TermsSortColumnNamesMapping.ContainsKey(x))
-                        .Select(x => GlossaryRepository.TermsSortColumnNamesMapping[x])
-                        .ToArray();
-                    if (columnNamesToSort.Any())
-                        query = sortAscending? query.OrderBy(columnNamesToSort) : query.OrderByDesc(columnNamesToSort);
-                }
+
+                query = this.ApplyPagination(
+                    query: query,
+                    offset: offset,
+                    limit: pageSize);
+
+                query = this.ApplySorting(
+                    query: query,
+                    columnNamesMappings: GlossaryRepository.TermsSortColumnNamesMapping,
+                    sortBy: sortBy,
+                    sortAscending: sortAscending);
+
                 var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
-                var getGlossaryTermsSql = getGlossaryTermsCompiledQuery.Sql;
-                var getGlossaryTermsParam = getGlossaryTermsCompiledQuery.NamedBindings;
-                this.LogQuery(getGlossaryTermsSql, this.DictionaryToString(getGlossaryTermsParam));
+                this.LogQuery(getGlossaryTermsCompiledQuery);
                 var assotiatedTerms = await dbConnection.QueryAsync<Models.Glossaries.Term>(
-                    sql: getGlossaryTermsSql,
-                    param: getGlossaryTermsParam
+                    sql: getGlossaryTermsCompiledQuery.Sql,
+                    param: getGlossaryTermsCompiledQuery.NamedBindings
                     );
                 dbConnection.Close();
                 return assotiatedTerms;
@@ -260,12 +251,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 dbConnection.Open();
                 var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart).AsCount();
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
-                var getGlossaryTermsCountSql = getGlossaryTermsCountCompiledQuery.Sql;
-                var getGlossaryTermsCountParam = getGlossaryTermsCountCompiledQuery.NamedBindings;
-                this.LogQuery(getGlossaryTermsCountSql, this.DictionaryToString(getGlossaryTermsCountParam));
+                this.LogQuery(getGlossaryTermsCountCompiledQuery);
                 var assotiatedTermsCount = await dbConnection.ExecuteScalarAsync<int>(
-                    sql: getGlossaryTermsCountSql,
-                    param: getGlossaryTermsCountParam
+                    sql: getGlossaryTermsCountCompiledQuery.Sql,
+                    param: getGlossaryTermsCountCompiledQuery.NamedBindings
                     );
                 dbConnection.Close();
                 return assotiatedTermsCount;
@@ -334,12 +323,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Select("Id_Locales")
                         .Where("Id_TranslationSubStrings", termId));
                 var getTranslationLocalesForTermCompiledQuery = this._compiler.Compile(getTranslationLocalesForTermQuery);
-                var getTranslationLocalesForTermSql = getTranslationLocalesForTermCompiledQuery.Sql;
-                var getTranslationLocalesForTermParam = getTranslationLocalesForTermCompiledQuery.NamedBindings;
-                this.LogQuery(getTranslationLocalesForTermSql, this.DictionaryToString(getTranslationLocalesForTermParam));
+                this.LogQuery(getTranslationLocalesForTermCompiledQuery);
                 var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
-                    sql: getTranslationLocalesForTermSql,
-                    param: getTranslationLocalesForTermParam);
+                    sql: getTranslationLocalesForTermCompiledQuery.Sql,
+                    param: getTranslationLocalesForTermCompiledQuery.NamedBindings);
                 dbConnection.Close();
                 return translationLocalesForTerm;
             }
@@ -356,19 +343,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                         new Query("GlossariesLocales")
                         .Select("ID_Locale")
                         .Where("ID_Glossary", glossaryId));
-                var getTranslationLocalesmCompiledQuery = this._compiler.Compile(getTranslationLocalesQuery);
-                var getTranslationLocalesmSql = getTranslationLocalesmCompiledQuery.Sql;
-                var getTranslationLocalesmParam = getTranslationLocalesmCompiledQuery.NamedBindings;
-                this.LogQuery(getTranslationLocalesmSql, this.DictionaryToString(getTranslationLocalesmParam));
+                var getTranslationLocalesCompiledQuery = this._compiler.Compile(getTranslationLocalesQuery);
+                this.LogQuery(getTranslationLocalesCompiledQuery);
                 var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
-                    sql: getTranslationLocalesmSql,
-                    param: getTranslationLocalesmParam);
+                    sql: getTranslationLocalesCompiledQuery.Sql,
+                    param: getTranslationLocalesCompiledQuery.NamedBindings);
                 dbConnection.Close();
                 return translationLocalesForTerm;
             }
         }
 
-        public async Task<IEnumerable<Locale>> DeleteTranslationLocalesForTermAsync(int termId)
+        public async Task DeleteTranslationLocalesForTermAsync(int termId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -378,14 +363,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Where("Id_TranslationSubStrings", termId)
                     .AsDelete();
                 var deleteTranslationLocalesForTermCompiledQuery = this._compiler.Compile(deleteTranslationLocalesForTermQuery);
-                var deleteTranslationLocalesForTermSql = deleteTranslationLocalesForTermCompiledQuery.Sql;
-                var deleteTranslationLocalesForTermParam = deleteTranslationLocalesForTermCompiledQuery.NamedBindings;
-                this.LogQuery(deleteTranslationLocalesForTermSql, this.DictionaryToString(deleteTranslationLocalesForTermParam));
-                var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
-                    sql: deleteTranslationLocalesForTermSql,
-                    param: deleteTranslationLocalesForTermParam);
+                this.LogQuery(deleteTranslationLocalesForTermCompiledQuery);
+                await dbConnection.ExecuteAsync(
+                    sql: deleteTranslationLocalesForTermCompiledQuery.Sql,
+                    param: deleteTranslationLocalesForTermCompiledQuery.NamedBindings);
                 dbConnection.Close();
-                return translationLocalesForTerm;
             }
         }
 
