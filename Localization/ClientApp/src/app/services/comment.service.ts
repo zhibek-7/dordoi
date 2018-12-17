@@ -28,8 +28,9 @@ export class CommentService {
         return this.http.post(this.url + "UploadImage", formData).toPromise();
     }
 
-    getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{        
-        return this.http.get<CommentWithUser[]>(this.url + '/InString/' + idString)
+    getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{    
+        console.log(idString);    
+        return this.http.get<CommentWithUser[]>(this.url + 'InString/' + idString)
                 .pipe(
                     catchError(this.handleError('Get comments in string', []))
                 );

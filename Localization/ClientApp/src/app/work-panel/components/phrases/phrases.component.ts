@@ -32,14 +32,8 @@ export class PhrasesComponent implements OnInit {
         this.getStrings();
      }
 
-    getStrings() {
-        this.stringService.getStringsInFile(300)
-            .subscribe(
-                stringsInFile => {
-                    this.phrasesList = stringsInFile;
-                },
-                error => console.error(error)
-            );
+    async getStrings() {
+        this.phrasesList = await this.stringService.getStringsInFile(1).toPromise();     // потом поменять на реальный приходящий файл        
         this.countPages();
     }
 
@@ -86,7 +80,7 @@ export class PhrasesComponent implements OnInit {
     }
 
     choosePhrase(phrase){
-        this.pickedPhrase = phrase;
+        this.pickedPhrase = phrase;        
         this.sharePhraseService.addSharedPhrase(this.pickedPhrase);
         this.sharePhraseService.getTranslationsOfPickedPhrase();
     }

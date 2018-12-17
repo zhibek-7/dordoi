@@ -96,12 +96,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>список строк содержащихся в списке строк </returns>
         public async Task<IEnumerable<Models.DatabaseEntities.String>> FilterByString(string filtredString , IEnumerable<Models.DatabaseEntities.String> filtredListOfStrings)
         {
-            var query = "SELECT * " +
-                        "FROM \"TranslationSubstrings\" AS TS " +
-                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
-                        "INNER JOIN \"LocalizationProjects\" AS LP " +
-                        "WHERE LP.\"ID\" = @Id " +
-                        "OR LP.\"Visibility\" = true ";
+            var query = "";
 
             try
             {
@@ -142,7 +137,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    IEnumerable<Models.DatabaseEntities.String> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    IEnumerable<Models.DatabaseEntities.String> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query, new { Id = projectId });
                     dbConnection.Close();
                     return strings;
                 }
@@ -164,7 +159,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<Models.DatabaseEntities.String>> GetStringsByFileIdAsync(int fileId)
         {
-            var query = "SELECT * " +
+            var query = "SELECT TS.\"SubstringToTranslate\" AS \"SubstringToTranslate\", TS.\"Description\" AS \"Description\", " +
+                        "TS.\"Context\" AS \"Context\", TS.\"TranslationMaxLength\" AS \"TranslationMaxLength\"," +
+                        "TS.\"ID_FileOwner\" AS \"ID_FileOwner\", TS.\"Value\" AS \"Value\"," +
+                        "TS.\"PositionInText\" AS \"PositionInText\", TS.\"ID\" AS \"ID\" " +
                         "FROM \"TranslationSubstrings\" AS TS " +
                         "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
                         "WHERE F.\"ID\" = @Id";
@@ -174,7 +172,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    IEnumerable<Models.DatabaseEntities.String> stringsInFile = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    IEnumerable<Models.DatabaseEntities.String> stringsInFile = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query, new { Id = fileId });
                     dbConnection.Close();
                     return stringsInFile;
                 }
