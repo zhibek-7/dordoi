@@ -18,12 +18,8 @@ export class ProjectsService {
         return this.httpClient.get<Project>(this.controllerUrl + id);
     }
 
-  addProject(project: Project) {
-    let params = null;
-    let paramsObject: any = {};
-    if (project !== null) {
-    
-    }
+   addProject(project: Project) {
+    return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
         //Сделать добавление в БД
     }
 

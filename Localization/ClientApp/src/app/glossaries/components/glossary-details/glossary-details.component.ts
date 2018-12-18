@@ -68,7 +68,6 @@ export class GlossaryDetailsComponent implements OnInit {
   loadTerms(pageNumber = 1) {
     if (!this.glossary)
       return;
-
     this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, pageNumber, [this.sortByColumnName], this.ascending)
       .subscribe(
         response => {

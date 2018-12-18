@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { ProjectsService } from '../services/projects.service';
+import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
+import { Project } from '../models/Project';
 //import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 //import {Langs} from './langs';
 //import { ListFilterPipe } from 'angular2-multiselect-dropdown';
@@ -88,6 +92,27 @@ FiterByName(){
   });}
 
 
+  private _visible: boolean = false;
 
-  
+  get visible() { return this._visible }
+
+  @Input()
+  set visible(value: boolean) {
+    this._visible = value;
+    this.visibleChange.emit(this._visible);
+  }
+
+  @Output()
+  visibleChange = new EventEmitter<boolean>();
+
+  constructor() { }
+
+
+  show() {
+    this.visible = true;
+  }
+
+  hide() {
+    this.visible = false;
+  }
 }
