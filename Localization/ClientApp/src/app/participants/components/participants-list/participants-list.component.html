@@ -33,8 +33,14 @@
       <th>
         <input type="checkbox" class="checkbox">
       </th>
-      <th>Имя пользователя</th>
-      <th>Роль в проекте</th>
+      <th (click)="sortByColumn('username')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'username'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'username'"
+          >Имя пользователя</th>
+      <th (click)="sortByColumn('rolename')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'rolename'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'rolename'"
+          >Роль в проекте</th>
       <th>Действия</th>
     </tr>
   </thead>

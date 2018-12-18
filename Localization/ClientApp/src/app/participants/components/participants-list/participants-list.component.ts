@@ -22,7 +22,9 @@ export class ParticipantsListComponent implements OnInit {
 
   sortBy: string[] = [];
 
-  sortAscending: boolean = true;
+  lastSortColumnName: string = '';
+
+  isSortingAscending: boolean = true;
 
   participants: Participant[] = [];
 
@@ -66,7 +68,7 @@ export class ParticipantsListComponent implements OnInit {
       this.pageSize,
       this.currentOffset,
       this.sortBy,
-      this.sortAscending
+      this.isSortingAscending
     )
       .subscribe(response => {
         this.totalParticipantsCount = +response.headers.get('totalCount');
@@ -97,6 +99,21 @@ export class ParticipantsListComponent implements OnInit {
   setSelectedLocales(locales: Locale[]) {
     this.localeIds = locales.map(locale => locale.id);
     this.loadParticipants();
+  }
+
+  sortByColumn(columnName: string) {
+    if (columnName != this.lastSortColumnName) {
+      this.isSortingAscending = true;
+    }
+    this.lastSortColumnName = columnName;
+
+    if (columnName) {
+      this.sortBy = [columnName];
+    }
+
+    this.loadParticipants();
+
+    this.isSortingAscending = !this.isSortingAscending;
   }
 
 }
