@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
 import { Term } from 'src/app/models/Glossaries/term.type';
-import { ModalComponent } from 'src/app/glossaries/components/modal/modal.component';
+import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 
 @Component({
   selector: 'app-delete-term-confirmation-modal',
