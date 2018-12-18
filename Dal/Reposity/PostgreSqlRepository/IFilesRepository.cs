@@ -9,6 +9,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         Task<int> Add(File item);
         Task<bool> Remove(int id);
         Task<bool> Update(File item);
+        Task<bool> Upload(File item);
         
         Task<IEnumerable<File>> GetAll();
         Task<File> GetByID(int id);

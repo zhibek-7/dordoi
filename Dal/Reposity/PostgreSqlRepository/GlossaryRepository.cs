@@ -19,13 +19,13 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly PostgreSqlNativeContext _context;
 
-        private readonly IRepositoryAsync<Models.DatabaseEntities.String> _stringsRepository;
+        private readonly IRepositoryAsync<Models.DatabaseEntities.TranslationSubstring> _stringsRepository;
 
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
         private readonly LogTools _logger = new LogTools();
 
-        public GlossaryRepository(IRepositoryAsync<Models.DatabaseEntities.String> stringsRepository)
+        public GlossaryRepository(IRepositoryAsync<Models.DatabaseEntities.TranslationSubstring> stringsRepository)
         {
             this._context = PostgreSqlNativeContext.getInstance();
             this._stringsRepository = stringsRepository;
@@ -113,7 +113,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public void AddNewTerm(int glossaryId, Models.DatabaseEntities.String newTerm, int? partOfSpeechId)
+        public void AddNewTerm(int glossaryId, Models.DatabaseEntities.TranslationSubstring newTerm, int? partOfSpeechId)
         {
             var glossary = this.GetByID(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
@@ -160,7 +160,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public void UpdateTerm(int glossaryId, Models.DatabaseEntities.String updatedTerm, int? partOfSpeechId)
+        public void UpdateTerm(int glossaryId, Models.DatabaseEntities.TranslationSubstring updatedTerm, int? partOfSpeechId)
         {
             using (var dbConnection = this._context.Connection)
             {

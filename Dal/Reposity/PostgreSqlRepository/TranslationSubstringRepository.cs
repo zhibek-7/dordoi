@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class StringRepository : IRepositoryAsync<Models.DatabaseEntities.String>
+    public class TranslationSubstringRepository : IRepositoryAsync<Models.DatabaseEntities.TranslationSubstring>
     {
         private PostgreSqlNativeContext context;
 
-        public StringRepository()
+        public TranslationSubstringRepository()
         {
             context = PostgreSqlNativeContext.getInstance();
         }
@@ -24,7 +24,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="item">Новая фраза</param>
         /// <returns>Кол-во добавленных фраз</returns>
-        public Task<int> Add(Models.DatabaseEntities.String item)
+        public Task<int> Add(Models.DatabaseEntities.TranslationSubstring item)
         {
             throw new NotImplementedException();
         }
@@ -33,7 +33,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Получает все фразы
         /// </summary>
         /// <returns>Список фраз</returns>
-        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetAll()
+        public async Task<IEnumerable<Models.DatabaseEntities.TranslationSubstring>> GetAll()
         {
             var query = "SELECT * FROM \"TranslationSubstrings\"";
 
@@ -42,7 +42,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    IEnumerable<Models.DatabaseEntities.String> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    IEnumerable<Models.DatabaseEntities.TranslationSubstring> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.TranslationSubstring>(query);
                     dbConnection.Close();
                     return strings;
                 }
@@ -62,7 +62,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id необходимой фразы</param>
         /// <returns>Запись с необходимым id</returns>
-        public async Task<Models.DatabaseEntities.String> GetByID(int id)
+        public async Task<Models.DatabaseEntities.TranslationSubstring> GetByID(int id)
         {
             var query = "SELECT * " +
                         "FROM \"TranslationSubstrings\" " +
@@ -73,7 +73,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.String>(query, new { Id = id });
+                    var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.TranslationSubstring>(query, new { Id = id });
                     dbConnection.Close();
                     return foundedString;
                 }
@@ -93,7 +93,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(Models.DatabaseEntities.String item)
+        public Task<bool> Update(Models.DatabaseEntities.TranslationSubstring item)
         {
             throw new NotImplementedException();
         }
