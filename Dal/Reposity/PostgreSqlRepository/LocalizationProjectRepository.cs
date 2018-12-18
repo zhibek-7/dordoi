@@ -7,16 +7,19 @@ using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
 using Npgsql;
+using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class LocalizationProjectRepository : IRepository<LocalizationProject>
     {
         private PostgreSqlNativeContext context;
+        private ILogTools _log;
 
         public LocalizationProjectRepository()
         {
             context = PostgreSqlNativeContext.getInstance();
+            _log = ExceptionLog.GetLog();
         }
 
         public void Add(LocalizationProject locale)
@@ -43,14 +46,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в GetByID NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в GetByID ", exception);
 
                 return null;
             }
@@ -75,14 +78,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.ErrorCode);
+                _log.WriteLn("Ошибка в GetAll NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
                 // Custom logging
-                Console.WriteLine(exception.Message);
+                _log.WriteLn("Ошибка в GetAll ", exception);
 
                 return null;
             }

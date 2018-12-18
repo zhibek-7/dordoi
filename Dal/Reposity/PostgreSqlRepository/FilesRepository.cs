@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using Dapper;
 using Models.DatabaseEntities;
+using Models.Models;
 using Npgsql;
 using Utilities.Logs;
 
@@ -238,6 +240,63 @@ namespace DAL.Reposity.PostgreSqlRepository
                 _log.WriteLn("Ошибка в Update exception ", exception);
 
                 return false;
+            }
+        }
+
+        public async Task<bool> Upload(File file)
+        {
+            // Sql string for insert query
+            var sqlString = "INSERT INTO \"Files\" (\"ID_LocalizationProject\", \"Name\" ,\"StringsCount\", \"Encoding\", \"IsFolder\", \"OriginalFullText\") " +
+                            "VALUES (@ID_LocalizationProject, @Name , @StringsCount, @Encoding, @IsFolder, @OriginalFullText)";
+            // Using new posgresql connection
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                IDbTransaction t = connection.BeginTransaction();
+                try
+                {
+                    bool ans = true;
+                    // Execute File insert query
+                    var insertedId = await connection.ExecuteScalarAsync(sqlString, file);
+
+                    // Return "file is uploaded" result
+                    if (insertedId != null)
+                    {
+                        file.ID = (int)insertedId;
+                        sqlString = sqlString = "INSERT INTO \"TranslationSubstrings\" (\"SubstringToTranslate\", \"Context\", \"ID_FileOwner\", \"Value\", \"PositionInText\") " +
+                                                "VALUES (@SubstringToTranslate, @Context, @ID_FileOwner, @Value, @PositionInText)";
+                        // Create parser object
+                        using (var p = new Parser(file))
+                        {
+                            int n = 0;
+                            n = p.TranslationSubstrings.Count;
+                            foreach (var ts in p.TranslationSubstrings)
+                            {
+                                // Execute TranslationSubstring insert query
+                                n -= await connection.ExecuteAsync(sqlString, ts);
+                            }
+                            ans = n == p.TranslationSubstrings.Count;
+                        }
+                    }
+                    else ans = false;
+                    t.Commit();
+                    return ans;
+                }
+                catch (NpgsqlException exception)
+                {
+                    // Custom logging
+                    _log.WriteLn("Ошибка в Upload NpgsqlException ", exception);
+                    return false;
+                }
+                catch (Exception exception)
+                {
+                    // Custom logging
+                    _log.WriteLn("Ошибка в Upload Exception ", exception);
+                    return false;
+                }
+                finally
+                {
+                    t.Rollback();
+                }
             }
         }
     }
