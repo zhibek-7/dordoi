@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Localization.WebApi
 {
@@ -19,109 +20,109 @@ namespace Localization.WebApi
         }
 
         [HttpGet]
-        public IEnumerable<Glossary> GetAll()
+        public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
-            return this._glossaryRepository.GetAll();
+            return await this._glossaryRepository.GetAllAsync();
         }
 
         [HttpPut("{glossaryId}")]
-        public void Update(int glossaryId, [FromBody] Glossary updatedGlossary)
+        public async Task Update(int glossaryId, [FromBody] Glossary updatedGlossary)
         {
             updatedGlossary.ID = glossaryId;
-            this._glossaryRepository.Update(updatedGlossary);
+            await this._glossaryRepository.UpdateAsync(updatedGlossary);
         }
 
         [HttpGet("{glossaryId}")]
-        public Glossary GetGlossaryById(int glossaryId)
+        public async Task<Glossary> GetGlossaryById(int glossaryId)
         {
-            return this._glossaryRepository.GetByID(id: glossaryId);
+            return await this._glossaryRepository.GetByIDAsync(id: glossaryId);
         }
 
         [HttpGet("{glossaryId}/locale")]
-        public Locale GetGlossaryLocale(int glossaryId)
+        public async Task<Locale> GetGlossaryLocaleAsync(int glossaryId)
         {
-            return this._glossaryRepository.GetLocaleById(glossaryId: glossaryId);
+            return await this._glossaryRepository.GetLocaleByIdAsync(glossaryId: glossaryId);
         }
 
         [HttpGet("{glossaryId}/terms")]
-        public IEnumerable<Models.Glossaries.Term> GetAssotiatedTerms(
+        public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsAsync(
             int glossaryId,
             [FromQuery] string termSearch,
             [FromQuery] int? pageSize,
-            [FromQuery] int? pageNumber,
+            [FromQuery] int? offset,
             [FromQuery] string[] sortBy,
             [FromQuery] bool? sortAscending)
         {
             this.Response.Headers.Add(
                 key: "totalCount",
-                value: this._glossaryRepository.GetAssotiatedTermsCount(
+                value: (await this._glossaryRepository.GetAssotiatedTermsCountAsync(
                     glossaryId: glossaryId,
-                    termPart: termSearch).ToString());
-            return this._glossaryRepository
-                .GetAssotiatedTermsByGlossaryId(
+                    termPart: termSearch)).ToString());
+            return await this._glossaryRepository
+                .GetAssotiatedTermsByGlossaryIdAsync(
                     glossaryId: glossaryId,
                     termPart: termSearch,
                     pageSize: pageSize ?? 25,
-                    pageNumber: pageNumber ?? 1,
+                    offset: offset ?? 0,
                     sortBy: sortBy,
                     sortAscending: sortAscending ?? true);
         }
 
         [HttpPost("{glossaryId}/terms")]
-        public void AddTerm(int glossaryId, [FromBody] Models.DatabaseEntities.String newTerm, [FromQuery] int? partOfSpeechId)
+        public async Task AddTermAsync(int glossaryId, [FromBody] Models.DatabaseEntities.String newTerm, [FromQuery] int? partOfSpeechId)
         {
-            this._glossaryRepository
-                .AddNewTerm(
+            await this._glossaryRepository
+                .AddNewTermAsync(
                     glossaryId: glossaryId,
                     newTerm: newTerm,
                     partOfSpeechId: partOfSpeechId);
         }
 
         [HttpDelete("{glossaryId}/terms/{termId}")]
-        public void DeleteTerm(int glossaryId, int termId)
+        public async Task DeleteTermAsync(int glossaryId, int termId)
         {
-            this._glossaryRepository.DeleteTerm(glossaryId: glossaryId, termId: termId);
+            await this._glossaryRepository.DeleteTermAsync(glossaryId: glossaryId, termId: termId);
         }
 
         [HttpPut("{glossaryId}/terms/{termId}")]
-        public void UpdateTerm(int glossaryId, int termId, [FromBody] Models.DatabaseEntities.String updatedTerm, [FromQuery] int? partOfSpeechId)
+        public async Task UpdateTermAsync(int glossaryId, int termId, [FromBody] Models.DatabaseEntities.String updatedTerm, [FromQuery] int? partOfSpeechId)
         {
             updatedTerm.ID = termId;
-            this._glossaryRepository
-                .UpdateTerm(
+            await this._glossaryRepository
+                .UpdateTermAsync(
                     glossaryId: glossaryId,
                     updatedTerm: updatedTerm,
                     partOfSpeechId: partOfSpeechId);
         }
 
         [HttpGet("{glossaryId}/terms/{termId}/locales")]
-        public IEnumerable<Locale> GetTranslationLocalesForTerm(int glossaryId, int termId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
-            var translationLocalesForTerm = this._glossaryRepository.GetTranslationLocalesForTerm(glossaryId, termId);
+            var translationLocalesForTerm = await this._glossaryRepository.GetTranslationLocalesForTermAsync(glossaryId, termId);
             if (!translationLocalesForTerm.Any())
             {
-                translationLocalesForTerm = this._glossaryRepository.GetTranslationLocales(glossaryId: glossaryId);
+                translationLocalesForTerm = await this._glossaryRepository.GetTranslationLocalesAsync(glossaryId: glossaryId);
             }
             return translationLocalesForTerm;
         }
 
         [HttpPut("{glossaryId}/terms/{termId}/locales")]
-        public void SetTranslationLocalesForTerm(int glossaryId, int termId, [FromBody] IEnumerable<int> localesIds)
+        public async Task SetTranslationLocalesForTermAsync(int glossaryId, int termId, [FromBody] IEnumerable<int> localesIds)
         {
             var newLocalesIds = localesIds.ToHashSet();
-            var glossaryTranslationLocalesIds =
+            var glossaryTranslationLocalesIds = (await
                 this._glossaryRepository
-                    .GetTranslationLocales(glossaryId: glossaryId)
+                    .GetTranslationLocalesAsync(glossaryId: glossaryId))
                     .Select(locale => locale.ID)
                     .ToHashSet();
-            this._glossaryRepository.DeleteTranslationLocalesForTerm(termId: termId);
+            await this._glossaryRepository.DeleteTranslationLocalesForTermAsync(termId: termId);
             if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
                 && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
                 && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
             {
                 return;
             }
-            this._glossaryRepository.SetTranslationLocalesForTerm(termId: termId, localesIds: newLocalesIds);
+            await this._glossaryRepository.SetTranslationLocalesForTermAsync(termId: termId, localesIds: newLocalesIds);
         }
 
     }

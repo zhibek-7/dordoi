@@ -1,0 +1,27 @@
+<!-- <div class="container-fluide"> -->
+  <!-- <div class="row"> -->
+      <nav aria-label="breadcrumb" style="display: inline-block;">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a class="nav-link" role="button" aria-haspopup="true" routerLink='/profile'>
+              <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
+            </a>
+            <span>Имя текущего пользователя</span>
+          </li>
+        </ol>
+      </nav>
+  <!-- </div> -->
+<!-- </div> -->
+
+<h1 *ngIf="currentProject">{{ currentProject.name }}</h1>
+<h1 *ngIf="!currentProject">Невозможно подключиться к БД</h1>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light navbar-category">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav navbar-custom">
+        <a class="nav-item nav-link active" routerLink='/Translation' href="./Translation">Главная</a>
+        <a class="nav-item nav-link" href="#">Активность</a>
+        <a class="nav-item nav-link" href="#">Проблемы переводов</a>
+      </div>
+    </div>
+  </nav>

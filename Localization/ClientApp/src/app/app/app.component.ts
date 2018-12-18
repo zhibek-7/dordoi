@@ -17,7 +17,7 @@ export class AppComponent implements OnInit{
   ngOnInit() {
     this.projectService.getProjects()
       .subscribe(projects => { this.projects = projects; },
-        error => console.error(error)); 
+        error => console.error(error));
     console.log('app ngOnInit ---!!!!!!!!!');
   }
 
@@ -28,5 +28,15 @@ export class AppComponent implements OnInit{
 
   getCurrentProject(currentProject: Project) {
     this.currentProject = currentProject;
+
+
+
+    sessionStorage.setItem('ProjectName', currentProject.name);
+    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
+    console.log('ProjectName2=' + currentProject.name);
+
+    sessionStorage.setItem('ProjecID', currentProject.id.toString());
+    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+    console.log('ProjecID2=' + currentProject.id);
   }
 }

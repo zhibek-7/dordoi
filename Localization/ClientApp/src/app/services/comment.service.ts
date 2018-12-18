@@ -16,30 +16,32 @@ export class CommentService {
 
     }
 
-    // async createTranslate(translate: Translation){
-    //     let asyncResult = await this.http.post(this.url, translate).toPromise();
-    //     return asyncResult;
-    // }
+    async createComment(comment: Comment){
+        let asyncResult = await this.http.post<CommentWithUser>(this.url + "AddComment", comment).toPromise();
+        return asyncResult;
+    }
 
-    getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{        
-        return this.http.get<CommentWithUser[]>(this.url + '/InString/' + idString)
+    uploadImage(fileToUpload: File) {
+        const formData: FormData = new FormData();
+        formData.append('Image', fileToUpload);
+        
+        return this.http.post(this.url + "UploadImage", formData).toPromise();
+    }
+
+    getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{    
+        console.log(idString);    
+        return this.http.get<CommentWithUser[]>(this.url + 'InString/' + idString)
                 .pipe(
                     catchError(this.handleError('Get comments in string', []))
                 );
-    }
-
-    // async rejectTranslate(idTranslation: number){
-    //     await this.http.delete(this.url + '/RejectTranslation/' + idTranslation).toPromise();
-    // }
+    }    
 
     deleteComment(commentId: number){
-        return this.http.delete(this.url + "DeleteComment/" + commentId).subscribe(
-            // error => console.log(error)
-        );
+        return this.http.delete<boolean>(this.url + "DeleteComment/" + commentId).toPromise();
     }
 
-    updateTextOfComment(commentId: number, commentNewText: string){
-        return this.http.put(this.url + "UpdateComment/" + commentId, commentNewText).subscribe();
+    updateComment(comment: Comment){
+        return this.http.put<boolean>(this.url + "UpdateComment/" + comment.id, comment).toPromise();
     }
 
     handleError<T>(operation = 'Operation', result?: T) {

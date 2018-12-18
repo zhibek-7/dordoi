@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using Utilities.Logs;
 
 namespace DAL.Context
 {
@@ -11,7 +12,7 @@ namespace DAL.Context
         private static PostgreSqlNativeContext instance;
         private static object obj = new object();
 
-        private string connectionString = "User ID=postgres;Password=post123;Host=10.145.251.74;Port=5432;Database=localizationservice;Pooling=true;";
+        private string connectionString = "User ID=postgres;Password=post123;Host=10.145.251.49;Port=5432;Database=localizationservice;Pooling=true;";
 
         private PostgreSqlNativeContext() { }
 
@@ -23,10 +24,12 @@ namespace DAL.Context
                 {
                     return new NpgsqlConnection(connectionString);
                 }
-                catch(NpgsqlException exception)
+                catch (NpgsqlException exception)
                 {
+
+
                     //внесение записи в журанал логирования
-                    Console.WriteLine(exception.ErrorCode);
+                    LogTools.GetLog().WriteLn("Ошибка в Connection ", exception);
 
                     return null;
                 }
@@ -35,9 +38,9 @@ namespace DAL.Context
 
         public static PostgreSqlNativeContext getInstance()
         {
-            lock(obj)
+            lock (obj)
             {
-                if(instance == null)
+                if (instance == null)
                 {
                     instance = new PostgreSqlNativeContext();
                 }
@@ -50,6 +53,6 @@ namespace DAL.Context
         {
             this.connectionString = connectionString;
         }
-        
+
     }
 }

@@ -24,7 +24,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="item">Новая фраза</param>
         /// <returns>Кол-во добавленных фраз</returns>
-        public Task<int> Add(Models.DatabaseEntities.String item)
+        public Task<int> AddAsync(Models.DatabaseEntities.String item)
         {
             throw new NotImplementedException();
         }
@@ -33,7 +33,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Получает все фразы
         /// </summary>
         /// <returns>Список фраз</returns>
-        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetAll()
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetAllAsync()
         {
             var query = "SELECT * FROM \"TranslationSubstrings\"";
 
@@ -58,11 +58,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Получает запись с конкретным 
+        /// Получает запись с конкретным id
         /// </summary>
         /// <param name="id">id необходимой фразы</param>
         /// <returns>Запись с необходимым id</returns>
-        public async Task<Models.DatabaseEntities.String> GetByID(int id)
+        public async Task<Models.DatabaseEntities.String> GetByIDAsync(int id)
         {
             var query = "SELECT * " +
                         "FROM \"TranslationSubstrings\" " +
@@ -84,16 +84,114 @@ namespace DAL.Reposity.PostgreSqlRepository
                 Console.WriteLine(exception.Message);
 
                 return null;
-            }
-            
+            }            
         }
 
-        public Task<bool> Remove(int id)
+
+        /// <summary>
+        /// Фильтрует список строк по определенной фразе
+        /// </summary>
+        /// <param name="filtredString">фраза по которой происходит фильтрация</param>
+        /// <param name="filtredListOfStrings">список строк среди которых происходит фильтрация</param>
+        /// <returns>список строк содержащихся в списке строк </returns>
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> FilterByString(string filtredString , IEnumerable<Models.DatabaseEntities.String> filtredListOfStrings)
+        {
+            var query = "";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Models.DatabaseEntities.String> filtredStrings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query);
+                    dbConnection.Close();
+                    return filtredStrings;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Получает записи из определенного и открытых проектов
+        /// </summary>
+        /// <param name="fileId">id определенного проекта</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId)
+        {
+            var query = "SELECT * " +
+                        "FROM \"TranslationSubstrings\" AS TS " +
+                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
+                        "INNER JOIN \"LocalizationProjects\" AS LP " +
+                        "WHERE LP.\"ID\" = @Id " +
+                        "OR LP.\"Visibility\" = true ";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Models.DatabaseEntities.String> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query, new { Id = projectId });
+                    dbConnection.Close();
+                    return strings;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Получает записи из определенного файла по id файла
+        /// </summary>
+        /// <param name="fileId">id файла</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Models.DatabaseEntities.String>> GetStringsByFileIdAsync(int fileId)
+        {
+            var query = "SELECT TS.\"SubstringToTranslate\" AS \"SubstringToTranslate\", TS.\"Description\" AS \"Description\", " +
+                        "TS.\"Context\" AS \"Context\", TS.\"TranslationMaxLength\" AS \"TranslationMaxLength\"," +
+                        "TS.\"ID_FileOwner\" AS \"ID_FileOwner\", TS.\"Value\" AS \"Value\"," +
+                        "TS.\"PositionInText\" AS \"PositionInText\", TS.\"ID\" AS \"ID\" " +
+                        "FROM \"TranslationSubstrings\" AS TS " +
+                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
+                        "WHERE F.\"ID\" = @Id";
+            
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<Models.DatabaseEntities.String> stringsInFile = await dbConnection.QueryAsync<Models.DatabaseEntities.String>(query, new { Id = fileId });
+                    dbConnection.Close();
+                    return stringsInFile;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
+        public Task<bool> RemoveAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(Models.DatabaseEntities.String item)
+        public Task<bool> UpdateAsync(Models.DatabaseEntities.String item)
         {
             throw new NotImplementedException();
         }

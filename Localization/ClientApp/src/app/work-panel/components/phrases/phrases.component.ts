@@ -13,6 +13,7 @@ import { StringService } from '../../../services/stringService.service';
 })
 export class PhrasesComponent implements OnInit {
 
+    searchText: string = '';
     phrasesList: Array<String>;
     phrasesOnPages: String[][];
     currentPageOfPhrases: String[];
@@ -32,7 +33,7 @@ export class PhrasesComponent implements OnInit {
      }
 
     async getStrings() {
-        this.phrasesList = await this.stringService.getStrings();
+        this.phrasesList = await this.stringService.getStringsInFile(1).toPromise();     // потом поменять на реальный приходящий файл        
         this.countPages();
     }
 
@@ -50,9 +51,9 @@ export class PhrasesComponent implements OnInit {
         let numberOfPages = Math.ceil(allPhrases/maxPhrasesOnOnePage);
         this.phrasesList = StringsFromNullValue;
 
-        for(var i: number = 0; i < numberOfPages; i++){
+        for(let i: number = 0; i < numberOfPages; i++){
             this.phrasesOnPages[i] = [];
-            for(var j: number = 0; j < maxPhrasesOnOnePage; j++){
+            for(let j: number = 0; j < maxPhrasesOnOnePage; j++){
                 let position: number = ( (i)*maxPhrasesOnOnePage + j );
                 if(this.phrasesList[position] != undefined){
                     this.phrasesOnPages[i][j] = StringsFromNullValue[position];
@@ -79,7 +80,7 @@ export class PhrasesComponent implements OnInit {
     }
 
     choosePhrase(phrase){
-        this.pickedPhrase = phrase;
+        this.pickedPhrase = phrase;        
         this.sharePhraseService.addSharedPhrase(this.pickedPhrase);
         this.sharePhraseService.getTranslationsOfPickedPhrase();
     }

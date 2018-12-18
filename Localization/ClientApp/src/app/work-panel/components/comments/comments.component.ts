@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommentService } from '../../../services/comment.service';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 
+import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
  
 @Component({
@@ -18,9 +19,13 @@ export class CommentsComponent implements OnInit {
     commentEdited = false;
     changedComment = "";
 
+    fileToUpload: File = null;
+    imageUrl: string = undefined;
+
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService ) { 
 
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
+            console.log(pickedPhrase.id);
             this.stringId = pickedPhrase.id;
             this.getComments(this.stringId);            
         });
@@ -35,10 +40,10 @@ export class CommentsComponent implements OnInit {
         });        
     };
 
-    public addComment(textFromInput: string){
-        // let lastElement = this.commentsList[this.commentsList.length - 1];
-        // let idOfTheNewElement = Number(lastElement.id) + 1;
-        // this.commentsList.push(new Comment(idOfTheNewElement, textFromInput));
+    public async addComment(textFromInput: string){
+        let comment: Comment = new Comment(301, this.stringId, textFromInput);        // поменять на id реального пользователя, когда появится
+        let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
+        this.commentsList.push(insertedComment);
     }
 
     onEnterPress(event: any){
@@ -56,17 +61,40 @@ export class CommentsComponent implements OnInit {
     }
 
     cancelChangingComment(commentId: number){
-        this.commentEdited = false;
-        this.changedComment = "";
-        this.getComments(this.stringId);
+        this.endEditingMode();
+    }        
+
+    async saveChangedComment(comment: CommentWithUser) {
+      // comment.id_User = userId              РєРѕРіРґР° РґРѕР±Р°РІРёС‚СЃСЏ Р°РІС‚РѕСЂРёР·Р°С†РёСЏ РЅСѓР¶РЅРѕ Р±СѓРґРµС‚ РїСЂРѕРїРёСЃР°С‚СЊ СЂРµР°Р»СЊРЅС‹Р№ id. Рў.Рє. РєРѕРјРјРµРЅС‚Р°СЂРёРё РјРѕРіСѓС‚ РјРµРЅСЏС‚СЊ СЂР°Р·РЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё
+      let updatedComment: Comment = new Comment(301, this.stringId, this.changedComment, new Date(Date.now()), comment.commentId);
+
+      await this.commentService.updateComment(updatedComment);
+      if (this.fileToUpload != null) {
+        this.loadScrinshot();
+      }
+      this.endEditingMode();
     }
-    
-    loadScrinshot(){
 
+    endEditingMode() {
+      this.commentEdited = false;
+      this.changedComment = "";
+      this.fileToUpload = null;
+      this.imageUrl = undefined;
+      this.getComments(this.stringId);
     }
 
-    saveChangedComment(){
+    loadScrinshot() {
+      this.commentService.uploadImage(this.fileToUpload);
+    }
 
+    handleFileInput(file: FileList) {
+      this.fileToUpload = file.item(0);
+
+      var reader = new FileReader();
+      reader.onload = (event: any) => {
+        this.imageUrl = event.target.result;
+      }
+      reader.readAsDataURL(this.fileToUpload);
     }
 
     deleteCommentClick(commentId: number){

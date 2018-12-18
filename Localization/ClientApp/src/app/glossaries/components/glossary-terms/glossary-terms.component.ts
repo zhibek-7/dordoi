@@ -53,16 +53,6 @@ export class GlossaryTermsComponent implements OnInit {
         error => console.log(error));
   }
 
-  updateTerm(updatedTerm: Term) {
-    if (!this.glossary)
-      return;
-
-    this.glossariesService.updateTerm(this.glossary.id, updatedTerm, updatedTerm.partOfSpeechId)
-      .subscribe(
-        () => this.requestDataReloadService.requestUpdate(),
-        error => console.log(error));
-  }
-
   toggleSelectionForAllDisplayedTerms() {
     let allTermsSelected = this.termViewModels.every(termViewModel => termViewModel.isSelected);
 

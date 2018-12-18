@@ -26,38 +26,25 @@ export class GlossariesService {
     glossaryId: number,
     termPart?: string,
     pageSize?: number,
-    pageNumber?: number,
+    offset?: number,
     sortBy?: string[],
     sortAscending?: boolean): Observable<HttpResponse<Term[]>>
   {
-    let params = null;
-    let paramsObject: any = {};
+    let params = new HttpParams();
     if (termPart && termPart != '') {
-      paramsObject.termSearch = termPart;
+      params = params.set('termSearch', termPart);
     }
     if (pageSize) {
-      paramsObject.pageSize = pageSize;
+      params = params.set('pageSize', pageSize.toString());
     }
-    if (pageNumber) {
-      paramsObject.pageNumber = pageNumber;
+    if (offset) {
+      params = params.set('offset', offset.toString());
     }
     if (sortBy && sortBy.length > 0) {
-      let clearedSortBy = new Array<string>();
-      for (let sortByElement of sortBy) {
-        if (sortByElement)
-          clearedSortBy.push(sortByElement);
+      sortBy.forEach(sortByItem => params = params.append('sortBy', sortByItem));
+      if (sortAscending !== undefined) {
+        params = params.set('sortAscending', sortAscending.toString());
       }
-      if (clearedSortBy.length > 0) {
-        paramsObject.sortBy = clearedSortBy;
-        if (sortAscending !== undefined) {
-          paramsObject.sortAscending = sortAscending;
-        }
-      }
-    }
-    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
-      params = new HttpParams({
-        fromObject: paramsObject
-      });
     }
     return this.httpClient
       .get<Term[]>(
@@ -69,15 +56,9 @@ export class GlossariesService {
   }
 
   addNewTerm(glossaryId: number, newTerm: String, partOfSpeechId: number | null): Observable<Object> {
-    let params = null;
-    let paramsObject: any = {};
+    let params = new HttpParams();
     if (partOfSpeechId !== null) {
-      paramsObject.partOfSpeechId = partOfSpeechId;
-    }
-    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
-      params = new HttpParams({
-        fromObject: paramsObject
-      });
+      params = params.set('partOfSpeechId', partOfSpeechId.toString());
     }
     return this.httpClient.post(GlossariesService.connectionUrl + glossaryId + '/terms', newTerm,
       {
@@ -90,15 +71,9 @@ export class GlossariesService {
   }
 
   updateTerm(glossaryId: number, updatedTerm: String, partOfSpeechId: number | null): Observable<Object> {
-    let params = null;
-    let paramsObject: any = {};
+    let params = new HttpParams();
     if (partOfSpeechId !== null) {
-      paramsObject.partOfSpeechId = partOfSpeechId;
-    }
-    if (Object.getOwnPropertyNames(paramsObject).length > 0) {
-      params = new HttpParams({
-        fromObject: paramsObject
-      });
+      params = params.set('partOfSpeechId', partOfSpeechId.toString());
     }
     return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + updatedTerm.id, updatedTerm,
       {
