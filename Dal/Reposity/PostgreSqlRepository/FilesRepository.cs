@@ -284,15 +284,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                 catch (NpgsqlException exception)
                 {
                     // Custom logging
-                    Console.WriteLine(exception.ErrorCode);
-
+                    _log.WriteLn("Ошибка в Upload NpgsqlException ", exception);
                     return false;
                 }
                 catch (Exception exception)
                 {
                     // Custom logging
-                    Console.WriteLine(exception.Message);
-
+                    _log.WriteLn("Ошибка в Upload Exception ", exception);
                     return false;
                 }
                 finally
