@@ -6,12 +6,12 @@
         <button class="btn btn-success" disabled>Скачать</button>
       </div>
       <button class="btn btn-success m-1" (click)="addTermFormModal.show()">Добавить термин</button>
-      <app-add-term-form-modal [partsOfSpeech]="partsOfSpeech" (newTermSubmitted)="addNewTerm($event)" #addTermFormModal></app-add-term-form-modal>
+      <app-add-term-form-modal [glossary]="glossary" (newTermSubmitted)="addNewTerm($event)" #addTermFormModal></app-add-term-form-modal>
       <button [disabled]="selectedTerms.length == 0 ? true : null" class="btn btn-success m-1" (click)="deleteSelectedTermsConfirmationModal.show()">Удалить</button>
       <app-delete-terms-confirmation-modal #deleteSelectedTermsConfirmationModal (deleteTermsConfirmed)="deleteSelectedTerms()"></app-delete-terms-confirmation-modal>
     </div>
     <div class="col d-flex justify-content-end">
-      <app-pagination [currentPage]="currentPage" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
+      <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
     </div>
   </div>
   <div class="row m-2">
@@ -27,6 +27,6 @@
     </div>
   </div>
   <div class="col m-2">
-    <app-glossary-terms [termViewModels]="termViewModels" [glossary]="glossary" [partsOfSpeech]="partsOfSpeech" (sortByRequested)="sortByRequested($event)"></app-glossary-terms>
+    <app-glossary-terms [termViewModels]="termViewModels" [glossary]="glossary" (sortByRequested)="sortByRequested($event)"></app-glossary-terms>
   </div>
 </div>

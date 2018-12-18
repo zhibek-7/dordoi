@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
 using Models.Comments;
+using System.Net.Http;
+using System.IO;
 
 namespace Localization.WebApi
 {
@@ -25,6 +27,24 @@ namespace Localization.WebApi
             stringRepository = new StringRepository();
         }
 
+        [HttpPost]
+        [Route("AddComment")]
+        public async Task<IActionResult> CreateComment([FromBody] Comments comment)
+        {
+            if (comment == null)
+            {
+                return BadRequest("Запрос с пустыми параметрами");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Модель не соответсвует");
+            }
+
+            int insertedCommentId = await commentRepository.AddAsync(comment);
+            CommentWithUserInfo commentWithUserInfo = await commentRepository.GetByIDWithUserInfoAsync(insertedCommentId);
+            return Ok(commentWithUserInfo);
+        }
+
         /// <summary>
         /// Получает все комментарии которые есть данной фразы
         /// </summary>
@@ -35,7 +55,7 @@ namespace Localization.WebApi
         public async Task<ActionResult<IEnumerable<CommentWithUserInfo>>> GetCommentsInString(int idString)
         {
             // Check if string by id exists in database
-            var foundedString = await stringRepository.GetByID(idString);
+            var foundedString = await stringRepository.GetByIDAsync(idString);
 
             if (foundedString == null)
             {
@@ -52,7 +72,7 @@ namespace Localization.WebApi
         /// <returns>Список комментариев</returns>
         public async Task<ActionResult<IEnumerable<Comments>>>  GetComments()
         {
-            IEnumerable<Comments> comments = await commentRepository.GetAll();
+            IEnumerable<Comments> comments = await commentRepository.GetAllAsync();
             return Ok(comments);
         }
 
@@ -67,19 +87,62 @@ namespace Localization.WebApi
         public async Task<IActionResult> DeleteComment(int idComment)
         {
             // Check if string by id exists in database
-            var foundedComment = await commentRepository.GetByID(idComment);
+            var foundedComment = await commentRepository.GetByIDAsync(idComment);
 
             if (foundedComment == null)
             {
-                return NotFound($"File by id \"{ idComment }\" not found");
+                return NotFound($"Comment by id \"{ idComment }\" not found");
             }
 
-            var deleteResult = await commentRepository.Remove(idComment);
+            var deleteResult = await commentRepository.RemoveAsync(idComment);
 
             if (!deleteResult)
             {
                 return BadRequest($"Failed to remove comment with id \"{ idComment }\" from database");
             }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Обновляет комментарий
+        /// </summary>
+        /// <param name="idComment">id комментария, который нужно обновить</param>
+        /// <param name="comment">обновленный комментарий</param>
+        /// <returns></returns>
+        [HttpPut("UpdateComment/{idComment}")]
+        public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
+        {
+            // Check if comment by id exists in database
+            var foundedComment = await commentRepository.GetByIDAsync(idComment);
+
+            if (foundedComment == null)
+            {
+                return NotFound($"Comment by id \"{ idComment }\" not found");
+            }
+
+            // Update file in database
+            var updateResult = await commentRepository.UpdateAsync(comment);
+
+            if (!updateResult)
+            {
+                return BadRequest($"Failed to update comment with id \"{idComment}\" in database");
+            }
+
+            // Return ok result
+            return Ok();
+        }
+
+        /// <summary>
+        /// Загружает картинку прикрепленную к комментарию
+        /// </summary>
+        /// <param name="idComment">id комментария к которому приложена картинка</param>
+        /// <returns></returns>
+        [HttpPost("UploadImage")]
+        public async Task<ActionResult> UploadImage()
+        {           
+
+            var content = Request.Form.Files["Image"];
 
             return Ok();
         }

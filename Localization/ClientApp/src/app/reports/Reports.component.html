@@ -8,7 +8,7 @@
               <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
             </a>
           </li>
-          <li class="breadcrumb-item">{{project.id}}</li>
+          <li *ngIf="project" class="breadcrumb-item">{{project.id}}</li>
           <li class="breadcrumb-item active" aria-current="page">Отчеты</li>
         </ol>
       </nav>
@@ -20,7 +20,7 @@
 </div>
 
 <h1>
-  <span>
+  <span *ngIf="project">
     Отчеты проекта {{project.name}}
   </span>
 </h1>
@@ -51,7 +51,7 @@
 </div>
 
 <div *ngIf="showTranslatedWords">
-  <translated-words-report [projectId]="projectId"></translated-words-report>
+  <translated-words-report [projectId]="project.id"></translated-words-report>
 </div>
 
 <div *ngIf="showProjectStatus">

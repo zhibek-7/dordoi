@@ -25,6 +25,11 @@ export class FilesComponent implements OnInit {
   constructor(private fileService: FileService) { }
 
   ngOnInit(): void {
+
+    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
+    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+    console.log('Projec=' + sessionStorage.getItem('Projec'));
+
     this.cols = [
       { field: 'name', header: 'Name' },
       { field: 'stringsCount', header: 'Strings', width: '100px', textalign: 'right' },
@@ -42,7 +47,7 @@ export class FilesComponent implements OnInit {
   getFiles(): void {
     this.isLoading = true;
 
-    this.fileService.getFiles().subscribe(files => { 
+    this.fileService.getFiles().subscribe(files => {
       this.files = files;
 
       this.isLoading = false;
@@ -78,13 +83,13 @@ export class FilesComponent implements OnInit {
     // Find last index in nodes list
     const lastIndex = this.findLastIndex(nodes, node => node.data.isFolder == addedNode.data.isFolder);
 
-    // 
+    //
     addedNode.parent = parent;
 
     if (parent != null) {
       // Insert node object in founded index position
       parent.children.splice(lastIndex, 0, addedNode);
-      
+
       // Expand parent node
       parent.expanded = true;
     } else {
@@ -107,7 +112,7 @@ export class FilesComponent implements OnInit {
 
   onFileUpload(event: any, parentNode?: TreeNode): void {
     const file = event.target.files[0];
-  
+
     this.addFile(file, parentNode);
     // event.files.forEach(file => this.fileService.addFile(file).subscribe(node => this.files = [...this.files, node]));
   }

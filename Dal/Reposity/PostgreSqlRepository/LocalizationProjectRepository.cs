@@ -10,7 +10,7 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectRepository: IRepository<LocalizationProject>
+    public class LocalizationProjectRepository : IRepository<LocalizationProject>
     {
         private PostgreSqlNativeContext context;
 
@@ -35,7 +35,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var project = dbConnection.Query<LocalizationProject>(sqlString, new {Id}).FirstOrDefault();
+                    var project = dbConnection.Query<LocalizationProject>(sqlString, new { Id }).FirstOrDefault();
                     dbConnection.Close();
                     return project;
                 }
@@ -97,5 +97,66 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             throw new NotImplementedException();
         }
+
+
+
+
+
+        /// <summary>
+        /// Функция добавления проекта
+        /// </summary>
+        /// <param name="project"></param>
+        public void InsertProject(LocalizationProject project)
+        {
+            using (IDbConnection db = context.Connection)
+            {
+
+                var sqlQuery = "INSERT INTO LocalizationProjects (Name,Description,URL,Visibility,DateOfCreation,LastActivity,ID_SourceLocale,AbleToDownload,AbleToLeftErrors,DefaultString,NotifyNew,NotifyFinish,NotifyConfirm,Logo) VALUES('"
+              + project.Name + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.DateOfCreation + "','"
+              + project.LastActivity + "','" + project.ID_SourceLocale + "','" + project.AbleToDownload + "','" + project.AbleToLeftErrors + "','"
+              + project.DefaultString + "','" + project.NotifyNew + "','" + project.NotifyFinish + "','" + project.NotifyConfirm + "','" + project.Logo + "')";
+
+
+                int? projectId = db.Query<int>(sqlQuery, project).FirstOrDefault();
+                project.ID = (int)projectId;
+                db.Execute(sqlQuery, project);
+
+
+            }
+        }
+
+        /// <summary>
+        /// Удалить  проект
+        /// </summary>
+        /// <param name="id"></param>
+        public void DeleteProject(int id)
+        {
+            using (IDbConnection db = context.Connection)
+            {
+
+                var sqlQuery = "DELETE * FROM  LocalizationProjects  WHERE ID = '" + id + "'";
+                db.Execute(sqlQuery, new { id });
+
+
+            }
+        }
+
+
+
+        /// <summary>
+        /// Обновить проект
+        /// </summary>
+        /// <param name="project"></param>
+        public void UpdateProject(LocalizationProject project)
+        {
+            using (IDbConnection db = context.Connection)
+            {
+                var sqlQuery = "UPDATE LocalizationProjects SET ID = '" + project.ID + "', Name = '" + project.Name + "', Description = '" + project.Description + "', URL = '" + project.URL + "', Visibility = '" + project.Visibility + "', DateOfCreation = '" + project.DateOfCreation + "', LastActivity = '" + project.LastActivity + "', ID_SourceLocale = '" + project.ID_SourceLocale + "', AbleToDownload = '" + project.AbleToDownload + "', AbleToLeftErrors = '" + project.AbleToLeftErrors + "', DefaultString = '" + project.DefaultString + "', NotifyNew = '" + project.NotifyNew + "', NotifyFinish = '" + project.NotifyFinish + "', NotifyConfirm = '" + project.NotifyConfirm
+                    + "', Logo = '" + project.Logo + "'";
+                db.Execute(sqlQuery, project);
+            }
+        }
+
+
     }
 }

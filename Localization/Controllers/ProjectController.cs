@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
@@ -34,5 +35,30 @@ namespace Localization.Controllers
             var project = _localizationProjectRepository.GetByID(Id);
             return project;
         }
+
+
+        [HttpPost]
+        [Route("add/{project}")]
+        public LocalizationProject AddProject(LocalizationProject project)
+        {
+              _localizationProjectRepository.InsertProject(project);
+            return project;
+        }
+
+
+        [HttpGet]
+        [Route("delete/{Id}")]
+        public void DeleteProject(int Id)
+        {
+         _localizationProjectRepository.DeleteProject(Id);
+        }
+        [HttpGet]
+        [Route("edit/{Id}")]
+        public LocalizationProject EditProject(LocalizationProject project, int Id)
+        {
+          _localizationProjectRepository.UpdateProject(project);
+          return project;
+        }
+
     }
 }

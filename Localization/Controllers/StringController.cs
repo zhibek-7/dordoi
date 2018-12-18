@@ -29,7 +29,20 @@ namespace Localization.WebApi
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Models.DatabaseEntities.String>>> GetStrings()
         {
-            var strings = await stringRepository.GetAll();
+            var strings = await stringRepository.GetAllAsync();
+
+            if (strings == null)
+            {
+                return BadRequest("Strings not found");
+            }
+
+            return Ok(strings);
+        }
+
+        [HttpGet("InFile/{idFile}")]
+        public async Task<ActionResult<IEnumerable<Models.DatabaseEntities.String>>> GetStringsInFile(int idFile)
+        {
+            var strings = await stringRepository.GetStringsByFileIdAsync(idFile);
 
             if (strings == null)
             {
@@ -47,7 +60,7 @@ namespace Localization.WebApi
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.DatabaseEntities.String>> GetStringById(int id)
         {
-            Models.DatabaseEntities.String foundedString = await stringRepository.GetByID(id);
+            Models.DatabaseEntities.String foundedString = await stringRepository.GetByIDAsync(id);
 
             if (foundedString == null)
             {

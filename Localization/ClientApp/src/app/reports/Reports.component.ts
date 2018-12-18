@@ -25,10 +25,15 @@ export class ReportsComponent implements OnInit {
   constructor(private route: ActivatedRoute, private location: Location, private projectsService: ProjectsService) { }
 
   ngOnInit() {
-    this.projectId = this.route.snapshot.params['id'];
-    this.projectsService.getProject(this.projectId)
-      .subscribe(project => { this.project = project; },
-      error => console.error(error)); 
+    
+      this.projectsService.getProject(this.route.snapshot.params['id'])
+      .subscribe(project => {
+          this.project = project;
+        this.projectId = project.id;
+        console.log(this.projectId);
+          },
+      error => console.error(error));
+
   }
 
   public showReport(type: Number) {

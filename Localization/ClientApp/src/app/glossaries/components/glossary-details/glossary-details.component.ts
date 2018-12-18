@@ -23,7 +23,7 @@ export class GlossaryDetailsComponent implements OnInit {
 
   pageSize: number = 10;
 
-  currentPage: number = 1;
+  currentOffset: number = 0;
 
   totalCount: number;
 
@@ -34,7 +34,6 @@ export class GlossaryDetailsComponent implements OnInit {
   set glossary(value) {
     this._glossary = value;
     this.loadTerms();
-    this.loadPartsOfSpeech();
   }
   get glossary() { return this._glossary; }
 
@@ -48,15 +47,12 @@ export class GlossaryDetailsComponent implements OnInit {
 
   termSearchString: string;
 
-  partsOfSpeech: PartOfSpeech[];
-
   constructor(
     private route: ActivatedRoute,
     private glossariesService: GlossariesService,
-    private requestDataReloadService: RequestDataReloadService,
-    private partsOfSpeechService: PartsOfSpeechService)
-  {
-    this.requestDataReloadService.updateRequested.subscribe(() => this.loadTerms(this.currentPage));
+    private requestDataReloadService: RequestDataReloadService
+  ) {
+    this.requestDataReloadService.updateRequested.subscribe(() => this.loadTerms(this.currentOffset));
   }
 
   ngOnInit() {
@@ -69,31 +65,20 @@ export class GlossaryDetailsComponent implements OnInit {
     });
   }
 
-  loadTerms(pageNumber = 1) {
+  loadTerms(offset = 0) {
     if (!this.glossary)
       return;
 
-    this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, pageNumber, [this.sortByColumnName], this.ascending)
+    this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, offset, [this.sortByColumnName], this.ascending)
       .subscribe(
         response => {
           let terms = response.body;
           this.termViewModels = terms.map(term => new TermViewModel(term, false));
           let totalCount = +response.headers.get('totalCount');
           this.totalCount = totalCount;
-          this.currentPage = pageNumber;
+          this.currentOffset = offset;
         },
         error => console.log(error));
-  }
-
-  loadPartsOfSpeech() {
-    this.partsOfSpeechService.getListByGlossaryId(this.glossary.id)
-      .subscribe(
-        partsOfSpeech => {
-          this.partsOfSpeech = [new PartOfSpeech(null, null, 'Не выбрано')];
-          partsOfSpeech.forEach(element => this.partsOfSpeech.push(element));
-        },
-        error => console.log(error)
-      );
   }
 
   addNewTerm(newTerm: Term) {
@@ -114,8 +99,8 @@ export class GlossaryDetailsComponent implements OnInit {
         error => console.log(error));
   }
 
-  onPageChanged(newPageNumber: number) {
-    this.loadTerms(newPageNumber);
+  onPageChanged(newOffset: number) {
+    this.loadTerms(newOffset);
   }
 
   sortByRequested(sortingArgs: SortingArgs) {

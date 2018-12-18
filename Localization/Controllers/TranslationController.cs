@@ -39,7 +39,7 @@ namespace Localization.WebApi
                 return BadRequest("Модель не соответсвует");
             }
 
-            int insertedTranslationId = await translationRepository.Add(translation);
+            int insertedTranslationId = await translationRepository.AddAsync(translation);
             return Ok(insertedTranslationId);
         }
 
@@ -50,7 +50,7 @@ namespace Localization.WebApi
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Translation>>> GetTranslations()
         {
-            IEnumerable<Translation> translations = await translationRepository.GetAll();
+            IEnumerable<Translation> translations = await translationRepository.GetAllAsync();
             return Ok(translations);
         }
 
@@ -85,14 +85,14 @@ namespace Localization.WebApi
         public async Task<IActionResult> DeleteTranslate(int idTranslation)
         {
             //Check if file by id exists in database
-            var foundedTranslation = await translationRepository.GetByID(idTranslation);
+            var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
 
             if (foundedTranslation == null)
             {
                 return NotFound($"Translation by id \"{idTranslation}\" not found");
             }
 
-            var deleteResult = await translationRepository.Remove(idTranslation);
+            var deleteResult = await translationRepository.RemoveAsync(idTranslation);
 
             if (!deleteResult)
             {
@@ -107,7 +107,7 @@ namespace Localization.WebApi
         public async Task<IActionResult> AcceptTranslate(int idTranslation)
         {
             //Check if file by id exists in database
-            var foundedTranslation = await translationRepository.GetByID(idTranslation);
+            var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
 
             if (foundedTranslation == null)
             {
@@ -129,7 +129,7 @@ namespace Localization.WebApi
         public async Task<IActionResult> RejectTranslate(int idTranslation)
         {
             //Check if file by id exists in database
-            var foundedTranslation = await translationRepository.GetByID(idTranslation);
+            var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
 
             if (foundedTranslation == null)
             {
@@ -144,6 +144,17 @@ namespace Localization.WebApi
             }
 
             return Ok();
+        }
+
+        [HttpPut("{translationId}")]
+        public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
+        {
+            updatedTranslation.ID = translationId;
+            var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation);
+            if (!updatedSuccessfuly)
+                return this.BadRequest();
+
+            return this.Ok();
         }
 
     }
