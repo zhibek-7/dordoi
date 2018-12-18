@@ -25,7 +25,7 @@ export class GlossariesService {
   getAssotiatedTerms(
     glossaryId: number,
     termPart?: string,
-    pageSize?: number,
+    limit?: number,
     offset?: number,
     sortBy?: string[],
     sortAscending?: boolean): Observable<HttpResponse<Term[]>>
@@ -34,8 +34,8 @@ export class GlossariesService {
     if (termPart && termPart != '') {
       params = params.set('termSearch', termPart);
     }
-    if (pageSize) {
-      params = params.set('pageSize', pageSize.toString());
+    if (limit) {
+      params = params.set('limit', limit.toString());
     }
     if (offset) {
       params = params.set('offset', offset.toString());

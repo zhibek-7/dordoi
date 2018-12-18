@@ -208,7 +208,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsByGlossaryIdAsync(
             int glossaryId,
-            int pageSize,
+            int limit,
             int offset,
             string termPart = null,
             string[] sortBy = null,
@@ -225,7 +225,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 query = this.ApplyPagination(
                     query: query,
                     offset: offset,
-                    limit: pageSize);
+                    limit: limit);
 
                 query = this.ApplySorting(
                     query: query,

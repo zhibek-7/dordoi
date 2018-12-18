@@ -48,7 +48,7 @@ namespace Localization.WebApi
         public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsAsync(
             int glossaryId,
             [FromQuery] string termSearch,
-            [FromQuery] int? pageSize,
+            [FromQuery] int? limit,
             [FromQuery] int? offset,
             [FromQuery] string[] sortBy,
             [FromQuery] bool? sortAscending)
@@ -62,7 +62,7 @@ namespace Localization.WebApi
                 .GetAssotiatedTermsByGlossaryIdAsync(
                     glossaryId: glossaryId,
                     termPart: termSearch,
-                    pageSize: pageSize ?? 25,
+                    limit: limit ?? 25,
                     offset: offset ?? 0,
                     sortBy: sortBy,
                     sortAscending: sortAscending ?? true);
