@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 @Injectable()
 export class LanguageService {
 
-  private url: String = "api/Language/";
+  private url: string = "api/Language/";
 
     constructor(private httpClient: HttpClient) { }
 

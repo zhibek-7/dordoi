@@ -134,9 +134,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 .LeftJoin("Users", "Participants.ID_User", "Users.ID")
                 .LeftJoin("Roles", "Participants.ID_Role", "Roles.ID")
                 .Select(
-                    "Participants.ID_LocalizationProject",
-                    "Participants.ID_User",
-                    "Participants.ID_Role",
+                    "Participants.ID_LocalizationProject as LocalizationProjectId",
+                    "Participants.ID_User as UserId",
+                    "Participants.ID_Role as RoleId",
                     "Participants.Active",
                     "Users.Name as UserName",
                     "Roles.Name as RoleName"

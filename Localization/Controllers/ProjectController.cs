@@ -24,8 +24,7 @@ namespace Localization.Controllers
         [Route("List")]
         public List<LocalizationProject> GetProjects()
         {
-            var projects = _localizationProjectRepository.GetAll().ToList();
-            return projects;
+            return _localizationProjectRepository.GetAll()?.ToList();
         }
 
         [HttpGet]

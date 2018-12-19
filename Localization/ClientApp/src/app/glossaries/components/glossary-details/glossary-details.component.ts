@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { GlossariesService } from 'src/app/services/glossaries.service';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
-import { String } from 'src/app/models/database-entities/string.type';
+import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
 import { SortingArgs } from 'src/app/glossaries/models/sorting.args';

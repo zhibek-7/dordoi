@@ -15,11 +15,11 @@ namespace Localization.WebApi
     [ApiController]
     public class StringController : ControllerBase
     {
-        private readonly StringRepository stringRepository;
+        private readonly TranslationSubstringRepository stringRepository;
 
         public StringController()
         {
-            stringRepository = new StringRepository();
+            stringRepository = new TranslationSubstringRepository();
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <returns>Список всех фраз</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Models.DatabaseEntities.String>>> GetStrings()
+        public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStrings()
         {
             var strings = await stringRepository.GetAllAsync();
 
@@ -40,7 +40,7 @@ namespace Localization.WebApi
         }
 
         [HttpGet("InFile/{idFile}")]
-        public async Task<ActionResult<IEnumerable<Models.DatabaseEntities.String>>> GetStringsInFile(int idFile)
+        public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStringsInFile(int idFile)
         {
             var strings = await stringRepository.GetStringsByFileIdAsync(idFile);
 
@@ -58,9 +58,9 @@ namespace Localization.WebApi
         /// <param name="id">id фразы</param>
         /// <returns>Фраза с необходимым id</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Models.DatabaseEntities.String>> GetStringById(int id)
+        public async Task<ActionResult<TranslationSubstring>> GetStringById(int id)
         {
-            Models.DatabaseEntities.String foundedString = await stringRepository.GetByIDAsync(id);
+            TranslationSubstring foundedString = await stringRepository.GetByIDAsync(id);
 
             if (foundedString == null)
             {

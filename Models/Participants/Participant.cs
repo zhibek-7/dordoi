@@ -7,11 +7,11 @@ namespace Models.Participants
     public class Participant : DatabaseEntities.BaseEntity
     {
 
-        public int ID_LocalizationProject { get; set; }
+        public int LocalizationProjectId { get; set; }
 
-        public int ID_User { get; set; }
+        public int UserId { get; set; }
 
-        public int ID_Role { get; set; }
+        public int RoleId { get; set; }
 
         public bool Active { get; set; }
 

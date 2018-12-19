@@ -2,17 +2,17 @@ import { Injectable, EventEmitter } from '@angular/core';
 
 import { TranslationService } from '../../services/translationService.service';
 
-import { String } from '../../models/database-entities/string.type';
+import { TranslationSubstring } from '../../models/database-entities/translationSubstring.type';
 
 
 @Injectable()
 export class SharePhraseService {
 
-    private sharedPhrase: String = undefined;
-    private translationsOfTheString: String[];
+  private sharedPhrase: TranslationSubstring = undefined;
+  private translationsOfTheString: TranslationSubstring[];
 
-    onClick:EventEmitter<String> = new EventEmitter();
-    onClick2:EventEmitter<String[]> = new EventEmitter();
+  onClick: EventEmitter<TranslationSubstring> = new EventEmitter();
+  onClick2: EventEmitter<TranslationSubstring[]> = new EventEmitter();
 
     constructor(private translateService: TranslationService){
 
@@ -23,7 +23,7 @@ export class SharePhraseService {
         this.onClick.emit(sharedPhrase);
     }
 
-    getSharedPhrase(): String{
+    getSharedPhrase(): TranslationSubstring{
         return this.sharedPhrase;
     }
 
