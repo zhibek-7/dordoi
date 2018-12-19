@@ -19,11 +19,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly PostgreSqlNativeContext _context;
 
-        private readonly IRepositoryAsync<Models.DatabaseEntities.String> _stringsRepository;
+        private readonly IRepositoryAsync<TranslationSubstring> _stringsRepository;
 
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
-        public GlossaryRepository(IRepositoryAsync<Models.DatabaseEntities.String> stringsRepository)
+        public GlossaryRepository(IRepositoryAsync<TranslationSubstring> stringsRepository)
         {
             this._context = PostgreSqlNativeContext.getInstance();
             this._stringsRepository = stringsRepository;
@@ -112,7 +112,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task AddNewTermAsync(int glossaryId, Models.DatabaseEntities.String newTerm, int? partOfSpeechId)
+        public async Task AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
@@ -159,7 +159,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task UpdateTermAsync(int glossaryId, Models.DatabaseEntities.String updatedTerm, int? partOfSpeechId)
+        public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -208,7 +208,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsByGlossaryIdAsync(
             int glossaryId,
-            int pageSize,
+            int limit,
             int offset,
             string termPart = null,
             string[] sortBy = null,
@@ -225,7 +225,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 query = this.ApplyPagination(
                     query: query,
                     offset: offset,
-                    limit: pageSize);
+                    limit: limit);
 
                 query = this.ApplySorting(
                     query: query,

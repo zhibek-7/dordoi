@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TranslatedWordsReportRow } from "../models/Reports/TranslatedWordsReportRow";
 import { Observable} from 'rxjs';
 
 @Injectable()
 export class ReportService {
 
-  private url: String = "api/Report/";
+  private url: string = "api/Report/";
 
   constructor(private httpClient: HttpClient) { }
 

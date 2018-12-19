@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../localServices/share-translated-phrase.service';
 
-import { String } from '../../../models/database-entities/string.type';
+import { TranslationSubstring } from '../../../models/database-entities/translationSubstring.type';
 import { Translation } from '../../../models/database-entities/translation.type';
 import { TranslationService } from '../../../services/translationService.service';
 
@@ -21,7 +21,7 @@ export class TranslationComponent implements OnInit {
     @Output() onChangedRightBlock = new EventEmitter<boolean>();
 
     translatedText: string;
-    phraseForTranslate: String;
+    phraseForTranslate: TranslationSubstring;
     translatedPhrase: Translation;
 
 

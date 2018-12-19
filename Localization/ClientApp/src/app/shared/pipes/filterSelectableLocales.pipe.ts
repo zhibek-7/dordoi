@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Selectable } from 'src/app/glossaries/models/selectable.model';
+import { Selectable } from 'src/app/shared/models/selectable.model';
 import { Locale } from 'src/app/models/database-entities/locale.type';
 
 @Pipe({

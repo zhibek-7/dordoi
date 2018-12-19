@@ -1,14 +1,14 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
-import { String } from 'src/app/models/database-entities/string.type';
-import { ModalComponent } from 'src/app/glossaries/components/modal/modal.component';
+import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
+import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
 import { Term } from 'src/app/models/Glossaries/term.type';
 import { GlossariesService } from 'src/app/services/glossaries.service';
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
-import { LoadOnRequestBase } from 'src/app/glossaries/models/load-on-request-base';
+import { LoadOnRequestBase } from 'src/app/shared/models/load-on-request-base.model';
 
 @Component({
   selector: 'app-term-details-editable',

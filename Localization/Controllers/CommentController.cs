@@ -19,12 +19,12 @@ namespace Localization.WebApi
     public class CommentController : ControllerBase
     {
         private readonly CommentRepository commentRepository;
-        private readonly StringRepository stringRepository;
+        private readonly TranslationSubstringRepository stringRepository;
 
         public CommentController()
         {
             commentRepository = new CommentRepository();
-            stringRepository = new StringRepository();
+            stringRepository = new TranslationSubstringRepository();
         }
 
         [HttpPost]

@@ -29,8 +29,10 @@
     <div>
       <label>Выбрано:</label>
     </div>
-    <label class="form-check-label" *ngIf="isNoneSelected">Ничего не выбрано</label>
     <div class="col-md" size="4" style="height: 10em; overflow: auto;">
+      <div class="form-check" *ngIf="isNoneSelected">
+        <label class="form-check-label">Ничего не выбрано</label>
+      </div>
       <div class="form-check" *ngFor="let locale of selectedLocales">
         <label class="form-check-label">{{locale.name}}</label>
       </div>

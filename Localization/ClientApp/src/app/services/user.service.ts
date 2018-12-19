@@ -6,7 +6,7 @@ import { Observable, of } from 'rxjs';
 @Injectable()
 export class UserService {
 
-  private url: String = "api/User/";
+  private url: string = "api/User/";
 
   constructor(private httpClient: HttpClient) { }
 

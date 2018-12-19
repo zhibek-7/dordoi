@@ -1,4 +1,4 @@
-export class String {
+export class TranslationSubstring {
 
   constructor(
     public id?: number,

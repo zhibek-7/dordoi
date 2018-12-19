@@ -1,3 +1,59 @@
-<p>
-  participants-list works!
-</p>
+<div class="row m-2">
+  <div class="col">
+    <button class="m-2 btn btn-success" disabled>Пригласить</button>
+    <button class="m-2 btn btn-success" disabled>Связаться</button>
+  </div>
+  <div class="col">
+    <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalParticipantsCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
+  </div>
+</div>
+<div class="row m-2">
+  <div class="col">
+    <input type="text" class="form-control m-1" placeholder="Искать по имени" [(ngModel)]="search" (input)="loadParticipants()" />
+  </div>
+  <div class="col">
+    <select class="form-control m-1" [(ngModel)]="selectedRoleId" (change)="loadParticipants()">
+      <option [ngValue]="null">Все роли</option>
+      <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name}}</option>
+    </select>
+  </div>
+  <div class="col">
+    <button class="btn btn-success dropdown-toggle m-1" data-toggle="collapse" data-target="#collapseSetLanguages" aria-controls="collapseSetLanguages">Фильтр по языкам</button>
+  </div>
+</div>
+<div class="row m-2">
+  <div class="col"></div>
+  <div class="col collapse m-1" id="collapseSetLanguages">
+    <app-set-languages [availableLocales]="locales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
+  </div>
+</div>
+<table class="table table-bordered table-striped m-2">
+  <thead>
+    <tr>
+      <th>
+        <input type="checkbox" class="checkbox">
+      </th>
+      <th (click)="sortByColumn('username')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'username'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'username'"
+          >Имя пользователя</th>
+      <th (click)="sortByColumn('rolename')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'rolename'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'rolename'"
+          >Роль в проекте</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tr *ngFor="let participant of participants">
+    <td>
+      <input type="checkbox" class="checkbox" [(ngModel)]="participant.active">
+    </td>
+    <td>{{participant.userName}}</td>
+    <td>{{participant.roleName}}</td>
+    <td>
+      <div class="btn-group">
+        <button class="btn secodary" disabled>Подробности</button>
+      </div>
+    </td>
+  </tr>
+</table>

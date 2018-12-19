@@ -10,7 +10,7 @@ namespace DAL.Context
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<Models.DatabaseEntities.String> Strings { get; set; }
+        public DbSet<Models.DatabaseEntities.TranslationSubstring> Strings { get; set; }
 
         public PostgreSqlEFContext(DbContextOptions<PostgreSqlEFContext> options) : base(options) { }        
     }

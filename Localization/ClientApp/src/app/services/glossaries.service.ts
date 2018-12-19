@@ -3,7 +3,7 @@ import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
-import { String } from 'src/app/models/database-entities/string.type';
+import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { Term } from 'src/app/models/Glossaries/term.type';
 
@@ -25,7 +25,7 @@ export class GlossariesService {
   getAssotiatedTerms(
     glossaryId: number,
     termPart?: string,
-    pageSize?: number,
+    limit?: number,
     offset?: number,
     sortBy?: string[],
     sortAscending?: boolean): Observable<HttpResponse<Term[]>>
@@ -34,8 +34,8 @@ export class GlossariesService {
     if (termPart && termPart != '') {
       params = params.set('termSearch', termPart);
     }
-    if (pageSize) {
-      params = params.set('pageSize', pageSize.toString());
+    if (limit) {
+      params = params.set('limit', limit.toString());
     }
     if (offset) {
       params = params.set('offset', offset.toString());
@@ -55,7 +55,7 @@ export class GlossariesService {
         });
   }
 
-  addNewTerm(glossaryId: number, newTerm: String, partOfSpeechId: number | null): Observable<Object> {
+  addNewTerm(glossaryId: number, newTerm: TranslationSubstring, partOfSpeechId: number | null): Observable<Object> {
     let params = new HttpParams();
     if (partOfSpeechId !== null) {
       params = params.set('partOfSpeechId', partOfSpeechId.toString());
@@ -70,7 +70,7 @@ export class GlossariesService {
     return this.httpClient.delete(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId);
   }
 
-  updateTerm(glossaryId: number, updatedTerm: String, partOfSpeechId: number | null): Observable<Object> {
+  updateTerm(glossaryId: number, updatedTerm: TranslationSubstring, partOfSpeechId: number | null): Observable<Object> {
     let params = new HttpParams();
     if (partOfSpeechId !== null) {
       params = params.set('partOfSpeechId', partOfSpeechId.toString());
