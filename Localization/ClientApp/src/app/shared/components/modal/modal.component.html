@@ -1,5 +1,5 @@
 <div (click)="onContainerClicked($event)" class="modal" [ngStyle]="{'display': visible ? 'block' : 'none'}">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered" [class.modal-dialog-lg]="isWide">
     <div class="modal-content">
       <div class="modal-header justify-content-end">
         <ng-content select=".app-modal-header"></ng-content>
