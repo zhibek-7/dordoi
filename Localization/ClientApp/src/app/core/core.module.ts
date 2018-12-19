@@ -25,7 +25,9 @@ import {
   MatSelectModule,
   MatOptionModule,
   MatCheckboxModule,
-  MatTableModule} from '@angular/material';
+  MatTableModule,
+  MatDividerModule,
+  MatExpansionModule,} from '@angular/material';
 
   import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -46,7 +48,8 @@ import {
    MatSelectModule,
    MatCheckboxModule,
    MatTableModule,
-
+   MatDividerModule,
+   MatExpansionModule,
    ReactiveFormsModule
 
     ],

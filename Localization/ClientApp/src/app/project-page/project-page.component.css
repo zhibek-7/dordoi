@@ -27,7 +27,7 @@ ol {
 }
 
 .nav-item a {
- color: black;
+  color: black;
 }
 
 .right-content {
@@ -35,11 +35,14 @@ ol {
   background: #f6f7f5;
   padding: 1rem;
 }
-.lang>p{
+
+.lang>p {
   color: gray;
   text-align: center;
 }
-.lang>img, .lang {
+
+.lang>img,
+.lang {
   max-width: 6rem;
 }
 
@@ -80,10 +83,12 @@ tr>td:first-child {
   border-radius: 4px;
   font-size: .8rem;
 }
+
 .blue {
   color: blue;
   border-color: blue;
 }
+
 .green {
   color: green;
   border-color: green;
@@ -93,4 +98,33 @@ tr>td:first-child {
   display: flex;
   align-items: baseline;
   justify-content: flex-end;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  /* width: 100%; */
+}
+
+::ng-deep .mat-form-field-infix {
+  display: flex !important;
+}
+
+::ng-deep .mat-expansion-panel {
+  margin-bottom: .5rem !important;
+}
+
+::ng-deep .mat-expansion-panel-header-description{
+ justify-content: flex-end;
+}
+
+::ng-deep .info-table>tbody>tr>td.mat-cell {
+  padding: 1rem !important;
+}
+
+::ng-deep .info-table>tbody>tr>td:first-child {
+  color: green;
 }
