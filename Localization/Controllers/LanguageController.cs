@@ -29,5 +29,12 @@ namespace Localization.WebApi
             List<Locale> lacale = localeRepository.GetAll().ToList();
             return lacale;
         }
+
+        [HttpGet("byUserId/{userId}")]
+        public async Task<IEnumerable<Locale>> GetUserLocales(int userId)
+        {
+            return await this.localeRepository.GetByUserIdAsync(userId: userId);
+        }
+
     }
 }

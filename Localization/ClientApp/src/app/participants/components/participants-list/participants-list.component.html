@@ -27,6 +27,7 @@
     <app-set-languages [availableLocales]="locales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
   </div>
 </div>
+<app-participant-details #participantDetails></app-participant-details>
 <table class="table table-bordered table-striped m-2">
   <thead>
     <tr>
@@ -46,7 +47,7 @@
     <td>{{participant.roleName}}</td>
     <td>
       <div class="btn-group">
-        <button class="btn secodary" disabled>Подробности</button>
+        <button class="btn btn-success" (click)="participantDetails.showParticipant(participant)">Подробности</button>
       </div>
     </td>
   </tr>
