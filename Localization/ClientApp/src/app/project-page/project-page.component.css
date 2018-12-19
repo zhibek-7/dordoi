@@ -35,3 +35,12 @@ ol {
   background: #f6f7f5;
   padding: 1rem;
 }
+.lang>p{
+  color: gray;
+  text-align: center;
+}
+.lang>img, .lang {
+  max-width: 6rem;
+}
+
+
