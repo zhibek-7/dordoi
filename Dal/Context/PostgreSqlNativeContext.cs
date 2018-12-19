@@ -16,6 +16,15 @@ namespace DAL.Context
 
         private PostgreSqlNativeContext() { }
 
+
+        internal string ConnectionString
+        {
+
+            get
+            {
+                return connectionString;
+            }
+        }
         internal IDbConnection Connection
         {
             get

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Models;
@@ -14,6 +15,13 @@ namespace DAL.Reposity.PostgreSqlRepository
     {
         private readonly string connectionString;
         private ILogTools _log;
+
+        public FilesRepository()
+        {
+            //TODO потом нужно переделать. Не должно быть статика
+            connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
+            _log = ExceptionLog.GetLog();
+        }
 
         public FilesRepository(string connectionString)
         {
