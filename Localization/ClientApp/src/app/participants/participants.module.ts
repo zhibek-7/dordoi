@@ -6,10 +6,12 @@ import { ParticipantsRoutingModule } from 'src/app/participants/participants-rou
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { ParticipantsListComponent } from 'src/app/participants/components/participants-list/participants-list.component';
+import { ParticipantDetailsComponent } from 'src/app/participants/components/participant-details/participant-details.component';
 
 import { ParticipantsService } from 'src/app/services/participants.service';
 import { LanguageService } from 'src/app/services/languages.service';
 import { RolesService } from 'src/app/services/roles.service';
+import { UserService } from 'src/app/services/user.service';
 
 @NgModule({
   imports: [
@@ -20,11 +22,13 @@ import { RolesService } from 'src/app/services/roles.service';
   ],
   declarations: [
     ParticipantsListComponent,
+    ParticipantDetailsComponent,
   ],
   providers: [
     ParticipantsService,
     LanguageService,
-    RolesService
+    RolesService,
+    UserService,
   ]
 })
 export class ParticipantsModule { }

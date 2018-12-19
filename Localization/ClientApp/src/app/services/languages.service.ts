@@ -14,4 +14,8 @@ export class LanguageService {
     return this.httpClient.get<Locale[]>(this.url + "List");
   }
 
+  getByUserId(userId: number): Observable<Locale[]> {
+    return this.httpClient.get<Locale[]>(this.url + 'byUserId/' + userId);
+  }
+
 }

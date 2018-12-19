@@ -28,7 +28,9 @@
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="contextMenu">
                         <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolder(rowNode.node)">Add
                             folder</button>
-                        <button class="dropdown-item" *ngIf="rowData.isFolder">Add file <input type="file" style="display: none;" (change)="onFileUpload($event, rowNode.node)"></button>
+                        <button class="dropdown-item" *ngIf="rowData.isFolder">Add file
+                           <input type="file" style="display: none;" (change)="onFileUpload($event, rowNode.node)">
+                      </button>
                         <div class="dropdown-divider" *ngIf="rowData.isFolder"></div>
                         <button class="dropdown-item" *ngIf="!rowData.isFolder" (click)="newVersion(rowNode.node)"
                             disabled>Update</button>
@@ -37,6 +39,7 @@
                         <button class="dropdown-item" (click)="deleteNode(rowNode.node)" disabled>Delete</button>
                     </div>
                 </div>
+              </td>
         </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage" let-columns>

@@ -20,10 +20,14 @@ export class ProjectsService {
 
    addProject(project: Project) {
     return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
-        //Сделать добавление в БД
+     
     }
 
-    updateProject(project: Project) {
-        //Сделать обновление в БД
+  updateProject(Id: number) {
+      return this.httpClient.get<Project>(this.controllerUrl + "edit/{Id}");
     }
+  deleteProject(Id: number) {
+     return this.httpClient.get<Project>(this.controllerUrl + "delete/{Id}");
+ 
+  }
 }

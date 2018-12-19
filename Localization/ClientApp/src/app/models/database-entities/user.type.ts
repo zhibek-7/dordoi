@@ -2,7 +2,7 @@ export class User {
     id: number;
     name: string;
     password: string;
-    photo: string; // поменять потом
+    photo: Blob;
     email: string;
     joined: boolean;
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectsService } from '../services/projects.service';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
@@ -28,8 +28,7 @@ export class CreateProjectComponent implements OnInit{
 
     options:Array<any>=[
         {labelName:'Public project',id:'gridRadios1', small:'Visible to anyone. You can restrict access to languages after the project is created.',inputName:'gridRadios', value:'checked'},
-        {labelName:'Private project',id:'gridRadios2', small:'Visible only to the invited project members',inputName:'gridRadios', value:'option2'},
-         ];
+        {labelName:'Private project',id:'gridRadios2', small:'Visible only to the invited project members',inputName:'gridRadios', value:'option2'},];
   
 
 ///////////////////////////////////////////////////
@@ -106,8 +105,42 @@ FiterByName(){
   @Output()
   visibleChange = new EventEmitter<boolean>();
 
-  constructor() { }
+  constructor(private projectService: ProjectsService) { }
 
+  
+  
+  //myForm = new FormGroup({
+  //  name: new FormControl(null),
+  //  url: new FormControl(null),
+  //  language: new FormControl(null)
+  //});
+
+  addProject(newProject: Project) {
+    //this.newProject.name = "ccccc";
+    //this.newProject.ableToDownload = true;
+    //this.newProject.ableToLeftErrors = true;
+    //this.newProject.dateOfCreation = "12.12.2018";
+    //this.newProject.defaultString = "12.12.2019";
+    //this.newProject.description = "wdwdwdwd";
+    //this.newProject.ID_SourceLocale = 12;
+    //this.newProject.lastActivity = "qqq";
+    //this.newProject.logo = "rr";
+    //this.newProject.notifyConfirm = true;
+    //this.newProject.notifyFinish = false;
+    //this.newProject.notifyNew = true;
+    //this.newProject.visibility = true;
+    //this.newProject.id = Math.floor(Math.random() * 10000) + 1;
+    //this.newProject.url = "rrrr";
+    this.projectService.addProject(newProject);
+  }
+
+  editProject(Id: number) {
+    this.projectService.updateProject(Id);
+  }
+
+  deleteProject(Id: number) {
+    this.projectService.deleteProject(Id);
+  }
 
   show() {
     this.visible = true;

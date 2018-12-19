@@ -7,6 +7,9 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 })
 export class ModalComponent implements OnInit {
 
+  @Input()
+  isWide: boolean = false;
+
   private _visible: boolean = false;
 
   get visible() { return this._visible }
