@@ -16,7 +16,7 @@ namespace Localization.WebApi
 
         public GlossaryController()
         {
-            this._glossaryRepository = new GlossaryRepository(stringsRepository: new StringRepository());
+            this._glossaryRepository = new GlossaryRepository(stringsRepository: new TranslationSubstringRepository());
         }
 
         [HttpGet]
@@ -69,7 +69,7 @@ namespace Localization.WebApi
         }
 
         [HttpPost("{glossaryId}/terms")]
-        public async Task AddTermAsync(int glossaryId, [FromBody] Models.DatabaseEntities.String newTerm, [FromQuery] int? partOfSpeechId)
+        public async Task AddTermAsync(int glossaryId, [FromBody] TranslationSubstring newTerm, [FromQuery] int? partOfSpeechId)
         {
             await this._glossaryRepository
                 .AddNewTermAsync(
@@ -85,7 +85,7 @@ namespace Localization.WebApi
         }
 
         [HttpPut("{glossaryId}/terms/{termId}")]
-        public async Task UpdateTermAsync(int glossaryId, int termId, [FromBody] Models.DatabaseEntities.String updatedTerm, [FromQuery] int? partOfSpeechId)
+        public async Task UpdateTermAsync(int glossaryId, int termId, [FromBody] TranslationSubstring updatedTerm, [FromQuery] int? partOfSpeechId)
         {
             updatedTerm.ID = termId;
             await this._glossaryRepository
