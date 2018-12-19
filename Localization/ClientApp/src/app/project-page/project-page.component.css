@@ -4,11 +4,34 @@ ol {
   border-radius: 0px;
 }
 
-.nav-link {
+.profile-link {
   display: inline;
   padding: 0rem;
 }
 
 .breadcrumb-item {
   padding: .25rem;
+}
+
+.nav.nav-tabs {
+  background-color: #F9F9F8;
+}
+
+.nav-tabs {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #E6E7E4;
+}
+
+.nav-item a {
+ color: black;
+}
+
+.right-content {
+  min-height: 15rem;
+  background: #f6f7f5;
+  padding: 1rem;
 }

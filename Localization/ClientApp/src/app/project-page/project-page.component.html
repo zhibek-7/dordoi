@@ -1,27 +1,52 @@
-<!-- <div class="container-fluide"> -->
-  <!-- <div class="row"> -->
-      <nav aria-label="breadcrumb" style="display: inline-block;">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a class="nav-link" role="button" aria-haspopup="true" routerLink='/profile'>
-              <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-            </a>
-            <span>Имя текущего пользователя</span>
-          </li>
-        </ol>
-      </nav>
-  <!-- </div> -->
-<!-- </div> -->
+<nav aria-label="breadcrumb" style="display: inline-block;">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
+        <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
+      </a>
+      <span>Имя текущего пользователя</span>
+    </li>
+  </ol>
+</nav>
 
 <h1 *ngIf="currentProject">{{ currentProject.name }}</h1>
 <h1 *ngIf="!currentProject">Невозможно подключиться к БД</h1>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light navbar-category">
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav navbar-custom">
-        <a class="nav-item nav-link active" routerLink='/Translation' href="./Translation">Главная</a>
-        <a class="nav-item nav-link" href="#">Активность</a>
-        <a class="nav-item nav-link" href="#">Проблемы переводов</a>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+      aria-selected="true">Главная</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+      aria-selected="false">Активность</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="acivity-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="acivity"
+      aria-selected="false">Проблемы переводов</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+    <div class="container-fluide">
+      <div class="row mr-2 ml-2 mt-3">
+        <div class="col-9" style="display: inline-flex;">
+          <div *ngFor="let item of langList; let i=index">
+            <img src="../../assets/images/333.png" alt="" style="max-width: 5rem">
+          </div>
+        </div>
+        <div class="col-3 right-content">
+          Детали
+          <hr>
+          Менеджеры
+        </div>
       </div>
     </div>
-  </nav>
+  </div>
+
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+
+  <div class="tab-pane fade" id="acivity" role="tabpanel" aria-labelledby="acivity-tab">...</div>
+
+</div>
