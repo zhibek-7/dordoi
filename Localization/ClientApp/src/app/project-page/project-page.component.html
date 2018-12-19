@@ -1,15 +1,24 @@
-<nav aria-label="breadcrumb" style="display: inline-block;">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
-        <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-      </a>
-      <span>Имя текущего пользователя</span>
-    </li>
-  </ol>
-</nav>
+<div class="container-fluide">
+  <div class="row">
+    <div class="col-sm-8">
+      <nav aria-label="breadcrumb" style="display: inline-block;">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
+              <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
+            </a>
+            <span>Имя текущего пользователя</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+    <div class="col-sm-4 second-col">
+      <button *ngIf="currentProject" mat-raised-button routerLink='/Projects/{{ currentProject.id }}'><mat-icon>settings</mat-icon>Настройки</button>
+    </div>
+  </div>
+</div>
 
-<h1 *ngIf="currentProject">{{ currentProject.name }}</h1>
+<h1 *ngIf="currentProject" class="mt-4 mb-4">{{ currentProject.name }}</h1>
 <h1 *ngIf="!currentProject">Невозможно подключиться к БД</h1>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -31,16 +40,49 @@
   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
     <div class="container-fluide">
       <div class="row mr-2 ml-2 mt-3">
-        <div class="col-9" style="display: inline-flex; padding-left: 0px;">
+        <div class="col-9" style="display: flex; padding-left: 0px; flex-wrap: wrap;">
           <div *ngFor="let item of langList; let i=index" class="lang mr-4">
             <img src="{{item.icon}}" alt="">
             <p>{{item.name}}</p>
           </div>
         </div>
         <div class="col-3 right-content">
-          Детали
+          <span style="font-weight:600">Детали</span>
+          <table class="table" *ngIf="currentProject">
+            <tr>
+              <td>Исходный язык</td>
+              <td> Русский </td>
+              <!-- <td> {{currentProject.??}} </td> тут пока хардкод, т.к. нет такого свойства-->
+            </tr>
+            <tr>
+              <td>Пользователей</td>
+              <!-- <td> {{currentProject.??}} </td> тоже хардкод -->
+              <td> 9 </td>
+            </tr>
+            <tr>
+              <td>Words to translate</td>
+              <!-- <td> {{currentProject.??}} </td> тоже хардкод -->
+              <td> 85 </td>
+            </tr>
+            <tr>
+              <td>Создан</td>
+              <td> {{currentProject.dateOfCreation}} </td>
+            </tr>
+            <tr>
+              <td>Последняя активность</td>
+              <td> {{currentProject.lastActivity}} </td>
+            </tr>
+          </table>
           <hr>
-          Менеджеры
+          <span style="font-weight:600">Менеджеры</span><br>
+          <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
+            <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
+            <span class="ml-2" style="color:grey;">current_user_name</span>
+          </a>
+          <div class="mt-2">
+            <span class="mr-2 br-b blue">Владелец</span>
+            <span class="mr-2 br-b green">Связаться</span>
+          </div>
         </div>
       </div>
     </div>

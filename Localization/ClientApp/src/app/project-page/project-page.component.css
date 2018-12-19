@@ -43,4 +43,54 @@ ol {
   max-width: 6rem;
 }
 
+.table {
+  margin-top: 2rem;
+}
 
+tr>td:first-child {
+  width: 40%;
+  padding-bottom: 10px;
+}
+
+.mat-raised-button {
+  margin-left: 15px;
+}
+
+.table td {
+  border-top: none;
+  padding: 0px;
+  font-size: .8rem;
+}
+
+.table .error-block {
+  color: red;
+  border: 1px solid red;
+  border-radius: 5px;
+}
+
+.table .none-error-block {
+  color: green;
+  border: 1px solid green;
+  border-radius: 5px;
+}
+
+.br-b {
+  border: 1px solid;
+  padding: .2rem;
+  border-radius: 4px;
+  font-size: .8rem;
+}
+.blue {
+  color: blue;
+  border-color: blue;
+}
+.green {
+  color: green;
+  border-color: green;
+}
+
+.second-col {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+}
