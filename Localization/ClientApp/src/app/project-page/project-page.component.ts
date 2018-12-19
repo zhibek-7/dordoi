@@ -22,10 +22,10 @@ export class ProjectPageComponent implements OnInit {
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
 
     this.getProject();
-    this.langList =  [
-      {name: 'Французский', icon: '../../assets/images/11.png'},
-      {name: 'Мандинго', icon: '../../assets/images/22.png'},
-    ];
+    //this.langList =  [
+    //  {name: 'Французский', icon: '../../assets/images/11.png'},
+    //  {name: 'Мандинго', icon: '../../assets/images/22.png'}
+   // ];
   }
 
   getProject() {
