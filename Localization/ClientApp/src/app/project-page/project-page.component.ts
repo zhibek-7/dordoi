@@ -27,6 +27,7 @@ export class ProjectPageComponent implements OnInit {
       {name: 'Мандинго', icon: '../../assets/images/22.png'},
       {name: 'Испанский', icon: '../../assets/images/333.png'},
     ];
+
   }
 
   getProject() {
@@ -39,7 +40,6 @@ export class ProjectPageComponent implements OnInit {
         .subscribe(
           project => {
             this.currentProject = project;
-            console.log(project)
             // this.langList = this.currentProject.lang - где-то здесь надо получить с сервера
             // еще и языки проекта, которые как я понимаю будут одним из свойсвт проекта
           },
