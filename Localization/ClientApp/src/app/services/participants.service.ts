@@ -6,7 +6,7 @@ import { Participant } from 'src/app/models/Participants/participant.type';
 @Injectable()
 export class ParticipantsService {
 
-  private url: String = "api/participants/";
+  private url: string = "api/participants/";
 
   constructor(private httpClient: HttpClient) { }
 

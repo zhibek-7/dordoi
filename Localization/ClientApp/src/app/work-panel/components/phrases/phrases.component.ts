@@ -1,31 +1,31 @@
 import { Component, OnInit} from '@angular/core';
 import { MatIconModule } from '@angular/material'
 
-import { String } from '../../../models/database-entities/string.type';
+import { TranslationSubstring } from '../../../models/database-entities/translationSubstring.type';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
-import { StringService } from '../../../services/stringService.service';
+import { TranslationSubstringService } from '../../../services/translationSubstring.service';
 
 @Component({
     selector: 'phrases-component',
     templateUrl: './phrases.component.html',
     styleUrls: ['./phrases.component.css'],
-    providers: [StringService]
+  providers: [TranslationSubstringService]
 })
 export class PhrasesComponent implements OnInit {
 
     searchText: string = '';
-    phrasesList: Array<String>;
-    phrasesOnPages: String[][];
-    currentPageOfPhrases: String[];
-    filtredPhrases: String[];
+    phrasesList: TranslationSubstring[];
+    phrasesOnPages: TranslationSubstring[][];
+    currentPageOfPhrases: TranslationSubstring[];
+    filtredPhrases: TranslationSubstring[];
 
-    pickedPhrase: String;
+    pickedPhrase: TranslationSubstring;
 
     currentPageNumber: number = 1;
     maxNumberOfPages: number;
 
-    constructor(private sharePhraseService: SharePhraseService, private stringService: StringService) {
-        this.phrasesList = new Array<String>();
+  constructor(private sharePhraseService: SharePhraseService, private stringService: TranslationSubstringService) {
+      this.phrasesList = new Array<TranslationSubstring>();
      }
 
     ngOnInit(): void {
@@ -41,7 +41,7 @@ export class PhrasesComponent implements OnInit {
         let maxPhrasesOnOnePage = 70;
         this.phrasesOnPages = [];
 
-        let StringsFromNullValue: String[] = [];
+       let StringsFromNullValue: TranslationSubstring[] = [];
         this.phrasesList.forEach(element => {
             if(element.substringToTranslate != null) {
                 StringsFromNullValue.push(element);

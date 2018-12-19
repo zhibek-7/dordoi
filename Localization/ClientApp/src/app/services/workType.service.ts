@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class WorkTypeService {
 
-  private url: String = "api/WorkType/";
+  private url: string = "api/WorkType/";
 
   constructor(private httpClient: HttpClient) { }
 
