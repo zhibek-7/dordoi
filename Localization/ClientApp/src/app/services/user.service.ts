@@ -14,4 +14,8 @@ export class UserService {
     return this.httpClient.get<User[]>(this.url + "List");
   }
 
+  getPhotoById(userId: number): Observable<Blob> {
+    return this.httpClient.get(this.url + userId.toString() + '/getPhoto/', { responseType: 'blob' });
+  }
+
 }

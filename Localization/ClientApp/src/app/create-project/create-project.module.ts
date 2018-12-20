@@ -15,7 +15,12 @@ import { DeleteProjectComponent } from './components/delete-project/delete-proje
 
 @NgModule({
   declarations: [
-    CreateProjectComponent, FilterPipe, OrderByPipe, SettingsComponent, DeleteProjectComponent, MenuProjectComponent
+    CreateProjectComponent
+    , FilterPipe
+    , OrderByPipe
+    , SettingsComponent
+    , DeleteProjectComponent
+  //  , MenuProjectComponent
   ],
   imports: [
     CreateProjectRoutingModule,

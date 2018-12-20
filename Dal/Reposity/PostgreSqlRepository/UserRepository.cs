@@ -6,13 +6,19 @@ using Dapper;
 using System.Data;
 using System.Linq;
 using DAL.Context;
+using System.Threading.Tasks;
+using SqlKata;
+using SqlKata.Compilers;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class UserRepository: IRepository<User>
+    public class UserRepository: BaseRepository, IRepository<User>
     {
+
         private PostgreSqlNativeContext context;
         
+        private Compiler _compiler = new PostgresCompiler();
+
         public UserRepository()
         {
             context = PostgreSqlNativeContext.getInstance();          
@@ -48,5 +54,24 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             throw new NotImplementedException();
         }
+
+        public async Task<byte[]> GetPhotoByIdAsync(int id)
+        {
+            using (var dbConnection = this.context.Connection)
+            {
+                dbConnection.Open();
+                var query = new Query("Users")
+                    .Select("Photo")
+                    .Where("ID", id);
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                var userAvatar = await dbConnection.ExecuteScalarAsync<byte[]>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+                dbConnection.Close();
+                return userAvatar;
+            }
+        }
+
     }
 }

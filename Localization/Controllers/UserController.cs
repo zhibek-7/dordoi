@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -25,5 +26,12 @@ namespace Localization.Controllers
         {
             return userRepository.GetAll().ToList();
         }
+
+        [HttpGet("{userId}/getPhoto")]
+        public async Task<byte[]> GetPhoto(int userId)
+        {
+            return await this.userRepository.GetPhotoByIdAsync(id: userId);
+        }
+
     }
 }

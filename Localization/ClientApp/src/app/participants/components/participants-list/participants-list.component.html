@@ -27,12 +27,10 @@
     <app-set-languages [availableLocales]="locales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
   </div>
 </div>
+<app-participant-details #participantDetails></app-participant-details>
 <table class="table table-bordered table-striped m-2">
   <thead>
     <tr>
-      <th>
-        <input type="checkbox" class="checkbox">
-      </th>
       <th (click)="sortByColumn('username')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'username'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'username'"
@@ -45,14 +43,11 @@
     </tr>
   </thead>
   <tr *ngFor="let participant of participants">
-    <td>
-      <input type="checkbox" class="checkbox" [(ngModel)]="participant.active">
-    </td>
     <td>{{participant.userName}}</td>
     <td>{{participant.roleName}}</td>
     <td>
       <div class="btn-group">
-        <button class="btn secodary" disabled>Подробности</button>
+        <button class="btn btn-success" (click)="participantDetails.showParticipant(participant)">Подробности</button>
       </div>
     </td>
   </tr>
