@@ -11,6 +11,8 @@ import { OrderByPipe } from './order-by.pipe';
 
 import { SettingsComponent } from './components/settings/settings.component';
 import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
+import { AllSettingsComponent } from './components/all-settings/all-settings.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 //import { MenuProjectComponent } from './components/menu-project/menu-project.component';
 
 @NgModule({
@@ -19,7 +21,9 @@ import { DeleteProjectComponent } from './components/delete-project/delete-proje
     , FilterPipe
     , OrderByPipe
     , SettingsComponent
-    , DeleteProjectComponent
+    , DeleteProjectComponent,
+    AllSettingsComponent,
+    NotificationsComponent
   //  , MenuProjectComponent
   ],
   imports: [

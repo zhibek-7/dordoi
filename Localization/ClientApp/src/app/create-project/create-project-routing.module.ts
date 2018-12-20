@@ -5,8 +5,8 @@ import { CreateProjectComponent } from './create-project.component';
 
 import { SettingsComponent } from './components/settings/settings.component';
 import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
-//import { MenuProjectComponent } from './components/menu-project/menu-project.component';
-
+import { AllSettingsComponent } from './components/all-settings/all-settings.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 const routes: Routes = [
 
   {
@@ -24,13 +24,18 @@ const routes: Routes = [
     component: DeleteProjectComponent
 
   }
-  //,
-  //{
-  //  path: 'menu',
-  //  component: MenuProjectComponent
+  ,
+  {
+    path: 'all-settings',
+    component: AllSettingsComponent
 
-  //}
+  }
+  ,
+  {
+    path: 'notifications',
+    component: NotificationsComponent
 
+  }
 ];
 
 @NgModule({

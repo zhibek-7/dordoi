@@ -115,7 +115,7 @@ FiterByName(){
   //  language: new FormControl(null)
   //});
 
-  addProject(newProject: Project) {
+  addProject(newProject: Project): void {
     //this.newProject.name = "ccccc";
     //this.newProject.ableToDownload = true;
     //this.newProject.ableToLeftErrors = true;
@@ -131,15 +131,15 @@ FiterByName(){
     //this.newProject.visibility = true;
     //this.newProject.id = Math.floor(Math.random() * 10000) + 1;
     //this.newProject.url = "rrrr";
-    this.projectService.addProject(newProject);
+    this.projectService.addProject(newProject).subscribe(response => console.log(response));
   }
 
-  editProject(Id: number) {
-    this.projectService.updateProject(Id);
+  editProject(Id: number): void {
+    this.projectService.updateProject(Id).subscribe(response => console.log(response));
   }
 
-  deleteProject(Id: number) {
-    this.projectService.deleteProject(Id);
+  deleteProject(Id: number): void{
+    this.projectService.deleteProject(Id).subscribe(response => console.log(response));
   }
 
   show() {

@@ -30,7 +30,7 @@
                             folder</button>
                         <button class="dropdown-item" *ngIf="rowData.isFolder">Add file
                            <input type="file" style="display: none;" (change)="onFileUpload($event, rowNode.node)">
-                      </button>
+                        </button>
                         <div class="dropdown-divider" *ngIf="rowData.isFolder"></div>
                         <button class="dropdown-item" *ngIf="!rowData.isFolder" (click)="newVersion(rowNode.node)"
                             disabled>Update</button>

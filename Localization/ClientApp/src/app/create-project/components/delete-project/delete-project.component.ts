@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProjectsService } from '../../../services/projects.service';
 
 @Component({
   selector: 'app-delete-project',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DeleteProjectComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(private projectService: ProjectsService) { }
   ngOnInit() {
   }
-
+  deleteProject(Id: number): void {
+    this.projectService.deleteProject(Id).subscribe(response => console.log(response));
+  }
 }
