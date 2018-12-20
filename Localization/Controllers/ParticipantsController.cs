@@ -59,5 +59,11 @@ namespace Localization.Controllers
             await this._participantsRepository.SetInactiveAsync(projectId: projectId, userId: userId);
         }
 
+        [HttpPost("{projectId}/{userId}/{roleId}")]
+        public async Task DeleteParticipant(int projectId, int userId, int roleId)
+        {
+            await this._participantsRepository.AddOrActivateParticipant(projectId: projectId, userId: userId, roleId: roleId);
+        }
+
     }
 }

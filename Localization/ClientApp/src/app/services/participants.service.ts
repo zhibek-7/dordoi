@@ -53,4 +53,8 @@ export class ParticipantsService {
     return this.httpClient.delete(this.url + 'byProjectId/' + projectId + '/' + participantUserId);
   }
 
+  addParticipant(projectId: number, userId: number, roleId: number): Observable<Object> {
+    return this.httpClient.post(this.url + projectId + '/' + userId + '/' + roleId, null);
+  }
+
 }
