@@ -131,6 +131,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = new Query("Participants")
                 .Where("Participants.ID_LocalizationProject", projectId)
+                .Where("Participants.Active", true)
                 .LeftJoin("Users", "Participants.ID_User", "Users.ID")
                 .LeftJoin("Roles", "Participants.ID_Role", "Roles.ID")
                 .Select(
