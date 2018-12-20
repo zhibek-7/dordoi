@@ -1,8 +1,8 @@
-﻿using DAL.Reposity.PostgreSqlRepository;
+﻿using DAL.Reposity.Interfaces;
+using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Localization.WebApi
@@ -12,7 +12,7 @@ namespace Localization.WebApi
     public class GlossaryController : ControllerBase
     {
 
-        private readonly GlossaryRepository _glossaryRepository;
+        private readonly IGlossaryRepository _glossaryRepository;
 
         public GlossaryController()
         {
@@ -98,31 +98,16 @@ namespace Localization.WebApi
         [HttpGet("{glossaryId}/terms/{termId}/locales")]
         public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
-            var translationLocalesForTerm = await this._glossaryRepository.GetTranslationLocalesForTermAsync(glossaryId, termId);
-            if (!translationLocalesForTerm.Any())
-            {
-                translationLocalesForTerm = await this._glossaryRepository.GetTranslationLocalesAsync(glossaryId: glossaryId);
-            }
-            return translationLocalesForTerm;
+            return await this._glossaryRepository.GetActualTranslationLocalesForTermAsync(glossaryId, termId);
         }
 
         [HttpPut("{glossaryId}/terms/{termId}/locales")]
         public async Task SetTranslationLocalesForTermAsync(int glossaryId, int termId, [FromBody] IEnumerable<int> localesIds)
         {
-            var newLocalesIds = localesIds.ToHashSet();
-            var glossaryTranslationLocalesIds = (await
-                this._glossaryRepository
-                    .GetTranslationLocalesAsync(glossaryId: glossaryId))
-                    .Select(locale => locale.ID)
-                    .ToHashSet();
-            await this._glossaryRepository.DeleteTranslationLocalesForTermAsync(termId: termId);
-            if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
-                && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
-                && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
-            {
-                return;
-            }
-            await this._glossaryRepository.SetTranslationLocalesForTermAsync(termId: termId, localesIds: newLocalesIds);
+            await this._glossaryRepository.UpdateTranslationLocalesForTermAsync(
+                glossaryId: glossaryId,
+                termId: termId,
+                localesIds: localesIds);
         }
 
     }

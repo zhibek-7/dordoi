@@ -98,6 +98,25 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task SetInactiveAsync(int projectId, int userId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var query = new Query("Participants")
+                    .Where("ID_LocalizationProject", projectId)
+                    .Where("ID_User", userId)
+                    .AsUpdate(new[] { "Active" }, new object[] { false });
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+                dbConnection.Close();
+            }
+        }
+
         public async Task<int> GetAllByProjectIdCountAsync(
             int projectId,
             string search,
@@ -131,6 +150,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = new Query("Participants")
                 .Where("Participants.ID_LocalizationProject", projectId)
+                .Where("Participants.Active", true)
                 .LeftJoin("Users", "Participants.ID_User", "Users.ID")
                 .LeftJoin("Roles", "Participants.ID_Role", "Roles.ID")
                 .Select(

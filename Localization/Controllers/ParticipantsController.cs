@@ -53,5 +53,11 @@ namespace Localization.Controllers
                 );
         }
 
+        [HttpDelete("byProjectId/{projectId}/{userId}")]
+        public async Task DeleteParticipant(int projectId, int userId)
+        {
+            await this._participantsRepository.SetInactiveAsync(projectId: projectId, userId: userId);
+        }
+
     }
 }

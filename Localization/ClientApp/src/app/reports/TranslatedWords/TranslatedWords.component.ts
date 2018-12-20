@@ -72,11 +72,11 @@ export class TranslatedWordsComponent implements OnInit {
   userLang: string;
 
   //Переменные для выборки
-  userId: number = 0;
-  localeId: number = 0;
+  userId: number = -1;
+  localeId: number = -1;
   workType: string = "Все";
-  volumeCalcType: string = "словам";
-  calcBasisType: string = "Исходный";
+  volumeCalcType: string = "false"; //переделать название переменной
+  calcBasisType: string = "true"; //переделать название переменной
   initialFolderId: number = 0;
 
   //Переменные для фильтьрации
@@ -87,10 +87,11 @@ export class TranslatedWordsComponent implements OnInit {
 
   
 
-  displayedColumns: string[] = ['name', 'language', 'translations', 'confirmed'];
+  displayedColumns: string[] = ['name', 'language', 'workType', 'translations' ];
 
   async getRows() {
     this.reportService.getTranslatedWordsReport(
+        this.project.id,
         this.selected.from.format("DD.MM.YYYY"),
         this.selected.to.format("DD.MM.YYYY"),
         this.volumeCalcType,
@@ -120,7 +121,15 @@ export class TranslatedWordsComponent implements OnInit {
   }
 
   download() {
-    this.reportService.getTranslatedWordsReportExcel(this.selected.from.format("DD-MM-YYYY"), this.selected.to.format("DD-MM-YYYY"));
+    this.reportService.getTranslatedWordsReportExcel(this.project.id,
+      this.selected.from.format("DD.MM.YYYY"),
+      this.selected.to.format("DD.MM.YYYY"),
+      this.volumeCalcType,
+      this.calcBasisType,
+      this.userId,
+      this.localeId,
+      this.workType,
+      this.initialFolderId);
   }
 }
 

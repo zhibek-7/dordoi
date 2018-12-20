@@ -1,4 +1,5 @@
 ﻿using DAL.Context;
+using DAL.Reposity.Interfaces;
 using Dapper;
 using Models.DatabaseEntities;
 using SqlKata;
@@ -8,13 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class GlossaryRepository : BaseRepository, IRepositoryAsync<Glossary>
+    public class GlossaryRepository : BaseRepository, IGlossaryRepository
     {
 
         private readonly PostgreSqlNativeContext _context;
@@ -311,7 +310,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
+        protected async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -332,7 +331,17 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
+        public async Task<IEnumerable<Locale>> GetActualTranslationLocalesForTermAsync(int glossaryId, int termId)
+        {
+            var translationLocalesForTerm = await this.GetTranslationLocalesForTermAsync(glossaryId, termId);
+            if (!translationLocalesForTerm.Any())
+            {
+                translationLocalesForTerm = await this.GetTranslationLocalesAsync(glossaryId: glossaryId);
+            }
+            return translationLocalesForTerm;
+        }
+
+        protected async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -371,14 +380,31 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task SetTranslationLocalesForTermAsync(int termId, IEnumerable<int> localesIds)
+        public async Task UpdateTranslationLocalesForTermAsync(int glossaryId, int termId, IEnumerable<int> localesIds)
+        {
+            var newLocalesIds = localesIds.ToHashSet();
+            var glossaryTranslationLocalesIds = (await
+                this.GetTranslationLocalesAsync(glossaryId: glossaryId))
+                    .Select(locale => locale.ID)
+                    .ToHashSet();
+            await this.DeleteTranslationLocalesForTermAsync(termId: termId);
+            if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
+                && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
+                && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
+            {
+                return;
+            }
+            await this.AddTranslationLocalesForTermAsync(termId: termId, localesIds: newLocalesIds);
+        }
+
+        protected async Task AddTranslationLocalesForTermAsync(int termId, IEnumerable<int> localesIds)
         {
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
                 foreach(var localeId in localesIds)
                 {
-                    var getTranslationLocalesForTermSql =
+                    var sql =
                         "INSERT INTO \"TranslationsubStringsLocales\" " +
                         "(" +
                         "\"Id_TranslationSubStrings\", " +
@@ -388,11 +414,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "@Id_TranslationSubStrings, " +
                         "@Id_Locales" +
                         ")";
-                    var getTranslationLocalesForTermParam = new { Id_TranslationSubStrings = termId, Id_Locales = localeId };
-                    this.LogQuery(getTranslationLocalesForTermSql, getTranslationLocalesForTermParam);
+                    var param = new { Id_TranslationSubStrings = termId, Id_Locales = localeId };
+                    this.LogQuery(sql, param);
                     await dbConnection.ExecuteAsync(
-                        sql: getTranslationLocalesForTermSql,
-                        param: getTranslationLocalesForTermParam);
+                        sql: sql,
+                        param: param);
                 }
                 dbConnection.Close();
             }
