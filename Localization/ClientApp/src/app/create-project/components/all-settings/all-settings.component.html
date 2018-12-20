@@ -1,0 +1,43 @@
+<form>
+  <label class="form-check-label" for="exampleRadios1">
+    Приватность
+  </label>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+    <label class="form-check-label" for="exampleRadios1">
+      Public project
+    </label>
+    <small id="nameHelp" class="form-text text-muted"> Visible to anyone</small>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+    <label class="form-check-label" for="exampleRadios2">
+      Private project
+    </label>
+    <small id="nameHelp" class="form-text text-muted"> Visible only to the invited project members</small>
+  </div>
+
+
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Переводчики могут загружать файлы для перевода из проекта</label>
+    <small id="nameHelp" class="form-text text-muted">Позволяет переводчикам загружать файлы из проекта на свой компьютер для перевода офлайн. Вы, как владелец/менеджер проекта, всегда можете загружать эти файлы.</small>
+  </div>
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Пропускать непереведенные строки</label>
+    <small id="nameHelp" class="form-text text-muted">
+      Если отмечено, то строки без перевода не будут включены в экспортируемый файл.
+      Эта функция не будет применена к текстовым документам:*.docx, *.pptx,*.xlsx и т.д. во избежание ошибок в переведенных файлах.
+    </small>
+  </div>
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Экспортировать только утвержденные переводы</label>
+    <small id="nameHelp" class="form-text text-muted">
+      Будут экспортированы только утвержденные переводы. Утверждение переводов потребует дополнительных усилий от ваших переводчиков\корректоров.
+    </small>
+  </div>
+</form>
+
+<router-outlet></router-outlet>
