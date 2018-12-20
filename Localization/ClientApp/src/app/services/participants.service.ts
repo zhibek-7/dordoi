@@ -49,4 +49,8 @@ export class ParticipantsService {
       });
   }
 
+  deleteParticipant(projectId: number, participantUserId: number): Observable<Object> {
+    return this.httpClient.delete(this.url + 'byProjectId/' + projectId + '/' + participantUserId);
+  }
+
 }

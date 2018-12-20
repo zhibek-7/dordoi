@@ -27,7 +27,7 @@
     <app-set-languages [availableLocales]="locales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
   </div>
 </div>
-<app-participant-details #participantDetails></app-participant-details>
+<app-participant-details #participantDetails (participantDeleted)="loadParticipants(currentOffset)"></app-participant-details>
 <table class="table table-bordered table-striped m-2">
   <thead>
     <tr>

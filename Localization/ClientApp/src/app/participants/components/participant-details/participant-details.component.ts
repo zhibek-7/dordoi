@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { ParticipantsService } from 'src/app/services/participants.service';
 import { LanguageService } from 'src/app/services/languages.service';
@@ -17,6 +17,9 @@ import { ModalComponent } from 'src/app/shared/components/modal/modal.component'
   styleUrls: ['./participant-details.component.css']
 })
 export class ParticipantDetailsComponent extends ModalComponent implements OnInit {
+
+  @Output()
+  participantDeleted: EventEmitter = new EventEmitter();
 
   participant: Participant;
 
@@ -79,6 +82,15 @@ export class ParticipantDetailsComponent extends ModalComponent implements OnIni
     this.locales = [];
     this.isPhotoLoading = true;
     this.participantPhoto = null;
+  }
+
+  deleteParticpant() {
+    this.participantsService.deleteParticipant(this.participant.localizationProjectId, this.participant.userId)
+      .subscribe(() => {
+          this.participantDeleted.emit();
+          this.hide();
+        },
+        error => console.log(error));
   }
 
 }
