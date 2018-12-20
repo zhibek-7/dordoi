@@ -19,7 +19,7 @@ import { ModalComponent } from 'src/app/shared/components/modal/modal.component'
 export class ParticipantDetailsComponent extends ModalComponent implements OnInit {
 
   @Output()
-  participantDeleted: EventEmitter = new EventEmitter();
+  participantDeleted = new EventEmitter();
 
   participant: Participant;
 
