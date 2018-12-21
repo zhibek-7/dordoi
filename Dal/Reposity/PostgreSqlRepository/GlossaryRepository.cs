@@ -4,7 +4,6 @@ using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
 using SqlKata;
 using SqlKata.Compilers;
-using SqlKata.Execution;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -217,7 +216,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
+                var query = this.GetAssotiatedTermsQuery(glossaryId, termPart);
 
                 query = this.ApplyPagination(
                     query: query,
@@ -246,7 +245,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart).AsCount();
+                var query = this.GetAssotiatedTermsQuery(glossaryId, termPart).AsCount();
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 this.LogQuery(getGlossaryTermsCountCompiledQuery);
                 var assotiatedTermsCount = await dbConnection.ExecuteScalarAsync<int>(
@@ -258,11 +257,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        private Query GetAssotiatedTermsQuery(IDbConnection dbConnection,int glossaryId, string termPart)
+        private Query GetAssotiatedTermsQuery(int glossaryId, string termPart)
         {
             var query =
-                new XQuery(dbConnection, this._compiler)
-                    .From("GlossariesStrings")
+                new Query("GlossariesStrings")
                     .LeftJoin("TranslationSubstrings", "TranslationSubstrings.ID", "GlossariesStrings.ID_String")
                     .Where("GlossariesStrings.ID_Glossary", glossaryId)
                     .Select(
