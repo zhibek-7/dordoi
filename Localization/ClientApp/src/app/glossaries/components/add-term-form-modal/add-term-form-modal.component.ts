@@ -45,6 +45,7 @@ export class AddTermFormComponent extends ModalComponent implements OnInit {
   resetNewTermModel() {
     this.newTerm = new Term();
     this.newTerm.partOfSpeechId = null;
+    this.newTerm.isEditable = true;
   }
 
 }

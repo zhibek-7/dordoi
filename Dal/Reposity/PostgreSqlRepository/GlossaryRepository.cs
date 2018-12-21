@@ -276,10 +276,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "TranslationSubstrings.PositionInText",
                         "GlossariesStrings.ID_PartOfSpeech as PartOfSpeechId")
                     .Select(
-                        new Query("Translations")
-                            .SelectRaw("COUNT(\"Translated\") = 0")
-                            .Where("Translated", "<>", "''")
-                            .WhereRaw("\"ID_String\"=\"TranslationSubstrings\".\"ID\""),
+                        new Query("TranslationsubStringsLocales")
+                            .LeftJoin("Translations", join =>
+                                join.On("Translations.ID_String", "TranslationsubStringsLocales.Id_TranslationSubStrings")
+                                    .On("Translations.ID_Locale", "TranslationsubStringsLocales.Id_Locales"))
+                            .SelectRaw("COUNT(\"Translations\".\"Translated\") = 0")
+                            .Where("Translations.Translated", "<>", "''")
+                            .WhereRaw("\"TranslationsubStringsLocales\".\"Id_TranslationSubStrings\"=\"TranslationSubstrings\".\"ID\""),
                         "IsEditable");
             if (!string.IsNullOrEmpty(termPart))
             {
