@@ -108,7 +108,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
+        public async Task<int> AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
@@ -152,6 +152,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: instertGlossaryStringAssotiationSql,
                         param: instertGlossaryStringAssotiationParam);
                 dbConnection.Close();
+                return idOfNewTerm;
             }
         }
 

@@ -7,7 +7,7 @@ namespace Models.Interfaces.Repository
 {
     public interface IGlossaryRepository : IRepositoryAsync<Glossary>
     {
-        Task AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId);
+        Task<int> AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId);
         Task DeleteTermAsync(int glossaryId, int termId);
         Task DeleteTranslationLocalesForTermAsync(int termId);
         Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(int glossaryId, int limit, int offset, string termPart = null, string[] sortBy = null, bool sortAscending = true);
