@@ -17,16 +17,11 @@ namespace Models.Services
             this._glossaryRepository = glossaryRepository;
         }
 
-        public async Task<IEnumerable<Locale>> GetActualTranslationLocalesForTermAsync(int glossaryId, int termId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
-            var translationLocalesForTerm = await this._glossaryRepository.GetTranslationLocalesForTermAsync(
+            return await this._glossaryRepository.GetTranslationLocalesForTermAsync(
                 glossaryId: glossaryId,
                 termId: termId);
-            if (!translationLocalesForTerm.Any())
-            {
-                translationLocalesForTerm = await this._glossaryRepository.GetTranslationLocalesAsync(glossaryId: glossaryId);
-            }
-            return translationLocalesForTerm;
         }
 
         public async Task<bool> UpdateAsync(Glossary updatedGlossary)
@@ -51,19 +46,8 @@ namespace Models.Services
 
         public async Task UpdateTranslationLocalesForTermAsync(int glossaryId, int termId, IEnumerable<int> localesIds)
         {
-            var newLocalesIds = localesIds.ToHashSet();
-            var glossaryTranslationLocalesIds = (await
-                this._glossaryRepository.GetTranslationLocalesAsync(glossaryId: glossaryId))
-                    .Select(locale => locale.ID)
-                    .ToHashSet();
             await this._glossaryRepository.DeleteTranslationLocalesForTermAsync(termId: termId);
-            if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
-                && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
-                && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
-            {
-                return;
-            }
-            await this._glossaryRepository.AddTranslationLocalesForTermAsync(termId: termId, localesIds: newLocalesIds);
+            await this._glossaryRepository.AddTranslationLocalesForTermAsync(termId: termId, localesIds: localesIds);
         }
 
         public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
@@ -86,10 +70,14 @@ namespace Models.Services
 
         public async Task AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
         {
-            await this._glossaryRepository.AddNewTermAsync(
+            var newTermId = await this._glossaryRepository.AddNewTermAsync(
                 glossaryId: glossaryId,
                 newTerm: newTerm,
                 partOfSpeechId: partOfSpeechId);
+            var glossaryLocales = await this._glossaryRepository.GetTranslationLocalesAsync(glossaryId: glossaryId);
+            await this._glossaryRepository.AddTranslationLocalesForTermAsync(
+                termId: newTermId,
+                localesIds: glossaryLocales.Select(locale => locale.ID));
         }
 
         public async Task DeleteTermAsync(int glossaryId, int termId)

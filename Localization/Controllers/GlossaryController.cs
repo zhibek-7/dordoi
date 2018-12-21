@@ -102,7 +102,7 @@ namespace Localization.WebApi
         [HttpGet("{glossaryId}/terms/{termId}/locales")]
         public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
-            return await this._glossaryService.GetActualTranslationLocalesForTermAsync(
+            return await this._glossaryService.GetTranslationLocalesForTermAsync(
                 glossaryId: glossaryId,
                 termId: termId);
         }
