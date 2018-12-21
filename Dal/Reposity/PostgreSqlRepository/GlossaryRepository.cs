@@ -1,7 +1,7 @@
 ﻿using DAL.Context;
-using DAL.Reposity.Interfaces;
 using Dapper;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 using SqlKata;
 using SqlKata.Compilers;
 using SqlKata.Execution;
@@ -307,7 +307,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        protected async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -328,17 +328,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetActualTranslationLocalesForTermAsync(int glossaryId, int termId)
-        {
-            var translationLocalesForTerm = await this.GetTranslationLocalesForTermAsync(glossaryId, termId);
-            if (!translationLocalesForTerm.Any())
-            {
-                translationLocalesForTerm = await this.GetTranslationLocalesAsync(glossaryId: glossaryId);
-            }
-            return translationLocalesForTerm;
-        }
-
-        protected async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -377,24 +367,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task UpdateTranslationLocalesForTermAsync(int glossaryId, int termId, IEnumerable<int> localesIds)
-        {
-            var newLocalesIds = localesIds.ToHashSet();
-            var glossaryTranslationLocalesIds = (await
-                this.GetTranslationLocalesAsync(glossaryId: glossaryId))
-                    .Select(locale => locale.ID)
-                    .ToHashSet();
-            await this.DeleteTranslationLocalesForTermAsync(termId: termId);
-            if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
-                && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
-                && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
-            {
-                return;
-            }
-            await this.AddTranslationLocalesForTermAsync(termId: termId, localesIds: newLocalesIds);
-        }
-
-        protected async Task AddTranslationLocalesForTermAsync(int termId, IEnumerable<int> localesIds)
+        public async Task AddTranslationLocalesForTermAsync(int termId, IEnumerable<int> localesIds)
         {
             using (var dbConnection = this._context.Connection)
             {
