@@ -27,6 +27,11 @@ namespace Localization.WebApi
             stringRepository = new TranslationSubstringRepository();
         }
 
+        /// <summary>
+        /// Добавить комментарий
+        /// </summary>
+        /// <param name="comment">текст комментария</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("AddComment")]
         public async Task<IActionResult> CreateComment([FromBody] Comments comment)

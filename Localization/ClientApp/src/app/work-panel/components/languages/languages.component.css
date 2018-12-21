@@ -64,3 +64,8 @@
     height: 2.3rem;
     bottom: 0.6em;
 }
+
+.fileDescription{
+    color: gray;
+    font-size: 0.8em;
+}

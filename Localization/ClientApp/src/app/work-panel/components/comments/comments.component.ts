@@ -25,7 +25,6 @@ export class CommentsComponent implements OnInit {
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService ) { 
 
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
-            console.log(pickedPhrase.id);
             this.stringId = pickedPhrase.id;
             this.getComments(this.stringId);            
         });

@@ -39,6 +39,11 @@ namespace Localization.WebApi
             return Ok(strings);
         }
 
+        /// <summary>
+        /// Получить все фразы для перевода из файла
+        /// </summary>
+        /// <param name="idFile">id файла в котором производится поиск фраз для перевода</param>
+        /// <returns>список фраз для перевода из файла</returns>
         [HttpGet("InFile/{idFile}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStringsInFile(int idFile)
         {

@@ -17,7 +17,7 @@ import { SharePhraseService } from './localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from './localServices/share-translated-phrase.service';
 import { TranslationService } from '../services/translationService.service';
 import { CommentService } from '../services/comment.service';
-
+import { ProjectsService } from '../services/projects.service';
 
 import {
   MatIconModule,
@@ -29,6 +29,7 @@ import {
   MatOptionModule,
   MatCheckboxModule,
   MatTableModule} from '@angular/material';
+
 @NgModule({
     declarations: [
         WorkPanelComponent,
@@ -52,7 +53,8 @@ import {
         SharePhraseService,
         ShareTranslatedPhraseService,
         TranslationService,
-        CommentService
+        CommentService,
+        ProjectsService
     ],
 })
 export class WorkPanelModule {}

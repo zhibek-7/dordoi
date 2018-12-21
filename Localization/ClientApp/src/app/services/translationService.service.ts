@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient, HttpParams} from '@angular/common/http';
 
 import { Translation } from '../models/database-entities/translation.type';
+import { TranslationWithFile } from '../work-panel/localEntites/translations/translationWithFile.type';
+
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -36,6 +38,12 @@ export class TranslationService {
 
     updateTranslation(updatedTranslation: Translation): Observable<Object> {
         return this.http.put(this.url + updatedTranslation.id, updatedTranslation);
+    }
+
+    findTranslationByMemory(currentProjectId: number, translationText: string): Observable<TranslationWithFile[]>{
+        const params = new HttpParams().set('currentProjectId', currentProjectId.toString())
+                                        .append('translationText', translationText);
+        return this.http.get<TranslationWithFile[]>(this.url + '/FindTranslationByMemory/', {params});
     }
 
 }
