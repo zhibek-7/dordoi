@@ -18,14 +18,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly PostgreSqlNativeContext _context;
 
-        private readonly IRepositoryAsync<TranslationSubstring> _stringsRepository;
-
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
-        public GlossaryRepository(IRepositoryAsync<TranslationSubstring> stringsRepository)
+        public GlossaryRepository()
         {
             this._context = PostgreSqlNativeContext.getInstance();
-            this._stringsRepository = stringsRepository;
         }
 
         public Task<int> AddAsync(Glossary item)
