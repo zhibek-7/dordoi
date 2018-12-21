@@ -9,6 +9,8 @@ using DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using DAL.Reposity.PostgreSqlRepository;
+using Models.Interfaces.Repository;
+using Models.Services;
 
 namespace Localization
 {
@@ -34,6 +36,8 @@ namespace Localization
 
             // 
             //services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
+            services.AddScoped<IGlossaryRepository, GlossaryRepository>();
+            services.AddScoped<GlossaryService>();
 
             ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////
             var corsBuilder = new CorsPolicyBuilder();

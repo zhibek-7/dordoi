@@ -1,4 +1,3 @@
-using DAL.Reposity.PostgreSqlRepository;
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Models.Services;
@@ -14,9 +13,9 @@ namespace Localization.WebApi
 
         private readonly GlossaryService _glossaryService;
 
-        public GlossaryController()
+        public GlossaryController(GlossaryService glossaryService)
         {
-            this._glossaryService = new GlossaryService(new GlossaryRepository());
+            this._glossaryService = glossaryService;
         }
 
         [HttpGet]
