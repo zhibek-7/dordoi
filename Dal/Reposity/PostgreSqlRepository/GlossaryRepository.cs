@@ -92,8 +92,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
                 var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
                 this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
-                dbConnection
-                    .Execute(
+                await dbConnection
+                    .ExecuteAsync(
                         sql: deleteGlossaryStingAssotiationSql,
                         param: deleteGlossaryStingAssotiationParam);
 
@@ -138,7 +138,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "RETURNING \"ID\"";
                 var insertNewStingParam = newTerm;
                 this.LogQuery(insertNewStingSql, insertNewStingParam);
-                var idOfNewTerm = dbConnection
+                var idOfNewTerm = await dbConnection
                     .ExecuteScalarAsync<int>(
                         sql: insertNewStingSql,
                         param: insertNewStingParam);
