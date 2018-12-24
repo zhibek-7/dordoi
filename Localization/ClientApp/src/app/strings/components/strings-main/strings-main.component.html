@@ -23,47 +23,8 @@
     </select>
   </div>
 </div>
-<table class="table table-bordered table-striped m-2">
-  <thead>
-    <tr>
-      <th>
-        <input type="checkbox" class="checkbox" [(ngModel)]="allSelectedCheckboxChecked" (change)="toggleSelectionForAllDisplayed()">
-      </th>
-      <th (click)="requestSortBy('value')"
-          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'value'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'value'">Исходная строка</th>
-      <th (click)="requestSortBy('context')"
-          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'context'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'context'">Контекст</th>
-      <th [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'outdated'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'outdated'">
-        <label (click)="requestSortBy('outdated')">
-          Устаревшее
-        </label>
-        <input type="checkbox" class="checkbox" [ngModel]="isAllStringsOutdated" (change)="toggleOutdatedForAllDisplayedStrings()">
-      </th>
-      <th (click)="requestSortBy('description')"
-          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'description'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'description'">Описание</th>
-      <th>Действия</th>
-    </tr>
-  </thead>
-  <tr *ngFor="let selectableString of selectableStrings">
-    <td>
-      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.isSelected">
-    </td>
-    <td>{{selectableString.model.value}}</td>
-    <td>{{selectableString.model.context}}</td>
-    <td>
-      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.model.outdated">
-    </td>
-    <td>{{selectableString.model.description}}</td>
-    <td>
-      <div class="btn-group">
-        <button class="btn btn-success" disabled>Изменить</button>
-        <button class="btn btn-success" disabled>Удалить</button>
-        <button class="btn btn-success" disabled>Задать язык</button>
-      </div>
-    </td>
-  </tr>
-</table>
+<app-strings-list class="m-2"
+                  [selectableStrings]="selectableStrings"
+                  (sortingParamsChanged)="applySorting($event)"
+                  (dataReloadRequested)="loadStrings()"
+                  ></app-strings-list>

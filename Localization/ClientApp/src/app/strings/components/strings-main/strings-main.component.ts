@@ -9,6 +9,7 @@ import { File } from 'src/app/models/database-entities/file.type';
 import { FileService } from 'src/app/services/file.service';
 import { FileViewModel } from 'src/app/strings/models/file.viewmodel';
 import { forkJoin } from 'rxjs';
+import { SortingArgs } from 'src/app/shared/models/sorting.args';
 
 @Component({
   selector: 'app-strings-main',
@@ -27,8 +28,6 @@ export class StringsMainComponent implements OnInit {
 
   sortByColumnName: string = null;
 
-  isSortingAscending: boolean = true;
-
   stringSearchString: string = '';
 
   filesViewModels: FileViewModel[] = [];
@@ -39,13 +38,7 @@ export class StringsMainComponent implements OnInit {
     return +sessionStorage.getItem('ProjecID');
   }
 
-  allSelectedCheckboxChecked: boolean = false;
-
-  lastSortColumnName: string = '';
-
-  get isAllStringsOutdated(): boolean {
-    return this.selectableStrings.every(selectableString => selectableString.model.outdated);
-  }
+  isSortingAscending: boolean = true;
 
   constructor(
     private fileService: FileService,
@@ -104,41 +97,9 @@ export class StringsMainComponent implements OnInit {
     this.loadStrings(newOffset);
   }
 
-  toggleSelectionForAllDisplayed() {
-    let allSelected = this.selectableStrings.every(selectableString => selectableString.isSelected);
-
-    if (this.allSelectedCheckboxChecked && allSelected)
-      return;
-
-    if (allSelected)
-      for (let selectableString of this.selectableStrings) { selectableString.isSelected = false; }
-    else
-      for (let selectableString of this.selectableStrings) { selectableString.isSelected = true; }
-  }
-
-  requestSortBy(columnName: string) {
-    if (columnName != this.lastSortColumnName) {
-      this.isSortingAscending = true;
-    }
-    this.sortByColumnName = columnName;
-    this.loadStrings(this.currentOffset);
-
-    this.lastSortColumnName = columnName;
-    this.isSortingAscending = !this.isSortingAscending;
-  }
-
-  toggleOutdatedForAllDisplayedStrings() {
-    if (this.isAllStringsOutdated) {
-      for (let selectableString of this.selectableStrings) { selectableString.model.outdated = false; }
-    }
-    else {
-      for (let selectableString of this.selectableStrings) { selectableString.model.outdated = true; }
-    }
-    forkJoin(this.selectableStrings.map(selectableString =>
-        this.translationSubstringService.updateTranslationSubstring(selectableString.model)))
-      .subscribe(
-        () => this.loadStrings(this.currentOffset),
-        error => console.log(error));
+  applySorting(args: SortingArgs) {
+    this.sortByColumnName = args.columnName;
+    this.isSortingAscending = args.isAscending;
   }
 
 }
