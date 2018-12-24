@@ -187,9 +187,26 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(int id)
         {
-            throw new NotImplementedException();
+            using (var dbConnection = this.context.Connection)
+            {
+                var query = new Query("TranslationSubstrings")
+                    .Where("ID", id)
+                    .AsDelete();
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+
+                return true;
+            }
         }
 
         public async Task<bool> UpdateAsync(Models.DatabaseEntities.TranslationSubstring item)

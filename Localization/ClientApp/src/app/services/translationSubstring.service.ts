@@ -61,6 +61,10 @@ export class TranslationSubstringService {
       });
   }
 
+  deleteTranslationSubstring(id: number): Observable<Object> {
+    return this.http.delete(this.url + id.toString());
+  }
+
   updateTranslationSubstring(translationSubstring: TranslationSubstring): Observable<Object> {
     return this.http.put(this.url + translationSubstring.id.toString(), translationSubstring);
   }

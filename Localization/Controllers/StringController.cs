@@ -111,6 +111,12 @@ namespace Localization.WebApi
             return Ok(strings);
         }
 
+        [HttpDelete("{translationSubstringId}")]
+        public async Task DeleteTranslationSubstring(int translationSubstringId)
+        {
+            await this.stringRepository.RemoveAsync(id: translationSubstringId);
+        }
+
         [HttpPut("{translationSubstringId}")]
         public async Task UpdateTranslationSubstring(int translationSubstringId, [FromBody] TranslationSubstring updatedTranslationSubstring)
         {
