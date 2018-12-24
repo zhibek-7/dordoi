@@ -25,9 +25,13 @@
           <a *ngFor="let project of projects"
               class="dropdown-item"
               (click)="getCurrentProject(project)"
-              href= '/Projects/{{ project.id }}'>
-              {{ project.name }}</a>
-          <a class="dropdown-item" routerLink='/Profile'>Все проекты</a>
+              href= '/{{ project.id }}'>
+              {{ project.name }}
+              <a (click)="getCurrentProject(project)"
+                href= '/Projects/{{ project.id }}'> <img src="../assets/icons/main/settings.jpg" width="20" height="20" class="d-inline-block align-top" alt=""></a>
+              </a>
+
+            <a class="dropdown-item" routerLink='/Profile'>Все проекты</a>
           <div class="dropdown-divider"></div>
           <button type="button" class="btn btn-dark btn-create" routerLink='/Create-project'> Создать проект</button>
         </div>
