@@ -7,7 +7,6 @@ using DAL.Context;
 using Dapper;
 using Models.Participants;
 using SqlKata;
-using SqlKata.Compilers;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -15,8 +14,6 @@ namespace DAL.Reposity.PostgreSqlRepository
     {
 
         private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
-
-        private readonly Compiler _compiler = new PostgresCompiler();
 
         public async Task<int> AddAsync(Models.DatabaseEntities.Participant newParticipant)
         {

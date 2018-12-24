@@ -8,7 +8,6 @@ using System.Linq;
 using DAL.Context;
 using System.Threading.Tasks;
 using SqlKata;
-using SqlKata.Compilers;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -17,8 +16,6 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private PostgreSqlNativeContext context;
         
-        private Compiler _compiler = new PostgresCompiler();
-
         public UserRepository()
         {
             context = PostgreSqlNativeContext.getInstance();          

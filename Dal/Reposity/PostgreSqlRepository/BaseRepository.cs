@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SqlKata;
+using SqlKata.Compilers;
 using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -12,6 +13,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         protected readonly ILogTools _logger = new LogTools();
         protected readonly ILogTools _loggerError = new ExceptionLog();
+
+        protected readonly Compiler _compiler = new PostgresCompiler();
 
         protected void LogQuery(string sql)
         {

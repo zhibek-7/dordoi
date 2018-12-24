@@ -3,7 +3,6 @@ using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
 using SqlKata;
-using SqlKata.Compilers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,8 +15,6 @@ namespace DAL.Reposity.PostgreSqlRepository
     {
 
         private readonly PostgreSqlNativeContext _context;
-
-        private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
         public GlossaryRepository()
         {
