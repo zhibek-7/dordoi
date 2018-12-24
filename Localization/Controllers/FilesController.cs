@@ -39,6 +39,21 @@ namespace Localization.WebApi
             return Ok(tree);
         }
 
+        [HttpGet("byProjectId/{projectId}")]
+        public async Task<ActionResult<IEnumerable<Node<File>>>> GetByProjectIdAsTree(int projectId)
+        {
+            var files = await filesRepository.GetByProjectIdAsync(projectId: projectId);
+
+            if (files == null)
+            {
+                return BadRequest("Files not found");
+            }
+
+            var tree = files.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
+
+            return Ok(tree);
+        }
+
         // GET api/files/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<File>> Get(int id)

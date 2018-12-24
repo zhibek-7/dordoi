@@ -7,10 +7,11 @@ using System.Data;
 using Dapper;
 using System.Linq;
 using System.Threading.Tasks;
+using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class TranslationSubstringRepository : IRepositoryAsync<TranslationSubstring>
+    public class TranslationSubstringRepository : BaseRepository, IRepositoryAsync<TranslationSubstring>
     {
         private PostgreSqlNativeContext context;
 
@@ -191,9 +192,153 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAsync(Models.DatabaseEntities.TranslationSubstring item)
+        public async Task<bool> UpdateAsync(Models.DatabaseEntities.TranslationSubstring item)
         {
-            throw new NotImplementedException();
+            using (var dbConnection = this.context.Connection)
+            {
+                var query = new Query("TranslationSubstrings")
+                    .Where("ID", item.ID)
+                    .AsUpdate(item);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+
+                return true;
+            }
         }
+
+        public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
+        {
+            { "id", "ID" },
+            { "substringtotranslate", "SubstringToTranslate" },
+            { "description", "Description" },
+            { "context", "Context" },
+            { "translationmaxlength", "TranslationMaxLength" },
+            { "id_fileowner", "ID_FileOwner" },
+            { "value", "Value" },
+            { "positionintext", "PositionInText" },
+            { "outdated", "Outdated" },
+        };
+
+        public async Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
+            int projectId,
+            int offset,
+            int limit,
+            int? fileId = null,
+            string searchString = null,
+            string[] sortBy = null,
+            bool sortAscending = true)
+        {
+            if (sortBy == null || !sortBy.Any())
+            {
+                sortBy = new[] { "id" };
+            }
+
+            using (var dbConnection = this.context.Connection)
+            {
+                var query = this.GetByProjectIdQuery(
+                    projectId: projectId,
+                    fileId: fileId,
+                    searchString: searchString);
+
+                query = this.ApplyPagination(
+                    query: query,
+                    offset: offset,
+                    limit: limit);
+
+                query = this.ApplySorting(
+                    query: query,
+                    columnNamesMappings: TranslationSubstringRepository.SortColumnNamesMapping,
+                    sortBy: sortBy,
+                    sortAscending: sortAscending);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstring>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+
+                return translationSubstrings;
+            }
+        }
+
+        public async Task<int> GetByProjectIdCountAsync(
+            int projectId,
+            int? fileId = null,
+            string searchString = null)
+        {
+            using (var dbConnection = this.context.Connection)
+            {
+                var query = this.GetByProjectIdQuery(
+                    projectId: projectId,
+                    fileId: fileId,
+                    searchString: searchString);
+                query = query.AsCount();
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                var count = await dbConnection.ExecuteScalarAsync<int>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+
+                return count;
+            }
+        }
+
+        private Query GetByProjectIdQuery(
+            int projectId,
+            int? fileId = null,
+            string searchString = null)
+        {
+            var query = new Query("TranslationSubstrings")
+                .Select(
+                    "ID",
+                    "SubstringToTranslate",
+                    "Description",
+                    "Context",
+                    "TranslationMaxLength",
+                    "ID_FileOwner",
+                    "Value",
+                    "PositionInText",
+                    "Outdated"
+                );
+
+            if (fileId != null)
+            {
+                query = query.Where("ID_FileOwner", fileId);
+            }
+            else
+            {
+                query = query
+                    .WhereIn("ID_FileOwner",
+                        new Query("Files")
+                            .Select("ID")
+                            .Where("ID_LocalizationProject", projectId));
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var searchPattern = $"%{searchString}%";
+                query = query.WhereLike("Value", searchPattern);
+            }
+
+            return query;
+        }
+
     }
 }

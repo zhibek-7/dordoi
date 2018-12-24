@@ -75,5 +75,48 @@ namespace Localization.WebApi
             return Ok(foundedString);
         }
 
+        [HttpGet("ByProjectId/{projectId}")]
+        public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetByProjectId(
+            int projectId,
+            int? offset,
+            int? limit,
+            int? fileId,
+            string searchString,
+            string[] sortBy,
+            bool? sortAscending)
+        {
+            this.Response.Headers.Add(
+                key: "totalCount",
+                value: (await this.stringRepository.GetByProjectIdCountAsync(
+                            projectId: projectId,
+                            fileId: fileId,
+                            searchString: searchString
+                    )).ToString());
+
+            var strings = await stringRepository.GetByProjectIdAsync(
+                projectId: projectId,
+                offset: offset ?? 0,
+                limit: limit ?? 25,
+                fileId: fileId,
+                searchString: searchString,
+                sortBy: sortBy,
+                sortAscending: sortAscending ?? true
+                );
+
+            if (strings == null)
+            {
+                return BadRequest("Strings not found");
+            }
+
+            return Ok(strings);
+        }
+
+        [HttpPut("{translationSubstringId}")]
+        public async Task UpdateTranslationSubstring(int translationSubstringId, [FromBody] TranslationSubstring updatedTranslationSubstring)
+        {
+            updatedTranslationSubstring.ID = translationSubstringId;
+            await this.stringRepository.UpdateAsync(item: updatedTranslationSubstring);
+        }
+
     }
 }

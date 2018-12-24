@@ -24,6 +24,13 @@ export class FileService {
       );
   }
 
+  getFilesByProjectIdAsTree(projectId: number): Observable<TreeNode[]> {
+    return this.http.get<TreeNode[]>(this._url + '/byProjectId/' + projectId)
+      .pipe(
+        catchError(this.handleError('getFilesByProjectIdAsTree', []))
+      );
+  }
+
   //Нужно для формирования отчетов
   getInitialProjectFolders(projectId: number): Observable<FileData[]> {
     const url = `${this._url}/ForProject:${projectId}`;

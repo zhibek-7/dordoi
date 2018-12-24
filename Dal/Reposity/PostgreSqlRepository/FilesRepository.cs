@@ -7,11 +7,12 @@ using Dapper;
 using Models.DatabaseEntities;
 using Models.Models;
 using Npgsql;
+using SqlKata;
 using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class FilesRepository : IFilesRepository
+    public class FilesRepository : BaseRepository, IFilesRepository
     {
         private readonly string connectionString;
         private ILogTools _log;
@@ -307,5 +308,25 @@ namespace DAL.Reposity.PostgreSqlRepository
                 }
             }
         }
+
+        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query = new Query("Files")
+                    .Where("ID_LocalizationProject", projectId);
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                var files = await dbConnection.QueryAsync<File>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+                return files;
+            }
+        }
+
     }
 }

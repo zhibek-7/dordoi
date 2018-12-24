@@ -1,3 +1,69 @@
-<p>
-  Strings module works!
-</p>
+<div class="row m-2">
+  <div class="col">
+    <div class="btn-group m-1">
+      <button class="btn btn-success" disabled>Скрыть</button>
+      <button class="btn btn-success" disabled>Показать</button>
+    </div>
+    <button class="btn btn-success m-1" disabled>Добавить строку</button>
+    <button class="btn btn-success m-1" disabled>Поиск и замена</button>
+    <button class="btn btn-success m-1" disabled>Удалить</button>
+  </div>
+  <div class="col">
+    <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
+  </div>
+</div>
+<div class="row m-2">
+  <div class="col">
+    <input type="text" class="form-control m-1" placeholder="Искать строки" [(ngModel)]="stringSearchString" (input)="loadStrings()" />
+  </div>
+  <div class="col">
+    <select class="form-control m-1" [(ngModel)]="selectedFileId" (change)="loadStrings()">
+      <option [ngValue]="null">Все файлы</option>
+      <option *ngFor="let file of filesViewModels" [ngValue]="file.id">{{file.name}}</option>
+    </select>
+  </div>
+</div>
+<table class="table table-bordered table-striped m-2">
+  <thead>
+    <tr>
+      <th>
+        <input type="checkbox" class="checkbox" [(ngModel)]="allSelectedCheckboxChecked" (change)="toggleSelectionForAllDisplayed()">
+      </th>
+      <th (click)="requestSortBy('value')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'value'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'value'">Исходная строка</th>
+      <th (click)="requestSortBy('context')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'context'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'context'">Контекст</th>
+      <th [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'outdated'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'outdated'">
+        <label (click)="requestSortBy('outdated')">
+          Устаревшее
+        </label>
+        <input type="checkbox" class="checkbox" [ngModel]="isAllStringsOutdated" (change)="toggleOutdatedForAllDisplayedStrings()">
+      </th>
+      <th (click)="requestSortBy('description')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'description'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'description'">Описание</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tr *ngFor="let selectableString of selectableStrings">
+    <td>
+      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.isSelected">
+    </td>
+    <td>{{selectableString.model.value}}</td>
+    <td>{{selectableString.model.context}}</td>
+    <td>
+      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.model.outdated">
+    </td>
+    <td>{{selectableString.model.description}}</td>
+    <td>
+      <div class="btn-group">
+        <button class="btn btn-success" disabled>Изменить</button>
+        <button class="btn btn-success" disabled>Удалить</button>
+        <button class="btn btn-success" disabled>Задать язык</button>
+      </div>
+    </td>
+  </tr>
+</table>

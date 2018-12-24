@@ -12,6 +12,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         Task<bool> Upload(File item);
         
         Task<IEnumerable<File>> GetAll();
+        Task<IEnumerable<File>> GetByProjectIdAsync(int projectId);
         Task<File> GetByID(int id);
         Task<File> GetByNameAndParentId(string name, int? parentId);
         IEnumerable<File> GetInitialFolders(int projectId);
