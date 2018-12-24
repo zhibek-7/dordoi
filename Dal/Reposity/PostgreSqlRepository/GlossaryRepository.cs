@@ -1,10 +1,9 @@
 ﻿using DAL.Context;
-using DAL.Reposity.Interfaces;
 using Dapper;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 using SqlKata;
 using SqlKata.Compilers;
-using SqlKata.Execution;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,14 +17,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly PostgreSqlNativeContext _context;
 
-        private readonly IRepositoryAsync<TranslationSubstring> _stringsRepository;
-
         private readonly PostgresCompiler _compiler = new PostgresCompiler();
 
-        public GlossaryRepository(IRepositoryAsync<TranslationSubstring> stringsRepository)
+        public GlossaryRepository()
         {
             this._context = PostgreSqlNativeContext.getInstance();
-            this._stringsRepository = stringsRepository;
         }
 
         public Task<int> AddAsync(Glossary item)
@@ -95,8 +91,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
                 var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
                 this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
-                dbConnection
-                    .Execute(
+                await dbConnection
+                    .ExecuteAsync(
                         sql: deleteGlossaryStingAssotiationSql,
                         param: deleteGlossaryStingAssotiationParam);
 
@@ -111,7 +107,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
+        public async Task<int> AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
@@ -141,7 +137,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "RETURNING \"ID\"";
                 var insertNewStingParam = newTerm;
                 this.LogQuery(insertNewStingSql, insertNewStingParam);
-                var idOfNewTerm = dbConnection
+                var idOfNewTerm = await dbConnection
                     .ExecuteScalarAsync<int>(
                         sql: insertNewStingSql,
                         param: insertNewStingParam);
@@ -155,6 +151,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: instertGlossaryStringAssotiationSql,
                         param: instertGlossaryStringAssotiationParam);
                 dbConnection.Close();
+                return idOfNewTerm;
             }
         }
 
@@ -219,7 +216,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart);
+                var query = this.GetAssotiatedTermsQuery(glossaryId, termPart);
 
                 query = this.ApplyPagination(
                     query: query,
@@ -248,7 +245,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = this._context.Connection)
             {
                 dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(dbConnection, glossaryId, termPart).AsCount();
+                var query = this.GetAssotiatedTermsQuery(glossaryId, termPart).AsCount();
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 this.LogQuery(getGlossaryTermsCountCompiledQuery);
                 var assotiatedTermsCount = await dbConnection.ExecuteScalarAsync<int>(
@@ -260,11 +257,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        private Query GetAssotiatedTermsQuery(IDbConnection dbConnection,int glossaryId, string termPart)
+        private Query GetAssotiatedTermsQuery(int glossaryId, string termPart)
         {
             var query =
-                new XQuery(dbConnection, this._compiler)
-                    .From("GlossariesStrings")
+                new Query("GlossariesStrings")
                     .LeftJoin("TranslationSubstrings", "TranslationSubstrings.ID", "GlossariesStrings.ID_String")
                     .Where("GlossariesStrings.ID_Glossary", glossaryId)
                     .Select(
@@ -278,10 +274,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "TranslationSubstrings.PositionInText",
                         "GlossariesStrings.ID_PartOfSpeech as PartOfSpeechId")
                     .Select(
-                        new Query("Translations")
-                            .SelectRaw("COUNT(\"Translated\") = 0")
-                            .Where("Translated", "<>", "''")
-                            .WhereRaw("\"ID_String\"=\"TranslationSubstrings\".\"ID\""),
+                        new Query("TranslationsubStringsLocales")
+                            .LeftJoin("Translations", join =>
+                                join.On("Translations.ID_String", "TranslationsubStringsLocales.Id_TranslationSubStrings")
+                                    .On("Translations.ID_Locale", "TranslationsubStringsLocales.Id_Locales"))
+                            .SelectRaw("COUNT(\"Translations\".\"Translated\") = 0")
+                            .Where("Translations.Translated", "<>", "''")
+                            .WhereRaw("\"TranslationsubStringsLocales\".\"Id_TranslationSubStrings\"=\"TranslationSubstrings\".\"ID\""),
                         "IsEditable");
             if (!string.IsNullOrEmpty(termPart))
             {
@@ -310,7 +309,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        protected async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -331,17 +330,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetActualTranslationLocalesForTermAsync(int glossaryId, int termId)
-        {
-            var translationLocalesForTerm = await this.GetTranslationLocalesForTermAsync(glossaryId, termId);
-            if (!translationLocalesForTerm.Any())
-            {
-                translationLocalesForTerm = await this.GetTranslationLocalesAsync(glossaryId: glossaryId);
-            }
-            return translationLocalesForTerm;
-        }
-
-        protected async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
         {
             using (var dbConnection = this._context.Connection)
             {
@@ -380,24 +369,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task UpdateTranslationLocalesForTermAsync(int glossaryId, int termId, IEnumerable<int> localesIds)
-        {
-            var newLocalesIds = localesIds.ToHashSet();
-            var glossaryTranslationLocalesIds = (await
-                this.GetTranslationLocalesAsync(glossaryId: glossaryId))
-                    .Select(locale => locale.ID)
-                    .ToHashSet();
-            await this.DeleteTranslationLocalesForTermAsync(termId: termId);
-            if (newLocalesIds.Count == glossaryTranslationLocalesIds.Count
-                && newLocalesIds.All(newLocaleId => glossaryTranslationLocalesIds.Contains(newLocaleId))
-                && glossaryTranslationLocalesIds.All(glossaryLocaleId => newLocalesIds.Contains(glossaryLocaleId)))
-            {
-                return;
-            }
-            await this.AddTranslationLocalesForTermAsync(termId: termId, localesIds: newLocalesIds);
-        }
-
-        protected async Task AddTranslationLocalesForTermAsync(int termId, IEnumerable<int> localesIds)
+        public async Task AddTranslationLocalesForTermAsync(int termId, IEnumerable<int> localesIds)
         {
             using (var dbConnection = this._context.Connection)
             {

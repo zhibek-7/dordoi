@@ -1,6 +1,7 @@
 <div class="row m-2">
   <div class="col">
-    <button class="m-2 btn btn-success" disabled>Пригласить</button>
+    <button class="m-2 btn btn-success" (click)="inviteUser.show()">Пригласить</button>
+    <app-invite-user #inviteUser [projectId]="projectId" [roles]="roles" (participantAdded)="loadParticipants(currentOffset)"></app-invite-user>
     <button class="m-2 btn btn-success" disabled>Связаться</button>
   </div>
   <div class="col">

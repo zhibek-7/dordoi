@@ -14,18 +14,18 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class CommentRepository : IRepositoryAsync<Comments>
     {
-        private PostgreSqlNativeContext context;
-
-        private ILogTools _log;
-        private ILogTools _loggerError;
+        private PostgreSqlNativeContext context; 
 
         public CommentRepository()
         {
-            context = PostgreSqlNativeContext.getInstance();
-            _log = LogTools.GetLog();
-            _log = ExceptionLog.GetLog();
+            context = PostgreSqlNativeContext.getInstance();            
         }
 
+        /// <summary>
+        /// Добавить комментарий
+        /// </summary>
+        /// <param name="comment">комментарий</param>
+        /// <returns></returns>
         public async Task<int> AddAsync(Comments comment)
         {
             var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
@@ -45,12 +45,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в AddAsync ", exception);
+                Console.WriteLine(exception.Message);
 
                 return 0;
             }
         }
 
+        /// <summary>
+        /// Получить все комментарии
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Comments>> GetAllAsync()
         {
             var query = "SELECT * FROM \"Comments\"";
@@ -68,7 +72,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в GetAllAsync ", exception);
+                Console.WriteLine(exception.Message);
 
                 return null;
             }
@@ -101,12 +105,17 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в GetAllCommentsInStringByID ", exception);
+                Console.WriteLine(exception.Message);
 
                 return null;
             }
         }
 
+        /// <summary>
+        /// Получить комментарий по id
+        /// </summary>
+        /// <param name="id">id комментария который нужно получить</param>
+        /// <returns></returns>
         public async Task<Comments> GetByIDAsync(int id)
         {
             var query = "SELECT * FROM \"Comments\" WHERE \"ID\" = @id";
@@ -125,13 +134,19 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в GetByIDAsync ", exception);
+                Console.WriteLine(exception.Message);
 
 
                 return null;
             }
         }
 
+        /// <summary>
+        /// Получить комментарий по id комментария с информацией о пользователе, который 
+        /// добавил данный комментарий
+        /// </summary>
+        /// <param name="id">id комментария который нужно получить</param>
+        /// <returns></returns>
         public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(int id)
         {
             var query = "SELECT \"Users\".\"ID\" AS \"UserId\", \"Users\".\"Name\" AS \"UserName\"," +
@@ -155,12 +170,17 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в GetByIDWithUserInfoAsync ", exception);
+                Console.WriteLine(exception.Message);
 
                 return null;
             }
         }
 
+        /// <summary>
+        /// Удалить комментарий по id 
+        /// </summary>
+        /// <param name="id">id комментарий который нужно удалить</param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(int id)
         {
             var query = "DELETE " +
@@ -181,12 +201,17 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в RemoveAsync ", exception);
+                Console.WriteLine(exception.Message);
                 return false;
             }
         }
 
 
+        /// <summary>
+        /// Обновить комментарий
+        /// </summary>
+        /// <param name="comment">обновленный комментарий</param>
+        /// <returns></returns>
         public async Task<bool> UpdateAsync(Comments comment)
         {
             var query = "UPDATE \"Comments\" SET " +
@@ -210,16 +235,20 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 //Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в UpdateAsync ", exception);
+                Console.WriteLine(exception.Message);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Загрузить картинку в базу данных
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public async Task<int> UploadImageAsync(Byte[] image)
         {
-            var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
-                        "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
-                        "RETURNING  \"Comments\".\"ID\"";
+            //ЗАПРОС ЕЩЕ НЕ НАПИСАН
+            var query = "";
 
             try
             {
@@ -234,15 +263,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
-                _loggerError.WriteLn("Ошибка в AddAsync ", exception);
-
+                Console.WriteLine(exception.Message);
                 return 0;
             }
         }
-
-        private void LogQuery(string updateTranslationSql, object updateTranslationParam)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

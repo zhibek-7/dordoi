@@ -11,24 +11,51 @@ using SqlKata.Compilers;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class ParticipantRepository : BaseRepository, IRepositoryAsync<Participant>
+    public class ParticipantRepository : BaseRepository, IRepositoryAsync<Models.DatabaseEntities.Participant>
     {
 
         private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
 
         private readonly Compiler _compiler = new PostgresCompiler();
 
-        public Task<int> AddAsync(Participant item)
+        public async Task<int> AddAsync(Models.DatabaseEntities.Participant newParticipant)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+
+                var query = new Query("Participants")
+                    .AsInsert(new[] {
+                        "ID_LocalizationProject",
+                        "ID_Role",
+                        "ID_User",
+                        "Active",
+                    },
+                    new object[]
+                    {
+                        newParticipant.ID_LocalizationProject,
+                        newParticipant.ID_Role,
+                        newParticipant.ID_User,
+                        newParticipant.Active
+                    });
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+                dbConnection.Close();
+
+                return newParticipant.ID;
+            }
+        }
+
+        public Task<IEnumerable<Models.DatabaseEntities.Participant>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Participant>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Participant> GetByIDAsync(int id)
+        public Task<Models.DatabaseEntities.Participant> GetByIDAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -38,9 +65,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAsync(Participant item)
+        public async Task<bool> UpdateAsync(Models.DatabaseEntities.Participant updatedParticipant)
         {
-            throw new NotImplementedException();
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var query = new Query("Participants")
+                    .Where("ID_LocalizationProject", updatedParticipant.ID_LocalizationProject)
+                    .Where("ID_User", updatedParticipant.ID_User)
+                    .AsUpdate(new[] {
+                        "ID_LocalizationProject",
+                        "ID_Role",
+                        "ID_User",
+                        "Active",
+                    },
+                    new object[]
+                    {
+                        updatedParticipant.ID_LocalizationProject,
+                        updatedParticipant.ID_Role,
+                        updatedParticipant.ID_User,
+                        updatedParticipant.Active
+                    });
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+                dbConnection.Close();
+                return true;
+            }
         }
 
         private static readonly Dictionary<string, string> ParticipantsSortColumnNamesMapping = new Dictionary<string, string>()
@@ -95,6 +149,46 @@ namespace DAL.Reposity.PostgreSqlRepository
                     param: getParticipantsByProjectIdCompiledQuery.NamedBindings);
                 dbConnection.Close();
                 return participants;
+            }
+        }
+
+        protected async Task<bool> InactiveParticipantsContainsAsync(int projectId, int userId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var query = new Query("Participants")
+                    .Where("Participants.ID_LocalizationProject", projectId)
+                    .Where("Participants.ID_User", userId)
+                    .Where("Participants.Active", false);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                var participants = await dbConnection.QueryAsync<Models.DatabaseEntities.Participant>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+                dbConnection.Close();
+                return participants.Any();
+            }
+        }
+
+        public async Task AddOrActivateParticipant(int projectId, int userId, int roleId)
+        {
+            var participant = new Models.DatabaseEntities.Participant()
+            {
+                ID_LocalizationProject = projectId,
+                ID_User = userId,
+                ID_Role = roleId,
+                Active = true
+            };
+            var inactiveContainsUser = await this.InactiveParticipantsContainsAsync(projectId: projectId, userId: userId);
+            if (inactiveContainsUser)
+            {
+                await this.UpdateAsync(updatedParticipant: participant);
+            }
+            else
+            {
+                await this.AddAsync(newParticipant: participant);
             }
         }
 

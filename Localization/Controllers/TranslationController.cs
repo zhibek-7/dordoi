@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
+using Models.Translations;
 
 namespace Localization.WebApi
 {
@@ -102,6 +103,11 @@ namespace Localization.WebApi
             return Ok();
         }
 
+        /// <summary>
+        /// Подтвердить вариант перевода (поставить галочку)
+        /// </summary>
+        /// <param name="idTranslation">id варианта перевода</param>
+        /// <returns></returns>
         [HttpPut]
         [Route("AcceptTranslation/{idTranslation}")]
         public async Task<IActionResult> AcceptTranslate(int idTranslation)
@@ -124,6 +130,11 @@ namespace Localization.WebApi
             return Ok();
         }
 
+        /// <summary>
+        /// Отклонить вариант перевода (убрать галочку)
+        /// </summary>
+        /// <param name="idTranslation">id варианта перевода, который нужно отклонить</param>
+        /// <returns></returns>
         [HttpPut]
         [Route("RejectTranslation/{idTranslation}")]
         public async Task<IActionResult> RejectTranslate(int idTranslation)
@@ -146,6 +157,12 @@ namespace Localization.WebApi
             return Ok();
         }
 
+        /// <summary>
+        /// Обновить вариант перевода
+        /// </summary>
+        /// <param name="translationId">id варианта перевода, который нужно обновить</param>
+        /// <param name="updatedTranslation">вариант перевода с обновленными данными</param>
+        /// <returns></returns>
         [HttpPut("{translationId}")]
         public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
         {
@@ -155,6 +172,25 @@ namespace Localization.WebApi
                 return this.BadRequest();
 
             return this.Ok();
+        }
+
+        /// <summary>
+        /// Найти варианты перевода по памяти переводов
+        /// </summary>
+        /// <param name="currentProjectId">id проекта в котором ведется работа в данный момент</param>
+        /// <param name="translationText">фраза по которой производится поиск вариантов перевода</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("FindTranslationByMemory")]
+        public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(int currentProjectId, string translationText)
+        {
+            if (translationText == null || translationText == "")
+            {
+                return NotFound($"Запрашиваемый вариант перевода пуст");
+            }
+
+            var translations = await translationRepository.GetAllTranslationsByMemory(currentProjectId, translationText);
+            return Ok(translations);
         }
 
     }

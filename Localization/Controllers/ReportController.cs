@@ -40,7 +40,7 @@ namespace Localization.WebApi
             [FromQuery] int initialFolderId)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            return TranslatedWords.GetRowsWithFilter(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType);
+            return TranslatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Localization.WebApi
             [FromQuery] int initialFolderId)
         {
             TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRowsWithFilter(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType).ToList();
+            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType).ToList();
             byte[] bin;
 
             FileResult res;

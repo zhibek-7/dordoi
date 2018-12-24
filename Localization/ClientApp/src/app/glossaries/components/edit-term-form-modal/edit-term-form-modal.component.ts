@@ -12,6 +12,7 @@ import { Translation } from 'src/app/models/database-entities/translation.type';
 import { TranslationService } from 'src/app/services/translationService.service';
 import { TranslationWithLocale } from 'src/app/glossaries/models/translationWithLocale.model';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-edit-term-form-modal',
@@ -33,8 +34,6 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
     this._originalTermReference = value;
   }
 
-  @Output() termUpdateConfirmed = new EventEmitter<Term>();
-
   constructor(
     private translationService: TranslationService,
     private glossariesService: GlossariesService,
@@ -50,21 +49,25 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
     if (!this.glossary)
       return;
 
-    this.glossariesService.updateTerm(this.glossary.id, this._term, this._term.partOfSpeechId)
-      .subscribe(
-        () => this.requestDataReloadService.requestUpdate(),
-        error => console.log(error));
+    let updateTermObservable = this.glossariesService.updateTerm(this.glossary.id, this._term, this._term.partOfSpeechId);
+    updateTermObservable.subscribe(null, error => console.log(error));
+
+    let updateRequests = [updateTermObservable];
     for (let translation of this.translations) {
       if (translation.translated) {
         if (translation.id) {
-          this.translationService.updateTranslation(translation)
-            .subscribe(null, error => console.log(error));
+          let updateTermTranslationObservable = this.translationService.updateTranslation(translation);
+          updateTermTranslationObservable.subscribe(null, error => console.log(error));
+
+          updateRequests.push(updateTermTranslationObservable);
         }
         else {
           this.translationService.createTranslate(translation);
         }
       }
     }
+    forkJoin(updateRequests)
+      .subscribe(() => this.requestDataReloadService.requestUpdate());
   }
 
   show() {

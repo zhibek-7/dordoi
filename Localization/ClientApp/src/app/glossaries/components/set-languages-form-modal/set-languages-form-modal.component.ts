@@ -9,6 +9,7 @@ import { Locale } from 'src/app/models/database-entities/locale.type';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { GlossariesService } from 'src/app/services/glossaries.service';
 import { Selectable } from 'src/app/shared/models/selectable.model';
+import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
 @Component({
   selector: 'app-set-languages-form-modal',
@@ -27,7 +28,8 @@ export class SetLanguagesFormModalComponent extends ModalComponent implements On
 
   constructor(
     private languageService: LanguageService,
-    private glossariesService: GlossariesService
+    private glossariesService: GlossariesService,
+    private requestDataReloadService: RequestDataReloadService,
   ) { super(); }
 
   loadAvailableLanguages() {
@@ -61,7 +63,7 @@ export class SetLanguagesFormModalComponent extends ModalComponent implements On
 
   applyChanges() {
     this.glossariesService.setTranslationLocalesForTerm(this.glossary.id, this.term.id, this.selectedLocales.map(locale => locale.id))
-      .subscribe(null,
+      .subscribe(() => this.requestDataReloadService.requestUpdate(),
         error => console.log(error));
     this.hide();
   }

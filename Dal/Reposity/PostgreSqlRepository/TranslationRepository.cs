@@ -7,6 +7,7 @@ using Dapper;
 using Models.DatabaseEntities;
 using System.Linq;
 using System.Threading.Tasks;
+using Models.Translations;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -264,6 +265,40 @@ namespace DAL.Reposity.PostgreSqlRepository
                 Console.WriteLine(exception.Message);
 
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Функция получения всех вариантов перевода заданой фразы в проекте локализации
+        /// </summary>
+        /// <param name="translationText">Фраза по которой необходимо найти переводы</param>
+        /// <returns>Список вариантов перевода</returns>
+        public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(int currentProjectId, string translationText)
+        {
+            var query = "SELECT F.\"Name\" AS \"FileOwnerName\", T.\"Translated\" AS \"TranslationVariant\", " +
+                        "TS.\"SubstringToTranslate\" AS \"TranslationText\" " +
+                        "FROM \"LocalizationProjects\" AS LP " +
+                        "INNER JOIN \"Files\" AS F ON F.\"ID_LocalizationProject\" = LP.\"ID\" " +
+                        "INNER JOIN \"TranslationSubstrings\" AS TS ON TS.\"ID_FileOwner\" = F.\"ID\" " +
+                        "INNER JOIN \"Translations\" AS T ON T.\"ID_String\" = TS.\"ID\" " +
+                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<TranslationWithFile> translations = await dbConnection.QueryAsync<TranslationWithFile>(query, new { TranslationText = "%" + translationText + "%" });
+                    dbConnection.Close();
+                    return translations;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
             }
         }
 

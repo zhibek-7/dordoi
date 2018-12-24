@@ -54,6 +54,10 @@ const routes: Routes = [
     loadChildren: '../participants/participants.module#ParticipantsModule'
   },
   {
+    path: 'Strings',
+    loadChildren: '../strings/strings.module#StringsModule'
+  },
+  {
     path: ':id',
     component: ProjectPageComponent
   },

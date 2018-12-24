@@ -24,7 +24,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <returns>Список всех типов работы</returns>
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<WorkType>>> GetStrings()
+        public async Task<ActionResult<IEnumerable<WorkType>>> GetWorkTypes()
         {
             var strings = await workTypeRepository.GetAllAsync();
             if (strings == null)
