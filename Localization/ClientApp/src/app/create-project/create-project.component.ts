@@ -107,30 +107,27 @@ FiterByName(){
 
   constructor(private projectService: ProjectsService) { }
 
-  
-  
-  //myForm = new FormGroup({
-  //  name: new FormControl(null),
-  //  url: new FormControl(null),
-  //  language: new FormControl(null)
-  //});
+  projectName: string;
+  projectVisibility: boolean;
+
+
 
   addProject(newProject: Project): void {
-    //this.newProject.name = "ccccc";
-    //this.newProject.ableToDownload = true;
-    //this.newProject.ableToLeftErrors = true;
-    //this.newProject.dateOfCreation = "12.12.2018";
-    //this.newProject.defaultString = "12.12.2019";
-    //this.newProject.description = "wdwdwdwd";
-    //this.newProject.ID_SourceLocale = 12;
-    //this.newProject.lastActivity = "qqq";
-    //this.newProject.logo = "rr";
-    //this.newProject.notifyConfirm = true;
-    //this.newProject.notifyFinish = false;
-    //this.newProject.notifyNew = true;
-    //this.newProject.visibility = true;
-    //this.newProject.id = Math.floor(Math.random() * 10000) + 1;
-    //this.newProject.url = "rrrr";
+    newProject.name = "ccccc";
+    newProject.ableToDownload = true;
+    newProject.ableToLeftErrors = true;
+    newProject.dateOfCreation = "12.12.2018";
+    newProject.defaultString = "12.12.2019";
+    newProject.description = "wdwdwdwd";
+    newProject.ID_SourceLocale = 12;
+    newProject.lastActivity = "12.12.2019";
+    newProject.logo = "rr";
+    newProject.notifyConfirm = true;
+    newProject.notifyFinish = false;
+    newProject.notifyNew = true;
+    newProject.visibility = true;
+    newProject.id = Math.floor(Math.random() * 10000) + 1;
+    newProject.url = "rrrr";
     this.projectService.addProject(newProject).subscribe(response => console.log(response));
   }
 
