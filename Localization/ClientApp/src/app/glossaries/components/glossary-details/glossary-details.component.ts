@@ -7,7 +7,7 @@ import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
-import { SortingArgs } from 'src/app/glossaries/models/sorting.args';
+import { SortingArgs } from 'src/app/shared/models/sorting.args';
 import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
 import { Term } from 'src/app/models/Glossaries/term.type';
@@ -105,7 +105,7 @@ export class GlossaryDetailsComponent implements OnInit {
 
   sortByRequested(sortingArgs: SortingArgs) {
     this.sortByColumnName = sortingArgs.columnName;
-    this.ascending = sortingArgs.ascending;
+    this.ascending = sortingArgs.isAscending;
     this.loadTerms();
   }
 

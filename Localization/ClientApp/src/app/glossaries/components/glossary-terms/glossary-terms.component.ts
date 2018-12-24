@@ -4,7 +4,7 @@ import { GlossariesService } from 'src/app/services/glossaries.service';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 import { TermViewModel } from 'src/app/glossaries/models/term.viewmodel';
-import { SortingArgs } from 'src/app/glossaries/models/sorting.args';
+import { SortingArgs } from 'src/app/shared/models/sorting.args';
 import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
 import { Term } from 'src/app/models/Glossaries/term.type';
 
