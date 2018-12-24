@@ -58,12 +58,13 @@ const routes: Routes = [
     loadChildren: '../strings/strings.module#StringsModule'
   },
   {
-    path: ':id',
+    path: 'pj/:id',
     component: ProjectPageComponent
   },
   {
     path: '**',
-    component: NotFoundComponent
+    component: UserAccountComponent
+    //component: NotFoundComponent
   }
 ];
 

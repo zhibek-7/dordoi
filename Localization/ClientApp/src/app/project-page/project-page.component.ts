@@ -80,6 +80,7 @@ export class ProjectPageComponent implements OnInit {
 
   displayedColumns: string[] = ['variant', 'file', 'language', 'time'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
+  currentUserName ='';
 
   applyFilterUsers(filterValue: string) {
     if (filterValue === 'none') {
@@ -118,8 +119,8 @@ export class ProjectPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
-    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+
+    this.currentUserName = sessionStorage.getItem('currentUserName');
 
     this.getProject();
     this.filtredUsers = this.users;

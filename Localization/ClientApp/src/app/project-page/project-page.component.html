@@ -7,7 +7,7 @@
             <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
               <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
             </a>
-            <span>Имя текущего пользователя</span>
+            <span>{{currentUserName}}</span>
           </li>
         </ol>
       </nav>
@@ -79,7 +79,7 @@
           <span style="font-weight:600">Менеджеры</span><br>
           <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
             <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-            <span class="ml-2" style="color:grey;">current_user_name</span>
+            <span class="ml-2" style="color:grey;">{{currentUserName}}</span>
           </a>
           <div class="mt-2">
             <span class="mr-2 br-b blue">Владелец</span>
