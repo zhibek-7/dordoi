@@ -1,4 +1,14 @@
-<form>
+<form class="settings_proj">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Название проекта</label>
+    <input type="email" class="form-control" id="exampleInputNameProj" aria-describedby="ProjNameHelp" placeholder="">
+
+  </div>
+  <div class="form-group">
+    <label for="DescribeFormControlTextarea1">Описание проекта</label>
+    <textarea class="form-control" id="DescribeFormControlTextarea1" rows="3"></textarea>
+  </div>
+
   <label class="form-check-label" for="exampleRadios1">
     Приватность
   </label>
@@ -38,6 +48,13 @@
       Будут экспортированы только утвержденные переводы. Утверждение переводов потребует дополнительных усилий от ваших переводчиков\корректоров.
     </small>
   </div>
+
+  <div class="form-group form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Уведомлять менеджеров проекта о новых строках</label>
+  </div>
+  <button mat-raised-button color="primary" style="width: 15rem;" (click)="addProject($event)">Сохранить проект</button>
+  <button mat-raised-button color="primary" style="width: 15rem;" (click)="addProject($event)">Удалить проект</button>
 </form>
 
 <router-outlet></router-outlet>

@@ -39,12 +39,10 @@
         <div class="input-group">
 
           <div class="custom-file">
-
             <input type="text" name="itemName" class="form-control" [(ngModel)]="searchText" id="idFilter" placeholder="Фильтровать языки">
           </div>
           <div class="input-group-append">
             <button style="height: 38px;" type="button" class="btn btn-outline-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top" (click)="args='ascending';reverse=!reverse" id="idOrder">
-
               <i class="material-icons">sort_by_alpha</i>
             </button>
 
@@ -53,8 +51,6 @@
         <div class="input-group">
           <div class="col-md" size="4" style="height: 10em; overflow: auto;">
             <div class="form-check" *ngFor="let lang of dropdownList |filter:searchText|orderBy:args:reverse">
-
-
               <label class="form-check-label" for=' {{lang.id}}'>
                 <input class="form-check-input" type="checkbox" id='{{lang.id}}'
                        name='{{lang.itemName}}'
