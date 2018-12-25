@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="col-sm-1"></div>
+  
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+
+      <li class="nav-item btn">
+        <button type="button" class="btn btn-create" routerLink='/'> Создать глоссарий</button>
+      </li>
+
+      <li class="nav-item btn">
+        <button type="button" class="btn btn-secondary" routerLink='/'> Очистить </button>
+      </li>
+
+      <li class="nav-item btn">
+        <a class="nav-link" id="DeleteGlossaries" role="button" aria-haspopup="true" routerLink='/'>
+          <img src="../assets/images/delete-picture.png" <!--на данный момент иконка отсутствует--> width="40" height="30" class="d-inline-block align-li" alt="">
+        </a>
+      </li>
+
+      <li class="nav-item btn">
+        <!--кнопка checkbox Общие словари-->
+        <!--<div class="btn-group-toggle" data-toggle="buttons">
+          <label class="btn">
+            <input type="checkbox" autocomplete="off"> Общие словари
+          </label>
+        </div>-->
+      </li>
+
+      <li class="nav-item dropdown">
+        <!--кнопка с выпадающим списком Все-->
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-sm-1"></div>
+</nav>
+
+
+
+<!--////-->
+
+<table class="table">
+  <thead>
+    <tr><th>Имя словаря</th><th>Языки</th><th colspan="2">Проекты</th></tr>
+  </thead>
+  <tbody>
+    <tr *ngIf="getGlossaries().length == 0">
+      <td colspan="4">Создайте глоссарий</td>
+    </tr>
+    <tr *ngFor="let glossary of getGlossaries()">
+      <td>{{glossary.name}}</td>
+      <td>{{glossary.languages}}</td>
+      <td>{{glossary.projects}}</td>
+      <td><!--здесь будут доп. кнопки--></td>
+    </tr>
+  </tbody>
+</table>

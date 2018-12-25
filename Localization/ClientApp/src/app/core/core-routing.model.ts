@@ -37,6 +37,13 @@ const routes: Routes = [
     path: 'Glossaries',
     loadChildren: '../glossaries/glossaries.model#GlossariesModule'
   },
+  //
+  {
+    path: 'list-glossaries',
+    loadChildren: '../list-glossaries/list-glossaries.model#GlossariesModule'
+    //component: ListGlossariesComponent
+  },
+  //
   {
     path: 'example',
     loadChildren: '../example/example.model#ExampleModule'
