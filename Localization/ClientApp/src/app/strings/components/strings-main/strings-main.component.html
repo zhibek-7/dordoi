@@ -1,12 +1,5 @@
 <div class="row m-2">
   <div class="col">
-    <div class="btn-group m-1">
-      <button class="btn btn-success" disabled>Скрыть</button>
-      <button class="btn btn-success" disabled>Показать</button>
-    </div>
-    <button class="btn btn-success m-1" disabled>Добавить строку</button>
-    <button class="btn btn-success m-1" disabled>Поиск и замена</button>
-    <button class="btn btn-success m-1" disabled>Удалить</button>
   </div>
   <div class="col">
     <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
