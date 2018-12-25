@@ -5,9 +5,8 @@ import { ProjectsService } from '../../../services/projects.service';
 import { Project } from '../../../models/Project';
 
 
-import { FormControl, FormGroupDirective, NgForm, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material";
+import { FormControl} from '@angular/forms';
+
 
 
 @Component({
