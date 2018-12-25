@@ -8,10 +8,11 @@ using Dapper;
 using System.Linq;
 using System.Threading.Tasks;
 using SqlKata;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class TranslationSubstringRepository : BaseRepository, IRepositoryAsync<TranslationSubstring>
+    public class TranslationSubstringRepository : BaseRepository, ITranslationSubstringRepository
     {
         private PostgreSqlNativeContext context;
 
@@ -355,6 +356,76 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
 
             return query;
+        }
+
+        public async Task<IEnumerable<Locale>> GetLocalesForStringAsync(int translationSubstringId)
+        {
+            using (var dbConnection = this.context.Connection)
+            {
+                var query =
+                    new Query("Locales")
+                    .WhereIn("ID",
+                        new Query("TranslationsubStringsLocales")
+                        .Select("Id_Locales")
+                        .Where("Id_TranslationSubStrings", translationSubstringId));
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                var locales = await dbConnection.QueryAsync<Locale>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+
+                return locales;
+            }
+        }
+
+        public async Task DeleteTranslationLocalesAsync(int translationSubstringId)
+        {
+            using (var dbConnection = this.context.Connection)
+            {
+                dbConnection.Open();
+                var query =
+                    new Query("TranslationsubStringsLocales")
+                    .Where("Id_TranslationSubStrings", translationSubstringId)
+                    .AsDelete();
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+                dbConnection.Close();
+            }
+        }
+
+        public async Task AddTranslationLocalesAsync(int translationSubstringId, IEnumerable<int> localesIds)
+        {
+            using (var dbConnection = this.context.Connection)
+            {
+                dbConnection.Open();
+                foreach (var localeId in localesIds)
+                {
+                    var sql =
+                        "INSERT INTO \"TranslationsubStringsLocales\" " +
+                        "(" +
+                        "\"Id_TranslationSubStrings\", " +
+                        "\"Id_Locales\"" +
+                        ") VALUES " +
+                        "(" +
+                        "@Id_TranslationSubStrings, " +
+                        "@Id_Locales" +
+                        ")";
+                    var param = new { Id_TranslationSubStrings = translationSubstringId, Id_Locales = localeId };
+                    this.LogQuery(sql, param);
+                    await dbConnection.ExecuteAsync(
+                        sql: sql,
+                        param: param);
+                }
+                dbConnection.Close();
+            }
         }
 
     }

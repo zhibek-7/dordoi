@@ -306,27 +306,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
-        {
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                var getTranslationLocalesForTermQuery =
-                    new Query("Locales")
-                    .WhereIn("ID",
-                        new Query("TranslationsubStringsLocales")
-                        .Select("Id_Locales")
-                        .Where("Id_TranslationSubStrings", termId));
-                var getTranslationLocalesForTermCompiledQuery = this._compiler.Compile(getTranslationLocalesForTermQuery);
-                this.LogQuery(getTranslationLocalesForTermCompiledQuery);
-                var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
-                    sql: getTranslationLocalesForTermCompiledQuery.Sql,
-                    param: getTranslationLocalesForTermCompiledQuery.NamedBindings);
-                dbConnection.Close();
-                return translationLocalesForTerm;
-            }
-        }
-
         public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
         {
             using (var dbConnection = this._context.Connection)
@@ -345,51 +324,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     param: getTranslationLocalesCompiledQuery.NamedBindings);
                 dbConnection.Close();
                 return translationLocalesForTerm;
-            }
-        }
-
-        public async Task DeleteTranslationLocalesForTermAsync(int termId)
-        {
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                var deleteTranslationLocalesForTermQuery =
-                    new Query("TranslationsubStringsLocales")
-                    .Where("Id_TranslationSubStrings", termId)
-                    .AsDelete();
-                var deleteTranslationLocalesForTermCompiledQuery = this._compiler.Compile(deleteTranslationLocalesForTermQuery);
-                this.LogQuery(deleteTranslationLocalesForTermCompiledQuery);
-                await dbConnection.ExecuteAsync(
-                    sql: deleteTranslationLocalesForTermCompiledQuery.Sql,
-                    param: deleteTranslationLocalesForTermCompiledQuery.NamedBindings);
-                dbConnection.Close();
-            }
-        }
-
-        public async Task AddTranslationLocalesForTermAsync(int termId, IEnumerable<int> localesIds)
-        {
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                foreach(var localeId in localesIds)
-                {
-                    var sql =
-                        "INSERT INTO \"TranslationsubStringsLocales\" " +
-                        "(" +
-                        "\"Id_TranslationSubStrings\", " +
-                        "\"Id_Locales\"" +
-                        ") VALUES " +
-                        "(" +
-                        "@Id_TranslationSubStrings, " +
-                        "@Id_Locales" +
-                        ")";
-                    var param = new { Id_TranslationSubStrings = termId, Id_Locales = localeId };
-                    this.LogQuery(sql, param);
-                    await dbConnection.ExecuteAsync(
-                        sql: sql,
-                        param: param);
-                }
-                dbConnection.Close();
             }
         }
 
