@@ -16,8 +16,9 @@
     </select>
   </div>
 </div>
-<app-strings-list class="m-2"
-                  [selectableStrings]="selectableStrings"
-                  (sortingParamsChanged)="applySorting($event)"
-                  (dataReloadRequested)="loadStrings()"
-                  ></app-strings-list>
+<div class="col m-2">
+  <app-strings-list [selectableStrings]="selectableStrings"
+                    (sortingParamsChanged)="applySorting($event)"
+                    (dataReloadRequested)="loadStrings()"
+                    ></app-strings-list>
+</div>
