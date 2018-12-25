@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
-using Models.Models;
+using Models.Parser;
 using Npgsql;
 using SqlKata;
 using Utilities.Logs;
