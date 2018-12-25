@@ -10,6 +10,7 @@ import { FileService } from 'src/app/services/file.service';
 import { FileViewModel } from 'src/app/strings/models/file.viewmodel';
 import { forkJoin } from 'rxjs';
 import { SortingArgs } from 'src/app/shared/models/sorting.args';
+import { ProjectsService } from 'src/app/services/projects.service';
 
 @Component({
   selector: 'app-strings-main',
@@ -35,12 +36,13 @@ export class StringsMainComponent implements OnInit {
   selectedFileId: number|null = null;
 
   private get projectId(): number {
-    return +sessionStorage.getItem('ProjecID');
+    return this.projectsService.currentProjectId;
   }
 
   isSortingAscending: boolean = true;
 
   constructor(
+    private projectsService: ProjectsService,
     private fileService: FileService,
     private translationSubstringService: TranslationSubstringService,
     private languageService: LanguageService,
