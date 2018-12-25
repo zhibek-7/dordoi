@@ -36,11 +36,21 @@ namespace Localization.Controllers
         }
 
 
+        //[HttpPost]
+        //[Route("add/{project}")]
         [HttpPost]
-        [Route("add/{project}")]
-        public LocalizationProject AddProject(LocalizationProject project)
+        [Route("AddProject")]
+        public LocalizationProject AddProject([FromBody] LocalizationProject project)
         {
-              _localizationProjectRepository.InsertProject(project);
+            _localizationProjectRepository.InsertProject(project);
+            return project;
+        }
+
+        [HttpPost]
+        [Route("AddProject2")]
+        public LocalizationProject AddProjectT([FromBody] LocalizationProject project)
+        {
+            _localizationProjectRepository.InsertProject(project);
             return project;
         }
 
@@ -49,14 +59,14 @@ namespace Localization.Controllers
         [Route("delete/{Id}")]
         public void DeleteProject(int Id)
         {
-         _localizationProjectRepository.DeleteProject(Id);
+            _localizationProjectRepository.DeleteProject(Id);
         }
         [HttpGet]
         [Route("edit/{Id}")]
         public LocalizationProject EditProject(LocalizationProject project, int Id)
         {
-          _localizationProjectRepository.UpdateProject(project);
-          return project;
+            _localizationProjectRepository.UpdateProject(project);
+            return project;
         }
 
     }

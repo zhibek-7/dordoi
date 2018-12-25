@@ -114,7 +114,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (IDbConnection db = context.Connection)
             {
 
-                var sqlQuery = "INSERT INTO LocalizationProjects (Name,Description,URL,Visibility,DateOfCreation,LastActivity,ID_SourceLocale,AbleToDownload,AbleToLeftErrors,DefaultString,NotifyNew,NotifyFinish,NotifyConfirm,Logo) VALUES('"
+                var sqlQuery = "INSERT INTO \"LocalizationProjects\" (\"Name\", \"Description\", \"URL\", \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
               + project.Name + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.DateOfCreation + "','"
               + project.LastActivity + "','" + project.ID_SourceLocale + "','" + project.AbleToDownload + "','" + project.AbleToLeftErrors + "','"
               + project.DefaultString + "','" + project.NotifyNew + "','" + project.NotifyFinish + "','" + project.NotifyConfirm + "','" + project.Logo + "')";
@@ -122,9 +122,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 int? projectId = db.Query<int>(sqlQuery, project).FirstOrDefault();
                 project.ID = (int)projectId;
-                db.Execute(sqlQuery, project);
 
-
+                //Не нужно дважды вызывать
+                //db.Execute(sqlQuery, project);
             }
         }
 

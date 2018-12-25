@@ -14,6 +14,9 @@ import { DeleteProjectComponent } from './components/delete-project/delete-proje
 import { AllSettingsComponent } from './components/all-settings/all-settings.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 //import { MenuProjectComponent } from './components/menu-project/menu-project.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,10 @@ import { NotificationsComponent } from './components/notifications/notifications
     CreateProjectRoutingModule,
     FormsModule,
     HttpModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: []
 })
