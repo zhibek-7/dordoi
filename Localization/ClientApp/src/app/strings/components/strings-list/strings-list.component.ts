@@ -3,7 +3,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
 import { LanguageService } from 'src/app/services/languages.service';
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
-import { Selectable } from 'src/app/shared/models/selectable.model';
 import { SortingArgs } from 'src/app/shared/models/sorting.args';
 import { forkJoin } from 'rxjs';
 
@@ -15,7 +14,7 @@ import { forkJoin } from 'rxjs';
 export class StringsListComponent implements OnInit {
 
   @Input()
-  selectableStrings: Selectable<TranslationSubstring>[];
+  translationStrings: TranslationSubstring[];
 
   lastSortColumnName: string = '';
 
@@ -27,15 +26,12 @@ export class StringsListComponent implements OnInit {
   @Output()
   dataReloadRequested = new EventEmitter();
 
-  allSelectedCheckboxChecked: boolean = false;
-
   get isAllStringsOutdated(): boolean {
-    return this.selectableStrings.every(selectableString => selectableString.model.outdated);
+    return this.translationStrings.every(translationString => translationString.outdated);
   }
 
   constructor(
     private translationSubstringService: TranslationSubstringService,
-    private languageService: LanguageService,
   ) { }
 
   ngOnInit() {
@@ -53,27 +49,15 @@ export class StringsListComponent implements OnInit {
     this.isSortingAscending = !this.isSortingAscending;
   }
 
-  toggleSelectionForAllDisplayed() {
-    let allSelected = this.selectableStrings.every(selectableString => selectableString.isSelected);
-
-    if (this.allSelectedCheckboxChecked && allSelected)
-      return;
-
-    if (allSelected)
-      for (let selectableString of this.selectableStrings) { selectableString.isSelected = false; }
-    else
-      for (let selectableString of this.selectableStrings) { selectableString.isSelected = true; }
-  }
-
   toggleOutdatedForAllDisplayedStrings() {
     if (this.isAllStringsOutdated) {
-      for (let selectableString of this.selectableStrings) { selectableString.model.outdated = false; }
+      for (let translationString of this.translationStrings) { translationString.outdated = false; }
     }
     else {
-      for (let selectableString of this.selectableStrings) { selectableString.model.outdated = true; }
+      for (let translationString of this.translationStrings) { translationString.outdated = true; }
     }
-    forkJoin(this.selectableStrings.map(selectableString =>
-      this.translationSubstringService.updateTranslationSubstring(selectableString.model)))
+    forkJoin(this.translationStrings.map(translationString =>
+      this.translationSubstringService.updateTranslationSubstring(translationString)))
       .subscribe(
         () => this.dataReloadRequested.emit(),
         error => console.log(error));

@@ -1,9 +1,6 @@
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>
-        <input type="checkbox" class="checkbox" [(ngModel)]="allSelectedCheckboxChecked" (change)="toggleSelectionForAllDisplayed()">
-      </th>
       <th (click)="requestSortBy('value')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'value'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'value'">Исходная строка</th>
@@ -23,21 +20,18 @@
       <th>Действия</th>
     </tr>
   </thead>
-  <tr *ngFor="let selectableString of selectableStrings">
+  <tr *ngFor="let translationString of translationStrings">
+    <td>{{translationString.value}}</td>
+    <td>{{translationString.context}}</td>
     <td>
-      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.isSelected">
+      <input type="checkbox" class="checkbox" [(ngModel)]="translationString.outdated" (change)="updateString(translationString)">
     </td>
-    <td>{{selectableString.model.value}}</td>
-    <td>{{selectableString.model.context}}</td>
-    <td>
-      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.model.outdated" (change)="updateString(selectableString.model)">
-    </td>
-    <td>{{selectableString.model.description}}</td>
+    <td>{{translationString.description}}</td>
     <td>
       <div class="btn-group">
         <button class="btn btn-success" (click)="setLanguagesModal.show()">Задать язык</button>
         <app-set-languages-form-modal #setLanguagesModal
-                                      [translationSubstring]="selectableString.model"
+                                      [translationSubstring]="translationString"
                                       ></app-set-languages-form-modal>
       </div>
     </td>
