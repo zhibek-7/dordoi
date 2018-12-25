@@ -30,7 +30,7 @@
     <td>{{selectableString.model.value}}</td>
     <td>{{selectableString.model.context}}</td>
     <td>
-      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.model.outdated">
+      <input type="checkbox" class="checkbox" [(ngModel)]="selectableString.model.outdated" (change)="updateString(selectableString.model)">
     </td>
     <td>{{selectableString.model.description}}</td>
     <td>

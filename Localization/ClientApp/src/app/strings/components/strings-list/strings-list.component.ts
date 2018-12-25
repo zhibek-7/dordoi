@@ -79,4 +79,12 @@ export class StringsListComponent implements OnInit {
         error => console.log(error));
   }
 
+  updateString(updatedTranslationSubsrtring: TranslationSubstring) {
+    this.translationSubstringService
+      .updateTranslationSubstring(updatedTranslationSubsrtring)
+      .subscribe(
+        () => this.dataReloadRequested.emit(),
+        error => console.log(error));
+  }
+
 }
