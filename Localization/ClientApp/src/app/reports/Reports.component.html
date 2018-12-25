@@ -29,7 +29,7 @@
   <nav class="navbar bg-light navbar-expand-md">
     <div class="collapse navbar-collapse w-75 order-1 order-md-0  dual-collapse2 leftUl navbarCollapse">
       <ul class="navbar-nav mr-auto">
-        <li class="navbar-item">
+        <!--<li class="navbar-item">
           <div (click)="showReport(1)" class="nav-link">Статус проекта</div>
         </li>
         <li class="navbar-item">
@@ -37,21 +37,22 @@
         </li>
         <li class="navbar-item">
           <div (click)="showReport(3)" class="nav-link">Стоимость переводов</div>
-        </li>
+        </li>-->
         <li class="navbar-item">
           <div (click)="showReport(4)" class="nav-link">Отчет по работам</div>
         </li>
-        <li class="navbar-item">
+        <!--<li class="navbar-item">
           <div (click)="showReport(5)" class="nav-link">Нарушения</div>
-        </li>
+        </li>-->
       </ul>
     </div>
-    
+
   </nav>
 </div>
 
-<div *ngIf="showTranslatedWords">
-  <translated-words-report [projectId]="project.id"></translated-words-report>
+<!--<div *ngIf="showTranslatedWords">-->
+<div>
+<translated-words-report [projectId]="project.id"></translated-words-report>
 </div>
 
 <div *ngIf="showProjectStatus">
