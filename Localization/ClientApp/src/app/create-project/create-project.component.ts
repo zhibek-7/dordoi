@@ -29,13 +29,13 @@ export class CreateProjectComponent implements OnInit{
     options:Array<any>=[
         {labelName:'Public project',id:'gridRadios1', small:'Visible to anyone. You can restrict access to languages after the project is created.',inputName:'gridRadios', value:'checked'},
         {labelName:'Private project',id:'gridRadios2', small:'Visible only to the invited project members',inputName:'gridRadios', value:'option2'},];
-  
+
 
 ///////////////////////////////////////////////////
 
     dropdownList=[];
     selectedItems=[];
-    dropdownSettings={};   
+    dropdownSettings={};
         ngOnInit() {
         this.dropdownList=[
           {itemName:'Ido', checked: false,id:'gridIdo'},
@@ -65,8 +65,8 @@ AddSelected(event,lang){
     this.selectedItems.push({'itemName':itemNameAttr.nodeValue,'selected':lang.checked,'id':idAttr.nodeValue});
   }else{
     const index = this.selectedItems.findIndex(list => list.id == lang.id);//Find the index of stored id
-    this.selectedItems.splice(index, 1); 
-  } 
+    this.selectedItems.splice(index, 1);
+  }
 }
 
 AllSelected(){
@@ -76,8 +76,8 @@ this.dropdownList.forEach(element => {
     this.selectedItems.push({'itemName':element.itemName,'selected':element.checked,'id':element.id});
   }else{
     const index = this.selectedItems.findIndex(list => list.id == element.id);//Find the index of stored id
-    this.selectedItems.splice(index, 1); 
-  } 
+    this.selectedItems.splice(index, 1);
+  }
 });}
 
 FiterByName(){
@@ -87,8 +87,8 @@ FiterByName(){
       this.selectedItems.push({'itemName':element.itemName,'selected':element.checked,'id':element.id});
     }else{
       const index = this.selectedItems.findIndex(list => list.id == element.id);//Find the index of stored id
-      this.selectedItems.splice(index, 1); 
-    } 
+      this.selectedItems.splice(index, 1);
+    }
   });}
 
 
@@ -128,7 +128,8 @@ FiterByName(){
     newProject.visibility = true;
     newProject.id = Math.floor(Math.random() * 10000) + 1;
     newProject.url = "rrrr";
-    this.projectService.addProject(newProject).subscribe(response => console.log(response));
+   //TODO вернуть как было.
+    //this.projectService.addProject(newProject)subscribe(response => console.log(response));
   }
 
   editProject(Id: number): void {
