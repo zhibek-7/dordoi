@@ -90,7 +90,7 @@ export class LanguagesComponent implements OnInit {
         if(event.which == 13 || event.keyCode == 13){
 
             let translationText = event.target.value; 
-            let currentProjectId = this.projectService.getCurrentProjectId();
+            let currentProjectId = this.projectService.currentProjectId;
             this.translationService.findTranslationByMemory(currentProjectId, translationText)
                 .subscribe(
                     translations => {

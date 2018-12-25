@@ -8,14 +8,10 @@ export class ProjectsService {
 
   private controllerUrl: string = "api/Project/";
 
-    private currnetProjectId = undefined;
-
     constructor(private httpClient: HttpClient) {}
 
-    getCurrentProjectId(){
-      // когда появится несколько проектов для тестирования, 
-      //нужно будет присваивать явное значение текущего проекта(пока все только в одном проекте)
-      return this.currnetProjectId = 0; 
+    get currentProjectId(): number {
+        return +sessionStorage.getItem('ProjecID');
     }
 
     getProjects(): Observable<Project[]> {
