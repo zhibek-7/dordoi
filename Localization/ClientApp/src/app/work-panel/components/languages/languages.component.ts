@@ -7,6 +7,7 @@ import { ProjectsService } from '../../../services/projects.service';
 
 import { Translation } from '../../../models/database-entities/translation.type';
 import { TranslationWithFile } from '../../localEntites/translations/translationWithFile.type';
+import { SimilarTranslation } from '../../localEntites/translations/similarTranslation.type';
 
 declare var $: any;
 
@@ -18,7 +19,11 @@ declare var $: any;
 export class LanguagesComponent implements OnInit {
 
     listOfTranslations: Translation[];
+
     listOfTranslationsByMemory: TranslationWithFile[];
+
+    listOfSimilarTranslations: SimilarTranslation[];
+
     newTranslation: Translation;
 
     searchByMemory: string = "";
@@ -28,10 +33,14 @@ export class LanguagesComponent implements OnInit {
         
         this.listOfTranslations = [];
         this.listOfTranslationsByMemory = [];
+        this.listOfSimilarTranslations = [];
 
         this.sharePhraseService.onClick2.subscribe(translationsOfTheString => {
             this.listOfTranslations = translationsOfTheString;
             this.listOfTranslationsByMemory = [];  
+            this.listOfSimilarTranslations = [];
+        
+            this.findSimilarTranslations();
         });
         this.shareTranslatedPhraseService.onSumbit.subscribe(translation => this.listOfTranslations.push(translation));
     }
@@ -67,6 +76,15 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    checkNumberOfSimilarTranslations(){
+        if(this.listOfSimilarTranslations.length == 0){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
     async changeTranslate(translation: Translation){
         if(translation.confirmed == false){
             this.translationService.rejectTranslate(translation.id);
@@ -86,17 +104,31 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    findSimilarTranslations(){
+        let phraseForTranslation = this.sharePhraseService.getSharedPhrase();
+        let currentProjectId = this.projectService.getCurrentProjectId();
+
+        this.translationService.findSimilarTranslations(currentProjectId, phraseForTranslation.substringToTranslate)
+                .subscribe(
+                    similarTranslations => {
+                        this.listOfSimilarTranslations = similarTranslations;
+                    }
+                )
+    }
+
     onEnterPress(event: any){
         if(event.which == 13 || event.keyCode == 13){
 
             let translationText = event.target.value; 
             let currentProjectId = this.projectService.getCurrentProjectId();
+
             this.translationService.findTranslationByMemory(currentProjectId, translationText)
                 .subscribe(
                     translations => {
                         this.listOfTranslationsByMemory = translations;
                     }
                 )
+
             event.target.value = null;
         }
     }

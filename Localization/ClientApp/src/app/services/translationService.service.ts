@@ -3,6 +3,7 @@ import { HttpClient, HttpParams} from '@angular/common/http';
 
 import { Translation } from '../models/database-entities/translation.type';
 import { TranslationWithFile } from '../work-panel/localEntites/translations/translationWithFile.type';
+import { SimilarTranslation } from '../work-panel/localEntites/translations/similarTranslation.type';
 
 import { Observable } from 'rxjs';
 
@@ -44,6 +45,12 @@ export class TranslationService {
         const params = new HttpParams().set('currentProjectId', currentProjectId.toString())
                                         .append('translationText', translationText);
         return this.http.get<TranslationWithFile[]>(this.url + '/FindTranslationByMemory/', {params});
+    }
+
+    findSimilarTranslations(currentProjectId: number, translationText: string): Observable<SimilarTranslation[]>{
+        const params = new HttpParams().set('currentProjectId', currentProjectId.toString())
+                                        .append('translationText', translationText);
+        return this.http.get<SimilarTranslation[]>(this.url + '/FindSimilarTranslations/', {params});
     }
 
 }

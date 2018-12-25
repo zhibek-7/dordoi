@@ -193,5 +193,19 @@ namespace Localization.WebApi
             return Ok(translations);
         }
 
+        /// <summary>
+        /// Поиск схожих вариантов перевода в данном проекте
+        /// </summary>
+        /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
+        /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("FindSimilarTranslations")]
+        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, string translationText)
+        {
+            var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, translationText);
+            return Ok(similarTranslations);
+        }
+
     }
 }

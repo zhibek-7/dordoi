@@ -12,7 +12,7 @@ using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class CommentRepository : IRepositoryAsync<Comments>
+    public class CommentRepository : BaseRepository, IRepositoryAsync<Comments>
     {
         private PostgreSqlNativeContext context; 
 

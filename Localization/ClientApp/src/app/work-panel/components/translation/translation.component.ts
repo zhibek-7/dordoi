@@ -28,7 +28,10 @@ export class TranslationComponent implements OnInit {
     constructor(private sharePhraseService: SharePhraseService,
         private shareTranslatedPhraseService: ShareTranslatedPhraseService, private translationService: TranslationService ) {
 
-        this.sharePhraseService.onClick.subscribe(pickedPhrase => this.phraseForTranslate = pickedPhrase);
+        this.sharePhraseService.onClick.subscribe(pickedPhrase => {
+                this.phraseForTranslate = pickedPhrase;                
+                this.translatedText = null;
+            });
      }
 
     ngOnInit(): void { }
@@ -83,6 +86,7 @@ export class TranslationComponent implements OnInit {
 
         this.translatedText = null;
         this.translatedPhrase = null;       
+        
         $("#btnSave").attr("disabled", true); 
         $("#btnSave").attr("disabled", false);  // хорошо бы найти стиль который убирает обводку кнопки после нажатия(убирать его другим способом)
     }

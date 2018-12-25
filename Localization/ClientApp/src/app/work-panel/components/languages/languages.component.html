@@ -34,13 +34,38 @@
                                 <div class="col-1 align-self-center"><img (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon" src="../../../assets/icons/main/bin.png"></div>
                             </div>
                         </li>
-                    </ul>
+                    </ul>                    
                 </div>
                 <div *ngIf="!checkNumberOfTranslations()" >
                     <div class="translationsEmpty">
                         Переводов данной фразы не было предложено
                     </div>
                 </div>    
+                <div *ngIf="checkNumberOfSimilarTranslations()">
+                    <hr>
+                    <div class="labelSimilarTranlsations ml-5">Память переводов и Машинные переводы</div>
+                    <hr>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item list-group-item-action" *ngFor="let similarTranslation of listOfSimilarTranslations">
+                            <div class="row offersBlock">                            
+                                <div class="col-12 ">
+                                    <div class="align-self-start translatedText">
+                                        {{similarTranslation.translationVariant}}
+                                    </div>
+                                    <div class="align-self-start labelSimilarTranlsations">
+                                        {{similarTranslation.translationText}}
+                                    </div>
+                                    <div class="align-self-end translationInfo">
+                                        <div class="row">
+                                            <div class="col-xl-6 col-lg-6">File: {{similarTranslation.fileOwnerName}}</div>
+                                            <div class="col-xl-6 col-lg-6 userLogin">Процент совпадения: {{similarTranslation.similarity | percent }}</div>
+                                        </div>
+                                    </div>
+                                </div>                                    
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>            
                 
             <div class="tab-pane fade" id="nav-otherLang" role="tabpanel" aria-labelledby="nav-otherLang-tab">

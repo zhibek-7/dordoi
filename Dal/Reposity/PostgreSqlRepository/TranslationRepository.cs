@@ -24,7 +24,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Функция добавления варианта перевода
+        /// Метод добавления варианта перевода
         /// </summary>
         /// <param name="item">Вариант перевода</param>
         public async Task<int> AddAsync(Translation item)
@@ -53,7 +53,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Функция получения всех переводов
+        /// Метод получения всех переводов
         /// </summary>
         /// <returns>Список переводов</returns>
         public async Task<IEnumerable<Translation>> GetAllAsync()
@@ -81,7 +81,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
         /// <summary>
-        /// Функция получения варианта перевода по конкретному id
+        /// Метод получения варианта перевода по конкретному id
         /// </summary>
         /// <param name="id">id необходимого варианта перевода</param>
         /// <returns>Вариант перевода</returns>
@@ -111,7 +111,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Функция удаления варианта перевода по конкретному id
+        /// Метод удаления варианта перевода по конкретному id
         /// </summary>
         /// <param name="id">id варианта перевода который нужно удалить</param>
         public async Task<bool> RemoveAsync(int id)
@@ -141,7 +141,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Функция обновления варианта перевода
+        /// Метод обновления варианта перевода
         /// </summary>
         /// <param name="item">Обновленный вариант перевода</param>
         public async Task<bool> UpdateAsync(Translation item)
@@ -177,7 +177,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Функция получения всех вариантов перевода конкретной фразы
+        /// Метод получения всех вариантов перевода конкретной фразы
         /// </summary>
         /// <param name="idString">id фразы, варианты перевода которой необходимы</param>
         /// <returns>Список вариантов перевода</returns>
@@ -269,7 +269,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Функция получения всех вариантов перевода заданой фразы в проекте локализации
+        /// Метод получения всех вариантов перевода заданой фразы в проекте локализации
         /// </summary>
         /// <param name="translationText">Фраза по которой необходимо найти переводы</param>
         /// <returns>Список вариантов перевода</returns>
@@ -281,7 +281,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "INNER JOIN \"Files\" AS F ON F.\"ID_LocalizationProject\" = LP.\"ID\" " +
                         "INNER JOIN \"TranslationSubstrings\" AS TS ON TS.\"ID_FileOwner\" = F.\"ID\" " +
                         "INNER JOIN \"Translations\" AS T ON T.\"ID_String\" = TS.\"ID\" " +
-                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";
+                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";            
 
             try
             {
@@ -291,6 +291,44 @@ namespace DAL.Reposity.PostgreSqlRepository
                     IEnumerable<TranslationWithFile> translations = await dbConnection.QueryAsync<TranslationWithFile>(query, new { TranslationText = "%" + translationText + "%" });
                     dbConnection.Close();
                     return translations;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Метод получения схожих вариантов перевода в проекте локализации
+        /// </summary>
+        /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
+        /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, string translationSubstring)
+        {            
+            var query = "SELECT \"SubstringToTranslate\" AS \"TranslationText\", similarity(\"SubstringToTranslate\", @TranslationSubstring) AS \"Similarity\", " +
+                        "\"Files\".\"Name\" AS \"FileOwnerName\", \"Translations\".\"Translated\" AS \"TranslationVariant\"" +
+                        "FROM \"LocalizationProjects\" " +
+                        "INNER JOIN \"Files\" ON \"Files\".\"ID_LocalizationProject\" = \"LocalizationProjects\".\"ID\" " +
+                        "INNER JOIN \"TranslationSubstrings\" ON \"TranslationSubstrings\".\"ID_FileOwner\" = \"Files\".\"ID\" " +
+                        "INNER JOIN \"Translations\" ON \"Translations\".\"ID_String\" = \"TranslationSubstrings\".\"ID\" " +
+                        "WHERE \"LocalizationProjects\".\"ID\" = @ProjectId and \"SubstringToTranslate\" % @TranslationSubstring;";
+
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query,
+                        new { TranslationSubstring = translationSubstring, ProjectId = currentProjectId });
+                    dbConnection.Close();
+                    return similarTranslations;
                 }
             }
             catch (Exception exception)
