@@ -49,8 +49,7 @@ export class GlossaryTermsComponent implements OnInit {
   deleteTerm(term: Term) {
     this.glossariesService.deleteTerm(this.glossary.id, term.id)
       .subscribe(
-        () => this.requestDataReloadService.requestUpdate(),
-        error => console.log(error));
+        () => this.requestDataReloadService.requestUpdate());
   }
 
   toggleSelectionForAllDisplayedTerms() {

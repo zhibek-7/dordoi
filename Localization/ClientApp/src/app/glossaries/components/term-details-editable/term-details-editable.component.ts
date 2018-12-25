@@ -42,9 +42,7 @@ export class TermDetailsEditableComponent extends LoadOnRequestBase implements O
   loadGlossaryLocale() {
     this.glossariesService.getGlossaryLocale(this.glossary.id)
       .subscribe(
-        glossaryLocale => this.glossaryLocale = glossaryLocale,
-        error => console.log(error)
-      );
+        glossaryLocale => this.glossaryLocale = glossaryLocale);
   }
 
   loadPartsOfSpeech() {

@@ -47,9 +47,7 @@ export class SetLanguagesFormModalComponent extends ModalComponent implements On
                         locale,
                         this.selectedLocales.some(currentTermLocale => currentTermLocale.id == locale.id)));
                 },
-                error => console.log(error)),
-            error => console.log(error)),
-        error => console.log(error));
+                error => console.log(error))));
   }
 
   setSelectedLocales(newSelection: Locale[]) {
@@ -63,8 +61,7 @@ export class SetLanguagesFormModalComponent extends ModalComponent implements On
 
   applyChanges() {
     this.glossariesService.setTranslationLocalesForTerm(this.glossary.id, this.term.id, this.selectedLocales.map(locale => locale.id))
-      .subscribe(() => this.requestDataReloadService.requestUpdate(),
-        error => console.log(error));
+      .subscribe(() => this.requestDataReloadService.requestUpdate());
     this.hide();
   }
 

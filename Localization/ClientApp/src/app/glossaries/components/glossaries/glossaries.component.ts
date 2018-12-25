@@ -17,8 +17,7 @@ export class GlossariesComponent implements OnInit {
   ngOnInit() {
     this.glossariesService.getGlossaries()
       .subscribe(
-        glossaries => this.glossaries = glossaries,
-        error => console.error(error));
+        glossaries => this.glossaries = glossaries);
   }
 
 }
