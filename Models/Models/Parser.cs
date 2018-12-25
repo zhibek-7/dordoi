@@ -62,6 +62,16 @@ namespace Models.Models
                         this.ParseAsString(file);
                         break;
                     }
+                case "txt":
+                    {
+                        this.ParseAsTxt(file);
+                        break;
+                    }
+                case "rc":
+                    {
+                        this.ParseAsRc(file);
+                        break;
+                    }
                 default:
                     {
                         break;
@@ -176,6 +186,26 @@ namespace Models.Models
         {
             string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*=\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
             var matches = Regex.Matches(file.OriginalFullText, pattern, RegexOptions.Singleline);
+            foreach (Match m in matches)
+            {
+                this.TranslationSubstrings.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+            }
+        }
+
+        private void ParseAsTxt(File file)
+        {
+            string pattern = "(.+)\r?\n?";
+            var matches = Regex.Matches(file.OriginalFullText, pattern);
+            foreach (Match m in matches)
+            {
+                this.TranslationSubstrings.Add(new TranslationSubstring(m.Groups[1].Value, string.Empty, file.ID, m.Groups[1].Value, m.Groups[1].Index));
+            }
+        }
+
+        private void ParseAsRc(File file)
+        {
+            string pattern = "\\s*(\\d+)\\s*,\\s*\"((?:[^\"]|(?<=\\\\)\")*)\"\\s*";
+            var matches = Regex.Matches(file.OriginalFullText, pattern);
             foreach (Match m in matches)
             {
                 this.TranslationSubstrings.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
