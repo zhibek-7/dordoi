@@ -3,12 +3,13 @@
     <span>Диапазон дат</span><br>
     <input type="text" matInput
            ngxDaterangepickerMd
-           [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}"
+           [locale]="{cancelLabel: ' Отмена ', applyLabel: ' ОК ', format: 'DD-MM-YYYY'}"
            startKey="from"
            endKey="to"
            [(ngModel)]="selected"
            name="daterange"
-           class="daterangePicker" />
+           class="daterangePicker"
+           value="{{selected.from.format('DD.MM.YYYY')}} - {{selected.to.format('DD.MM.YYYY')}}"/>
   </p>
   <div>
     <div stile="display: inline-block;">
@@ -102,5 +103,3 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
-
-

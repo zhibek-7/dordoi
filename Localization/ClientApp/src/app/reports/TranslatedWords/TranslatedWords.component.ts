@@ -13,8 +13,9 @@ import { User } from "../../models/database-entities/user.type";
 import { Project } from '../../models/Project';
 
 import { MatTableDataSource } from '@angular/material';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+
 import { Moment } from 'moment';
+import * as moment from "moment";
 
 @Component({
   selector: 'translated-words-report',
@@ -34,7 +35,6 @@ export class TranslatedWordsComponent implements OnInit {
 
 
   ngOnInit() {
-
     this.languagesService.getLanguageList()
       .subscribe(Languages => { this.Languages = Languages; },
         error => console.error(error));
@@ -48,8 +48,12 @@ export class TranslatedWordsComponent implements OnInit {
         error => console.error(error));
 
     this.projectsService.getProject(this.projectId)
-      .subscribe(project => { this.project = project; console.log(this.project.name); },
-      error => console.error(error));
+      .subscribe(project => {
+          this.project = project; console.log(this.project.name);
+          this.selected.from = moment(this.project.dateOfCreation);
+          this.selected.to = moment();
+        },
+        error => console.error(error));
   }
 
   public project: Project;
