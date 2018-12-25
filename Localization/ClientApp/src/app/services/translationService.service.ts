@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class TranslationService {
 
-    private url: string = document.getElementsByTagName('base')[0].href + "api/translation/";
+    private url: string = document.getElementsByTagName('base')[0].href + "api/translation";
 
     constructor(private http: HttpClient) {
 
