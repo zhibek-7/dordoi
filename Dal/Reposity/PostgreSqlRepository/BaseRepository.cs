@@ -61,6 +61,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             if (sortBy.Any())
             {
                 var columnNamesToSort = sortBy
+                    .Where(x => x != null)
                     .Select(x => x.ToLower())
                     .Distinct()
                     .Where(x => columnNamesMappings.ContainsKey(x))
