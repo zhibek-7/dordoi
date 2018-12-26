@@ -68,7 +68,12 @@ export class GlossaryDetailsComponent implements OnInit {
     if (!this.glossary)
       return;
 
-    this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, offset, [this.sortByColumnName], this.ascending)
+    let sortByColumns = []
+    if (this.sortByColumnName) {
+      sortByColumns.push(this.sortByColumnName);
+    }
+
+    this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, offset, sortByColumns, this.ascending)
       .subscribe(
         response => {
           let terms = response.body;
