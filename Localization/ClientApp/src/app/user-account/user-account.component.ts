@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ProjectsService } from '../services/projects.service';
-import { LocalizationProject } from '../models/database-entities/localizationProject.type';
+import { ProjectsService } from '../services/projects.service'
+import { Project } from '../models/Project';
+import { User } from './user';
 import * as moment from 'moment';
 moment.locale('ru');
 
