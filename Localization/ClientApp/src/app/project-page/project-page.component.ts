@@ -1,62 +1,67 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Project } from '../models/Project';
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { ProjectsService } from '../services/projects.service';
 import { MatTableDataSource } from '@angular/material';
 
-export interface InfoElement {
-  file: string;
-  variant: string;
-  language: string;
-  time: string;
-  userId: string;
-}
+import { LanguageService } from '../services/languages.service';
+import { UserService } from '../services/user.service';
+import { Locale }from "../models/database-entities/locale.type";
+import { User } from "../models/database-entities/user.type";
 
-const allLanguages = [
-  'Русский',
-  'Французский',
-  'Китайский',
-  'Английский',
-];
+//export interface InfoElement {
+//  file: string;
+//  variant: string;
+//  language: string;
+//  time: string;
+//  userId: string;
+//}
 
-const ELEMENT_DATA: InfoElement[] = [
-  // tslint:disable-next-line:max-line-length
-  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не т',
-    file: 'Hydrogen.txt',
-    language: 'Русский',
-    time: '6.25',
-    userId: '14585' },
-  // tslint:disable-next-line:max-line-length
-  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не т',
-    file: 'Hydrogen.txt',
-    language: 'Русский',
-    time: '6.25',
-    userId: '14585' },
-  // tslint:disable-next-line:max-line-length
-  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsu',
-    file: 'Hydrogen.txt',
-    language: 'Русский',
-    time: '6.25',
-    userId: '14585' },
-  // tslint:disable-next-line:max-line-length
-  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
-    file: 'Hydrogen.txt',
-    language: 'Русский',
-    time: '6.25',
-    userId: '14585' },
-  // tslint:disable-next-line:max-line-length
-  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
-    file: 'Hydrogen.txt',
-    language: 'Французский',
-    time: '6.25',
-    userId: '89899' },
-  // tslint:disable-next-line:max-line-length
-  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
-    file: 'Hydrogen.txt',
-    language: 'Китайский',
-    time: '6.25',
-    userId: '89899' },
-];
+//const allLanguages = [
+//  'Русский',
+//  'Французский',
+//  'Китайский',
+//  'Английский',
+//];
+
+//const ELEMENT_DATA: InfoElement[] = [
+//  // tslint:disable-next-line:max-line-length
+//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не т',
+//    file: 'Hydrogen.txt',
+//    language: 'Русский',
+//    time: '6.25',
+//    userId: '14585' },
+//  // tslint:disable-next-line:max-line-length
+//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не т',
+//    file: 'Hydrogen.txt',
+//    language: 'Русский',
+//    time: '6.25',
+//    userId: '14585' },
+//  // tslint:disable-next-line:max-line-length
+//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsu',
+//    file: 'Hydrogen.txt',
+//    language: 'Русский',
+//    time: '6.25',
+//    userId: '14585' },
+//  // tslint:disable-next-line:max-line-length
+//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
+//    file: 'Hydrogen.txt',
+//    language: 'Русский',
+//    time: '6.25',
+//    userId: '14585' },
+//  // tslint:disable-next-line:max-line-length
+//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
+//    file: 'Hydrogen.txt',
+//    language: 'Французский',
+//    time: '6.25',
+//    userId: '89899' },
+//  // tslint:disable-next-line:max-line-length
+//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
+//    file: 'Hydrogen.txt',
+//    language: 'Китайский',
+//    time: '6.25',
+//    userId: '89899' },
+//];
 
 @Component({
   selector: 'app-project-page',
@@ -64,23 +69,54 @@ const ELEMENT_DATA: InfoElement[] = [
   styleUrls: ['./project-page.component.css']
 })
 export class ProjectPageComponent implements OnInit {
-  currentProject: Project;
+  currentProject: LocalizationProject;
   name: string;
   projectId: number;
-  langOptions = allLanguages;
-  langList;
+  //langOptions = allLanguages;
+  langList: Array<Locale>;
   panelOpenState = false;
   selected = 'none';
   selectedLang = 'none';
-  users = [
-    { name: 'Иванов Иван', id: '14585' },
-    { name: 'Петров Петр', id: '89899' }
-  ];
+  users: Array<User>;
   filtredUsers = [];
 
   displayedColumns: string[] = ['variant', 'file', 'language', 'time'];
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
-  currentUserName ='';
+  //dataSource = new MatTableDataSource(ELEMENT_DATA);
+  currentUserName = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private projectService: ProjectsService,
+    private languagesService: LanguageService,
+    private userService: UserService
+  ) { }
+
+  ngOnInit() {
+    this.currentUserName = sessionStorage.getItem('currentUserName');
+
+    this.languagesService.getLanguageList()
+      .subscribe(Languages => { this.langList = Languages; },
+        error => console.error(error));
+
+    this.userService.getUserList()
+      .subscribe(Users => { this.users = Users; },
+        error => console.error(error));
+
+    this.projectId = Number(sessionStorage.getItem('ProjecID'));
+
+    this.projectService.getProject(this.projectId)
+      .subscribe(project => {
+         this.currentProject = project;
+        },
+        error => console.error(error));
+
+    this.filtredUsers = this.users;
+    //this.langList = [
+    //  { name: 'Французский', icon: '../../assets/images/11.png' },
+    //  { name: 'Мандинго', icon: '../../assets/images/22.png' },
+    //  { name: 'Испанский', icon: '../../assets/images/333.png' }
+    //];
+  }
 
   applyFilterUsers(filterValue: string) {
     if (filterValue === 'none') {
@@ -100,12 +136,12 @@ export class ProjectPageComponent implements OnInit {
     let currentLang = filterValue.source.triggerValue;
 
     if (currentLang === 'Все языки') {
-      this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-    } else {
-      const filtredLangArr = ELEMENT_DATA.filter(function(i) {
-        return filtredArr(i.language);
-      });
-      this.dataSource = new MatTableDataSource(filtredLangArr);
+    //  this.dataSource = new MatTableDataSource(ELEMENT_DATA);
+    //} else {
+    //  const filtredLangArr = ELEMENT_DATA.filter(function(i) {
+    //    return filtredArr(i.language);
+    //  });
+    //  this.dataSource = new MatTableDataSource(filtredLangArr);
     }
 
     function filtredArr(language) {
@@ -113,38 +149,4 @@ export class ProjectPageComponent implements OnInit {
     }
   }
 
-  constructor(
-    private route: ActivatedRoute,
-    private projectService: ProjectsService
-  ) {}
-
-  ngOnInit() {
-
-    this.currentUserName = sessionStorage.getItem('currentUserName');
-
-    this.getProject();
-    this.filtredUsers = this.users;
-    this.langList = [
-      { name: 'Французский', icon: '../../assets/images/11.png'},
-      { name: 'Мандинго', icon: '../../assets/images/22.png'},
-      { name: 'Испанский', icon: '../../assets/images/333.png'}
-    ];
-  }
-
-  getProject() {
-    this.projectId = Number(sessionStorage.getItem('ProjecID'));
-
-    this.route.params.subscribe((params: Params) => {
-      this.projectService.getProject(this.projectId).subscribe(
-        project => {
-          this.currentProject = project;
-          console.log(project);
-          // this.langList = this.currentProject.lang - где-то здесь надо получить с сервера
-          // еще и языки проекта, которые как я понимаю будут одним из свойсвт проекта
-        },
-        error => console.error(error)
-      );
-      console.log('snapshot=' + this.route.snapshot.params['id']);
-    });
-  }
 }

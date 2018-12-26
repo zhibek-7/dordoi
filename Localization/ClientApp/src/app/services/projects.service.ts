@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Project } from '../models/Project';
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { Observable, of } from 'rxjs';
 
 @Injectable()
@@ -14,18 +14,18 @@ export class ProjectsService {
         return +sessionStorage.getItem('ProjecID');
     }
 
-    getProjects(): Observable<Project[]> {
+    getProjects(): Observable<LocalizationProject[]> {
       console.log("getProject-->");
-        return this.httpClient.get<Project[]>(this.controllerUrl + "List");
+    return this.httpClient.get<LocalizationProject[]>(this.controllerUrl + "List");
     }
 
-    getProject(id: number): Observable<Project> {
+  getProject(id: number): Observable<LocalizationProject> {
       console.log("getProject="+id);
       console.log("getProject==="+this.controllerUrl + id);
-        return this.httpClient.get<Project>(this.controllerUrl + id);
+    return this.httpClient.get<LocalizationProject>(this.controllerUrl + id);
     }
 
-    async addProject(project: Project) {
+  async addProject(project: LocalizationProject) {
     console.log("addProject-->");
     console.log(project);
 
@@ -33,7 +33,7 @@ export class ProjectsService {
     console.log(this.controllerUrl + "AddProject");
     //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
-    let asyncResult = await this.httpClient.post<Project>(this.controllerUrl + "AddProject", project).toPromise();
+    let asyncResult = await this.httpClient.post<LocalizationProject>(this.controllerUrl + "AddProject", project).toPromise();
     return asyncResult;
 
 
@@ -42,11 +42,11 @@ export class ProjectsService {
 
   updateProject(Id: number) {
     console.log("updateProject-->" +Id);
-      return this.httpClient.get<Project>(this.controllerUrl + "edit/{Id}");
+    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "edit/{Id}");
     }
   deleteProject(Id: number) {
     console.log("deleteProject-->" +Id);
-     return this.httpClient.get<Project>(this.controllerUrl + "delete/{Id}");
+    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/{Id}");
 
   }
 }
