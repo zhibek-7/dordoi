@@ -31,9 +31,8 @@ export class UserAccountComponent implements OnInit {
       .subscribe(project => { this.projectsArr = project; },
       error => console.error(error));
 
-    this.projectsArr.forEach((element)=>{
-      element.lastActivity = new Date();
-    })
+      //TODO пока не нужно
+    //this.projectsArr.forEach((element)=>{element.lastActivity = new Date();});
     // this.projectsArr = this.projectsService.getProjects() - метод возвращающий массив проетов. Отбор по юзеру не реализован
   }
 
