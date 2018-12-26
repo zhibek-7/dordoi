@@ -66,7 +66,8 @@ import { User } from '../models/database-entities/user.type';
 @Component({
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
-  styleUrls: ['./project-page.component.css']
+  styleUrls: ['./project-page.component.css'],
+  providers: [LanguageService, UserService ]
 })
 export class ProjectPageComponent implements OnInit {
   currentProject: LocalizationProject;
