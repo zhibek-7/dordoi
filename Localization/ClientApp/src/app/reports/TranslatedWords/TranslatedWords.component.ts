@@ -10,7 +10,7 @@ import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsRe
 import { Locale } from '../../models/database-entities/locale.type';
 import { File } from '../../models/database-entities/file.type';
 import { User } from "../../models/database-entities/user.type";
-import { Project } from '../../models/Project';
+import { LocalizationProject } from '../../models/database-entities/localizationProject.type';
 
 import { MatTableDataSource } from '@angular/material';
 
@@ -59,7 +59,7 @@ export class TranslatedWordsComponent implements OnInit {
         error => console.error(error));
   }
 
-  public project: Project;
+  public project: LocalizationProject;
 
   //Строки отчета
   public reportrows: TranslatedWordsReportRow[];

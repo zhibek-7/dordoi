@@ -3,7 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 import { Locale } from '../models/database-entities/locale.type';
-import { Project } from '../models/Project';
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { LanguageService } from '../services/languages.service';
 import { ProjectsService } from '../services/projects.service';
 
@@ -17,7 +17,7 @@ export class NewProjectComponent implements OnInit {
 
   value = '';
 
-  newProject: Project;// = new ProjectsService(this.httpClient);
+  newProject: LocalizationProject;// = new ProjectsService(this.httpClient);
 
   checkedLanguages = [];
 

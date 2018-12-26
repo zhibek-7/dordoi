@@ -3,7 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectsService } from '../services/projects.service';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
-import { Project } from '../models/Project';
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 //import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 //import {Langs} from './langs';
 //import { ListFilterPipe } from 'angular2-multiselect-dropdown';
@@ -112,15 +112,15 @@ FiterByName(){
 
 
 
-  addProject(newProject: Project): void {
+  addProject(newProject: LocalizationProject): void {
     newProject.name = "ccccc";
     newProject.ableToDownload = true;
     newProject.ableToLeftErrors = true;
-    newProject.dateOfCreation = "12.12.2018";
+    newProject.dateOfCreation = new Date(2018, 11, 12);
     newProject.defaultString = "12.12.2019";
     newProject.description = "wdwdwdwd";
     newProject.ID_SourceLocale = 12;
-    newProject.lastActivity = "12.12.2019";
+    newProject.lastActivity = new Date(2019, 11, 12);
     newProject.logo = "rr";
     newProject.notifyConfirm = true;
     newProject.notifyFinish = false;

@@ -2,7 +2,7 @@ import { Component, OnInit} from '@angular/core';
 
 
 import { ProjectsService } from '../../../services/projects.service';
-import { Project } from '../../../models/Project';
+import { LocalizationProject } from '../../../models/database-entities/localizationProject.type';
 
 
 import { FormControl} from '@angular/forms';
@@ -36,7 +36,8 @@ export class AllSettingsComponent implements OnInit {
 
     console.log("!!!="+this.pjName.value);
 
-    let newProject: Project = new Project(this.pjName.value, this.pjName.value, this.pjName.value);        // поменять на id реального пользователя, когда появится
+    let newProject: LocalizationProject = new LocalizationProject();
+    //(this.pjName.value, this.pjName.value, this.pjName.value);        // поменять на id реального пользователя, когда появится
     this.projectsService.addProject(newProject);
 
   }
