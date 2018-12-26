@@ -6,8 +6,8 @@ import { MatTableDataSource } from '@angular/material';
 
 import { LanguageService } from '../services/languages.service';
 import { UserService } from '../services/user.service';
-import { Locale }from "../models/database-entities/locale.type";
-import { User } from "../models/database-entities/user.type";
+import { Locale } from '../models/database-entities/locale.type';
+import { User } from '../models/database-entities/user.type';
 
 //export interface InfoElement {
 //  file: string;

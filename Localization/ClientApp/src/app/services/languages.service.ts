@@ -6,12 +6,12 @@ import { Observable, of } from 'rxjs';
 @Injectable()
 export class LanguageService {
 
-  private url: string = "api/Language/";
+  private url = 'api/Language/';
 
     constructor(private httpClient: HttpClient) { }
 
   getLanguageList(): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(this.url + "List");
+    return this.httpClient.get<Locale[]>(this.url + 'List');
   }
 
   getByUserId(userId: number): Observable<Locale[]> {
