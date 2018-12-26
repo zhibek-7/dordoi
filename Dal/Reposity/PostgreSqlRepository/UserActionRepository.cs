@@ -8,7 +8,7 @@ using Models.DatabaseEntities;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    class UserActionRepository : BaseRepository, IRepositoryAsync<UserAction>
+    public class UserActionRepository : BaseRepository, IRepositoryAsync<UserAction>
     {
         private PostgreSqlNativeContext context;
 
@@ -33,7 +33,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                                         action.ID_Translation, action.ID_Project };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
-                    dbConnection.Close();
                     return insertedId;
                 }
             }
@@ -55,7 +54,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var _params = new { id };
                     LogQuery(_sql, _params);
                     var action = await dbConnection.QueryFirstAsync<UserAction>(_sql, _params);
-                    dbConnection.Close();
                     return action;
                 }
             }
@@ -75,9 +73,29 @@ namespace DAL.Reposity.PostgreSqlRepository
                     dbConnection.Open();
                     var _sql = "SELECT * FROM \"UserActions\"";
                     LogQuery(_sql);
-                    var types = await dbConnection.QueryAsync<UserAction>(_sql);
-                    dbConnection.Close();
-                    return types;
+                    var actions = await dbConnection.QueryAsync<UserAction>(_sql);
+                    return actions;
+                }
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn("Ошибка в UserActionRepository.GetAllAsync ", exception);
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<UserAction>> GetAllByProjectIdAsync(int projectId)
+        {
+            try
+            {
+                using (var dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var _sql = "SELECT * FROM \"UserActions\" WHERE \"ID_Project\" = @projectId LIMIT 1";
+                    var _params = new { projectId };
+                    LogQuery(_sql, _params);
+                    var actions = await dbConnection.QueryAsync<UserAction>(_sql, _params);
+                    return actions;
                 }
             }
             catch (Exception exception)
@@ -98,7 +116,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var _params = new { WorkTypeId = id };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);
-                    dbConnection.Close();
                     return true;
                 }
             }
@@ -111,24 +128,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> UpdateAsync(UserAction action)
         {
-            try
-            {
-                using (var dbConnection = context.Connection)
-                {
-                    dbConnection.Open();
-                    var _sql = "UPDATE \"TypesOfWork\" SET \"Name\"=@name WHERE \"ID\"=@WorkTypeId ";
-                    //var _params = new { name = workType.Name, WorkTypeId = workType.ID };
-                    //LogQuery(_sql, _params);
-                    //await dbConnection.ExecuteAsync(_sql, _params);
-                    dbConnection.Close();
-                    return true;
-                }
-            }
-            catch (Exception exception)
-            {
-                _loggerError.WriteLn("Ошибка в UserActionRepository.UpdateAsync ", exception);
-                return false;
-            }
+            throw new NotImplementedException();
         }
     }
 }
