@@ -20,14 +20,14 @@ namespace Localization.Controllers
             userRepository = new UserRepository();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("List")]
         public List<User> GetAll()
         {
             return userRepository.GetAll().ToList();
         }
 
-        [HttpGet("{userId}/getPhoto")]
+        [HttpPost("{userId}/getPhoto")]
         public async Task<byte[]> GetPhoto(int userId)
         {
             return await this.userRepository.GetPhotoByIdAsync(id: userId);

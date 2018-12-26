@@ -20,16 +20,20 @@ namespace Localization.Controllers
             this._participantsRepository = new ParticipantRepository();
         }
 
-        [HttpGet("byProjectId/{projectId}")]
+        public class GetParticipantsByProjectIdParam
+        {
+            public string search { get; set; }
+            public int[] roleIds { get; set; }
+            public int[] localeIds { get; set; }
+            public int? offset { get; set; }
+            public int? limit { get; set; }
+            public string[] sortBy { get; set; }
+            public bool? sortAscending { get; set; }
+        }
+        [HttpPost("byProjectId/{projectId}/list")]
         public async Task<IEnumerable<Participant>> GetParticipantsByProjectIdAsync(
             int projectId,
-            [FromQuery] string search,
-            [FromQuery] int[] roleIds,
-            [FromQuery] int[] localeIds,
-            [FromQuery] int? offset,
-            [FromQuery] int? limit,
-            [FromQuery] string[] sortBy,
-            [FromQuery] bool? sortAscending
+            [FromBody] GetParticipantsByProjectIdParam param
             )
         {
             this.Response.Headers.Add(
@@ -37,19 +41,19 @@ namespace Localization.Controllers
                 value: (await this._participantsRepository
                         .GetAllByProjectIdCountAsync(
                             projectId: projectId,
-                            search: search,
-                            roleIds: roleIds,
-                            localeIds: localeIds))
+                            search: param.search,
+                            roleIds: param.roleIds,
+                            localeIds: param.localeIds))
                     .ToString());
             return await this._participantsRepository.GetByProjectIdAsync(
                 projectId: projectId,
-                search: search,
-                roleIds: roleIds,
-                localeIds: localeIds,
-                limit: limit ?? 25,
-                offset: offset ?? 0,
-                sortBy: sortBy,
-                sortAscending: sortAscending ?? true
+                search: param.search,
+                roleIds: param.roleIds,
+                localeIds: param.localeIds,
+                limit: param.limit ?? 25,
+                offset: param.offset ?? 0,
+                sortBy: param.sortBy,
+                sortAscending: param.sortAscending ?? true
                 );
         }
 
@@ -60,7 +64,7 @@ namespace Localization.Controllers
         }
 
         [HttpPost("{projectId}/{userId}/{roleId}")]
-        public async Task DeleteParticipant(int projectId, int userId, int roleId)
+        public async Task AddOrActivateParticipant(int projectId, int userId, int roleId)
         {
             await this._participantsRepository.AddOrActivateParticipant(projectId: projectId, userId: userId, roleId: roleId);
         }

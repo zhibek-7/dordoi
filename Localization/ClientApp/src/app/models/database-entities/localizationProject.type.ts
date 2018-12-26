@@ -4,11 +4,12 @@ export class LocalizationProject {
     description: string;
     url: string;
     visibility: boolean;
-    dateOfCreateion: Date;
+    dateOfCreation: Date;
     lastActivity: Date;
+    ID_SourceLocale: number;
     ableToDownload: boolean;
     ableToLeftErrors: boolean;
-    defualtString: boolean;
+    defaultString: string;
     notifyNew?: boolean;         
     notifyFinish?: boolean;   
     notifyConfirm?: boolean;

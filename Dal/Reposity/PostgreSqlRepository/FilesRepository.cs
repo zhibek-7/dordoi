@@ -274,16 +274,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sqlString = sqlString = "INSERT INTO \"TranslationSubstrings\" (\"SubstringToTranslate\", \"Context\", \"ID_FileOwner\", \"Value\", \"PositionInText\") " +
                                                 "VALUES (@SubstringToTranslate, @Context, @ID_FileOwner, @Value, @PositionInText)";
                         // Create parser object
-                        using (var p = new Parser(file))
+                        using (var p = new Parser())
                         {
+                            var translationSubstrings = p.Parse(file);
                             int n = 0;
-                            n = p.TranslationSubstrings.Count;
-                            foreach (var ts in p.TranslationSubstrings)
+                            n = translationSubstrings.Count;
+                            foreach (var ts in translationSubstrings)
                             {
                                 // Execute TranslationSubstring insert query
                                 n -= await connection.ExecuteAsync(sqlString, ts);
                             }
-                            ans = n == p.TranslationSubstrings.Count;
+                            ans = n == translationSubstrings.Count;
                         }
                     }
                     else ans = false;
@@ -294,17 +295,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     // Custom logging
                     _log.WriteLn("Ошибка в Upload NpgsqlException ", exception);
+                    t.Rollback();
+                    return false;
+                }
+                catch (ParserException exception)
+                {
+                    // Custom logging
+                    _log.WriteLn("Ошибка в блоке распарсивания: ", exception);
+                    //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
+                    //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
                     return false;
                 }
                 catch (Exception exception)
                 {
                     // Custom logging
                     _log.WriteLn("Ошибка в Upload Exception ", exception);
-                    return false;
-                }
-                finally
-                {
                     t.Rollback();
+                    return false;
                 }
             }
         }
