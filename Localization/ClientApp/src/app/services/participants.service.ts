@@ -20,31 +20,31 @@ export class ParticipantsService {
     sortBy: string[],
     sortAscending: boolean,
   ): Observable<HttpResponse<Participant[]>> {
-    let params = new HttpParams();
+    let body: any = { };
     if (limit) {
-      params = params.set('limit', limit.toString());
+      body.limit = limit;
     }
     if (search && search != '') {
-      params = params.set('search', search);
+      body.search = search;
     }
     if (roleIds && roleIds.length > 0) {
-      roleIds.forEach(roleId => params = params.append('roleIds', roleId.toString()));
+      body.roleIds = roleIds;
     }
     if (localeIds && localeIds.length > 0) {
-      localeIds.forEach(localeId => params = params.append('localeIds', localeId.toString()));
+      body.localeIds = localeIds;
     }
     if (offset) {
-      params = params.set('offset', offset.toString());
+      body.offset = offset;
     }
     if (sortBy && sortBy.length > 0) {
-      sortBy.forEach(sortByItem => params = params.append('sortBy', sortByItem));
+      body.sortBy = sortBy;
       if (sortAscending !== undefined) {
-        params = params.set('sortAscending', sortAscending.toString());
+        body.sortAscending = sortAscending;
       }
     }
-    return this.httpClient.get<Participant[]>(this.url + 'byProjectId/' + projectId,
+    return this.httpClient.post<Participant[]>(this.url + 'byProjectId/' + projectId + '/list',
+      body,
       {
-        params: params,
         observe: 'response'
       });
   }

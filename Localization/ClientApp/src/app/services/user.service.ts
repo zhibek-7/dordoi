@@ -11,11 +11,11 @@ export class UserService {
   constructor(private httpClient: HttpClient) { }
 
   getUserList(): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.url + "List");
+    return this.httpClient.post<User[]>(this.url + "List", null);
   }
 
   getPhotoById(userId: number): Observable<Blob> {
-    return this.httpClient.get(this.url + userId.toString() + '/getPhoto/', { responseType: 'blob' });
+    return this.httpClient.post(this.url + userId.toString() + '/getPhoto/', null, { responseType: 'blob' });
   }
 
 }
