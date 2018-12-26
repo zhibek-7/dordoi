@@ -18,7 +18,7 @@ namespace Localization.WebApi
             this._glossaryService = glossaryService;
         }
 
-        [HttpGet]
+        [HttpPost("list")]
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
             return await this._glossaryService.GetAllAsync();
@@ -31,41 +31,46 @@ namespace Localization.WebApi
             await this._glossaryService.UpdateAsync(updatedGlossary: updatedGlossary);
         }
 
-        [HttpGet("{glossaryId}")]
+        [HttpPost("{glossaryId}/get")]
         public async Task<Glossary> GetGlossaryByIdAsync(int glossaryId)
         {
             return await this._glossaryService.GetByIDAsync(glossaryId: glossaryId);
         }
 
-        [HttpGet("{glossaryId}/locale")]
+        [HttpPost("{glossaryId}/locale/get")]
         public async Task<Locale> GetGlossaryLocaleAsync(int glossaryId)
         {
             return await this._glossaryService.GetLocaleByIdAsync(glossaryId: glossaryId);
         }
 
-        [HttpGet("{glossaryId}/terms")]
+
+        public class GetAssotiatedTermsParam
+        {
+            public string termSearch { get; set; }
+            public int? limit { get; set; }
+            public int? offset { get; set; }
+            public string[] sortBy { get; set; }
+            public bool? sortAscending { get; set; }
+        }
+        [HttpPost("{glossaryId}/terms/list")]
         public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsAsync(
             int glossaryId,
-            [FromQuery] string termSearch,
-            [FromQuery] int? limit,
-            [FromQuery] int? offset,
-            [FromQuery] string[] sortBy,
-            [FromQuery] bool? sortAscending)
+            [FromBody] GetAssotiatedTermsParam param)
         {
             this.Response.Headers.Add(
                 key: "totalCount",
                 value: (await this._glossaryService.GetAssotiatedTermsCountAsync(
                     glossaryId: glossaryId,
-                    termPart: termSearch)).ToString());
+                    termPart: param.termSearch)).ToString());
 
             return await this._glossaryService
                 .GetAssotiatedTermsByGlossaryIdAsync(
                     glossaryId: glossaryId,
-                    termPart: termSearch,
-                    limit: limit,
-                    offset: offset,
-                    sortBy: sortBy,
-                    sortAscending: sortAscending);
+                    termPart: param.termSearch,
+                    limit: param.limit,
+                    offset: param.offset,
+                    sortBy: param.sortBy,
+                    sortAscending: param.sortAscending);
         }
 
         [HttpPost("{glossaryId}/terms")]
@@ -99,7 +104,7 @@ namespace Localization.WebApi
                     partOfSpeechId: partOfSpeechId);
         }
 
-        [HttpGet("{glossaryId}/terms/{termId}/locales")]
+        [HttpPost("{glossaryId}/terms/{termId}/locales/list")]
         public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
             return await this._glossaryService.GetTranslationLocalesForTermAsync(
