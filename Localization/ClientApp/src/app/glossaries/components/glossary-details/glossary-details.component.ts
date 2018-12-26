@@ -60,8 +60,7 @@ export class GlossaryDetailsComponent implements OnInit {
       let glossaryId = +params['id'];
       this.glossariesService.get(glossaryId)
         .subscribe(
-          glossary => this.glossary = glossary,
-          error => console.log(error));
+          glossary => this.glossary = glossary);
     });
   }
 
@@ -69,7 +68,12 @@ export class GlossaryDetailsComponent implements OnInit {
     if (!this.glossary)
       return;
 
-    this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, offset, [this.sortByColumnName], this.ascending)
+    let sortByColumns = []
+    if (this.sortByColumnName) {
+      sortByColumns.push(this.sortByColumnName);
+    }
+
+    this.glossariesService.getAssotiatedTerms(this.glossary.id, this.termSearchString, this.pageSize, offset, sortByColumns, this.ascending)
       .subscribe(
         response => {
           let terms = response.body;
@@ -77,8 +81,7 @@ export class GlossaryDetailsComponent implements OnInit {
           let totalCount = +response.headers.get('totalCount');
           this.totalCount = totalCount;
           this.currentOffset = offset;
-        },
-        error => console.log(error));
+        });
   }
 
   addNewTerm(newTerm: Term) {
@@ -87,16 +90,14 @@ export class GlossaryDetailsComponent implements OnInit {
 
     this.glossariesService.addNewTerm(this.glossary.id, newTerm, newTerm.partOfSpeechId)
       .subscribe(
-        () => this.requestDataReloadService.requestUpdate(),
-        error => console.log(error));
+        () => this.requestDataReloadService.requestUpdate());
   }
 
   deleteSelectedTerms() {
     forkJoin(
       this.selectedTerms.map(term => this.glossariesService.deleteTerm(this.glossary.id, term.id)))
       .subscribe(
-        () => this.requestDataReloadService.requestUpdate(),
-        error => console.log(error));
+        () => this.requestDataReloadService.requestUpdate());
   }
 
   onPageChanged(newOffset: number) {

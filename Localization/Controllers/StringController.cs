@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using DAL.Reposity.PostgreSqlRepository; // Native
 using Models.DatabaseEntities;
 using Microsoft.AspNetCore.Cors;
+using Models.Interfaces.Repository;
 
 namespace Localization.WebApi
 {
@@ -15,11 +15,11 @@ namespace Localization.WebApi
     [ApiController]
     public class StringController : ControllerBase
     {
-        private readonly TranslationSubstringRepository stringRepository;
+        private readonly ITranslationSubstringRepository stringRepository;
 
-        public StringController()
+        public StringController(ITranslationSubstringRepository translationSubstringRepository)
         {
-            stringRepository = new TranslationSubstringRepository();
+            this.stringRepository = translationSubstringRepository;
         }
 
         /// <summary>
@@ -122,6 +122,19 @@ namespace Localization.WebApi
         {
             updatedTranslationSubstring.ID = translationSubstringId;
             await this.stringRepository.UpdateAsync(item: updatedTranslationSubstring);
+        }
+
+        [HttpGet("{translationSubstringId}/locales")]
+        public async Task<IEnumerable<Locale>> GetLocalesIdsForStringAsync(int translationSubstringId)
+        {
+            return await this.stringRepository.GetLocalesForStringAsync(translationSubstringId: translationSubstringId);
+        }
+
+        [HttpPut("{translationSubstringId}/locales")]
+        public async Task UpdateLocalesForStringAsync(int translationSubstringId, [FromBody] IEnumerable<int> localesIds)
+        {
+            await this.stringRepository.DeleteTranslationLocalesAsync(translationSubstringId: translationSubstringId);
+            await this.stringRepository.AddTranslationLocalesAsync(translationSubstringId: translationSubstringId, localesIds: localesIds);
         }
 
     }

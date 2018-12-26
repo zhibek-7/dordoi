@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
@@ -14,12 +15,19 @@ export class GlossariesService {
 
   constructor(private httpClient: HttpClient) { }
 
+  private handleError<T>(error: any, response: Observable<T>): Observable<T> {
+    console.log(error);
+    return of(undefined as T);
+  }
+
   public get(id: number): Observable<Glossary> {
-    return this.httpClient.get<Glossary>(GlossariesService.connectionUrl + id);
+    return this.httpClient.post<Glossary>(GlossariesService.connectionUrl + id + '/get', null)
+      .pipe(catchError(this.handleError));
   }
 
   getGlossaries(): Observable<Glossary[]> {
-    return this.httpClient.get<Glossary[]>(GlossariesService.connectionUrl);
+    return this.httpClient.post<Glossary[]>(GlossariesService.connectionUrl + 'list', null)
+      .pipe(catchError(this.handleError));
   }
 
   getAssotiatedTerms(
@@ -30,29 +38,30 @@ export class GlossariesService {
     sortBy?: string[],
     sortAscending?: boolean): Observable<HttpResponse<Term[]>>
   {
-    let params = new HttpParams();
+    let body: any = { };
     if (termPart && termPart != '') {
-      params = params.set('termSearch', termPart);
+      body.termSearch = termPart;
     }
     if (limit) {
-      params = params.set('limit', limit.toString());
+      body.limit = limit;
     }
     if (offset) {
-      params = params.set('offset', offset.toString());
+      body.offset = offset;
     }
     if (sortBy && sortBy.length > 0) {
-      sortBy.forEach(sortByItem => params = params.append('sortBy', sortByItem));
+      body.sortBy = sortBy;
       if (sortAscending !== undefined) {
-        params = params.set('sortAscending', sortAscending.toString());
+        body.sortAscending = sortAscending;
       }
     }
     return this.httpClient
-      .get<Term[]>(
-        GlossariesService.connectionUrl + glossaryId + '/terms',
+      .post<Term[]>(
+        GlossariesService.connectionUrl + glossaryId + '/terms/list',
+        body,
         {
-          params: params,
-          observe: 'response'
-        });
+          observe: 'response',
+        })
+      .pipe(catchError(this.handleError));
   }
 
   addNewTerm(glossaryId: number, newTerm: TranslationSubstring, partOfSpeechId: number | null): Observable<Object> {
@@ -63,11 +72,13 @@ export class GlossariesService {
     return this.httpClient.post(GlossariesService.connectionUrl + glossaryId + '/terms', newTerm,
       {
         params: params
-      });
+      })
+      .pipe(catchError(this.handleError));
   }
 
   deleteTerm(glossaryId: number, termId: number): Observable<Object> {
-    return this.httpClient.delete(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId);
+    return this.httpClient.delete(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId)
+      .pipe(catchError(this.handleError));
   }
 
   updateTerm(glossaryId: number, updatedTerm: TranslationSubstring, partOfSpeechId: number | null): Observable<Object> {
@@ -78,19 +89,23 @@ export class GlossariesService {
     return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + updatedTerm.id, updatedTerm,
       {
         params: params
-      });
+      })
+      .pipe(catchError(this.handleError));
   }
 
   getGlossaryLocale(glossaryId: number): Observable<Locale> {
-    return this.httpClient.get<Locale>(GlossariesService.connectionUrl + glossaryId + '/locale');
+    return this.httpClient.post<Locale>(GlossariesService.connectionUrl + glossaryId + '/locale/get', null)
+      .pipe(catchError(this.handleError));
   }
 
   getTranslationLocalesForTerm(glossaryId: number, termId: number): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales');
+    return this.httpClient.post<Locale[]>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales/list', null)
+      .pipe(catchError(this.handleError));
   }
 
   setTranslationLocalesForTerm(glossaryId: number, termId: number, localesIds: number[]): Observable<Object> {
-    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales', localesIds);
+    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales', localesIds)
+      .pipe(catchError(this.handleError));
   }
 
 }

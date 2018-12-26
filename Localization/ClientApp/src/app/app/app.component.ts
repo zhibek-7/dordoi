@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ProjectsService } from '../services/projects.service';
-import { Project } from '../models/Project';
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +10,8 @@ import { Project } from '../models/Project';
   providers: [ProjectsService]
 })
 export class AppComponent implements OnInit{
-  projects: Project[];
-  currentProject: Project;
+  projects: LocalizationProject[];
+  currentProject: LocalizationProject;
   constructor(private projectService: ProjectsService) {}
 
   ngOnInit() {
@@ -26,7 +26,7 @@ export class AppComponent implements OnInit{
     console.log('app createNewProject ---!!!!!!!!!');
   }
 
-  getCurrentProject(currentProject: Project) {
+  getCurrentProject(currentProject: LocalizationProject) {
     this.currentProject = currentProject;
 
     sessionStorage.setItem('ProjectName', currentProject.name);

@@ -14,17 +14,17 @@ namespace Models.DatabaseEntities
         /// ИД пользователя совершившего действие
         /// </summary>
         [Required]
-        public string ID_User { get; set; }
+        public int  ID_User { get; set; }
         /// <summary>
         /// ИД вида деятельности 
         /// </summary>
         [Required]
-        public string ID_worktype { get; set; }
+        public int  ID_worktype { get; set; }
         /// <summary>
         /// Время активности. Устанавливается в БД автоматически
         /// </summary>
         [Required]
-        public string Datetime { get; set; }
+        public DateTime Datetime { get; set; }
         /// <summary>
         /// Описание.
         /// </summary>
@@ -33,22 +33,22 @@ namespace Models.DatabaseEntities
         /// <summary>
         /// Ссылка на язык
         /// </summary>
-        public string ID_Locale { get; set; }
+        public int  ID_Locale { get; set; }
         /// <summary>
         /// Ссылка на файл (для регистрации активности по добавлению, удалению и редактированию файлов
         /// </summary>
-        public string ID_File { get; set; }
+        public int ID_File { get; set; }
         /// <summary>
         /// Ссылка на строку (для регистрации активности по добавлению, удалению и редактированию строк
         /// </summary>
-        public string ID_String { get; set; }
+        public int ID_String { get; set; }
         /// <summary>
         /// Ссылка на перевод (для регистрации активности по добавлению, удалению и редактированию переводов
         /// </summary>
-        public string ID_Translation { get; set; }
+        public int ID_Translation { get; set; }
         /// <summary>
         /// Ссылка на перевод (для регистрации активности по добавлению, удалению и редактированию проектов локализации
         /// </summary>
-        public string ID_Project { get; set; }
+        public int ID_Project { get; set; }
     }
 }

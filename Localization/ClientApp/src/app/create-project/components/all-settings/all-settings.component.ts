@@ -1,4 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
+
+
+import { ProjectsService } from '../../../services/projects.service';
+import { LocalizationProject } from '../../../models/database-entities/localizationProject.type';
+
+
+import { FormControl} from '@angular/forms';
+
+
 
 @Component({
   selector: 'app-all-settings',
@@ -8,8 +17,12 @@ import { Component, OnInit } from '@angular/core';
 export class AllSettingsComponent implements OnInit {
   args = 'ascending';
   reverse = false;
-  constructor() { }
+  constructor(private projectsService: ProjectsService) { }
   currentProjectName = '';
+
+  pjName = new FormControl();
+
+
 
   ngOnInit() {
     this.currentProjectName = sessionStorage.getItem('ProjectName');
@@ -17,5 +30,17 @@ export class AllSettingsComponent implements OnInit {
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
 
   }
+
+
+  addProject() {
+
+    console.log("!!!="+this.pjName.value);
+
+    let newProject: LocalizationProject = new LocalizationProject();
+    //(this.pjName.value, this.pjName.value, this.pjName.value);        // поменять на id реального пользователя, когда появится
+    this.projectsService.addProject(newProject);
+
+  }
+
 
 }

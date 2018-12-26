@@ -1,15 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TreeNode } from "primeng/api";
 
 import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
 import { LanguageService } from 'src/app/services/languages.service';
-import { Selectable } from 'src/app/shared/models/selectable.model';
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
-import { File } from 'src/app/models/database-entities/file.type';
 import { FileService } from 'src/app/services/file.service';
 import { FileViewModel } from 'src/app/strings/models/file.viewmodel';
-import { forkJoin } from 'rxjs';
 import { SortingArgs } from 'src/app/shared/models/sorting.args';
+import { ProjectsService } from 'src/app/services/projects.service';
 
 @Component({
   selector: 'app-strings-main',
@@ -18,7 +16,7 @@ import { SortingArgs } from 'src/app/shared/models/sorting.args';
 })
 export class StringsMainComponent implements OnInit {
 
-  selectableStrings: Selectable<TranslationSubstring>[] = [];
+  translationStrings: TranslationSubstring[] = [];
 
   pageSize: number = 10;
 
@@ -35,15 +33,15 @@ export class StringsMainComponent implements OnInit {
   selectedFileId: number|null = null;
 
   private get projectId(): number {
-    return +sessionStorage.getItem('ProjecID');
+    return this.projectsService.currentProjectId;
   }
 
   isSortingAscending: boolean = true;
 
   constructor(
+    private projectsService: ProjectsService,
     private fileService: FileService,
     private translationSubstringService: TranslationSubstringService,
-    private languageService: LanguageService,
   ) { }
 
   ngOnInit() {
@@ -60,7 +58,7 @@ export class StringsMainComponent implements OnInit {
       .subscribe(
         response => {
           let strings = response.body;
-          this.selectableStrings = strings.map(translationSubstring => new Selectable<TranslationSubstring>(translationSubstring, false));
+          this.translationStrings = strings;
           let totalCount = +response.headers.get('totalCount');
           this.totalCount = totalCount;
           this.currentOffset = offset;

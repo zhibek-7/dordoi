@@ -16,7 +16,7 @@
 }
 
 .commentsFiled .list-group {
-    height: 80vh;
+    height: 75vh;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { TranslationSubstring } from '../models/database-entities/translationSubstring.type';
 import { Observable } from 'rxjs';
+
+import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
+import { Locale } from 'src/app/models/database-entities/locale.type';
 
 @Injectable()
 export class TranslationSubstringService {
@@ -67,6 +69,14 @@ export class TranslationSubstringService {
 
   updateTranslationSubstring(translationSubstring: TranslationSubstring): Observable<Object> {
     return this.http.put(this.url + translationSubstring.id.toString(), translationSubstring);
+  }
+
+  getTranslationLocalesForString(id: number): Observable<Locale[]> {
+    return this.http.get<Locale[]>(this.url + id + '/locales');
+  }
+
+  setTranslationLocalesForString(id: number, localesIds: number[]): Observable<Object> {
+    return this.http.put(this.url + id + '/locales', localesIds);
   }
 
 }

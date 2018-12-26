@@ -2,14 +2,11 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
-import { PartOfSpeech } from 'src/app/models/database-entities/partOfSpeech.type';
-import { Term } from 'src/app/models/Glossaries/term.type';
 import { LanguageService } from 'src/app/services/languages.service';
 import { Locale } from 'src/app/models/database-entities/locale.type';
-import { Glossary } from 'src/app/models/database-entities/glossary.type';
-import { GlossariesService } from 'src/app/services/glossaries.service';
 import { Selectable } from 'src/app/shared/models/selectable.model';
-import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
+import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
+import { ProjectsService } from 'src/app/services/projects.service';
 
 @Component({
   selector: 'app-set-languages-form-modal',
@@ -18,36 +15,36 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
 })
 export class SetLanguagesFormModalComponent extends ModalComponent implements OnInit {
 
-  @Input() glossary: Glossary;
-
-  @Input() term: Term;
+  @Input() translationSubstring: TranslationSubstring;
 
   availableLocales: Selectable<Locale>[] = [];
 
   selectedLocales: Locale[] = [];
 
   constructor(
+    private projectsService: ProjectsService,
+    private translationSubstringService: TranslationSubstringService,
     private languageService: LanguageService,
-    private glossariesService: GlossariesService,
-    private requestDataReloadService: RequestDataReloadService,
   ) { super(); }
 
   loadAvailableLanguages() {
-    this.glossariesService.getTranslationLocalesForTerm(this.glossary.id, this.term.id)
-      .subscribe(localesForCurrentTerm =>
-        this.glossariesService.getGlossaryLocale(this.glossary.id)
-          .subscribe(currentGlossaryLocale =>
+    this.translationSubstringService.getTranslationLocalesForString(this.translationSubstring.id)
+      .subscribe(localesForTranslationSubstring =>
+        this.projectsService.getProject(this.projectsService.currentProjectId)
+          .subscribe(project =>
             this.languageService.getLanguageList()
               .subscribe(allLocales => {
-                  this.selectedLocales = localesForCurrentTerm;
+                  this.selectedLocales = localesForTranslationSubstring;
                   this.availableLocales = allLocales
-                    .filter(locale => locale.id != currentGlossaryLocale.id)
+                    .filter(locale => locale.id != project.ID_SourceLocale)
                     .map(locale =>
                       new Selectable<Locale>(
                         locale,
-                        this.selectedLocales.some(currentTermLocale => currentTermLocale.id == locale.id)));
+                        this.selectedLocales.some(selectedLocale => selectedLocale.id == locale.id)));
                 },
-                error => console.log(error))));
+              error => console.log(error)),
+          error => console.log(error)),
+      error => console.log(error));
   }
 
   setSelectedLocales(newSelection: Locale[]) {
@@ -60,8 +57,11 @@ export class SetLanguagesFormModalComponent extends ModalComponent implements On
   }
 
   applyChanges() {
-    this.glossariesService.setTranslationLocalesForTerm(this.glossary.id, this.term.id, this.selectedLocales.map(locale => locale.id))
-      .subscribe(() => this.requestDataReloadService.requestUpdate());
+    this.translationSubstringService
+      .setTranslationLocalesForString(
+        this.translationSubstring.id,
+        this.selectedLocales.map(locale => locale.id))
+      .subscribe();
     this.hide();
   }
 

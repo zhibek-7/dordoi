@@ -10,7 +10,7 @@ import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsRe
 import { Locale } from '../../models/database-entities/locale.type';
 import { File } from '../../models/database-entities/file.type';
 import { User } from "../../models/database-entities/user.type";
-import { Project } from '../../models/Project';
+import { LocalizationProject } from '../../models/database-entities/localizationProject.type';
 
 import { MatTableDataSource } from '@angular/material';
 
@@ -31,7 +31,10 @@ export class TranslatedWordsComponent implements OnInit {
     private languagesService: LanguageService,
     private userService: UserService,
     private fileService: FileService,
-    private projectsService: ProjectsService) {}
+    private projectsService: ProjectsService) {
+    //this.selected.from = moment();
+    //this.selected.to = moment();
+  }
 
 
   ngOnInit() {
@@ -56,7 +59,7 @@ export class TranslatedWordsComponent implements OnInit {
         error => console.error(error));
   }
 
-  public project: Project;
+  public project: LocalizationProject;
 
   //Строки отчета
   public reportrows: TranslatedWordsReportRow[];
@@ -117,6 +120,11 @@ export class TranslatedWordsComponent implements OnInit {
     if (this.selected.to != undefined && this.selected.to != null)
       toStr = " - " + this.selected.to.format("DD-MM-YYYY");
     this.msg = "Лучшие участники:  " + fromStr + toStr;
+  }
+
+  getReportPeriod() {
+    if (this.selected && this.selected.from && this.selected.to)
+     return this.selected.from.format('DD.MM.YYYY') + ' - ' + this.selected.to.format('DD.MM.YYYY');
   }
 
   clickEvent() {

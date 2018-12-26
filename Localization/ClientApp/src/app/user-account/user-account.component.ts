@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService } from '../services/projects.service';
-import { Project } from '../models/Project';
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import * as moment from 'moment';
 moment.locale('ru');
 
@@ -12,7 +12,7 @@ moment.locale('ru');
 })
 export class UserAccountComponent implements OnInit {
 
-  projectsArr: Project[];
+  projectsArr: LocalizationProject[];
   columnsToDisplay = ['projectName', 'changed', 'settings', 'projectMenu'];
   currentUserName = '';
 
@@ -31,7 +31,7 @@ export class UserAccountComponent implements OnInit {
       error => console.error(error));
 
     this.projectsArr.forEach((element)=>{
-      element.lastActivity = moment(element.lastActivity).fromNow();
+      element.lastActivity = new Date();
     })
     // this.projectsArr = this.projectsService.getProjects() - метод возвращающий массив проетов. Отбор по юзеру не реализован
   }

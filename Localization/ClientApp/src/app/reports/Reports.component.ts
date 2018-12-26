@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Project } from '../models/Project';
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 
 import { ProjectsService } from '../services/projects.service';
 
@@ -14,7 +14,7 @@ import { ProjectsService } from '../services/projects.service';
 export class ReportsComponent implements OnInit {
 
   public projectId: number;
-  public project: Project;
+  public project: LocalizationProject;
 
   showProjectStatus: boolean = false;
   showCostSumm: boolean = false;

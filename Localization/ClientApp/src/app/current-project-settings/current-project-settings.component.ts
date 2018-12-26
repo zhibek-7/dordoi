@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { Project } from "../models/Project";
+import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { ProjectsService } from "../services/projects.service";
 import * as moment from "moment";
 moment.locale("ru");
@@ -11,7 +11,7 @@ moment.locale("ru");
   styleUrls: ["./current-project-settings.component.css"]
 })
 export class CurrentProjectSettingsComponent implements OnInit {
-  currentProject: Project;
+  currentProject: LocalizationProject;
   wasCreated: any;
   wasChanged: any;
 

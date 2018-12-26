@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 import { StringsMainComponent } from 'src/app/strings/components/strings-main/strings-main.component';
 import { StringsListComponent } from 'src/app/strings/components/strings-list/strings-list.component';
+import { SetLanguagesFormModalComponent } from 'src/app/strings/components/set-languages-form-modal/set-languages-form-modal.component';
 
 import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
 import { LanguageService } from 'src/app/services/languages.service';
@@ -21,6 +22,7 @@ import { LanguageService } from 'src/app/services/languages.service';
   declarations: [
     StringsMainComponent,
     StringsListComponent,
+    SetLanguagesFormModalComponent,
   ],
   providers: [
     TranslationSubstringService,

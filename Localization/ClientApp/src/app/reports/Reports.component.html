@@ -52,7 +52,7 @@
 
 <!--<div *ngIf="showTranslatedWords">-->
 <div>
-<translated-words-report [projectId]="project.id"></translated-words-report>
+<translated-words-report *ngIf="project" [projectId]="project.id"></translated-words-report>
 </div>
 
 <div *ngIf="showProjectStatus">
