@@ -12,7 +12,7 @@ export class RolesService {
   constructor(private httpClient: HttpClient) { }
 
   getAllRoles(): Observable<Role[]> {
-    return this.httpClient.get<Role[]>(RolesService.connectionUrl);
+    return this.httpClient.post<Role[]>(RolesService.connectionUrl + 'list', null);
   }
 
 }

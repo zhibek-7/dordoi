@@ -15,7 +15,7 @@ namespace Localization.Controllers
 
         private RoleRepository _roleRepository = new RoleRepository();
 
-        [HttpGet]
+        [HttpPost("list")]
         public async Task<IEnumerable<Role>> GetAllRoles()
         {
             return await this._roleRepository.GetAllAsync();
