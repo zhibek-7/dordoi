@@ -9,7 +9,7 @@
            [(ngModel)]="selected"
            name="daterange"
            class="daterangePicker"
-           value="{{selected.from.format('DD.MM.YYYY')}} - {{selected.to.format('DD.MM.YYYY')}}"/>
+           value="{{getReportPeriod()}}"/>
   </p>
   <div>
     <div stile="display: inline-block;">

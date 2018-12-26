@@ -31,7 +31,10 @@ export class TranslatedWordsComponent implements OnInit {
     private languagesService: LanguageService,
     private userService: UserService,
     private fileService: FileService,
-    private projectsService: ProjectsService) {}
+    private projectsService: ProjectsService) {
+    //this.selected.from = moment();
+    //this.selected.to = moment();
+  }
 
 
   ngOnInit() {
@@ -117,6 +120,11 @@ export class TranslatedWordsComponent implements OnInit {
     if (this.selected.to != undefined && this.selected.to != null)
       toStr = " - " + this.selected.to.format("DD-MM-YYYY");
     this.msg = "Лучшие участники:  " + fromStr + toStr;
+  }
+
+  getReportPeriod() {
+    if (this.selected && this.selected.from && this.selected.to)
+     return this.selected.from.format('DD.MM.YYYY') + ' - ' + this.selected.to.format('DD.MM.YYYY');
   }
 
   clickEvent() {
