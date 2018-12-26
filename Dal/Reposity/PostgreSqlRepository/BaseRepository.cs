@@ -28,7 +28,14 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         protected void LogQuery(SqlResult sqlResult)
         {
-            this._logger.WriteLn($"Query {sqlResult.Sql}, param: {this.DictionaryToString(sqlResult.NamedBindings)}");
+            if (sqlResult.NamedBindings.Any())
+            {
+                this._logger.WriteLn($"Query {sqlResult.Sql}, param: {this.DictionaryToString(sqlResult.NamedBindings)}");
+            }
+            else
+            {
+                this._logger.WriteLn($"Query {sqlResult.Sql}");
+            }
         }
 
         private string DictionaryToString(Dictionary<string, object> dictionary)
