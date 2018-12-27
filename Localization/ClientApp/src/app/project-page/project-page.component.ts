@@ -6,8 +6,8 @@ import { MatTableDataSource } from '@angular/material';
 
 import { LanguageService } from '../services/languages.service';
 import { UserService } from '../services/user.service';
-import { Locale }from "../models/database-entities/locale.type";
-import { User } from "../models/database-entities/user.type";
+import { Locale } from '../models/database-entities/locale.type';
+import { User } from '../models/database-entities/user.type';
 
 //export interface InfoElement {
 //  file: string;
@@ -66,7 +66,8 @@ import { User } from "../models/database-entities/user.type";
 @Component({
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
-  styleUrls: ['./project-page.component.css']
+  styleUrls: ['./project-page.component.css'],
+  providers: [LanguageService, UserService ]
 })
 export class ProjectPageComponent implements OnInit {
   currentProject: LocalizationProject;

@@ -16,7 +16,36 @@ import { NotificationsComponent } from './components/notifications/notifications
 //import { MenuProjectComponent } from './components/menu-project/menu-project.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material';
-import { MatInputModule } from '@angular/material';
+import {
+  MatInputModule, MatCheckboxModule,
+  MatSelectModule,
+  MatRadioModule,
+  MatMenuModule,
+  MatToolbarModule,
+  MatListModule,
+  MatGridListModule,
+  MatCardModule,
+  MatTabsModule,
+  MatButtonModule,
+  MatChipsModule,
+  MatIconModule,
+  MatProgressSpinnerModule,
+  MatProgressBarModule,
+  MatDialogModule,
+  MatTooltipModule,
+  MatSnackBarModule,
+  MatSlideToggleModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatAutocompleteModule,
+  MatExpansionModule } from '@angular/material';
+
+
+
+
+
+
 
 @NgModule({
   declarations: [
@@ -36,7 +65,31 @@ import { MatInputModule } from '@angular/material';
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatMenuModule,
+    MatToolbarModule,
+    MatListModule,
+    MatGridListModule,
+    MatCardModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatDialogModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatAutocompleteModule,
+    MatExpansionModule
+
   ],
   providers: []
 })
