@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+import { SharedModule } from '../shared/shared.module';
 import { WorkPanelRoutingModule } from './work-panel-routing.module';
 
 import { WorkPanelComponent } from './components/work-panel/work-pandel.component';
@@ -11,6 +12,7 @@ import { PhrasesComponent } from './components/phrases/phrases.component';
 import { CommentsComponent } from './components/comments/comments.component';
 import { LanguagesComponent } from './components/languages/languages.component';
 import { TranslationComponent } from './components/translation/translation.component';
+import { ContextEditModalComponent } from './components/context-edit-modal/context-edit-modal.component';
 
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
 import { SharePhraseService } from './localServices/share-phrase.service';
@@ -20,15 +22,9 @@ import { CommentService } from '../services/comment.service';
 import { ProjectsService } from '../services/projects.service';
 
 import {
-  MatIconModule,
-  MatInputModule,
+  MatIconModule,  
   MatButtonModule,
-  MatButtonToggleModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatOptionModule,
-  MatCheckboxModule,
-  MatTableModule} from '@angular/material';
+  } from '@angular/material';
 
 @NgModule({
     declarations: [
@@ -37,6 +33,7 @@ import {
         CommentsComponent,
         LanguagesComponent,
         TranslationComponent,
+        ContextEditModalComponent,
         FilterPhrasesPipe
     ],
     imports: [
@@ -44,7 +41,8 @@ import {
         HttpClientModule,
         FormsModule,
         WorkPanelRoutingModule,
-        MatIconModule,
+        SharedModule,
+        MatIconModule
     ],
     exports: [
       

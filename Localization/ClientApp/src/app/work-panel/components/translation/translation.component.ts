@@ -1,10 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../localServices/share-translated-phrase.service';
 
 import { TranslationSubstring } from '../../../models/database-entities/translationSubstring.type';
 import { Translation } from '../../../models/database-entities/translation.type';
 import { TranslationService } from '../../../services/translationService.service';
+import { NullTemplateVisitor } from '@angular/compiler';
 
 declare var $: any;
 
@@ -15,11 +17,13 @@ declare var $: any;
 })
 export class TranslationComponent implements OnInit {
 
+    showContextBlock: boolean = true;
     showLeftBlock: boolean = true;
     showRightBlock: boolean = true;
     @Output() onChangedLeftBlock = new EventEmitter<boolean>();
     @Output() onChangedRightBlock = new EventEmitter<boolean>();
 
+    @Input() currentContext: string = null;
     translatedText: string;
     phraseForTranslate: TranslationSubstring;
     translatedPhrase: Translation;
@@ -54,14 +58,15 @@ export class TranslationComponent implements OnInit {
             this.showRightBlock = true;
         }
         this.onChangedRightBlock.emit(this.showRightBlock);          
-    }
-
-    editContextClick(){
-        alert("Редактируем контекст");
-    }
+    }   
 
     contextShowClick(){
-        alert("Показываем контекст");
+        if(this.showContextBlock){
+            this.showContextBlock = false;
+        }
+        else {
+            this.showContextBlock = true;
+        }
     }
 
     arrowLeftClick(){
@@ -75,6 +80,10 @@ export class TranslationComponent implements OnInit {
     importFileClick(){
         alert("Импортируем файл");
     }        
+
+    enterContext(context: any){
+        this.currentContext = context;
+    }
     
     async submitTranslate(){
         this.translatedPhrase = new Translation(this.translatedText, this.phraseForTranslate.id, 10123, 300);  //поменять потом на реальный id пользователя и id языка

@@ -5,7 +5,6 @@ import { RouterModule} from '@angular/router';
 
 import { HttpClientModule } from '@angular/common/http';
 
-
 import { CoreRoutingModule } from './core-routing.model';
 
 import { HeaderComponent } from './header/header.component';
@@ -51,7 +50,6 @@ import {
    MatDividerModule,
    MatExpansionModule,
    ReactiveFormsModule
-
     ],
     declarations: [
   	    NotFoundComponent,
