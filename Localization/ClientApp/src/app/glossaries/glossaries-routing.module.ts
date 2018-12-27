@@ -5,15 +5,15 @@ import { GlossariesComponent } from 'src/app/glossaries/components/glossaries/gl
 import { GlossaryDetailsComponent } from './components/glossary-details/glossary-details.component';
 
 //
-import { ListGlossariesComponent } from 'src/app/glossaries/components/list-glossaries/list-glossaries.component';
+//import { ListGlossariesComponent } from 'src/app/glossaries/components/list-glossaries/list-glossaries.component';
 //
 
 const routes: Routes = [
 //
-  {
-    path: 'list-glossaries',
-    component: ListGlossariesComponent
-  },
+  //{
+  //  path: 'list-glossaries',
+  //  component: ListGlossariesComponent
+  //},
 //
   {
     path: '',

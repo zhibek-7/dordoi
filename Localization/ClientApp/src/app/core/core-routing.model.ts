@@ -7,6 +7,10 @@ import { ProjectPageComponent } from '../project-page/project-page.component';
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
 
+//
+import { ListGlossariesComponent } from '../glossaries/components/list-glossaries/list-glossaries.component';
+//
+
 const routes: Routes = [
   {
     path: 'Translation',
@@ -40,8 +44,8 @@ const routes: Routes = [
   //
   {
     path: 'list-glossaries',
-    loadChildren: '../list-glossaries/list-glossaries.model#GlossariesModule'
-    //component: ListGlossariesComponent
+    //loadChildren: '../glossaries/glossaries.model#GlossariesModule'
+    component: ListGlossariesComponent
   },
   //
   {

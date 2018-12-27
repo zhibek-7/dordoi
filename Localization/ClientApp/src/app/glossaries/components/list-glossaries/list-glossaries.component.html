@@ -5,16 +5,18 @@
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item btn">
-        <button type="button" class="btn btn-create" routerLink='/'> Создать глоссарий</button>
+        <button type="button" class="btn btn-create" routerLink='/create'> Создать глоссарий</button>
       </li>
 
       <li class="nav-item btn">
-        <button type="button" class="btn btn-secondary" routerLink='/'> Очистить </button>
+        <button type="button" class="btn btn-secondary" routerLink='/cleanOfTerms/{{glossary.id}}'> Очистить </button>
       </li>
 
       <li class="nav-item btn">
-        <a class="nav-link" id="DeleteGlossaries" role="button" aria-haspopup="true" routerLink='/'>
-          <img src="../assets/images/delete-picture.png" <!--на данный момент иконка отсутствует--> width="40" height="30" class="d-inline-block align-li" alt="">
+        <a class="nav-link" id="DeleteGlossaries" role="button" aria-haspopup="true" class="bg-secondary" routerLink='/delete/{{glossary.id}}'>
+          <img src="../assets/icons/main/bin.png" width="20" height="30" class="d-inline-block align-li" alt="Удалить">
+          <!--<img src="../assets/images/bin.png" width="40" height="30" class="d-inline-block align-li" alt="Удалить">-->
+          <!--<img src="../assets/icons/main/bin.png" class="d-inline-block align-top">-->
         </a>
       </li>
 
@@ -45,14 +47,26 @@
     <tr><th>Имя словаря</th><th>Языки</th><th colspan="2">Проекты</th></tr>
   </thead>
   <tbody>
-    <tr *ngIf="getGlossaries().length == 0">
+    <tr *ngIf="glossaries.length == 0">
       <td colspan="4">Создайте глоссарий</td>
     </tr>
-    <tr *ngFor="let glossary of getGlossaries()">
+    <tr *ngFor="let glossary of glossaries">
       <td>{{glossary.name}}</td>
-      <td>{{glossary.languages}}</td>
-      <td>{{glossary.projects}}</td>
-      <td><!--здесь будут доп. кнопки--></td>
+      <td>{{glossary.localesName}}</td>
+      <td>{{glossary.localizationProjectsName}}</td>
+      <td>
+        <!--здесь будут доп. кнопки-->
+        <div class="dropdown">
+          <a class="nav-link" role="button" aria-haspopup="true" id="dropdownMenuButton" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false">
+            <mat-icon>drag_indicator</mat-icon>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" routerLink='/cleanOfTerms/{{glossary.id}}'>Очистить от терминов</a>
+            <a class="dropdown-item" routerLink='/delete/{{glossary.id}}'>Удалить глоссарий</a>
+          </div>
+        </div>
+      </td>
     </tr>
   </tbody>
 </table>
