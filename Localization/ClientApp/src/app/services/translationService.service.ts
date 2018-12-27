@@ -13,7 +13,7 @@ export class TranslationService {
     private url: string = document.getElementsByTagName('base')[0].href + "api/translation";
 
     constructor(private http: HttpClient) {
-
+        
     }
 
     async createTranslate(translate: Translation){

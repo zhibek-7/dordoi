@@ -1,0 +1,17 @@
+<app-modal [(visible)]="visible">
+    <div class="app-modal-header d-flex">
+        <h4 class="modal-title">Редактор контекста</h4>
+        <button type="button" class="close" (click)="hide()">&times;</button>
+    </div>
+    <div class="app-modal-body">
+        <p>Комментарий для текущей строки:</p>
+        <textarea class="form-control" rows="5" id="inputForContext" name="context" [(ngModel)]="enteredContext"
+            placeholder="Введите контекст"></textarea>
+    </div>
+    <div class="app-modal-footer">                
+        <button class="btn mr-5">Скриншоты</button>               
+        
+        <button class="btn mr-2" (click)="confirmContext()">Сохранить</button>
+        <button class="btn" (click)="hide()">Отмена</button>            
+    </div>     
+</app-modal>
