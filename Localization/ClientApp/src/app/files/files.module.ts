@@ -1,26 +1,29 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
 
 import { TreeTableModule } from 'primeng/treetable';
 
-import { FilesComponent } from './files.component';
-import { FileService } from '../services/file.service';
-import { FilesRoutingModule } from './files-routing.module';
-import { CommonModule } from '@angular/common';
+import { FilesRoutingModule } from 'src/app/files/files-routing.module';
+
+import { FilesComponent } from 'src/app/files/components/files/files.component';
+
+import { FileService } from 'src/app/services/file.service';
 
 @NgModule({
   declarations: [
-    FilesComponent
+    FilesComponent,
   ],
   imports: [
     FormsModule,
     CommonModule,
     HttpClientModule,
     TreeTableModule,
-    FilesRoutingModule
+    FilesRoutingModule,
   ],
-  providers: [FileService]
+  providers: [
+    FileService,
+  ]
 })
 export class FilesModule { }

@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
+
 import { TreeNode } from 'primeng/api';
 
-import { FileService } from '../services/file.service';
-import { File as FileData } from '../models/database-entities/file.type';
-import { catchError, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { FileService } from 'src/app/services/file.service';
+
+import { File as FileData } from 'src/app/models/database-entities/file.type';
 
 @Component({
   selector: 'app-files',
@@ -42,8 +42,6 @@ export class FilesComponent implements OnInit {
     this.getFiles();
   }
 
-  //// Files
-  //// Get
   getFiles(): void {
     this.isLoading = true;
 
@@ -54,7 +52,6 @@ export class FilesComponent implements OnInit {
     });
   };
 
-  // Add
   addFolder(parentNode?: TreeNode): void {
     const folderName = "Folder";
 
@@ -75,7 +72,6 @@ export class FilesComponent implements OnInit {
     );
   }
 
-  // Add node
   addNode(addedNode: TreeNode, parent: TreeNode): void {
     // Nodes (parent children or root)
     const nodes = parent ? [...parent.children] : [...this.files];
@@ -83,7 +79,6 @@ export class FilesComponent implements OnInit {
     // Find last index in nodes list
     const lastIndex = this.findLastIndex(nodes, node => node.data.isFolder == addedNode.data.isFolder);
 
-    //
     addedNode.parent = parent;
 
     if (parent != null) {
@@ -100,12 +95,10 @@ export class FilesComponent implements OnInit {
     this.files = [...this.files];
   }
 
-  // Delete
   deleteNode(node: TreeNode): void {
     this.fileService.deleteNode(node.data).subscribe(response => console.log(response));
   }
 
-  // Update
   updateNode(data: FileData): void {
     this.fileService.updateNode(data).subscribe(response => console.log(response))
   }
@@ -124,4 +117,5 @@ export class FilesComponent implements OnInit {
     // Return nodes length minus founded index
     return reversedIndex < 0 ? 0 : nodes.length - reversedIndex;
   }
+
 }
