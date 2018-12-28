@@ -159,5 +159,39 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Добавить запись об авторизации
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddAuthorizeActionAsync(int userId)
+        {
+            UserAction act = new UserAction()
+            {
+                Datetime = DateTime.Now,
+                Description = "",
+                ID_User = userId,
+                ID_worktype = (int) WorkTypes.Authorize
+            };
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о вхоже в систему
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddLoginActionAsync(int userId)
+        {
+            UserAction act = new UserAction()
+            {
+                Datetime = DateTime.Now,
+                Description = "",
+                ID_User = userId,
+                ID_worktype = (int)WorkTypes.Login
+            };
+            return await AddAsync(act);
+        }
     }
 }
