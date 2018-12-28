@@ -21,11 +21,27 @@ namespace Localization.Controllers
             userActionRepository = new UserActionRepository();
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Получить список всех действий пользователей по всем проектам
+        /// </summary>
+        /// <returns>Список действий</returns>
+        [HttpPost]
         [Route("List")]
         public async Task<IEnumerable<UserAction>> GetAll()
         {
             return await userActionRepository.GetAllAsync();
+        }
+
+        /// <summary>
+        /// Получить список действий пользователей на определеном проекте
+        /// </summary>
+        /// <param name="projectId">Идентификатор пользователя</param>
+        /// <returns>Список действий</returns>
+        [HttpPost]
+        [Route("onProject/{projectId}")]
+        public async Task<IEnumerable<UserAction>> GetAllByProjectID(int projectId)
+        {
+            return await userActionRepository.GetAllByProjectIdAsync(projectId);
         }
     }
 }
