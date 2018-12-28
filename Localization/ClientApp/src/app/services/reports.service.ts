@@ -23,26 +23,12 @@ export class ReportService {
     localeId: number,
     workType: string,
     initialFolderId: number): Observable<TranslatedWordsReportRow[]> {
-
-    let paramsObject = "projectId=" + projectId;
-    paramsObject += "&start=" + start;
-    paramsObject += "&end=" + end;
-    if (volumeCalcType && volumeCalcType != '') {
-      paramsObject += "&volumeCalcType=" + volumeCalcType;
-    }
-    if (calcBasisType && calcBasisType != '') {
-      paramsObject += "&calcBasisType=" + calcBasisType;
-    }
-    if (workType && workType != '') {
-      paramsObject += "&workType=" + workType;
-    }
-
-    paramsObject += "&userId=" + userId;
-    paramsObject += "&localeId=" + localeId;
-    paramsObject += "&initialFolderId=" + initialFolderId;
-
-    return this.httpClient.get<TranslatedWordsReportRow[]>(this.url + 'TranslatedWords?' + paramsObject);
-
+    const body = {
+      projectId: projectId, start: start, end: end,
+      volumeCalcType: volumeCalcType, calcBasisType: calcBasisType, workType: workType,
+      userId: userId, localeId: localeId, initialFolderId: initialFolderId
+    };
+    return this.httpClient.post<TranslatedWordsReportRow[]>(this.url + "TranslatedWords", body); 
   }
 
   async getTranslatedWordsReportExcel(

@@ -28,15 +28,15 @@ namespace Localization.WebApi
         [HttpPost]
         [Route("TranslatedWords")]
         public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(
-            [FromBody] int projectId,
-            [FromBody] string start,
-            [FromBody] string end,
-            [FromBody] bool volumeCalcType,
-            [FromBody] bool calcBasisType,
-            [FromBody] int userId,
-            [FromBody] int localeId,
-            [FromBody] string workType,
-            [FromBody] int initialFolderId)
+            int projectId,
+            string start,
+            string end,
+            bool volumeCalcType,
+            bool calcBasisType,
+            int userId,
+            int localeId,
+            string workType,
+            int initialFolderId)
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport();
             return translatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType);
@@ -58,15 +58,15 @@ namespace Localization.WebApi
         [HttpPost]
         [Route("TranslatedWordsExcel")]
         public FileResult GetTranslatedWordsReportExcel(
-            [FromBody] int projectId,
-            [FromBody] string start,
-            [FromBody] string end,
-            [FromBody] bool volumeCalcType,
-            [FromBody] bool calcBasisType,
-            [FromBody] int userId,
-            [FromBody] int localeId,
-            [FromBody] string workType,
-            [FromBody] int initialFolderId)
+            int projectId,
+            string start,
+            string end,
+            bool volumeCalcType,
+            bool calcBasisType,
+            int userId,
+            int localeId,
+            string workType,
+            int initialFolderId)
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport();
             List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType).ToList();
