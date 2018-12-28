@@ -6,7 +6,8 @@ import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
 //import { Locale } from 'src/app/models/database-entities/locale.type';
 
 @Injectable()
-export class GlossaryService {
+export class GlossaryService
+{
 
   static connectionUrl: string = 'api/glossaries/';
 

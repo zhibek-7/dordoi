@@ -1,37 +1,40 @@
+<h1>Ресурсы</h1>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="col-sm-1"></div>
-  
+
+  <div class="collapse navbar-collapse navbar-light" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+
+      <li class="nav-item btn">
+        <button type="button" class="btn btn-create btn-secondary" routerLink='/'> Словари </button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-sm-1"></div>
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="col-sm-1"></div>
+
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item btn">
-        <button type="button" class="btn btn-create" routerLink='/create'> Создать глоссарий</button>
+        <button type="button" class="btn btn-create"> Создать глоссарий</button>
       </li>
 
       <li class="nav-item btn">
-        <button type="button" class="btn btn-secondary" routerLink='/cleanOfTerms/{{glossary.id}}'> Очистить </button>
+        <button type="button" class="btn btn-secondary"> Очистить </button>
       </li>
 
       <li class="nav-item btn">
-        <a class="nav-link" id="DeleteGlossaries" role="button" aria-haspopup="true" class="bg-secondary" routerLink='/delete/{{glossary.id}}'>
+        <a class="nav-link" id="DeleteGlossaries" role="button" aria-haspopup="true" class="bg-secondary">
           <img src="../assets/icons/main/bin.png" width="20" height="30" class="d-inline-block align-li" alt="Удалить">
-          <!--<img src="../assets/images/bin.png" width="40" height="30" class="d-inline-block align-li" alt="Удалить">-->
-          <!--<img src="../assets/icons/main/bin.png" class="d-inline-block align-top">-->
         </a>
       </li>
 
-      <li class="nav-item btn">
-        <!--кнопка checkbox Общие словари-->
-        <!--<div class="btn-group-toggle" data-toggle="buttons">
-          <label class="btn">
-            <input type="checkbox" autocomplete="off"> Общие словари
-          </label>
-        </div>-->
-      </li>
-
-      <li class="nav-item dropdown">
-        <!--кнопка с выпадающим списком Все-->
-      </li>
     </ul>
   </div>
 
@@ -42,7 +45,7 @@
 
 <!--////-->
 
-<table class="table">
+<table>
   <thead>
     <tr><th>Имя словаря</th><th>Языки</th><th colspan="2">Проекты</th></tr>
   </thead>
@@ -55,18 +58,61 @@
       <td>{{glossary.localesName}}</td>
       <td>{{glossary.localizationProjectsName}}</td>
       <td>
-        <!--здесь будут доп. кнопки-->
         <div class="dropdown">
-          <a class="nav-link" role="button" aria-haspopup="true" id="dropdownMenuButton" data-toggle="dropdown"
-             aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link" role="button" aria-haspopup="true" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
             <mat-icon>drag_indicator</mat-icon>
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" routerLink='/cleanOfTerms/{{glossary.id}}'>Очистить от терминов</a>
-            <a class="dropdown-item" routerLink='/delete/{{glossary.id}}'>Удалить глоссарий</a>
+            <a class="dropdown-item">Очистить от терминов</a>
+            <a class="dropdown-item">Удалить глоссарий</a>
           </div>
         </div>
       </td>
     </tr>
   </tbody>
 </table>
+
+<!--////-->
+<!--Не работает отображение через dataSource, работает через glossaries. Сортировка не работает.-->
+<div class="example-container">
+
+  <mat-table [dataSource]="dataSource" matSort> <!--<mat-table [dataSource]="glossaries" matSort>-->
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Имя словаря </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="localesName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Языки </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.localesName}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="localizationProjectsName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Проекты </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.localizationProjectsName}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="additionalButtons">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+    <mat-cell *matCellDef="let row">
+
+      <div class="dropdown">
+        <a class="nav-link" role="button" aria-haspopup="true" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+          <mat-icon>drag_indicator</mat-icon>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item">Очистить от терминов</a>
+          <a class="dropdown-item">Удалить глоссарий</a>
+        </div>
+      </div>
+
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;">
+  </mat-row>
+</mat-table>
+
+</div>

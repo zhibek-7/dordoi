@@ -62,9 +62,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 ID = t.Key,
                 Name = t.FirstOrDefault().Name,
-                LocalesName = string.Join(", ", t.Select(x => x.LocaleName).Distinct()),
-                LocalizationProjectsName = string.Join(", ", t.Select(x => x.LocalizationProjectName).Distinct())
-            });
+                LocalesName = string.Join(", ", t.Select(x => x.LocaleName).Distinct().OrderBy(n => n)),
+                LocalizationProjectsName = string.Join(", ", t.Select(x => x.LocalizationProjectName).Distinct().OrderBy(n => n))
+            }).OrderBy(t => t.Name);
             return resultDTO;
         }
 

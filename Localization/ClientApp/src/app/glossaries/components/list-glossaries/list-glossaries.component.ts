@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-//import { ActivatedRoute/*, Params*/ } from "@angular/router";
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+
+import { MatSort, MatTableDataSource } from '@angular/material';
+//import { MatTableModule } from '@angular/material/table';
+//import { MatSortModule } from '@angular/material/sort';
 
 import { GlossaryService } from 'src/app/services/glossary.service';
 import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
-//import { Glossary } from 'src/app/models/database-entities/glossary.type';
 
 @Component({
   selector: 'app-list-glossaries',
@@ -11,19 +13,36 @@ import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
   styleUrls: ['./list-glossaries.component.css'],
   providers: [GlossaryService]
 })
-export class ListGlossariesComponent implements OnInit {
-
+export class ListGlossariesComponent implements OnInit
+{
   glossaries: GlossariesDTO[];
+  
+  displayedColumns: string[] = ['name', 'localesName', 'localizationProjectsName', 'additionalButtons'];
+  dataSource: MatTableDataSource<GlossariesDTO>;
+  @ViewChild(MatSort) sort: MatSort;
 
-  constructor(
-    //private route: ActivatedRoute,
-    private glossariesService: GlossaryService)
-  { }
+  constructor(private glossariesService: GlossaryService)
+  {
+    this.getGlossariesDTO();
+    this.dataSource = new MatTableDataSource(this.glossaries);
+  }
 
-  ngOnInit() {
+  ngOnInit()
+  {
+    //this.getGlossariesDTO();
+    //this.dataSource = new MatTableDataSource(this.glossaries);
+  }
+
+  ngAfterViewInit()
+  {
+    this.dataSource.sort = this.sort;
+  }
+     
+  getGlossariesDTO()
+  {
     this.glossariesService.getGlossariesDTO()
       .subscribe(glossaries => this.glossaries = glossaries,
-                               error => console.error(error));
+      error => console.error(error));
   }
 
 }
