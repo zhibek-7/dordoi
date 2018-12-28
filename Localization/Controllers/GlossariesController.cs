@@ -24,7 +24,6 @@ namespace Localization.Controllers
             return await this._glossariesService.GetAllAsync();
         }
 
-
         [HttpGet]
         [Route("ToDTO")]
         public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync()
