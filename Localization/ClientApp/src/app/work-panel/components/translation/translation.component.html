@@ -28,12 +28,12 @@
       </div>    
       <div class="verticalLine col-sm-1">|</div>
       <div class="contextEdit col-sm-4" (click)="editContextModal.show()">Редактировать контекст</div>
-      <context-edit-modal-component #editContextModal (onEnterContext) = "enterContext($event)"></context-edit-modal-component>
+      <context-edit-modal-component #editContextModal [currentPhrase] = "phraseForTranslate" (onEnterContext) = "enterContext($event)"></context-edit-modal-component>
     </div>
     <div *ngIf="showContextBlock">
       <div class="row mb-1">
           <div class="col-sm">
-            <div class="objectInCode">{{currentContext}}</div>
+            <div class="objectInCode">{{phraseForTranslate.context}}</div>
           </div>
         </div>
     </div>    
@@ -51,16 +51,16 @@
     </div>
   </div>
 
-  <div class="row" style="margin: 0px 15px;">
+  <div class="row" style="margin: 0px 30px;">
     <hr>
     <div class=" col-2 ">
       <mat-icon class="arrowIcon" (click)="arrowLeftClick()">chevron_left</mat-icon>
       <mat-icon class="arrowIcon" (click)="arrowRightClick()">chevron_right</mat-icon>
     </div>
-    <div class="col-7" style="text-align: center;">
+    <div class="col-8" style="text-align: center;">
       <mat-icon class="arrowIcon" (click)="importFileClick()">import_export</mat-icon>
     </div>
-    <div class="col-1 align-self-center">6/7</div>
+    <!-- <div class="col-1 align-self-center">6/7</div> -->
     <button type="submit" class="btn btn-default float-right col-2" id="btnSave" name="buttonSubmitInput" form="inputForTranslation"
       (click)="submitTranslate()">Сохранить
     </button>

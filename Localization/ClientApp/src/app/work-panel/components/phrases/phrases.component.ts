@@ -9,7 +9,7 @@ import { TranslationSubstringService } from '../../../services/translationSubstr
     selector: 'phrases-component',
     templateUrl: './phrases.component.html',
     styleUrls: ['./phrases.component.css'],
-  providers: [TranslationSubstringService]
+    providers: [TranslationSubstringService]
 })
 export class PhrasesComponent implements OnInit {
 
@@ -24,29 +24,35 @@ export class PhrasesComponent implements OnInit {
     currentPageNumber: number = 1;
     maxNumberOfPages: number;
 
-  constructor(private sharePhraseService: SharePhraseService, private stringService: TranslationSubstringService) {
-      this.phrasesList = new Array<TranslationSubstring>();
-     }
+    constructor(private sharePhraseService: SharePhraseService, 
+        private stringService: TranslationSubstringService) {
+
+        this.phrasesList = new Array<TranslationSubstring>();
+    }
 
     ngOnInit(): void {
         this.getStrings();
      }
 
+    // Получение всех фраз для перевода
     async getStrings() {
         this.phrasesList = await this.stringService.getStringsInFile(1).toPromise();     // потом поменять на реальный приходящий файл        
         this.countPages();
     }
 
-     async countPages() {
+    // Расчет кол-ва страниц с фразами для перевода
+    async countPages() {
         let maxPhrasesOnOnePage = 70;
         this.phrasesOnPages = [];
 
-       let StringsFromNullValue: TranslationSubstring[] = [];
+        let StringsFromNullValue: TranslationSubstring[] = [];
+        
         this.phrasesList.forEach(element => {
             if(element.substringToTranslate != null) {
                 StringsFromNullValue.push(element);
             }
         });
+
         let allPhrases = StringsFromNullValue.length;
         let numberOfPages = Math.ceil(allPhrases/maxPhrasesOnOnePage);
         this.phrasesList = StringsFromNullValue;
@@ -63,22 +69,25 @@ export class PhrasesComponent implements OnInit {
         this.currentPageOfPhrases = [];
         this.currentPageOfPhrases = this.phrasesOnPages[0];
         this.maxNumberOfPages = await this.phrasesOnPages.length;
-     }
+    }
 
-     previuosPage() {
-         if(this.currentPageNumber > 1){
-            --this.currentPageNumber;
-            this.currentPageOfPhrases = this.phrasesOnPages[this.currentPageNumber - 1];
-         }
-     }
+    // Переход на предыдущую страницу с фразами для перевода
+    previuosPage() {
+        if(this.currentPageNumber > 1){
+        --this.currentPageNumber;
+        this.currentPageOfPhrases = this.phrasesOnPages[this.currentPageNumber - 1];
+        }
+    }
 
-     nextPage() {
+    // Переход на предыдущую страницу с фразами для перевода
+    nextPage() {
         if(this.currentPageNumber < this.maxNumberOfPages){
             ++this.currentPageNumber;
             this.currentPageOfPhrases = this.phrasesOnPages[this.currentPageNumber - 1];
         }
     }
 
+    // Событие, срабатываемое при нажатии на фразу для перевода
     choosePhrase(phrase){
         this.pickedPhrase = phrase;        
         this.sharePhraseService.addSharedPhrase(this.pickedPhrase);

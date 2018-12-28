@@ -35,6 +35,7 @@ export class LanguagesComponent implements OnInit {
         this.listOfTranslationsByMemory = [];
         this.listOfSimilarTranslations = [];
 
+        // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick2.subscribe(translationsOfTheString => {
             this.listOfTranslations = translationsOfTheString;
             this.listOfTranslationsByMemory = [];  
@@ -42,6 +43,8 @@ export class LanguagesComponent implements OnInit {
         
             this.findSimilarTranslations();
         });
+
+        // Событие, срабатываемое при введении варианта перевода
         this.shareTranslatedPhraseService.onSumbit.subscribe(translation => this.listOfTranslations.push(translation));
     }
 
@@ -49,6 +52,7 @@ export class LanguagesComponent implements OnInit {
     ngOnInit(): void { }    
     
 
+    // Функция проверки наличия фразы
     checkPhrase(): boolean{
         if(this.sharePhraseService.getSharedPhrase() === undefined) {
             return false;
@@ -58,6 +62,7 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    // Функция проверки кол-ва вариантов перевода
     checkNumberOfTranslations(){
         if(this.listOfTranslations.length == 0){
             return false;
@@ -67,6 +72,7 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    // Функция проверки кол-ва вариантов перевода по поиску по памяти
     checkNumberOfTranslationsByMemory(){
         if(this.listOfTranslationsByMemory.length == 0){
             return false;
@@ -76,6 +82,7 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    // Функция проверки кол-ва схожих вариантов перевода
     checkNumberOfSimilarTranslations(){
         if(this.listOfSimilarTranslations.length == 0){
             return false;
@@ -85,6 +92,7 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    // Изменение подтвержедние перевода
     async changeTranslate(translation: Translation){
         if(translation.confirmed == false){
             this.translationService.rejectTranslate(translation.id);
@@ -94,6 +102,7 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    // Удаление варианта перевода
     async deleteTranslateClick(translationId: number){        
         await this.translationService.deleteTranslate(translationId);
         for(var i = 0; i < this.listOfTranslations.length; i++) {
@@ -104,18 +113,31 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    // Поиск схожих вариантов перевода по нечеткому поиску
     findSimilarTranslations(){
         let phraseForTranslation = this.sharePhraseService.getSharedPhrase();
         let currentProjectId = this.projectService.currentProjectId;
 
-        this.translationService.findSimilarTranslations(currentProjectId, phraseForTranslation.substringToTranslate)
+        this.translationService.findSimilarTranslations(currentProjectId, phraseForTranslation)
                 .subscribe(
                     similarTranslations => {
+
+                        // Функция сортировки списка схожих вариантов перевода по убыванию
+                        function sortBySimilarValue(a,b) {
+                            if (a.similarity > b.similarity)
+                                return -1;
+                            if (a.similarity < b.similarity)
+                                return 1;
+                            return 0;
+                        }
+                          
+                        similarTranslations.sort(sortBySimilarValue);                                              
                         this.listOfSimilarTranslations = similarTranslations;
                     }
                 )
     }
 
+    // Событие, срабатываемое при нажатии клавиши Enter в поле "Поиск по памяти"
     onEnterPress(event: any){
         if(event.which == 13 || event.keyCode == 13){
 

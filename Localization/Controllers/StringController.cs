@@ -75,6 +75,13 @@ namespace Localization.WebApi
             return Ok(foundedString);
         }
 
+
+        //[HttpPost("{ChangeContextOfTheTranslationSubstring}")]
+        //public async Task ChangeContextOfTheTranslationSubstring([FromBody])
+        //{
+
+        //}
+
         [HttpGet("ByProjectId/{projectId}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetByProjectId(
             int projectId,

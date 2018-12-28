@@ -7,11 +7,22 @@
         <p>Комментарий для текущей строки:</p>
         <textarea class="form-control" rows="5" id="inputForContext" name="context" [(ngModel)]="enteredContext"
             placeholder="Введите контекст"></textarea>
+
+        <hr>
+        <p>Макс. длина переведененого текста (0 - неограничено):</p>
+        <div class="container" >
+            <div class="row">
+                <input class="col-4" type="number" [(ngModel)]="translationMaxLength" (ngModelChange)="countNumberOfSymbols()" placeholder="0" >
+                <span class="col-4 align-middle"> символов</span>
+            </div>
+        </div>
+        
+        
     </div>
     <div class="app-modal-footer">                
         <button class="btn mr-5">Скриншоты</button>               
         
-        <button class="btn mr-2" (click)="confirmContext()">Сохранить</button>
+        <button class="btn mr-2" (click)="confirmButtunClick()">Сохранить</button>
         <button class="btn" (click)="hide()">Отмена</button>            
     </div>     
 </app-modal>
