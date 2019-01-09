@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 
-namespace DAL.Reposity
+namespace Models.Interfaces.Repository
 {
     /// <summary>
     /// Базовый интерфейс репозиториев

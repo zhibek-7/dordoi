@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -32,10 +33,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var _sql = "INSERT INTO \"UserActions\"" +
                                " (\"ID_User\", \"ID_worktype\", \"Description\", \"ID_Locale\", \"ID_File\", \"ID_String\", \"ID_Translation\", \"ID_Project\") " +
                                "VALUES (@iduser, @idworktype, @description, @idlocale, @idfile, @idstring, @idtranslation, @idproject)";
-                    var _params = new { action.ID_User, action.ID_worktype,
-                                        action.Description, action.ID_Locale,
-                                        action.ID_File, action.ID_String,
-                                        action.ID_Translation, action.ID_Project };
+                    var _params = new
+                    {
+                        action.ID_User,
+                        action.ID_worktype,
+                        action.Description,
+                        action.ID_Locale,
+                        action.ID_File,
+                        action.ID_String,
+                        action.ID_Translation,
+                        action.ID_Project
+                    };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
                     return insertedId;
@@ -189,7 +197,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 Datetime = DateTime.Now,
                 Description = "",
                 ID_User = userId,
-                ID_worktype = (int) WorkTypes.Authorize
+                ID_worktype = (int)WorkTypes.Authorize
             };
             return await AddAsync(act);
         }

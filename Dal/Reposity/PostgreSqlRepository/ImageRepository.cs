@@ -7,10 +7,11 @@ using System.Text;
 using Dapper;
 using Models.DatabaseEntities;
 using DAL.Context;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class ImageRepository: IRepository<Image>
+    public class ImageRepository : IRepository<Image>
     {
         private PostgreSqlNativeContext context;
 

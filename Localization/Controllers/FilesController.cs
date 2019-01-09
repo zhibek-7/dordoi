@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 using Models.Models;
 using Utilities.Extensions;
 
@@ -101,7 +102,7 @@ namespace Localization.WebApi
         public class FolderModel
         {
             public string Name { get; set; }
-            public int? ParentId { get; set; }   
+            public int? ParentId { get; set; }
         }
 
         // POST api/files/add/folder

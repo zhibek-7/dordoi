@@ -8,6 +8,7 @@ using DAL.Context;
 using Models.DatabaseEntities;
 using Npgsql;
 using Utilities.Logs;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {

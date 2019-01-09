@@ -30,7 +30,10 @@ import {
   MatCheckboxModule,
   MatTableModule,
   MatDividerModule,
-  MatExpansionModule,} from '@angular/material';
+  MatExpansionModule,
+  MatNativeDateModule, 
+  MatSortModule,
+  MatMenuModule} from '@angular/material';
 
   import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -54,6 +57,13 @@ import {
    MatDividerModule,
    MatExpansionModule,
    ReactiveFormsModule
+
+   //
+   ,
+   MatNativeDateModule,
+   MatSortModule,
+      MatMenuModule,
+   //
     ],
   declarations: [
     NotFoundComponent,

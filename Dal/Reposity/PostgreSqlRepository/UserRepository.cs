@@ -8,17 +8,18 @@ using System.Linq;
 using DAL.Context;
 using System.Threading.Tasks;
 using SqlKata;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class UserRepository: BaseRepository, IRepository<User>
+    public class UserRepository : BaseRepository, IRepository<User>
     {
 
         private PostgreSqlNativeContext context;
-        
+
         public UserRepository()
         {
-            context = PostgreSqlNativeContext.getInstance();          
+            context = PostgreSqlNativeContext.getInstance();
         }
 
         public void Add(User user)
@@ -61,7 +62,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public bool CheckExistUser (User user)
+        public bool CheckExistUser(User user)
         {
             User existUser = null;
             using (IDbConnection dbConnection = context.Connection)
