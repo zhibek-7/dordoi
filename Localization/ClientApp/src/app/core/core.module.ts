@@ -17,7 +17,7 @@ import { ProjectPageComponent } from '../project-page/project-page.component';
 
 //
 import {
-  MatNativeDateModule, MatSortModule, MatButtonModule, MatMenuModule } from '@angular/material';
+  MatNativeDateModule, MatSortModule, MatMenuModule } from '@angular/material';
 import { ListGlossariesComponent } from '../glossaries/components/list-glossaries/list-glossaries.component';
 //
 
