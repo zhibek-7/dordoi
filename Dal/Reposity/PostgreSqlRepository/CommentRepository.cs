@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Comments;
 using DAL.Context;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
-using Utilities.Logs;
 using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository

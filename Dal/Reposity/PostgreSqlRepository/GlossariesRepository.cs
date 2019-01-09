@@ -68,31 +68,5 @@ namespace DAL.Reposity.PostgreSqlRepository
             return resultDTO;
         }
 
-
-
-        public async Task<int> AddAsync(Glossaries item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Glossaries> GetByIDAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> RemoveAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> UpdateAsync(Glossaries item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task CleanOfTermsAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

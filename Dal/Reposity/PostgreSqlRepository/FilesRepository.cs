@@ -31,7 +31,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             _log = ExceptionLog.GetLog();
         }
 
-        public async Task<IEnumerable<File>> GetAll()
+        public async Task<IEnumerable<File>> GetAllAsync()
         {
             // Sql string to select all rows
             var sqlString = "SELECT * FROM \"Files\"";
@@ -63,7 +63,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetByID(int id)
+        public async Task<File> GetByIDAsync(int id)
         {
             // Sql string to select row by id
             var sqlString = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
@@ -154,7 +154,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<int> Add(File file)
+        public async Task<int> AddAsync(File file)
         {
             // Sql string to insert query
             var sqlString = "INSERT INTO \"Files\" (\"Name\", \"Description\", \"DateOfChange\", " +
@@ -187,7 +187,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<bool> Remove(int id)
+        public async Task<bool> RemoveAsync(int id)
         {
             // Sql string for delete query
             var sqlString = "DELETE FROM \"Files\" WHERE \"ID\" = @id";
@@ -218,7 +218,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<bool> Update(File file)
+        public async Task<bool> UpdateAsync(File file)
         {
             // Sql string for update query
             var sqlString = "UPDATE \"Files\" SET \"Name\" = @Name, \"DateOfChange\" = @DateOfChange, " +

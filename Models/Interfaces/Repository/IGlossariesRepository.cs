@@ -7,10 +7,8 @@ using Models.DTO;
 
 namespace Models.Interfaces.Repository
 {
-    public interface IGlossariesRepository : IRepositoryAsync<DTO.Glossaries>
+    public interface IGlossariesRepository : IBaseRepositoryAsync<DTO.Glossaries>
     {
         Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync();
-
-        Task CleanOfTermsAsync(int id);
     }
 }

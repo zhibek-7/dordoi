@@ -21,7 +21,7 @@ namespace Models.Services
 
         public async Task<IEnumerable<Node<File>>> GetAll()
         {
-            var files = await this._filesRepository.GetAll();
+            var files = await this._filesRepository.GetAllAsync();
             return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
         }
 
@@ -33,7 +33,7 @@ namespace Models.Services
 
         public async Task<File> GetById(int id)
         {
-            return await this._filesRepository.GetByID(id);
+            return await this._filesRepository.GetByIDAsync(id);
         }
 
         public IEnumerable<File> GetInitialFolders(int projectId)
@@ -103,7 +103,7 @@ namespace Models.Services
 
             file.ID = id;
             file.DateOfChange = DateTime.Now;
-            var updatedSuccessfully = await this._filesRepository.Update(file);
+            var updatedSuccessfully = await this._filesRepository.UpdateAsync(file);
             if (!updatedSuccessfully)
             {
                 throw new Exception($"Failed to update file with id \"{id}\" in database");
@@ -119,7 +119,7 @@ namespace Models.Services
             //     return NotFound($"File by id \"{id}\" not found");
             // }
 
-            var deleteSuccessfully = await this._filesRepository.Remove(id);
+            var deleteSuccessfully = await this._filesRepository.RemoveAsync(id);
             if (!deleteSuccessfully)
             {
                 throw new Exception($"Failed to remove file with id \"{id}\" from database");
@@ -130,7 +130,7 @@ namespace Models.Services
         {
             if (file.ID_FolderOwner.HasValue)
             {
-                var parentFile = await this._filesRepository.GetByID(file.ID_FolderOwner.Value);
+                var parentFile = await this._filesRepository.GetByIDAsync(file.ID_FolderOwner.Value);
                 if (parentFile?.IsFolder == false)
                 {
                     throw new Exception($"Can not add new node \"{file.Name}\" in file node");

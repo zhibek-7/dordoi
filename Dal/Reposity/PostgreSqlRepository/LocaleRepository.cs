@@ -11,23 +11,13 @@ using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocaleRepository : BaseRepository, IRepositoryAsync<Locale>
+    public class LocaleRepository : BaseRepository
     {
         private PostgreSqlNativeContext context;
 
         public LocaleRepository()
         {
             context = PostgreSqlNativeContext.getInstance();
-        }
-
-        public Task<int> AddAsync(Locale locale)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Locale> GetByIDAsync(int Id)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Locale>> GetAllAsync()
@@ -56,15 +46,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public Task<bool> RemoveAsync(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(Locale user)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IEnumerable<Locale>> GetByUserIdAsync(int userId)
         {
