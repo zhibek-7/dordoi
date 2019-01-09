@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository

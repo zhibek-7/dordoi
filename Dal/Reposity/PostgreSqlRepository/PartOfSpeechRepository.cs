@@ -4,6 +4,7 @@ using Models.DatabaseEntities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
