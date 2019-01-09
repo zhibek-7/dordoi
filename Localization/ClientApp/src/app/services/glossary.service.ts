@@ -13,15 +13,18 @@ export class GlossaryService
 
   constructor(private httpClient: HttpClient) { }
 
-  public get(id: number): Observable<Glossaries> {
+  public get(id: number): Observable<Glossaries>
+  {
     return this.httpClient.get<Glossaries>(GlossaryService.connectionUrl + id);
   }
 
-  getGlossaries(): Observable<Glossaries[]> {
+  getGlossaries(): Observable<Glossaries[]>
+  {
     return this.httpClient.get<Glossaries[]>(GlossaryService.connectionUrl);
-  } 
+  }
 
-  getGlossariesDTO(): Observable<GlossariesDTO[]> {
+  getGlossariesDTO(): Observable<GlossariesDTO[]>
+  {
     return this.httpClient.get<GlossariesDTO[]>(GlossaryService.connectionUrl + "ToDTO");
   }
 

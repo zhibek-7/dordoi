@@ -16,6 +16,8 @@ import { UserAccountComponent } from '../user-account/user-account.component';
 import { ProjectPageComponent } from '../project-page/project-page.component';
 
 //
+import {
+  MatNativeDateModule, MatSortModule, MatButtonModule, MatMenuModule } from '@angular/material';
 import { ListGlossariesComponent } from '../glossaries/components/list-glossaries/list-glossaries.component';
 //
 
@@ -54,6 +56,14 @@ import {
    MatDividerModule,
    MatExpansionModule,
    ReactiveFormsModule
+
+   //
+   ,
+   MatNativeDateModule,
+   MatSortModule,
+      MatButtonModule,
+      MatMenuModule,
+   //
     ],
   declarations: [
     NotFoundComponent,

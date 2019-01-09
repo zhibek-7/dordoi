@@ -1,118 +1,73 @@
 <h1>Ресурсы</h1>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="col-sm-1"></div>
-
-  <div class="collapse navbar-collapse navbar-light" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-
-      <li class="nav-item btn">
-        <button type="button" class="btn btn-create btn-secondary" routerLink='/'> Словари </button>
-      </li>
-    </ul>
-  </div>
-
-  <div class="col-sm-1"></div>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb nav-border">
+    <li class="breadcrumb-item active nav-element-gray" aria-current="page">Словари</li>
+  </ol>
 </nav>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="col-sm-1"></div>
+<nav class="navbar navbar-expand nav">
+    <ul class="navbar-nav nav">
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-
-      <li class="nav-item btn">
-        <button type="button" class="btn btn-create"> Создать глоссарий</button>
+      <li class="nav-item">
+        <button type="button" class="btn nav-element"> Создать глоссарий</button>
       </li>
 
-      <li class="nav-item btn">
-        <button type="button" class="btn btn-secondary"> Очистить </button>
+      <li class="nav-item">
+        <button type="button" class="btn nav-element"> Очистить </button>
       </li>
 
-      <li class="nav-item btn">
-        <a class="nav-link" id="DeleteGlossaries" role="button" aria-haspopup="true" class="bg-secondary">
-          <img src="../assets/icons/main/bin.png" width="20" height="30" class="d-inline-block align-li" alt="Удалить">
+      <li class="nav-item">
+        <a class="btn nav-element" id="DeleteGlossaries" role="button" aria-haspopup="true" >
+          <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
         </a>
       </li>
 
     </ul>
-  </div>
-
-  <div class="col-sm-1"></div>
 </nav>
 
+<div class="table-border">
+
+  <mat-table [dataSource]="dataSource" matSort>
 
 
-<!--////-->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Имя словаря </label> </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+    </ng-container>
 
-<table>
-  <thead>
-    <tr><th>Имя словаря</th><th>Языки</th><th colspan="2">Проекты</th></tr>
-  </thead>
-  <tbody>
-    <tr *ngIf="glossaries.length == 0">
-      <td colspan="4">Создайте глоссарий</td>
-    </tr>
-    <tr *ngFor="let glossary of glossaries">
-      <td>{{glossary.name}}</td>
-      <td>{{glossary.localesName}}</td>
-      <td>{{glossary.localizationProjectsName}}</td>
-      <td>
-        <div class="dropdown">
-          <a class="nav-link" role="button" aria-haspopup="true" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-            <mat-icon>drag_indicator</mat-icon>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item">Очистить от терминов</a>
-            <a class="dropdown-item">Удалить глоссарий</a>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <ng-container matColumnDef="localesName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Языки </label> </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.localesName}} </mat-cell>
+    </ng-container>
 
-<!--////-->
-<!--Не работает отображение через dataSource, работает через glossaries. Сортировка не работает.-->
-<div class="example-container">
+    <ng-container matColumnDef="localizationProjectsName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Проекты </label> </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.localizationProjectsName}} </mat-cell>
+    </ng-container>
 
-  <mat-table [dataSource]="dataSource" matSort> <!--<mat-table [dataSource]="glossaries" matSort>-->
+    <ng-container matColumnDef="additionalButtons">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+      <mat-cell *matCellDef="let row">
 
-  <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Имя словаря </mat-header-cell>
-    <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="localesName">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Языки </mat-header-cell>
-    <mat-cell *matCellDef="let row"> {{row.localesName}} </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="localizationProjectsName">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> Проекты </mat-header-cell>
-    <mat-cell *matCellDef="let row"> {{row.localizationProjectsName}} </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="additionalButtons">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
-    <mat-cell *matCellDef="let row">
-
-      <div class="dropdown">
-        <a class="nav-link" role="button" aria-haspopup="true" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+        <button mat-button [matMenuTriggerFor]="menu">
           <mat-icon>drag_indicator</mat-icon>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item">Очистить от терминов</a>
-          <a class="dropdown-item">Удалить глоссарий</a>
-        </div>
-      </div>
+        </button>
 
-    </mat-cell>
-  </ng-container>
+      </mat-cell>
+    </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;">
-  </mat-row>
-</mat-table>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
+    </mat-row>
+  </mat-table>
 
 </div>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item>Очистить от терминов</button>
+  <button mat-menu-item>Удалить глоссарий</button>
+</mat-menu>
+
+
+<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger">Невозможно подключиться к БД</h4>
