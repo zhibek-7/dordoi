@@ -10,9 +10,8 @@ using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocaleRepository : BaseRepository, IRepository<Locale>
+    public class LocaleRepository : BaseRepository, IRepositoryAsync<Locale>
     {
-
         private PostgreSqlNativeContext context;
 
         public LocaleRepository()
@@ -20,33 +19,48 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public void Add(Locale locale)
+        public Task<int> AddAsync(Locale locale)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public Task<Locale> GetByIDAsync(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Locale GetByID(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Locale> GetAll()
+        public async Task<IEnumerable<Locale>> GetAllAsync()
         {
             using (IDbConnection dbConnection = context.Connection)
             {
                 dbConnection.Open();
-                IEnumerable<Locale> users = dbConnection.Query<Locale>("SELECT * FROM \"Locales\"").ToList();
+                IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>("SELECT * FROM \"Locales\"");
                 dbConnection.Close();
                 return users;
             }
         }
 
-        public bool Remove(int Id)
+        public async Task<IEnumerable<Locale>> GetAllForProject(int projectId)
+        {
+            using (IDbConnection dbConnection = context.Connection)
+            {
+                dbConnection.Open();
+                IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(
+                    "SELECT l.* FROM \"Locales\" l " +
+                    " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
+                    " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
+                    " where lp.\"ID\" = @Id", new { projectId });
+                dbConnection.Close();
+                return users;
+            }
+        }
+
+        public Task<bool> RemoveAsync(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Locale user)
+        public Task<bool> UpdateAsync(Locale user)
         {
             throw new NotImplementedException();
         }

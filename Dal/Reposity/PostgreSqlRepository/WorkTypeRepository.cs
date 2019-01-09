@@ -40,7 +40,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "INSERT INTO \"TypesOfWork\" (\"Name\") VALUES (@Name)";
+                    var _sql = "INSERT INTO \"WorkTypes\" (\"Name\") VALUES (@Name)";
                     var _params = new { workType.Name };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
@@ -62,7 +62,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "SELECT * FROM \"TypesOfWork\" WHERE \"ID\" = @WorkTypeId LIMIT 1";
+                    var _sql = "SELECT * FROM \"WorkTypes\" WHERE \"ID\" = @WorkTypeId LIMIT 1";
                     var _params = new { WorkTypeId = id };
                     LogQuery(_sql, _params);
                     var workType = await dbConnection.QueryFirstAsync<WorkType>(_sql, _params);
@@ -84,7 +84,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "SELECT * FROM \"TypesOfWork\"";
+                    var _sql = "SELECT * FROM \"WorkTypes\"";
                     LogQuery(_sql);
                     var types = await dbConnection.QueryAsync<WorkType>(_sql);
                     dbConnection.Close();
@@ -105,7 +105,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "DELETE FROM \"TypesOfWork\" WHERE \"ID\" = @WorkTypeId";
+                    var _sql = "DELETE FROM \"WorkTypes\" WHERE \"ID\" = @WorkTypeId";
                     var _params = new { WorkTypeId = id };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);
@@ -127,7 +127,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "UPDATE \"TypesOfWork\" SET \"Name\"=@name WHERE \"ID\"=@WorkTypeId ";
+                    var _sql = "UPDATE \"WorkTypes\" SET \"Name\"=@name WHERE \"ID\"=@WorkTypeId ";
                     var _params = new { name = workType.Name, WorkTypeId = workType.ID };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);

@@ -13,6 +13,10 @@ export class UserService {
   getUserList(): Observable<User[]> {
     return this.httpClient.post<User[]>(this.url + "List", null);
   }
+  
+  getProjectParticipantList(projectId: number): Observable < User[] > {
+    return this.httpClient.post<User[]>(this.url + "List/projectId:" + projectId, null);
+  }
 
   getPhotoById(userId: number): Observable<Blob> {
     return this.httpClient.post(this.url + userId.toString() + '/getPhoto/', null, { responseType: 'blob' });

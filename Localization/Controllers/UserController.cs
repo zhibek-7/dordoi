@@ -28,6 +28,14 @@ namespace Localization.Controllers
             return userRepository.GetAll().ToList();
         }
 
+        [HttpPost("List/projectId:{projectId}")]
+        public List<User> GetAll(int projectId)
+        {
+            return userRepository.GetByProjectID(projectId).ToList();
+        }
+
+        
+
         [HttpPost("{userId}/getPhoto")]
         public async Task<byte[]> GetPhoto(int userId)
 

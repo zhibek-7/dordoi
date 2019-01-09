@@ -39,11 +39,26 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (IDbConnection dbConnection = context.Connection)
             {
                 dbConnection.Open();
-                user = dbConnection.Query<User>("SELECT * FROM \"Users\" WHERE Id = @Id").FirstOrDefault();
+                user = dbConnection.Query<User>("SELECT * FROM \"Users\" WHERE Id = @Id", new { Id }).FirstOrDefault();
                 dbConnection.Close();
             }
             return user;
-            throw new NotImplementedException();
+        }
+
+        public IEnumerable<User> GetByProjectID(int Id)
+        {
+            using (IDbConnection dbConnection = context.Connection)
+            {
+                dbConnection.Open();
+                IEnumerable<User> users = dbConnection.Query<User>(
+                    "SELECT u.* FROM \"Users\" u " +
+                    " join \"Participants\" p on u.\"ID\" = p.\"ID_User\" " +
+                    " join \"LocalizationProjects\" lp on p.\"ID_LocalizationProject\" = lp.\"ID\" " +
+                    " where lp.\"ID\" = @Id", new { Id })
+                    .ToList();
+                dbConnection.Close();
+                return users;
+            }
         }
 
         public bool CheckExistUser (User user)

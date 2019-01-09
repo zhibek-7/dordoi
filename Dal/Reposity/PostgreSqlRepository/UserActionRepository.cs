@@ -85,7 +85,24 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "SELECT \"UserActions\".*,\"WorkTypes\".\"Name\" as Worktype  FROM \"UserActions\" join \"WorkTypes\" on \"UserActions\".\"ID_worktype\" = \"WorkTypes\".\"ID\"";
+                    var _sql = "SELECT a.\"ID\", " +
+                               "u.\"Name\" as user, " +
+                               "w.\"Name\" as worktype, " +
+                               "a.\"Datetime\", " +
+                               "a.\"Description\", " +
+                               "l.\"Name\" as locale, " +
+                               "f.\"Name\" as fileName, " +
+                               "s.\"Value\" as string, " +
+                               "t.\"Translated\" as translation, " +
+                               "p.\"Name\" as project " +
+                               "FROM public.\"UserActions\" a " +
+                               "join public.\"Users\" u on a.\"ID_User\" = u.\"ID\" " +
+                               "join public.\"WorkTypes\" w on a.\"ID_worktype\" = w.\"ID\" " +
+                               "left join public.\"Locales\" l on a.\"ID_Locale\" = l.\"ID\" " +
+                               "left join public.\"Files\" f on a.\"ID_File\" = f.\"ID\" " +
+                               "left join public.\"TranslationSubstrings\" s on a.\"ID_String\" = s.\"ID\" " +
+                               "left join public.\"Translations\" t on a.\"ID_Translation\"= s.\"ID\" " +
+                               "left join public.\"LocalizationProjects\" p on a.\"ID_Project\" = p.\"ID\"";
                     LogQuery(_sql);
                     var actions = await dbConnection.QueryAsync<UserAction>(_sql);
                     return actions;
