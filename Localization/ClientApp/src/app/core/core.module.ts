@@ -16,8 +16,6 @@ import { UserAccountComponent } from '../user-account/user-account.component';
 import { ProjectPageComponent } from '../project-page/project-page.component';
 
 //
-import {
-  MatNativeDateModule, MatSortModule, MatMenuModule } from '@angular/material';
 import { ListGlossariesComponent } from '../glossaries/components/list-glossaries/list-glossaries.component';
 //
 
@@ -32,7 +30,10 @@ import {
   MatCheckboxModule,
   MatTableModule,
   MatDividerModule,
-  MatExpansionModule,} from '@angular/material';
+  MatExpansionModule,
+  MatNativeDateModule, 
+  MatSortModule,
+  MatMenuModule} from '@angular/material';
 
   import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -61,7 +62,6 @@ import {
    ,
    MatNativeDateModule,
    MatSortModule,
-      MatButtonModule,
       MatMenuModule,
    //
     ],
