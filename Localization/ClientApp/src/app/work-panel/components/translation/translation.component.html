@@ -15,8 +15,8 @@
   <div class="contextBlock">
     <div class="row mt-2">
       <div ng-cl class="col-sm">
-        <div class="textForTranslate">{{phraseForTranslate.substringToTranslate}}</div>
-      </div>
+        <div (dblclick)="openSelectionDialog($event)" class="textForTranslate">{{phraseForTranslate.substringToTranslate}}</div>
+      </div>      
     </div>
     <div class="row context">    
       <div class="contextPicker col-sm-2" (click)="contextShowClick()">Контекст</div> 

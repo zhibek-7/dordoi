@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
+using Models.Interfaces.Repository;
 using Models.Participants;
 using SqlKata;
 

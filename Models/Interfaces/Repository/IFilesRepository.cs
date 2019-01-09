@@ -10,7 +10,7 @@ namespace Models.Interfaces.Repository
         Task<bool> Remove(int id);
         Task<bool> Update(File item);
         Task<bool> Upload(File item);
-        
+
         Task<IEnumerable<File>> GetAll();
         Task<IEnumerable<File>> GetByProjectIdAsync(int projectId);
         Task<File> GetByID(int id);

@@ -13,6 +13,7 @@ import { CommentsComponent } from './components/comments/comments.component';
 import { LanguagesComponent } from './components/languages/languages.component';
 import { TranslationComponent } from './components/translation/translation.component';
 import { ContextEditModalComponent } from './components/context-edit-modal/context-edit-modal.component';
+import { SelectedWordModalComponent } from './components/selected-word-modal/selected-word-modal.component';
 
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
 import { SharePhraseService } from './localServices/share-phrase.service';
@@ -22,8 +23,9 @@ import { CommentService } from '../services/comment.service';
 import { ProjectsService } from '../services/projects.service';
 
 import {
-  MatIconModule,  
-  MatButtonModule,
+  MatIconModule,
+  MatDialogModule,
+  
   } from '@angular/material';
 
 @NgModule({
@@ -34,7 +36,8 @@ import {
         LanguagesComponent,
         TranslationComponent,
         ContextEditModalComponent,
-        FilterPhrasesPipe
+        FilterPhrasesPipe,
+        SelectedWordModalComponent
     ],
     imports: [
         CommonModule,
@@ -42,10 +45,14 @@ import {
         FormsModule,
         WorkPanelRoutingModule,
         SharedModule,
-        MatIconModule
+        MatIconModule,
+        MatDialogModule
     ],
     exports: [
       
+    ],
+    entryComponents: [
+        SelectedWordModalComponent
     ],
     providers: [
         SharePhraseService,

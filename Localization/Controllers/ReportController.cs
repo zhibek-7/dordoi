@@ -47,7 +47,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="projectId">ID проекта локализации</param>
         /// <param name="start">Начало выборки</param>
-        /// <param name="end">Конец выборки</param>
+        /// <param name="end">Конец выборки</param>\\
         /// <param name="volumeCalcType">Считать по символам с пробелами? Если false то по словам</param>
         /// <param name="calcBasisType">>Считать по переводам? Если false то по исходным строкам</param>
         /// <param name="userId">ID пользователя</param>

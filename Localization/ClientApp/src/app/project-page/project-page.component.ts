@@ -6,124 +6,91 @@ import { MatTableDataSource } from '@angular/material';
 
 import { LanguageService } from '../services/languages.service';
 import { UserService } from '../services/user.service';
+import { WorkTypeService } from '../services/workType.service';
+import { UserActionsService } from '../services/userActions.service';
+
+
 import { Locale } from '../models/database-entities/locale.type';
 import { User } from '../models/database-entities/user.type';
-
-//export interface InfoElement {
-//  file: string;
-//  variant: string;
-//  language: string;
-//  time: string;
-//  userId: string;
-//}
-
-//const allLanguages = [
-//  'Русский',
-//  'Французский',
-//  'Китайский',
-//  'Английский',
-//];
-
-//const ELEMENT_DATA: InfoElement[] = [
-//  // tslint:disable-next-line:max-line-length
-//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не т',
-//    file: 'Hydrogen.txt',
-//    language: 'Русский',
-//    time: '6.25',
-//    userId: '14585' },
-//  // tslint:disable-next-line:max-line-length
-//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не т',
-//    file: 'Hydrogen.txt',
-//    language: 'Русский',
-//    time: '6.25',
-//    userId: '14585' },
-//  // tslint:disable-next-line:max-line-length
-//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsu',
-//    file: 'Hydrogen.txt',
-//    language: 'Русский',
-//    time: '6.25',
-//    userId: '14585' },
-//  // tslint:disable-next-line:max-line-length
-//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
-//    file: 'Hydrogen.txt',
-//    language: 'Русский',
-//    time: '6.25',
-//    userId: '14585' },
-//  // tslint:disable-next-line:max-line-length
-//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
-//    file: 'Hydrogen.txt',
-//    language: 'Французский',
-//    time: '6.25',
-//    userId: '89899' },
-//  // tslint:disable-next-line:max-line-length
-//  { variant: ' Lorem Ipsum является стандартной "рыбой" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum н',
-//    file: 'Hydrogen.txt',
-//    language: 'Китайский',
-//    time: '6.25',
-//    userId: '89899' },
-//];
+import { WorkType } from "../models/database-entities/workType.type";
+import { UserAction } from '../models/database-entities/userAction.type';
 
 @Component({
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
   styleUrls: ['./project-page.component.css'],
-  providers: [LanguageService, UserService ]
+  providers: [LanguageService, UserService, WorkTypeService, UserActionsService ]
 })
+
 export class ProjectPageComponent implements OnInit {
+
   currentProject: LocalizationProject;
-  name: string;
-  projectId: number;
-  //langOptions = allLanguages;
+
   langList: Array<Locale>;
+  userList: Array<User>;
+  workTypeList: Array<WorkType>;
+  userActionsList: Array<UserAction>;
+  dataSource = new MatTableDataSource(this.userActionsList);
+
   panelOpenState = false;
-  selected = 'none';
+  selectedUser = 'none';
   selectedLang = 'none';
-  users: Array<User>;
+  selectedWorkType = 'none';
+  
   filtredUsers = [];
 
   displayedColumns: string[] = ['variant', 'file', 'language', 'time'];
-  //dataSource = new MatTableDataSource(ELEMENT_DATA);
+
   currentUserName = '';
 
   constructor(
     private route: ActivatedRoute,
     private projectService: ProjectsService,
     private languagesService: LanguageService,
-    private userService: UserService
+    private userService: UserService,
+    private workTypeService: WorkTypeService, 
+    private userActionsService: UserActionsService,
   ) { }
 
   ngOnInit() {
     this.currentUserName = sessionStorage.getItem('currentUserName');
 
-    this.languagesService.getLanguageList()
+    this.workTypeService.getWorkTypes()
+      .subscribe(workTypes => { this.workTypeList = workTypes; },
+        error => console.error(error));
+
+    var projectId = Number(sessionStorage.getItem('ProjecID'));
+
+    this.languagesService.getByProjectId(projectId)
       .subscribe(Languages => { this.langList = Languages; },
         error => console.error(error));
 
-    this.userService.getUserList()
-      .subscribe(Users => { this.users = Users; },
+    this.projectService.getProject(projectId)
+      .subscribe(
+        project => { this.currentProject = project; },
         error => console.error(error));
 
-    this.projectId = Number(sessionStorage.getItem('ProjecID'));
+    this.userService.getProjectParticipantList(projectId)
+      .subscribe(Users => { this.userList = Users; },
+      error => console.error(error));
 
-    this.projectService.getProject(this.projectId)
-      .subscribe(project => {
-         this.currentProject = project;
+    this.userActionsService.getActionsList()
+      .subscribe(actions => {
+        this.userActionsList = actions;
+        this.dataSource = new MatTableDataSource(this.userActionsList);
         },
         error => console.error(error));
 
-    this.filtredUsers = this.users;
-    //this.langList = [
-    //  { name: 'Французский', icon: '../../assets/images/11.png' },
-    //  { name: 'Мандинго', icon: '../../assets/images/22.png' },
-    //  { name: 'Испанский', icon: '../../assets/images/333.png' }
-    //];
+    
+
+    this.filtredUsers = this.userList;
   }
 
   applyFilterUsers(filterValue: string) {
     if (filterValue === 'none') {
-      this.filtredUsers = this.users;
+      this.filtredUsers = this.userList;
     } else {
-      this.filtredUsers = this.users.filter(function(i) {
+      this.filtredUsers = this.userList.filter(function(i) {
         return filtredArr(i.id);
       });
     }
@@ -137,17 +104,17 @@ export class ProjectPageComponent implements OnInit {
     let currentLang = filterValue.source.triggerValue;
 
     if (currentLang === 'Все языки') {
-    //  this.dataSource = new MatTableDataSource(ELEMENT_DATA);
-    //} else {
-    //  const filtredLangArr = ELEMENT_DATA.filter(function(i) {
-    //    return filtredArr(i.language);
-    //  });
-    //  this.dataSource = new MatTableDataSource(filtredLangArr);
+      this.dataSource = new MatTableDataSource(this.userActionsList);
+    }
+    else {
+      const filtredLangArr = this.userActionsList.filter(function(i) {
+        return filtredArr(i.Locale);
+      });
+      this.dataSource = new MatTableDataSource(filtredLangArr);
     }
 
     function filtredArr(language) {
       return language === currentLang;
     }
   }
-
 }

@@ -1,4 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+
+import { SelectedWordModalComponent } from '../selected-word-modal/selected-word-modal.component';
 
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../localServices/share-translated-phrase.service';
@@ -32,15 +35,45 @@ export class TranslationComponent implements OnInit {
     constructor(private sharePhraseService: SharePhraseService,
         private shareTranslatedPhraseService: ShareTranslatedPhraseService, 
         private translationService: TranslationService,
-        private translationSubstringService: TranslationSubstringService ) {
+        private translationSubstringService: TranslationSubstringService,
+        private selectionDialog: MatDialog) {
 
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
                 this.phraseForTranslate = pickedPhrase;                
                 this.translatedText = null;
-            });
-     }
+            });                              
+    }
 
+    //Действия при двойном клике по слову
+    openSelectionDialog(event) {
+        let selectedWord; 
+        if (window.getSelection) {
+            selectedWord = window.getSelection();
+        } else if (document.getSelection) {
+            selectedWord = document.getSelection();
+        }     
+
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.data = {
+            selectedWord: selectedWord
+        };
+        dialogConfig.panelClass = 'selectionDialog';
+
+        let positionY: string = event.clientY + "px";
+        let positionX: string = event.clientX + "px";
+        dialogConfig.position = {
+            'top': positionY,
+            'left': positionX
+        }        
+        
+        let dialogRef = this.selectionDialog.open(SelectedWordModalComponent, dialogConfig);
+
+        console.log(event);
+    }  
+    
+           
     ngOnInit(): void { }
 
     // Скрывает левый блок (Блок с фразами)
@@ -85,6 +118,10 @@ export class TranslationComponent implements OnInit {
 
     importFileClick(){
         alert("Импортируем файл");
+    }      
+    
+    thisIsAtest(){
+        alert("magic");            
     }        
 
     // Событие, срабатывающее при сохранении изменений в модальном окне
