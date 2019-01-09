@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 
-namespace DAL.Reposity.PostgreSqlRepository
+namespace Models.Interfaces.Repository
 {
     public interface IFilesRepository
     {

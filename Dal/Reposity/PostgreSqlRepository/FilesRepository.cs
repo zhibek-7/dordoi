@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 using Models.Parser;
 using Npgsql;
 using SqlKata;
@@ -42,7 +43,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
 
                     Task<IEnumerable<File>> quer = connection.QueryAsync<File>(sqlString);
-
                     // Execute select query and return enumerable of file objects
                     return await quer;
                 }
@@ -106,7 +106,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
                     // Execute select query and return file object
-                    return await connection.QuerySingleAsync<File>(sqlString, new { name, parentId });
+                    return await connection.QuerySingleOrDefaultAsync<File>(sqlString, new { name, parentId });
                 }
             }
             catch (NpgsqlException exception)
@@ -254,64 +254,98 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> Upload(File file)
         {
-            // Sql string for insert query
-            var sqlString = "INSERT INTO \"Files\" (\"ID_LocalizationProject\", \"Name\" ,\"StringsCount\", \"Encoding\", \"IsFolder\", \"OriginalFullText\") " +
-                            "VALUES (@ID_LocalizationProject, @Name , @StringsCount, @Encoding, @IsFolder, @OriginalFullText)";
-            // Using new posgresql connection
+            var sqlString = "INSERT INTO \"Files\" (" +
+                            "\"ID_LocalizationProject\", " +
+                            "\"Name\", " +
+                            "\"Description\", " +
+                            "\"DateOfChange\", " +
+                            "\"StringsCount\", " +
+                            "\"ID_FolderOwner\", " +
+                            "\"Encoding\", " +
+                            "\"IsFolder\", " +
+                            "\"OriginalFullText\"" +
+                            ") " +
+                            "VALUES (" +
+                            "@ID_LocalizationProject," +
+                            "@Name, " +
+                            "@Description, " +
+                            "@DateOfChange, " +
+                            "@StringsCount, " +
+                            "@ID_FolderOwner, " +
+                            "@Encoding, " +
+                            "@IsFolder, " +
+                            "@OriginalFullText" +
+                            ") " +
+                            "RETURNING \"ID\"";
             using (var connection = new NpgsqlConnection(connectionString))
             {
-                IDbTransaction t = connection.BeginTransaction();
-                try
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
                 {
-                    bool ans = true;
-                    // Execute File insert query
-                    var insertedId = await connection.ExecuteScalarAsync(sqlString, file);
-
-                    // Return "file is uploaded" result
-                    if (insertedId != null)
+                    try
                     {
-                        file.ID = (int)insertedId;
-                        sqlString = sqlString = "INSERT INTO \"TranslationSubstrings\" (\"SubstringToTranslate\", \"Context\", \"ID_FileOwner\", \"Value\", \"PositionInText\") " +
-                                                "VALUES (@SubstringToTranslate, @Context, @ID_FileOwner, @Value, @PositionInText)";
-                        // Create parser object
-                        using (var p = new Parser())
+                        var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, file, transaction);
+                        if (!insertedId.HasValue)
                         {
-                            var translationSubstrings = p.Parse(file);
-                            int n = 0;
-                            n = translationSubstrings.Count;
-                            foreach (var ts in translationSubstrings)
+                            this._loggerError.WriteLn("Insertion into files didn't return id.");
+                            transaction.Rollback();
+                            return false;
+                        }
+                        file.ID = insertedId.Value;
+
+                        if (file.IsFolder)
+                        {
+                            transaction.Commit();
+                            return true;
+                        }
+
+                        sqlString = "INSERT INTO \"TranslationSubstrings\" " +
+                                    "(" +
+                                    "\"SubstringToTranslate\", " +
+                                    "\"Context\", " +
+                                    "\"ID_FileOwner\", " +
+                                    "\"Value\", " +
+                                    "\"PositionInText\"" +
+                                    ") " +
+                                    "VALUES (" +
+                                    "@SubstringToTranslate, " +
+                                    "@Context, " +
+                                    "@ID_FileOwner, " +
+                                    "@Value, " +
+                                    "@PositionInText" +
+                                    ")";
+                        using (var parser = new Parser())
+                        {
+                            var translationSubstrings = parser.Parse(file);
+                            var n = translationSubstrings.Count;
+                            foreach (var translationSubstring in translationSubstrings)
                             {
-                                // Execute TranslationSubstring insert query
-                                n -= await connection.ExecuteAsync(sqlString, ts);
+                                n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
                             }
-                            ans = n == translationSubstrings.Count;
+                            transaction.Commit();
+                            return n == 0;
                         }
                     }
-                    else ans = false;
-                    t.Commit();
-                    return ans;
-                }
-                catch (NpgsqlException exception)
-                {
-                    // Custom logging
-                    _log.WriteLn("Ошибка в Upload NpgsqlException ", exception);
-                    t.Rollback();
-                    return false;
-                }
-                catch (ParserException exception)
-                {
-                    // Custom logging
-                    _log.WriteLn("Ошибка в блоке распарсивания: ", exception);
-                    //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
-                    //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
-                    return false;
-                }
-                catch (Exception exception)
-                {
-                    // Custom logging
-                    _log.WriteLn("Ошибка в Upload Exception ", exception);
-                    t.Rollback();
-                    return false;
+                    catch (NpgsqlException exception)
+                    {
+                        this._loggerError.WriteLn("Ошибка в Upload NpgsqlException ", exception);
+                        transaction.Rollback();
+                        return false;
+                    }
+                    catch (ParserException exception)
+                    {
+                        this._loggerError.WriteLn("Ошибка в блоке распарсивания: ", exception);
+                        //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
+                        //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
+                        transaction.Rollback();
+                        return false;
+                    }
+                    catch (Exception exception)
+                    {
+                        this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} Exception ", exception);
+                        transaction.Rollback();
+                        return false;
+                    }
                 }
             }
         }

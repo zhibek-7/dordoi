@@ -43,6 +43,7 @@ namespace Localization
             // 
             //services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
             services.AddScoped<IFilesRepository, FilesRepository>();
+            services.AddScoped<FilesService>();
             services.AddScoped<IGlossaryRepository, GlossaryRepository>();
             services.AddScoped<GlossaryService>();
 

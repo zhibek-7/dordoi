@@ -3,6 +3,7 @@ import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 
 import { FileService } from 'src/app/services/file.service';
+import { ProjectsService } from 'src/app/services/projects.service';
 
 import { File as FileData } from 'src/app/models/database-entities/file.type';
 
@@ -22,7 +23,10 @@ export class FilesComponent implements OnInit {
 
   isLoading: boolean;
 
-  constructor(private fileService: FileService) { }
+  constructor(
+    private fileService: FileService,
+    private projectsService: ProjectsService
+  ) { }
 
   ngOnInit(): void {
 
@@ -57,7 +61,7 @@ export class FilesComponent implements OnInit {
 
     const parentId = parentNode ? parentNode.data.id : null;
 
-    this.fileService.addFolder(folderName, parentId).subscribe(
+    this.fileService.addFolder(folderName, this.projectsService.currentProjectId, parentId).subscribe(
       node => this.addNode(node, parentNode),
       error => alert(error.error)
     );
@@ -66,7 +70,7 @@ export class FilesComponent implements OnInit {
   addFile(file: File, parentNode: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
-    this.fileService.addFile(file, parentId).subscribe(
+    this.fileService.addFile(file, this.projectsService.currentProjectId, parentId).subscribe(
       node => this.addNode(node, parentNode),
       error => alert(error.error)
     );

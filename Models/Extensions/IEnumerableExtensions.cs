@@ -4,20 +4,21 @@ using System.Linq;
 using Models.DatabaseEntities;
 using Models.Models;
 
-namespace Utilities.Extensions
+namespace Models.Extensions
 {
-    public static class TreeExtensions
+    public static class IEnumerableExtensions
     {
-        public static IEnumerable<TResult> ToTree<TFrom, TResult>(
-            this IEnumerable<TFrom> files,
-            Func<TFrom, string, TResult> createFactory,
-            Func<TFrom, string> iconFactory,
+
+        public static IEnumerable<TNode> ToTree<TFile, TNode>(
+            this IEnumerable<TFile> files,
+            Func<TFile, string, TNode> createNodeFromFile,
+            Func<TFile, string> getIconForFile,
             int? parentId = null
         )
-            where TFrom : File
-            where TResult : Node<TFrom>, new()
+            where TFile : File
+            where TNode : Node<TFile>
         {
-            var nodes = new List<TResult>();
+            var nodes = new List<TNode>();
 
             // Get child nodes by parent node id 
             var childFiles = files.Where(file => file.ID_FolderOwner == parentId)
@@ -26,13 +27,13 @@ namespace Utilities.Extensions
 
             foreach (var file in childFiles)
             {
-                var icon = iconFactory(file);
+                var icon = getIconForFile(file);
 
                 // Create new node based on file data
-                var node = createFactory(file, icon);
+                var node = createNodeFromFile(file, icon);
 
                 // Get excepted files
-                var childItems = files.Except(childFiles).ToTree(createFactory, iconFactory, file.ID);
+                var childItems = files.Except(childFiles).ToTree(createNodeFromFile, getIconForFile, file.ID);
 
                 // Add child nodes in node
                 node.Children.AddRange(childItems);
@@ -43,5 +44,6 @@ namespace Utilities.Extensions
 
             return nodes;
         }
+
     }
 }
