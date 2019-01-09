@@ -11,11 +11,17 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.Interfaces.Repository;
 using Models.Services;
+using Microsoft.AspNetCore.Diagnostics;
+using Utilities.Logs;
+using System.Net;
 
 namespace Localization
 {
     public class Startup
     {
+
+        private readonly ExceptionLog _exceptionLog = new ExceptionLog();
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -69,13 +75,17 @@ namespace Localization
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            app.UseExceptionHandler(appBuilder
+                => appBuilder.Run(async context =>
+                {
+                    var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    var unhandledException = errorFeature.Error;
+                    this._exceptionLog.WriteLn("Localization web app unhandled exception.", unhandledException);
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                }));
+
+            if (!env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService } from '../services/projects.service';
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
+import { User } from './user';
 import * as moment from 'moment';
 moment.locale('ru');
 
@@ -30,9 +31,8 @@ export class UserAccountComponent implements OnInit {
       .subscribe(project => { this.projectsArr = project; },
       error => console.error(error));
 
-    this.projectsArr.forEach((element)=>{
-      element.lastActivity = new Date();
-    })
+      //TODO пока не нужно
+    //this.projectsArr.forEach((element)=>{element.lastActivity = new Date();});
     // this.projectsArr = this.projectsService.getProjects() - метод возвращающий массив проетов. Отбор по юзеру не реализован
   }
 
