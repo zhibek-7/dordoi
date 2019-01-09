@@ -8,6 +8,7 @@ using Models.DatabaseEntities;
 using System.Linq;
 using System.Threading.Tasks;
 using Models.Translations;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -281,7 +282,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "INNER JOIN \"Files\" AS F ON F.\"ID_LocalizationProject\" = LP.\"ID\" " +
                         "INNER JOIN \"TranslationSubstrings\" AS TS ON TS.\"ID_FileOwner\" = F.\"ID\" " +
                         "INNER JOIN \"Translations\" AS T ON T.\"ID_String\" = TS.\"ID\" " +
-                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";            
+                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";
 
             try
             {
@@ -310,7 +311,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
         public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, TranslationSubstring translationSubstring)
-        {            
+        {
             var query = "SELECT \"SubstringToTranslate\" AS \"TranslationText\", similarity(\"SubstringToTranslate\", @TranslationSubstringText) AS \"Similarity\", " +
                         "\"Files\".\"Name\" AS \"FileOwnerName\", \"Translations\".\"Translated\" AS \"TranslationVariant\"" +
                         "FROM \"LocalizationProjects\" " +
@@ -328,7 +329,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     dbConnection.Open();
                     IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query,
-                        new { TranslationSubstringText = translationSubstring.SubstringToTranslate, TranslationSubstringId = translationSubstring.ID , ProjectId = currentProjectId });
+                        new { TranslationSubstringText = translationSubstring.SubstringToTranslate, TranslationSubstringId = translationSubstring.ID, ProjectId = currentProjectId });
                     dbConnection.Close();
                     return similarTranslations;
                 }

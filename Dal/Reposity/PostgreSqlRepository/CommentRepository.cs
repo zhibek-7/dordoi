@@ -9,16 +9,17 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Utilities.Logs;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class CommentRepository : BaseRepository, IRepositoryAsync<Comments>
     {
-        private PostgreSqlNativeContext context; 
+        private PostgreSqlNativeContext context;
 
         public CommentRepository()
         {
-            context = PostgreSqlNativeContext.getInstance();            
+            context = PostgreSqlNativeContext.getInstance();
         }
 
         /// <summary>
@@ -267,6 +268,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return 0;
             }
         }
-        
+
     }
 }

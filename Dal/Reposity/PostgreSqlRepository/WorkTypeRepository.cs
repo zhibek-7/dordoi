@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {

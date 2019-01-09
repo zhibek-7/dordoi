@@ -7,6 +7,7 @@ using System.Linq;
 using DAL.Context;
 using System.Threading.Tasks;
 using SqlKata;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -23,7 +24,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             throw new NotImplementedException();
         }
-        
+
         public Task<Locale> GetByIDAsync(int Id)
         {
             throw new NotImplementedException();
