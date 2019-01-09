@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Models.Translations
+namespace Models.DatabaseEntities.Translations
 {
     public class SimilarTranslation : TranslationWithFile
     {

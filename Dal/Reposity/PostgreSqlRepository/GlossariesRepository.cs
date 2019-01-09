@@ -9,6 +9,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Models.DatabaseEntities;
+
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class GlossariesRepository : BaseRepository, IGlossariesRepository

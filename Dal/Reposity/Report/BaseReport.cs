@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DAL.Context;
-using Models.Reports;
+using Models.DatabaseEntities.Reports;
+
 
 namespace DAL.Reposity.Report
 {

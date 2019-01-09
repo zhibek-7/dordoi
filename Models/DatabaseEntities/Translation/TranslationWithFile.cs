@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Models.DatabaseEntities;
 
-namespace Models.Translations
+namespace Models.DatabaseEntities.Translations
 {
     public class TranslationWithFile
     {

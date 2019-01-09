@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Models.DatabaseEntities;
 
-namespace Models.DTO
+namespace Models.DatabaseEntities
 {
     public class Glossaries : BaseEntity
     {
@@ -9,7 +9,7 @@ namespace Models.DTO
 
         public string LocaleID { get; set; }
         public string LocaleName { get; set; }
-        
+
         public string LocalizationProjectID { get; set; }
         public string LocalizationProjectName { get; set; }
     }

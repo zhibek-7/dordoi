@@ -1,6 +1,6 @@
 ﻿using Models.DatabaseEntities;
 
-namespace Models.DTO
+namespace Models.DatabaseEntities
 {
     public class GlossariesDTO : BaseEntity
     {

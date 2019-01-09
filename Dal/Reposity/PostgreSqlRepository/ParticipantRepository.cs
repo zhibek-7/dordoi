@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
+using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
-using Models.Participants;
 using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -16,7 +16,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
 
-        public async Task<int> AddAsync(Models.DatabaseEntities.Participant newParticipant)
+        public async Task<int> AddAsync(Participant newParticipant)
         {
             using (var dbConnection = this._context.Connection)
             {

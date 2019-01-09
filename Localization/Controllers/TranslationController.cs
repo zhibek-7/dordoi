@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
-using Models.Translations;
+using Models.DatabaseEntities.Translations;
 
 namespace Localization.WebApi
 {
@@ -31,11 +31,11 @@ namespace Localization.WebApi
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Translation translation)
         {
-            if(translation == null)
+            if (translation == null)
             {
                 return BadRequest("Запрос с пустыми параметрами");
             }
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Модель не соответсвует");
             }
@@ -208,7 +208,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPost]
         [Route("FindSimilarTranslations/{currentProjectId}")]
-        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId,[FromBody] TranslationSubstring translationSubstring)
+        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, [FromBody] TranslationSubstring translationSubstring)
         {
             var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, translationSubstring);
             return Ok(similarTranslations);

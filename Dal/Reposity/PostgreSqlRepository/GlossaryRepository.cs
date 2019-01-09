@@ -197,7 +197,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             { "positionintext", "TranslationSubstrings.PositionInText" },
         };
 
-        public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsByGlossaryIdAsync(
+        public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
             int glossaryId,
             int limit,
             int offset,
@@ -226,7 +226,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
                 this.LogQuery(getGlossaryTermsCompiledQuery);
-                var assotiatedTerms = await dbConnection.QueryAsync<Models.Glossaries.Term>(
+                var assotiatedTerms = await dbConnection.QueryAsync<Term>(
                     sql: getGlossaryTermsCompiledQuery.Sql,
                     param: getGlossaryTermsCompiledQuery.NamedBindings
                     );

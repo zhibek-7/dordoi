@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using DAL.Reposity.Report;
 using Microsoft.AspNetCore.Mvc;
-using Models.Reports;
+using Models.DatabaseEntities.Reports;
+
 using OfficeOpenXml;
 
 namespace Localization.WebApi
@@ -101,11 +102,11 @@ namespace Localization.WebApi
                     //sheet.Cells[row, 3].Style.Numberformat.Format = @"#,##0.00_ ;\-#,##0.00_ ;0.00_ ;";
                 }
 
-                var bin = eP. GetAsByteArray();
+                var bin = eP.GetAsByteArray();
 
                 string file_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 string file_name = "Report.xlsx";
-                res = File(bin, file_type, file_name);       
+                res = File(bin, file_type, file_name);
             }
 
             return res;

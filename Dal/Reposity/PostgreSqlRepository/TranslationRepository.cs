@@ -7,8 +7,9 @@ using Dapper;
 using Models.DatabaseEntities;
 using System.Linq;
 using System.Threading.Tasks;
-using Models.Translations;
+
 using Models.Interfaces.Repository;
+using Models.DatabaseEntities.Translations;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {

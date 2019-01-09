@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Models.Reports
+namespace Models.DatabaseEntities.Reports
 {
     /// <summary>
     /// Строка отчета по количеству переведенных строк/слов
     /// </summary>
-    public class TranslatedWordsReportRow: BaseReportRow
+    public class TranslatedWordsReportRow : BaseReportRow
     {
         /// <summary>
         /// Имя пользователя осуществлявшего перевод

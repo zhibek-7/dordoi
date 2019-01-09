@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-using Models.Glossaries;
 using Models.Interfaces.Repository;
 
 namespace Models.Services

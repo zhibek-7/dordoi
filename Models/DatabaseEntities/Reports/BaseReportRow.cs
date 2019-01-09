@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Models.Reports
+namespace Models.DatabaseEntities.Reports
 {
     public abstract class BaseReportRow
     {
