@@ -97,7 +97,7 @@ namespace Models.Services
             // var foundedFile = await filesRepository.GetByID(id);
             // if (foundedFile == null)
             // {
-            //     return NotFound($"File by id \"{id}\" not found");
+            //     throw new Exception($"File by id \"{id}\" not found");
             // }
 
             file.ID = id;
@@ -115,7 +115,7 @@ namespace Models.Services
             // var foundedFile = await filesRepository.GetByID(id);
             // if (foundedFile == null)
             // {
-            //     return NotFound($"File by id \"{id}\" not found");
+            //     throw new Exception($"File by id \"{id}\" not found");
             // }
 
             var deleteSuccessfully = await this._filesRepository.RemoveAsync(id);
@@ -132,7 +132,7 @@ namespace Models.Services
                 var parentFile = await this._filesRepository.GetByIDAsync(file.ID_FolderOwner.Value);
                 if (parentFile?.IsFolder == false)
                 {
-                    throw new Exception($"Can not add new node \"{file.Name}\" in file node");
+                    throw new Exception($"Can not add new node \"{file.Name}\" with file as parent node");
                 }
             }
 
