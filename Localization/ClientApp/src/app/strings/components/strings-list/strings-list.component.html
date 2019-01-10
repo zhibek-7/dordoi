@@ -3,12 +3,15 @@
     <tr>
       <th (click)="requestSortBy('value')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'value'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'value'">Исходная строка</th>
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'value'"
+          class="col-xs-6">Исходная строка</th>
       <th (click)="requestSortBy('context')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'context'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'context'">Контекст</th>
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'context'"
+          class="col-xs-6">Контекст</th>
       <th [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'outdated'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'outdated'">
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'outdated'"
+          class="col-xs-2">
         <label (click)="requestSortBy('outdated')">
           Устаревшее
         </label>
@@ -16,20 +19,21 @@
       </th>
       <th (click)="requestSortBy('description')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'description'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'description'">Описание</th>
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'description'"
+          class="col-xs-6">Описание</th>
       <th>Действия</th>
     </tr>
   </thead>
   <tr *ngFor="let translationString of translationStrings">
-    <td>{{translationString.value}}</td>
-    <td>{{translationString.context}}</td>
-    <td>
+    <td class="col-xs-6">{{translationString.value}}</td>
+    <td class="col-xs-6">{{translationString.context}}</td>
+    <td class="col-xs-2">
       <input type="checkbox" class="checkbox" [(ngModel)]="translationString.outdated" (change)="updateString(translationString)">
     </td>
-    <td>{{translationString.description}}</td>
-    <td>
+    <td class="col-xs-6">{{translationString.description}}</td>
+    <td class="col-xs-6">
       <div class="btn-group">
-        <button class="btn btn-success" (click)="setLanguagesModal.show()">Задать язык</button>
+        <button class="btn btn-link" (click)="setLanguagesModal.show()">Задать язык</button>
         <app-set-languages-form-modal #setLanguagesModal
                                       [translationSubstring]="translationString"
                                       ></app-set-languages-form-modal>
