@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-using Models.DTO.Files;
 using Models.Extensions;
 using Models.Interfaces.Repository;
 using Models.Models;
