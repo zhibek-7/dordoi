@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
-using Models.Translations;
+using Models.DatabaseEntities.Translations;
 
 namespace Localization.WebApi
 {
@@ -31,11 +31,11 @@ namespace Localization.WebApi
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Translation translation)
         {
-            if(translation == null)
+            if (translation == null)
             {
                 return BadRequest("Запрос с пустыми параметрами");
             }
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Модель не соответсвует");
             }
@@ -180,8 +180,8 @@ namespace Localization.WebApi
         /// <param name="currentProjectId">id проекта в котором ведется работа в данный момент</param>
         /// <param name="translationText">фраза по которой производится поиск вариантов перевода</param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("FindTranslationByMemory")]
+        [HttpPost]
+        [Route("FindTranslationByMemory/{currentProjectId}/{translationText}")]
         public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(int currentProjectId, string translationText)
         {
             if (translationText == null || translationText == "")
@@ -193,17 +193,24 @@ namespace Localization.WebApi
             return Ok(translations);
         }
 
+        [HttpPost]
+        [Route("littleTest/{currentProjectId}")]
+        public async Task LittleTest(int currentProjectId)
+        {
+            Ok();
+        }
+
         /// <summary>
         /// Поиск схожих вариантов перевода в данном проекте
         /// </summary>
         /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("FindSimilarTranslations")]
-        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, string translationText)
+        [HttpPost]
+        [Route("FindSimilarTranslations/{currentProjectId}")]
+        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, [FromBody] TranslationSubstring translationSubstring)
         {
-            var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, translationText);
+            var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, translationSubstring);
             return Ok(similarTranslations);
         }
 

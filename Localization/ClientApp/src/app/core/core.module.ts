@@ -5,7 +5,6 @@ import { RouterModule} from '@angular/router';
 
 import { HttpClientModule } from '@angular/common/http';
 
-
 import { CoreRoutingModule } from './core-routing.model';
 
 import { HeaderComponent } from './header/header.component';
@@ -15,6 +14,10 @@ import { CurrentProjectSettingsComponent } from '../current-project-settings/cur
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
 import { ProjectPageComponent } from '../project-page/project-page.component';
+
+//
+import { ListGlossariesComponent } from '../glossaries/components/list-glossaries/list-glossaries.component';
+//
 
 import {
   MatIconModule,
@@ -27,7 +30,10 @@ import {
   MatCheckboxModule,
   MatTableModule,
   MatDividerModule,
-  MatExpansionModule,} from '@angular/material';
+  MatExpansionModule,
+  MatNativeDateModule, 
+  MatSortModule,
+  MatMenuModule} from '@angular/material';
 
   import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -52,14 +58,23 @@ import {
    MatExpansionModule,
    ReactiveFormsModule
 
+   //
+   ,
+   MatNativeDateModule,
+   MatSortModule,
+      MatMenuModule,
+   //
     ],
-    declarations: [
-  	    NotFoundComponent,
-        HeaderComponent,
-        CurrentProjectSettingsComponent,
-        NewProjectComponent,
-        UserAccountComponent,
-        ProjectPageComponent,
+  declarations: [
+    NotFoundComponent,
+    HeaderComponent,
+    CurrentProjectSettingsComponent,
+    NewProjectComponent,
+    UserAccountComponent,
+    ProjectPageComponent,
+    //
+    ListGlossariesComponent
+    //
     ],
     exports: [
         RouterModule,

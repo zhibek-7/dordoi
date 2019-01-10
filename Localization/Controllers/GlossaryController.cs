@@ -53,7 +53,7 @@ namespace Localization.WebApi
             public bool? sortAscending { get; set; }
         }
         [HttpPost("{glossaryId}/terms/list")]
-        public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsAsync(
+        public async Task<IEnumerable<Term>> GetAssotiatedTermsAsync(
             int glossaryId,
             [FromBody] GetAssotiatedTermsParam param)
         {

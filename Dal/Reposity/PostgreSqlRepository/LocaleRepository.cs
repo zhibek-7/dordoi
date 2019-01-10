@@ -7,12 +7,12 @@ using System.Linq;
 using DAL.Context;
 using System.Threading.Tasks;
 using SqlKata;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocaleRepository : BaseRepository, IRepository<Locale>
+    public class LocaleRepository : BaseRepository
     {
-
         private PostgreSqlNativeContext context;
 
         public LocaleRepository()
@@ -20,36 +20,32 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
-        public void Add(Locale locale)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Locale GetByID(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Locale> GetAll()
+        public async Task<IEnumerable<Locale>> GetAllAsync()
         {
             using (IDbConnection dbConnection = context.Connection)
             {
                 dbConnection.Open();
-                IEnumerable<Locale> users = dbConnection.Query<Locale>("SELECT * FROM \"Locales\"").ToList();
+                IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>("SELECT * FROM \"Locales\"");
                 dbConnection.Close();
                 return users;
             }
         }
 
-        public bool Remove(int Id)
+        public async Task<IEnumerable<Locale>> GetAllForProject(int projectId)
         {
-            throw new NotImplementedException();
+            using (IDbConnection dbConnection = context.Connection)
+            {
+                dbConnection.Open();
+                IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(
+                    "SELECT l.* FROM \"Locales\" l " +
+                    " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
+                    " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
+                    " where lp.\"ID\" = @Id", new { projectId });
+                dbConnection.Close();
+                return users;
+            }
         }
 
-        public void Update(Locale user)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IEnumerable<Locale>> GetByUserIdAsync(int userId)
         {

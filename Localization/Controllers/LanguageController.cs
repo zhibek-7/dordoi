@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
@@ -15,25 +12,30 @@ namespace Localization.WebApi
     [ApiController]
     public class LanguageController : ControllerBase
     {
-        private readonly LocaleRepository localeRepository;
+        private readonly LocaleRepository _localeRepository;
 
         public LanguageController()
         {
-            localeRepository = new LocaleRepository();
+            _localeRepository = new LocaleRepository();
         }
 
         [HttpGet]
         [Route("List")]
-        public List<Locale> GetLocales()
+        public async Task<IEnumerable<Locale>> GetLocales()
         {
-            List<Locale> lacale = localeRepository.GetAll().ToList();
-            return lacale;
+            return await _localeRepository.GetAllAsync();
+        }
+
+        [HttpGet("byProjectId/{projectId}")]
+        public async Task<IEnumerable<Locale>> GetProjectLocales(int projectId)
+        {
+            return await _localeRepository.GetAllForProject(projectId);
         }
 
         [HttpGet("byUserId/{userId}")]
         public async Task<IEnumerable<Locale>> GetUserLocales(int userId)
         {
-            return await this.localeRepository.GetByUserIdAsync(userId: userId);
+            return await _localeRepository.GetByUserIdAsync(userId);
         }
 
     }

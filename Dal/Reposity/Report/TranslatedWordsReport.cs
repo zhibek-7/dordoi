@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Dapper;
-using Models.Reports;
+using Models.DatabaseEntities.Reports;
 
 namespace DAL.Reposity.Report
 {
@@ -12,7 +12,7 @@ namespace DAL.Reposity.Report
     /// <summary>
     /// Для работы с БД
     /// </summary>
-    public class TranslatedWordsReport: BaseReport<TranslatedWordsReportRow>
+    public class TranslatedWordsReport : BaseReport<TranslatedWordsReportRow>
     {
         /// <summary>
         /// Функция получения строк отчета удовлетворяющих параметрам
@@ -26,17 +26,17 @@ namespace DAL.Reposity.Report
         /// <param name="countTranslations">Считать по переводам? Если false то по исходным строкам</param>
         /// <returns>Список строк отчета</returns>
         public IEnumerable<TranslatedWordsReportRow> GetRows
-            (int projectID, 
+            (int projectID,
             DateTime dateFrom,
-            DateTime dateTo, 
-            int userId = -1, 
-            int localeId = -1, 
-            bool countByChar = true, 
+            DateTime dateTo,
+            int userId = -1,
+            int localeId = -1,
+            bool countByChar = true,
             bool countTranslations = true)
         {
             using (var dbConnection = Context.Connection)
             {
-                dbConnection.Open(); 
+                dbConnection.Open();
                 var sqlQuery = "SELECT name_ as Name, lang_ as language, worktype_ as workType, count_ as Translations" +
                                $" FROM TranslatedWords({projectID}, '{dateFrom.ToString("dd-MM-yyyy")}', '{dateTo.ToString("dd-MM-yyyy")}', {userId}, {localeId}, {countByChar}, {countTranslations});";
                 var rows = dbConnection.Query<TranslatedWordsReportRow>(sqlQuery, new { dateFrom, dateTo }).ToList();

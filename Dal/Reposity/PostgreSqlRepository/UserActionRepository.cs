@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -17,6 +18,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             context = PostgreSqlNativeContext.getInstance();
         }
 
+        /// <summary>
+        /// Добавить произвольное действие пользователя
+        /// </summary>
+        /// <param name="action">Модель действия</param>
+        /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddAsync(UserAction action)
         {
             try
@@ -27,10 +33,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var _sql = "INSERT INTO \"UserActions\"" +
                                " (\"ID_User\", \"ID_worktype\", \"Description\", \"ID_Locale\", \"ID_File\", \"ID_String\", \"ID_Translation\", \"ID_Project\") " +
                                "VALUES (@iduser, @idworktype, @description, @idlocale, @idfile, @idstring, @idtranslation, @idproject)";
-                    var _params = new { action.ID_User, action.ID_worktype,
-                                        action.Description, action.ID_Locale,
-                                        action.ID_File, action.ID_String,
-                                        action.ID_Translation, action.ID_Project };
+                    var _params = new
+                    {
+                        action.ID_User,
+                        action.ID_worktype,
+                        action.Description,
+                        action.ID_Locale,
+                        action.ID_File,
+                        action.ID_String,
+                        action.ID_Translation,
+                        action.ID_Project
+                    };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
                     return insertedId;
@@ -43,6 +56,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Получить действие пользователя по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор дейтсвия</param>
+        /// <returns>Действие пользователя</returns>
         public async Task<UserAction> GetByIDAsync(int id)
         {
             try
@@ -50,7 +68,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "SELECT * FROM \"UserActions\" WHERE \"ID\" = @actionId LIMIT 1";
+                    var _sql = "SELECT \"UserActions\".*,\"WorkTypes\".\"Name\" as Worktype  FROM \"UserActions\" join \"WorkTypes\" on \"UserActions\".\"ID_worktype\" = \"WorkTypes\".\"ID\" WHERE \"ID\" = @actionId LIMIT 1";
                     var _params = new { id };
                     LogQuery(_sql, _params);
                     var action = await dbConnection.QueryFirstAsync<UserAction>(_sql, _params);
@@ -64,6 +82,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Получить список действий всех пользователей системы
+        /// </summary>
+        /// <returns>Список действий</returns>
         public async Task<IEnumerable<UserAction>> GetAllAsync()
         {
             try
@@ -71,7 +93,24 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var _sql = "SELECT * FROM \"UserActions\"";
+                    var _sql = "SELECT a.\"ID\", " +
+                               "u.\"Name\" as user, " +
+                               "w.\"Name\" as worktype, " +
+                               "a.\"Datetime\", " +
+                               "a.\"Description\", " +
+                               "l.\"Name\" as locale, " +
+                               "f.\"Name\" as fileName, " +
+                               "s.\"Value\" as string, " +
+                               "t.\"Translated\" as translation, " +
+                               "p.\"Name\" as project " +
+                               "FROM public.\"UserActions\" a " +
+                               "join public.\"Users\" u on a.\"ID_User\" = u.\"ID\" " +
+                               "join public.\"WorkTypes\" w on a.\"ID_worktype\" = w.\"ID\" " +
+                               "left join public.\"Locales\" l on a.\"ID_Locale\" = l.\"ID\" " +
+                               "left join public.\"Files\" f on a.\"ID_File\" = f.\"ID\" " +
+                               "left join public.\"TranslationSubstrings\" s on a.\"ID_String\" = s.\"ID\" " +
+                               "left join public.\"Translations\" t on a.\"ID_Translation\"= s.\"ID\" " +
+                               "left join public.\"LocalizationProjects\" p on a.\"ID_Project\" = p.\"ID\"";
                     LogQuery(_sql);
                     var actions = await dbConnection.QueryAsync<UserAction>(_sql);
                     return actions;
@@ -84,6 +123,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Получить список действий пользователей на определенно проекте
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта</param>
+        /// <returns>Список действий</returns>
         public async Task<IEnumerable<UserAction>> GetAllByProjectIdAsync(int projectId)
         {
             try
@@ -105,6 +149,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Удалить действие пользователя системы. Предполагается что использоваться эта функция не должна
+        /// </summary>
+        /// <param name="id">Идентификатор действия</param>
+        /// <returns>True or false</returns>
         public async Task<bool> RemoveAsync(int id)
         {
             try
@@ -126,9 +175,48 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Обновить действие пользователя. Производиться не должно. Выбрасывает исключение 
+        /// </summary>
+        /// <param name="action">Действие пользователя</param>
+        /// <returns>True or false</returns>
         public async Task<bool> UpdateAsync(UserAction action)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Добавить запись об авторизации
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddAuthorizeActionAsync(int userId)
+        {
+            UserAction act = new UserAction()
+            {
+                Datetime = DateTime.Now,
+                Description = "",
+                ID_User = userId,
+                ID_worktype = (int)WorkTypes.Authorize
+            };
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о вхоже в систему
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddLoginActionAsync(int userId)
+        {
+            UserAction act = new UserAction()
+            {
+                Datetime = DateTime.Now,
+                Description = "",
+                ID_User = userId,
+                ID_worktype = (int)WorkTypes.Login
+            };
+            return await AddAsync(act);
         }
     }
 }

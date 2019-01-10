@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams} from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
 
 import { Translation } from '../models/database-entities/translation.type';
 import { TranslationWithFile } from '../work-panel/localEntites/translations/translationWithFile.type';
 import { SimilarTranslation } from '../work-panel/localEntites/translations/similarTranslation.type';
+import { TranslationSubstring } from '../models/database-entities/translationSubstring.type';
 
 import { Observable } from 'rxjs';
 
@@ -13,11 +14,11 @@ export class TranslationService {
     private url: string = document.getElementsByTagName('base')[0].href + "api/translation";
 
     constructor(private http: HttpClient) {
-
+        
     }
 
-    async createTranslate(translate: Translation){
-        return await this.http.post<number>(this.url, translate).toPromise();
+    async createTranslate(translate: Translation){        
+        return await this.http.post<number>(this.url, translate).toPromise();                
     }
 
     async getAllTranslationsInStringById(idString: number){
@@ -41,16 +42,12 @@ export class TranslationService {
         return this.http.put(this.url + updatedTranslation.id, updatedTranslation);
     }
 
-    findTranslationByMemory(currentProjectId: number, translationText: string): Observable<TranslationWithFile[]>{
-        const params = new HttpParams().set('currentProjectId', currentProjectId.toString())
-                                        .append('translationText', translationText);
-        return this.http.get<TranslationWithFile[]>(this.url + '/FindTranslationByMemory/', {params});
+    findTranslationByMemory(currentProjectId: number, translationText: string): Observable<TranslationWithFile[]>{        
+        return this.http.post<TranslationWithFile[]>(this.url + '/FindTranslationByMemory/' + currentProjectId + "/" + translationText, null);        
     }
 
-    findSimilarTranslations(currentProjectId: number, translationText: string): Observable<SimilarTranslation[]>{
-        const params = new HttpParams().set('currentProjectId', currentProjectId.toString())
-                                        .append('translationText', translationText);
-        return this.http.get<SimilarTranslation[]>(this.url + '/FindSimilarTranslations/', {params});
+    findSimilarTranslations(currentProjectId: number, translationSubsting: TranslationSubstring): Observable<SimilarTranslation[]>{        
+        return this.http.post<SimilarTranslation[]>(this.url + '/FindSimilarTranslations/' + currentProjectId, translationSubsting);
     }
 
 }

@@ -43,6 +43,8 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\models\database-entities\workType.type.ts" />
+    <None Remove="ClientApp\src\app\models\DTO\glossaries.type.ts" />
+    <None Remove="ClientApp\src\app\services\glossary.service.ts" />
     <None Remove="ClientApp\src\app\services\reports.service.ts" />
     <None Remove="ClientApp\src\app\services\user-registration.service.ts" />
     <None Remove="ClientApp\src\app\user-account\user.ts" />
@@ -58,6 +60,8 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\models\database-entities\workType.type.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\DTO\glossaries.type.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\services\glossary.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\reports.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\user-registration.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-account\user.ts" />

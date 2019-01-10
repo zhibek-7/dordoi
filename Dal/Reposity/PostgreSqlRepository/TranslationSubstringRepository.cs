@@ -49,14 +49,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return strings;
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 // Внесение записи в журнал логирования
                 Console.WriteLine(exception.Message);
 
                 return null;
             }
-            
+
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 Console.WriteLine(exception.Message);
 
                 return null;
-            }            
+            }
         }
 
 
@@ -96,7 +96,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="filtredString">фраза по которой происходит фильтрация</param>
         /// <param name="filtredListOfStrings">список строк среди которых происходит фильтрация</param>
         /// <returns>список строк содержащихся в списке строк </returns>
-        public async Task<IEnumerable<TranslationSubstring>> FilterByString(string filtredString , IEnumerable<TranslationSubstring> filtredListOfStrings)
+        public async Task<IEnumerable<TranslationSubstring>> FilterByString(string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings)
         {
             var query = "";
 
@@ -168,7 +168,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "FROM \"TranslationSubstrings\" AS TS " +
                         "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
                         "WHERE F.\"ID\" = @Id";
-            
+
             try
             {
                 using (IDbConnection dbConnection = context.Connection)

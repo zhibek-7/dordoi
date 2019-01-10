@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using DAL.Reposity.PostgreSqlRepository;
 using DAL.Reposity.Report;
 using Microsoft.AspNetCore.Mvc;
-using Models.Reports;
+using Models.DatabaseEntities.Reports;
+
 using OfficeOpenXml;
 
 namespace Localization.WebApi
@@ -15,36 +14,7 @@ namespace Localization.WebApi
     public class ReportController : ControllerBase
     {
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="volumeCalcType"></param>
-        /// <param name="calcBasisType"></param>
-        /// <param name="userId"></param>
-        /// <param name="localeId"></param>
-        /// <param name="workType"></param>
-        /// <param name="initialFolderId"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("TranslatedWords")]
-        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(
-            [FromQuery] int projectId,
-            [FromQuery] string start,
-            [FromQuery] string end,
-            [FromQuery] bool volumeCalcType,
-            [FromQuery] bool calcBasisType,
-            [FromQuery] int userId,
-            [FromQuery] int localeId,
-            [FromQuery] string workType,
-            [FromQuery] int initialFolderId)
-        {
-            TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            return TranslatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType);
-        }
-
-        /// <summary>
-        /// Получаем файл содержащий строки отчета в формате Excel
+        /// Получаем отчет
         /// </summary>
         /// <param name="projectId">ID проекта локализации</param>
         /// <param name="start">Начало выборки</param>
@@ -55,23 +25,52 @@ namespace Localization.WebApi
         /// <param name="localeId">ID языка</param>
         /// <param name="workType">Тип работы - перевод и редактура</param>
         /// <param name="initialFolderId">ID начальной папки</param>
-        /// <returns></returns>
-        [HttpGet]
+        /// <returns>Строки отчета</returns>
+        [HttpPost]
+        [Route("TranslatedWords")]
+        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(
+            int projectId,
+            string start,
+            string end,
+            bool volumeCalcType,
+            bool calcBasisType,
+            int userId,
+            int localeId,
+            string workType,
+            int initialFolderId)
+        {
+            TranslatedWordsReport translatedWords = new TranslatedWordsReport();
+            return translatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType);
+        }
+
+        /// <summary>
+        /// Получаем файл содержащий строки отчета в формате Excel
+        /// </summary>
+        /// <param name="projectId">ID проекта локализации</param>
+        /// <param name="start">Начало выборки</param>
+        /// <param name="end">Конец выборки</param>\\
+        /// <param name="volumeCalcType">Считать по символам с пробелами? Если false то по словам</param>
+        /// <param name="calcBasisType">>Считать по переводам? Если false то по исходным строкам</param>
+        /// <param name="userId">ID пользователя</param>
+        /// <param name="localeId">ID языка</param>
+        /// <param name="workType">Тип работы - перевод и редактура</param>
+        /// <param name="initialFolderId">ID начальной папки</param>
+        /// <returns>Файл Report.xlsx</returns>
+        [HttpPost]
         [Route("TranslatedWordsExcel")]
         public FileResult GetTranslatedWordsReportExcel(
-            [FromQuery] int projectId,
-            [FromQuery] string start,
-            [FromQuery] string end,
-            [FromQuery] bool volumeCalcType,
-            [FromQuery] bool calcBasisType,
-            [FromQuery] int userId,
-            [FromQuery] int localeId,
-            [FromQuery] string workType,
-            [FromQuery] int initialFolderId)
+            int projectId,
+            string start,
+            string end,
+            bool volumeCalcType,
+            bool calcBasisType,
+            int userId,
+            int localeId,
+            string workType,
+            int initialFolderId)
         {
-            TranslatedWordsReport TranslatedWords = new TranslatedWordsReport();
-            List<TranslatedWordsReportRow> reportRows = TranslatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType).ToList();
-            byte[] bin;
+            TranslatedWordsReport translatedWords = new TranslatedWordsReport();
+            List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType).ToList();
 
             FileResult res;
 
@@ -103,11 +102,11 @@ namespace Localization.WebApi
                     //sheet.Cells[row, 3].Style.Numberformat.Format = @"#,##0.00_ ;\-#,##0.00_ ;0.00_ ;";
                 }
 
-                bin = eP. GetAsByteArray();
+                var bin = eP.GetAsByteArray();
 
                 string file_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 string file_name = "Report.xlsx";
-                res = File(bin, file_type, file_name);       
+                res = File(bin, file_type, file_name);
             }
 
             return res;

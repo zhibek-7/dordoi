@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-using Models.Glossaries;
 using Models.Interfaces.Repository;
 
 namespace Models.Services
@@ -88,7 +87,7 @@ namespace Models.Services
 
         public async Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart)
         {
-            return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart : termPart);
+            return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
         }
 
         public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)

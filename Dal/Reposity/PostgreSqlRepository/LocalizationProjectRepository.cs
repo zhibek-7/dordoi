@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
 using Npgsql;
 using Utilities.Logs;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {

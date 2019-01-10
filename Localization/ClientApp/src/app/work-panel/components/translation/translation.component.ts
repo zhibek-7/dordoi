@@ -1,20 +1,27 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+
+import { SelectedWordModalComponent } from '../selected-word-modal/selected-word-modal.component';
+
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../localServices/share-translated-phrase.service';
+import { TranslationService } from '../../../services/translationService.service';
+import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
 
 import { TranslationSubstring } from '../../../models/database-entities/translationSubstring.type';
 import { Translation } from '../../../models/database-entities/translation.type';
-import { TranslationService } from '../../../services/translationService.service';
 
 declare var $: any;
 
 @Component({
     selector: 'translation-component',
     templateUrl: './translation.component.html',
-    styleUrls: ['./translation.component.css']
+    styleUrls: ['./translation.component.css'],
+    providers: [TranslationSubstringService]
 })
 export class TranslationComponent implements OnInit {
 
+    showContextBlock: boolean = true;
     showLeftBlock: boolean = true;
     showRightBlock: boolean = true;
     @Output() onChangedLeftBlock = new EventEmitter<boolean>();
@@ -26,16 +33,50 @@ export class TranslationComponent implements OnInit {
 
 
     constructor(private sharePhraseService: SharePhraseService,
-        private shareTranslatedPhraseService: ShareTranslatedPhraseService, private translationService: TranslationService ) {
+        private shareTranslatedPhraseService: ShareTranslatedPhraseService, 
+        private translationService: TranslationService,
+        private translationSubstringService: TranslationSubstringService,
+        private selectionDialog: MatDialog) {
 
+        // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
                 this.phraseForTranslate = pickedPhrase;                
                 this.translatedText = null;
-            });
-     }
+            });                              
+    }
 
+    //Действия при двойном клике по слову
+    openSelectionDialog(event) {
+        let selectedWord; 
+        if (window.getSelection) {
+            selectedWord = window.getSelection();
+        } else if (document.getSelection) {
+            selectedWord = document.getSelection();
+        }     
+
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.data = {
+            selectedWord: selectedWord
+        };
+        dialogConfig.panelClass = 'selectionDialog';
+
+        let positionY: string = event.clientY + "px";
+        let positionX: string = event.clientX + "px";
+        dialogConfig.position = {
+            'top': positionY,
+            'left': positionX
+        }        
+        
+        let dialogRef = this.selectionDialog.open(SelectedWordModalComponent, dialogConfig);
+
+        console.log(event);
+    }  
+    
+           
     ngOnInit(): void { }
 
+    // Скрывает левый блок (Блок с фразами)
     hideLeftBlock(){
         if(this.showLeftBlock){
             this.showLeftBlock = false;
@@ -46,6 +87,7 @@ export class TranslationComponent implements OnInit {
         this.onChangedLeftBlock.emit(this.showLeftBlock);        
     }
 
+    // Скрывает правый блок (Блок с комментариями)
     hideRightBlock(){
         if(this.showRightBlock){
             this.showRightBlock = false;
@@ -54,14 +96,16 @@ export class TranslationComponent implements OnInit {
             this.showRightBlock = true;
         }
         this.onChangedRightBlock.emit(this.showRightBlock);          
-    }
+    }   
 
-    editContextClick(){
-        alert("Редактируем контекст");
-    }
-
+    // Показать / Скрыть контекст
     contextShowClick(){
-        alert("Показываем контекст");
+        if(this.showContextBlock){
+            this.showContextBlock = false;
+        }
+        else {
+            this.showContextBlock = true;
+        }
     }
 
     arrowLeftClick(){
@@ -74,8 +118,23 @@ export class TranslationComponent implements OnInit {
 
     importFileClick(){
         alert("Импортируем файл");
-    }        
+    }      
     
+    thisIsAtest(){
+        alert("magic");            
+    }        
+
+    // Событие, срабатывающее при сохранении изменений в модальном окне
+    enterContext(changedTranslationSubstring: TranslationSubstring){
+        this.phraseForTranslate.context = changedTranslationSubstring.context;
+        this.phraseForTranslate.translationMaxLength = changedTranslationSubstring.translationMaxLength;
+
+
+        this.translationSubstringService.updateTranslationSubstring(this.phraseForTranslate)
+                                            .subscribe();
+    }
+    
+    // Сохранить вариант перевода
     async submitTranslate(){
         this.translatedPhrase = new Translation(this.translatedText, this.phraseForTranslate.id, 10123, 300);  //поменять потом на реальный id пользователя и id языка
         let insertedTranslationId = await this.translationService.createTranslate(this.translatedPhrase);        
@@ -91,6 +150,7 @@ export class TranslationComponent implements OnInit {
         $("#btnSave").attr("disabled", false);  // хорошо бы найти стиль который убирает обводку кнопки после нажатия(убирать его другим способом)
     }
 
+    // Проверка наличия выбранной фразы
     checkPhrase(): boolean{
         if(this.sharePhraseService.getSharedPhrase() === undefined) {
             return false;

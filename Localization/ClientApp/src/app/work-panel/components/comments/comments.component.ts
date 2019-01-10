@@ -24,6 +24,7 @@ export class CommentsComponent implements OnInit {
 
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService ) { 
 
+        // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
             this.stringId = pickedPhrase.id;
             this.getComments(this.stringId);            
@@ -32,6 +33,7 @@ export class CommentsComponent implements OnInit {
 
     ngOnInit(): void {}
 
+    // Функция получения всех комментариев для данной фразы
     getComments(idString: number){
         this.commentService.getAllCommentsInStringById(idString)
             .subscribe( comments => {
@@ -39,12 +41,14 @@ export class CommentsComponent implements OnInit {
         });        
     };
 
+    // Добавление комментарие
     public async addComment(textFromInput: string){
         let comment: Comment = new Comment(301, this.stringId, textFromInput);        // поменять на id реального пользователя, когда появится
         let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
         this.commentsList.push(insertedComment);
     }
 
+    // Событие, срабатываемое при нажатии клавиши Enter при добавлении нового комментария
     onEnterPress(event: any){
         if(event.which == 13 || event.keyCode == 13){
             this.addComment(event.target.value);
@@ -52,6 +56,7 @@ export class CommentsComponent implements OnInit {
         }
     }
 
+    // Изменение комментария
     async changeCommentClick(comment: CommentWithUser){
         this.commentsList = await [];
         this.changedComment = comment.comment;
@@ -59,12 +64,14 @@ export class CommentsComponent implements OnInit {
         this.commentsList.push(comment);        
     }
 
+    // Отмена изменения комментария
     cancelChangingComment(commentId: number){
         this.endEditingMode();
     }        
 
+    // Сохранение измененного комментария
     async saveChangedComment(comment: CommentWithUser) {
-      // comment.id_User = userId              РєРѕРіРґР° РґРѕР±Р°РІРёС‚СЃСЏ Р°РІС‚РѕСЂРёР·Р°С†РёСЏ РЅСѓР¶РЅРѕ Р±СѓРґРµС‚ РїСЂРѕРїРёСЃР°С‚СЊ СЂРµР°Р»СЊРЅС‹Р№ id. Рў.Рє. РєРѕРјРјРµРЅС‚Р°СЂРёРё РјРѕРіСѓС‚ РјРµРЅСЏС‚СЊ СЂР°Р·РЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё
+      // comment.id_User = userId           // когда появится id реального пользователя, нужно будет использовать его (а пока костыль)
       let updatedComment: Comment = new Comment(301, this.stringId, this.changedComment, new Date(Date.now()), comment.commentId);
 
       await this.commentService.updateComment(updatedComment);
@@ -74,6 +81,7 @@ export class CommentsComponent implements OnInit {
       this.endEditingMode();
     }
 
+    // Функция завершения редактирования комментария
     endEditingMode() {
       this.commentEdited = false;
       this.changedComment = "";
@@ -82,10 +90,12 @@ export class CommentsComponent implements OnInit {
       this.getComments(this.stringId);
     }
 
+    // Функция загрузки скриншота
     loadScrinshot() {
       this.commentService.uploadImage(this.fileToUpload);
     }
 
+    // Функция, срабатываемая при загрузке скриншота
     handleFileInput(file: FileList) {
       this.fileToUpload = file.item(0);
 
@@ -96,6 +106,7 @@ export class CommentsComponent implements OnInit {
       reader.readAsDataURL(this.fileToUpload);
     }
 
+    // Удаление комментария
     deleteCommentClick(commentId: number){
         this.commentService.deleteComment(commentId);
         for(var i = 0; i < this.commentsList.length; i++) {

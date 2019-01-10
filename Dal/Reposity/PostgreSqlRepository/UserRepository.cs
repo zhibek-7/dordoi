@@ -8,17 +8,18 @@ using System.Linq;
 using DAL.Context;
 using System.Threading.Tasks;
 using SqlKata;
+using Models.Interfaces.Repository;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class UserRepository: BaseRepository, IRepository<User>
+    public class UserRepository : BaseRepository, IRepository<User>
     {
 
         private PostgreSqlNativeContext context;
-        
+
         public UserRepository()
         {
-            context = PostgreSqlNativeContext.getInstance();          
+            context = PostgreSqlNativeContext.getInstance();
         }
 
         public void Add(User user)
@@ -39,14 +40,29 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (IDbConnection dbConnection = context.Connection)
             {
                 dbConnection.Open();
-                user = dbConnection.Query<User>("SELECT * FROM \"Users\" WHERE Id = @Id").FirstOrDefault();
+                user = dbConnection.Query<User>("SELECT * FROM \"Users\" WHERE Id = @Id", new { Id }).FirstOrDefault();
                 dbConnection.Close();
             }
             return user;
-            throw new NotImplementedException();
         }
 
-        public bool CheckExistUser (User user)
+        public IEnumerable<User> GetByProjectID(int Id)
+        {
+            using (IDbConnection dbConnection = context.Connection)
+            {
+                dbConnection.Open();
+                IEnumerable<User> users = dbConnection.Query<User>(
+                    "SELECT u.* FROM \"Users\" u " +
+                    " join \"Participants\" p on u.\"ID\" = p.\"ID_User\" " +
+                    " join \"LocalizationProjects\" lp on p.\"ID_LocalizationProject\" = lp.\"ID\" " +
+                    " where lp.\"ID\" = @Id", new { Id })
+                    .ToList();
+                dbConnection.Close();
+                return users;
+            }
+        }
+
+        public bool CheckExistUser(User user)
         {
             User existUser = null;
             using (IDbConnection dbConnection = context.Connection)

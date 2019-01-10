@@ -37,19 +37,21 @@ export class FileService {
     return this.http.get<FileData[]>(url);
   }
 
-  addFile(file: File, parentId?: number): Observable<TreeNode> {
-    const url = `${this._url}/add/file`;
+  addFile(file: File, projectId: number, parentId?: number): Observable<TreeNode> {
+    const url = `${this._url}/add/fileByProjectId/${projectId}`;
 
     const formData = new FormData();
 
     formData.append('file', file, file.name);
-    formData.append('parentId', parentId.toString());
+    if (parentId) {
+      formData.append('parentId', parentId.toString());
+    }
 
     return this.http.post<TreeNode>(url, formData);
   }
 
-  addFolder(name: string, parentId?: number): Observable<TreeNode> {
-    const url = `${this._url}/add/folder`;
+  addFolder(name: string, projectId: number, parentId?: number): Observable<TreeNode> {
+    const url = `${this._url}/add/folderByProjectId/${projectId}`;
 
     return this.http.post<TreeNode>(url, { name, parentId });
   }

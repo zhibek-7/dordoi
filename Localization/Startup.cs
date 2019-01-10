@@ -43,8 +43,14 @@ namespace Localization
             // 
             //services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
             services.AddScoped<IFilesRepository, FilesRepository>();
+            services.AddScoped<FilesService>();
             services.AddScoped<IGlossaryRepository, GlossaryRepository>();
             services.AddScoped<GlossaryService>();
+
+            //
+            services.AddScoped<IGlossariesRepository, GlossariesRepository>();
+            services.AddScoped<GlossariesService>();
+            //
             services.AddScoped<ITranslationSubstringRepository, TranslationSubstringRepository>();
 
             ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////

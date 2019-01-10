@@ -5,8 +5,6 @@ using Models.Interfaces.Repository;
 using SqlKata;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -199,7 +197,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             { "positionintext", "TranslationSubstrings.PositionInText" },
         };
 
-        public async Task<IEnumerable<Models.Glossaries.Term>> GetAssotiatedTermsByGlossaryIdAsync(
+        public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
             int glossaryId,
             int limit,
             int offset,
@@ -228,7 +226,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
                 this.LogQuery(getGlossaryTermsCompiledQuery);
-                var assotiatedTerms = await dbConnection.QueryAsync<Models.Glossaries.Term>(
+                var assotiatedTerms = await dbConnection.QueryAsync<Term>(
                     sql: getGlossaryTermsCompiledQuery.Sql,
                     param: getGlossaryTermsCompiledQuery.NamedBindings
                     );

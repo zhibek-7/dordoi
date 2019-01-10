@@ -7,7 +7,9 @@ using Dapper;
 using Models.DatabaseEntities;
 using System.Linq;
 using System.Threading.Tasks;
-using Models.Translations;
+
+using Models.Interfaces.Repository;
+using Models.DatabaseEntities.Translations;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -281,7 +283,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "INNER JOIN \"Files\" AS F ON F.\"ID_LocalizationProject\" = LP.\"ID\" " +
                         "INNER JOIN \"TranslationSubstrings\" AS TS ON TS.\"ID_FileOwner\" = F.\"ID\" " +
                         "INNER JOIN \"Translations\" AS T ON T.\"ID_String\" = TS.\"ID\" " +
-                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";            
+                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";
 
             try
             {
@@ -309,15 +311,17 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
-        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, string translationSubstring)
-        {            
-            var query = "SELECT \"SubstringToTranslate\" AS \"TranslationText\", similarity(\"SubstringToTranslate\", @TranslationSubstring) AS \"Similarity\", " +
+        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, TranslationSubstring translationSubstring)
+        {
+            var query = "SELECT \"SubstringToTranslate\" AS \"TranslationText\", similarity(\"SubstringToTranslate\", @TranslationSubstringText) AS \"Similarity\", " +
                         "\"Files\".\"Name\" AS \"FileOwnerName\", \"Translations\".\"Translated\" AS \"TranslationVariant\"" +
                         "FROM \"LocalizationProjects\" " +
                         "INNER JOIN \"Files\" ON \"Files\".\"ID_LocalizationProject\" = \"LocalizationProjects\".\"ID\" " +
                         "INNER JOIN \"TranslationSubstrings\" ON \"TranslationSubstrings\".\"ID_FileOwner\" = \"Files\".\"ID\" " +
                         "INNER JOIN \"Translations\" ON \"Translations\".\"ID_String\" = \"TranslationSubstrings\".\"ID\" " +
-                        "WHERE \"LocalizationProjects\".\"ID\" = @ProjectId and \"SubstringToTranslate\" % @TranslationSubstring;";
+                        "WHERE (\"LocalizationProjects\".\"ID\" = @ProjectId " +
+                        "AND \"SubstringToTranslate\" % @TranslationSubstringText " +
+                        "AND \"TranslationSubstrings\".\"ID\" != @TranslationSubstringId);";
 
 
             try
@@ -326,7 +330,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     dbConnection.Open();
                     IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query,
-                        new { TranslationSubstring = translationSubstring, ProjectId = currentProjectId });
+                        new { TranslationSubstringText = translationSubstring.SubstringToTranslate, TranslationSubstringId = translationSubstring.ID, ProjectId = currentProjectId });
                     dbConnection.Close();
                     return similarTranslations;
                 }
