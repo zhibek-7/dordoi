@@ -125,8 +125,9 @@ export class FilesComponent implements OnInit {
 
   onFileUpload(event: any, parentNode?: TreeNode): void {
     const file = event.target.files[0];
-
-    this.addFile(file, parentNode);
+    if (file) {
+      this.addFile(file, parentNode);
+    }
     // event.files.forEach(file => this.fileService.addFile(file).subscribe(node => this.files = [...this.files, node]));
   }
 
