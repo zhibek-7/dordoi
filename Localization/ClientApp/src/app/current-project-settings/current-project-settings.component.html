@@ -71,12 +71,12 @@
 <!-- кнопки -->
 <div class="download">
   <div class="btn-group ">
-    <button mat-menu-item (click)="file.click()" type="button" class="btn btn-success">
+    <button mat-menu-item (click)="file.click()" type="button" class="btn btn-default">
       <mat-icon>cloud_upload</mat-icon>
       <span style="margin-left: 1rem;">Собрать и скачать</span>
       <input type="file" #file (change)="filesUpload(file.files)" hidden>
     </button>
-    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+    <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
       <span class="sr-only">Toggle Dropdown</span>
     </button>
