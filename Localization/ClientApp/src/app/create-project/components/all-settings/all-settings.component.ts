@@ -2,8 +2,6 @@ import { LocalizationProject } from './../../../models/database-entities/localiz
 import { Component, OnInit} from '@angular/core';
 import { ProjectsService } from '../../../services/projects.service';
 
-import { Project } from '../../../models/Project/Project';
-
 import { FormControl} from '@angular/forms';
 
 
