@@ -70,7 +70,7 @@ namespace Models.Services
                 ID_LocalizationProject = projectId,
             };
 
-            return await this.AddNode(newFile);
+            return await this.AddNode(newFile, insertToDbAction: this.InsertFileToDbAsync);
         }
 
         public async Task<Node<File>> AddFolder(FolderModel newFolderModel)
@@ -88,7 +88,7 @@ namespace Models.Services
                 ID_FolderOwner = newFolderModel.ParentId,
                 ID_LocalizationProject = newFolderModel.ProjectId
             };
-            return await AddNode(newFolder);
+            return await AddNode(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
         }
 
         public async Task UpdateNode(int id, File file)
@@ -125,7 +125,7 @@ namespace Models.Services
             }
         }
 
-        private async Task<Node<File>> AddNode(File file)
+        private async Task<Node<File>> AddNode(File file, Func<File, Task> insertToDbAction)
         {
             if (file.ID_FolderOwner.HasValue)
             {
@@ -136,15 +136,29 @@ namespace Models.Services
                 }
             }
 
-            var fileUploaded = await this._filesRepository.Upload(file);
-            if (!fileUploaded)
-            {
-                throw new Exception($"Failed to insert folder/file \"{file.Name}\" in database");
-            }
+            await insertToDbAction(file);
 
             var addedFile = await this._filesRepository.GetByNameAndParentId(file.Name, file.ID_FolderOwner);
             var icon = GetIconByFile(addedFile);
             return new Node<File>(addedFile, icon);
+        }
+
+        private async Task InsertFileToDbAsync(File file)
+        {
+            var fileUploaded = await this._filesRepository.Upload(file);
+            if (!fileUploaded)
+            {
+                throw new Exception($"Failed to insert file \"{file.Name}\" in database");
+            }
+        }
+
+        private async Task InsertFolderToDbAsync(File file)
+        {
+            var folderAdded = await this._filesRepository.AddAsync(file) > 0;
+            if (!folderAdded)
+            {
+                throw new Exception($"Failed to insert folder \"{file.Name}\" in database");
+            }
         }
 
         private string GetIconByFile(File file)
