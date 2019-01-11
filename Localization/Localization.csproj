@@ -49,7 +49,10 @@
     <None Remove="ClientApp\src\app\services\user-registration.service.ts" />
     <None Remove="ClientApp\src\app\user-account\user.ts" />
     <None Remove="ClientApp\src\app\user-registration\example.ts" />
+    <None Remove="ClientApp\src\app\user-registration\user-registration-routing.module.ts" />
     <None Remove="ClientApp\src\app\user-registration\user-registration.component.ts" />
+    <None Remove="ClientApp\src\app\user-registration\user-registration.model.ts" />
+    <None Remove="ClientApp\src\app\user-registration\user-registration.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,7 +69,10 @@
     <TypeScriptCompile Include="ClientApp\src\app\services\user-registration.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-account\user.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-registration\example.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration-routing.module.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration.model.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration.module.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
