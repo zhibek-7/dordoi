@@ -1,31 +1,33 @@
-<form  [(formGroup)]="settings_proj" name="formName" (ngSubmit)="addProject()">
+<form  [formGroup]="settings_proj" name="formName" (ngSubmit)="addProject()">
   <div style="display: inline-block;" >
     <mat-form-field>
-     
-      <input matInput [(formControl)]="pjName" name="ctrlName " value='{{currentProjectName}}' [errorStateMatcher]="matcher" placeholder="Название проекта">
+      <input matInput  formControlName="pjName" name="ctrlName " value='{{currentProjectName}}'  [(ngModel)]="currentProjectName"  placeholder="Название проекта">
     </mat-form-field>
   </div>
   <div>
    
     <mat-form-field class="input-full-width">
-      
-      <textarea matInput  [(formControl)]="pjDescription" name="textareaName" placeholder="Описание проекта" class="form-control" cdkTextareaAutosize	cdkAutosizeMinRows="2"	cdkAutosizeMaxRows="5">{{currentProjectDescription}}</textarea>
+      <textarea matInput formControlName="pjDescription" name="textareaName" placeholder="Описание проекта" class="form-control" cdkTextareaAutosize	cdkAutosizeMinRows="2"	cdkAutosizeMaxRows="5">{{currentProjectDescription}}</textarea>
     </mat-form-field>
   </div>
   <label class="form-check-label" for="PrivatLabl">
     Приватность
   </label>
   <div class="form-check">
-    <mat-radio-group>
-      <mat-radio-button [(formControl)]="pjPublic"  name="PublicName"  value='{{currentProjectPublic}}'>Public project</mat-radio-button>
+    <mat-radio-group formControlName="pjPublic">
+      <!--<input type="radio" formControlName="pjPublic" name="PublicName" value={{currentProjectPublic}}> Beef
+      <input type="radio" formControlName="pjPrivate" name="PrivateName" value={{currentProjectPrivate}} > Lamb-->
+
+
+      <mat-radio-button name="PublicName" value={{currentProjectPublic}}>Public project</mat-radio-button>
       <small id="nameHelp" class="form-text text-muted">Visible to anyone</small>
-      <mat-radio-button [(formControl)]="pjPrivate" name="PrivateName" value='{{currentProjectPrivate}}' >Private project</mat-radio-button>
+      <mat-radio-button name="PrivateName" value={{currentProjectPrivate}} >Private project</mat-radio-button>
       <small id="nameHelp" class="form-text text-muted"> Visible only to the invited project members</small>
     </mat-radio-group> 
   </div>
  
   <div class="form-check">
-    <mat-checkbox class="example-margin"[formControl]="pjFileTrue" name="FileName" value='{{currentProjectFileTrue}}'>
+    <mat-checkbox class="example-margin" formControlName="pjFileTrue" name="FileName" value='{{currentProjectFileTrue}}'>
       <label class="form-check-label" for="CheckSettings">Переводчики могут загружать файлы для перевода из проекта</label>
     </mat-checkbox>
 
@@ -34,7 +36,7 @@
   </div>
   <div class="form-check">
 
-    <mat-checkbox class="example-margin" [formControl]="pjSkipUntranslStrTrue" name="ScipName" value='{{currentSkipUntranslStrTrue}}'>
+    <mat-checkbox class="example-margin" formControlName="pjSkipUntranslStrTrue" name="ScipName" value='{{currentSkipUntranslStrTrue}}'>
       <label class="form-check-label" for="CheckSettings">Пропускать непереведенные строки</label>
     </mat-checkbox>
 
@@ -45,7 +47,7 @@
     </small>
   </div>
   <div class="form-check">
-    <mat-checkbox class="example-margin" [formControl]="pjExportTrue"name="ExportName"value='{{currentProjectExportTrue}}'>
+    <mat-checkbox class="example-margin" formControlName="pjExportTrue"name="ExportName"value='{{currentProjectExportTrue}}'>
       <label class="form-check-label" for="CheckSettings">Экспортировать только утвержденные переводы</label>
     </mat-checkbox>
 
@@ -56,7 +58,7 @@
     </small>
   </div>
   <div class="form-check">
-    <mat-checkbox class="example-margin" [formControl]="pjNotificationTrue" name="PublicName" value='{{currentProjectNotificationTrue}}'>
+    <mat-checkbox class="example-margin" formControlName="pjNotificationTrue" name="PublicName" value='{{currentProjectNotificationTrue}}'>
       <label class="form-check-label" for="CheckSettings">Уведомлять менеджеров проекта о новых строках</label>
     </mat-checkbox>
   
