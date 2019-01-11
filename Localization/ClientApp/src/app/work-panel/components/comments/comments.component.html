@@ -59,11 +59,20 @@
                 </div>
 
                 <div class="addCommentBlock">
-                    <div class=" inputSearch">
-                        <input type="text" id="addCommentInput" class="form-control input-sm" placeholder="Новый комментарий" (keyup)="onEnterPress($event)" >
-                    </div>
+                    <div class="container align-center" style="padding:0px;">
+                        <div class="row" style="width: 100%;">                                
+                            <form class="col-10">
+                                <div class="inputSearch">
+                                    <input type="text"  id="addCommentInput" name="first" class="form-control input-lg" placeholder="Новый комментарий" [(ngModel)]="addCommentText"
+                                    class="col-11" (keyup)="onEnterPress($event)">
+                                </div>
+                            </form>
+                            <div class="col-1 float-right align-center arrowIcon" style="padding:0px;">
+                                <mat-icon (click)="addComment()">add_comment</mat-icon>
+                            </div>
+                        </div>
+                    </div>                    
                 </div>
-
             </div>
 
             <div class="tab-pane fade" id="nav-condition" role="tabpanel" aria-labelledby="nav-condition-tab">

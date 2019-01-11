@@ -2,7 +2,7 @@
 
     <div class="languagesOptionsBlock">
         <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <div class="nav nav-tabs" id="tabLanguageOptionsList" role="tablist">
                 <a class="nav-item nav-link active" id="nav-offers-tab" data-toggle="tab" href="#nav-offers" role="tab" aria-controls="nav-offers" aria-selected="true">Предложения языка</a>
                 <a class="nav-item nav-link" id="nav-otherLang-tab" data-toggle="tab" href="#nav-otherLang" role="tab" aria-controls="nav-otherLang" aria-selected="false">Другие языки</a>
                 <a class="nav-item nav-link" id="nav-memorySearch-tab" data-toggle="tab" href="#nav-memorySearch" role="tab" aria-controls="nav-memorySearch" aria-selected="false">Поиск по памяти</a>
@@ -74,12 +74,19 @@
             
             <div class="tab-pane fade" id="nav-memorySearch" role="tabpanel" aria-labelledby="nav-memorySearch-tab">
                 <div class="searchByMemory">
-                    <form>
-                        <div class="mb-1">
-                            <input type="text" name="searchByMemory" [(ngModel)]="searchByMemory" class="form-control input-lg" 
-                            placeholder="Поиск по памяти переводов ..." (keyup)="onEnterPress($event)">
+                    <div class="container align-center" style="padding:0px;">
+                        <div class="row" style="width: 100%;">                                
+                            <form class="col-11">
+                                <div class="mb-1">
+                                    <input type="text" name="searchByMemoryText" [(ngModel)]="searchByMemoryText" class="form-control input-lg" 
+                                    placeholder="Поиск по памяти переводов ..." (keyup)="onEnterPress($event)">
+                                </div>
+                            </form>                            
+                            <div class="col-1 float-right align-center arrowIcon">
+                                <mat-icon (click)="searchByMemory()">search</mat-icon>
+                            </div>
                         </div>
-                    </form>
+                    </div>                       
                     <div *ngIf="checkNumberOfTranslationsByMemory()">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item list-group-item-action" *ngFor="let translation of listOfTranslationsByMemory">

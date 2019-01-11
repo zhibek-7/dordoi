@@ -9,7 +9,8 @@ import { Translation } from '../../../models/database-entities/translation.type'
 import { TranslationWithFile } from '../../localEntites/translations/translationWithFile.type';
 import { SimilarTranslation } from '../../localEntites/translations/similarTranslation.type';
 
-declare var $: any;
+import 'jquery-ui/ui/widgets/tabs.js';
+import * as $ from 'jquery';
 
 @Component({
     selector: 'languages-component',
@@ -26,7 +27,7 @@ export class LanguagesComponent implements OnInit {
 
     newTranslation: Translation;
 
-    searchByMemory: string = "";
+    searchByMemoryText: string = "";
 
     constructor(private sharePhraseService: SharePhraseService, private shareTranslatedPhraseService: ShareTranslatedPhraseService,
                 private translationService: TranslationService, private projectService: ProjectsService) {
@@ -43,6 +44,22 @@ export class LanguagesComponent implements OnInit {
         
             this.findSimilarTranslations();
         });
+
+        // Событие, срабатываемое при выборе фразы для перевода
+        this.sharePhraseService.onClick.subscribe(pickedPhrase => {
+            this.searchByMemoryText = null;                         
+
+            // переключает TabBar на вкладку "Предложения языка" при смене слова для перевода
+            let activeTab = $(".languagesOptionsBlock .nav-tabs .active").attr('href');
+
+            if(activeTab != "#nav-offers"){
+                $("a[href='"+ activeTab +"']").removeClass("active show").attr("aria-selected", false);
+                $(activeTab).removeClass("active show")
+            }
+            $("a[href='#nav-offers']").addClass("active show").attr("aria-selected", true);
+            $("#nav-offers").addClass("active show");                                                  
+        });                 
+        
 
         // Событие, срабатываемое при введении варианта перевода
         this.shareTranslatedPhraseService.onSumbit.subscribe(translation => this.listOfTranslations.push(translation));
@@ -140,19 +157,22 @@ export class LanguagesComponent implements OnInit {
     // Событие, срабатываемое при нажатии клавиши Enter в поле "Поиск по памяти"
     onEnterPress(event: any){
         if(event.which == 13 || event.keyCode == 13){
-
-            let translationText = event.target.value; 
-            let currentProjectId = this.projectService.currentProjectId;
-
-            this.translationService.findTranslationByMemory(currentProjectId, translationText)
-                .subscribe(
-                    translations => {
-                        this.listOfTranslationsByMemory = translations;
-                    }
-                )
-
-            event.target.value = null;
+            this.searchByMemory();
         }
+    }
+
+    // Поиск по памяти переводов
+    searchByMemory(){
+        let currentProjectId = this.projectService.currentProjectId;
+
+        this.translationService.findTranslationByMemory(currentProjectId, this.searchByMemoryText)
+            .subscribe(
+                translations => {
+                    this.listOfTranslationsByMemory = translations;
+                }
+            )
+
+        this.searchByMemoryText = null;
     }
 
 }
