@@ -16,19 +16,21 @@
                     <div class="panel-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
-                                <div class="oneCommentBlock">                                 
+                                <div class="oneCommentBlock">
                                     <div class="row">
-                                        <div class="col-6 userNameRow">{{comment.userName}}</div>
+                                        <div class="col-6 userNameRow">{{comment.userName}}</div><div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m:ss'}}</div>
                                     </div>
                                     <div *ngIf="!commentEdited">
                                         <div class="row">
                                             <div class="col-12">{{comment.comment}} </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-6">{{comment.dateTime | date: 'd MMMM H:m'}}</div>
-                                            <div class="col-3"><div class="controlText" (click)="changeCommentClick(comment)">Изменить</div></div>
+                                           <!-- <div class="col-3"><div class="controlText" (click)="changeCommentClick(comment)">Изменить</div></div>
                                             <div class="col-3"><div class="controlText" (click)="deleteCommentClick(comment.commentId)">Удалить</div></div>
-                                        </div>
+                                            -->
+                                            <button class="btn btn-link" (click)="changeCommentClick(comment)">Изменить</button>
+                                            <button class="btn btn-link" (click)="deleteCommentClick(comment.commentId)">Удалить</button>
+                                          </div>
                                     </div>
                                     <div *ngIf="commentEdited">
                                       <div class="row">
