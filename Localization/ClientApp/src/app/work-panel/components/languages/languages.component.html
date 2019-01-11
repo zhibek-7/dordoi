@@ -7,7 +7,7 @@
                 <a class="nav-item nav-link" id="nav-otherLang-tab" data-toggle="tab" href="#nav-otherLang" role="tab" aria-controls="nav-otherLang" aria-selected="false">Другие языки</a>
                 <a class="nav-item nav-link" id="nav-memorySearch-tab" data-toggle="tab" href="#nav-memorySearch" role="tab" aria-controls="nav-memorySearch" aria-selected="false">Поиск по памяти</a>
             </div>
-        </nav>        
+        </nav>
     </div>
 
     <div class="actionsBlock">
@@ -17,7 +17,7 @@
                 <div *ngIf="checkNumberOfTranslations()">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item list-group-item-action" *ngFor="let translation of listOfTranslations">
-                            <div class="row offersBlock">                            
+                            <div class="row offersBlock">
                                 <div class="col-1"><img class="userIcon" src="../../../assets/icons/main/userDefaultIcon.jpg"></div>
                                 <div class="col-9 ">
                                     <div class="align-self-start translatedText">
@@ -34,20 +34,20 @@
                                 <div class="col-1 align-self-center"><img (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon" src="../../../assets/icons/main/bin.png"></div>
                             </div>
                         </li>
-                    </ul>                    
+                    </ul>
                 </div>
                 <div *ngIf="!checkNumberOfTranslations()" >
                     <div class="translationsEmpty">
                         Переводов данной фразы не было предложено
                     </div>
-                </div>    
+                </div>
                 <div *ngIf="checkNumberOfSimilarTranslations()">
                     <hr>
-                    <div class="labelSimilarTranlsations ml-5">Память переводов и Машинные переводы</div>
+                    <div class="labelSimilarTranlsations ml-5">Память переводов</div>
                     <hr>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item list-group-item-action" *ngFor="let similarTranslation of listOfSimilarTranslations">
-                            <div class="row offersBlock">                            
+                            <div class="row offersBlock">
                                 <div class="col-12 ">
                                     <div class="align-self-start translatedText">
                                         {{similarTranslation.translationVariant}}
@@ -61,22 +61,22 @@
                                             <div class="col-xl-6 col-lg-6 userLogin">Процент совпадения: {{similarTranslation.similarity | percent }}</div>
                                         </div>
                                     </div>
-                                </div>                                    
+                                </div>
                             </div>
                         </li>
                     </ul>
                 </div>
-            </div>            
-                
+            </div>
+
             <div class="tab-pane fade" id="nav-otherLang" role="tabpanel" aria-labelledby="nav-otherLang-tab">
                 <div class="otherLanguages">Тут будет раздел с другими языками</div>
             </div>
-            
+
             <div class="tab-pane fade" id="nav-memorySearch" role="tabpanel" aria-labelledby="nav-memorySearch-tab">
                 <div class="searchByMemory">
                     <form>
                         <div class="mb-1">
-                            <input type="text" name="searchByMemory" [(ngModel)]="searchByMemory" class="form-control input-lg" 
+                            <input type="text" name="searchByMemory" [(ngModel)]="searchByMemory" class="form-control input-lg"
                             placeholder="Поиск по памяти переводов ..." (keyup)="onEnterPress($event)">
                         </div>
                     </form>
@@ -96,9 +96,9 @@
                             Переводов данной фразы в данном проекте локализации не обнаружено
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
-            
+
         <div>
     </div>
 
