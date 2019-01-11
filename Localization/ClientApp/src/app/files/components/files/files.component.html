@@ -1,7 +1,7 @@
 <div>
     <div>
-        <label class="btn btn-primary">Add file <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
-        <button class="btn btn-primary" (click)="addFolder()">Add folder</button>
+        <label class="btn btn-secondary">Add file <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
+        <button class="btn btn-secondary" (click)="addFolder()">Add folder</button>
     </div>
 </div>
 
@@ -13,18 +13,18 @@
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
         <tr [ttSelectableRow]="rowNode">
-            <td [ttEditableColumn]="rowData">
+            <td [ttEditableColumn]="rowData" class="col-xs-6">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
                 {{rowData.name}}
             </td>
-            <td [ngStyle]="{'text-align': 'right'}">{{rowData.stringsCount}}</td>
-            <td><button class="btn btn-primary" *ngIf="!rowData.isFolder" disabled>Update</button></td>
-            <td><button class="btn btn-outline-primary" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button></td>
-            <td [ngStyle]="{'text-align': 'center'}"><button class="btn btn-outline-primary" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button></td>
-            <td>
+            <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">{{rowData.stringsCount}}</td>
+            <td class="col-xs-2"><button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>Update</button></td>
+            <td class="col-xs-2"><button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button></td>
+            <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2"><button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button></td>
+            <td class="col-xs-2">
                 <div class="dropdown">
-                    <button id="contextMenu" class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</button>
+                    <button id="contextMenu" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="contextMenu">
                         <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolder(rowNode.node)">Add
                             folder</button>

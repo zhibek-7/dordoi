@@ -1,25 +1,3 @@
-.table {
-  font-size: 14px;
-}
-
-table td, table th
-{
-    padding: 5px;
-}
-
-table th
-{
-  text-align : justify;
-}
-
-.col-xs-6, {
-  width : 10vw;
-}
-
-.col-xs-2{
-  width : 1vw;
-}
-
 .headerSortDown:after,
 .headerSortUp:after {
   content: ' ';
@@ -41,4 +19,28 @@ table th
 .headerSortDown,
 .headerSortUp {
   padding-right: 5px;
+}
+
+
+
+.table {
+  font-size: 14px;
+}
+
+table td, table th
+{
+    padding: 2px;
+}
+
+table th
+{
+  text-align : justify;
+}
+
+.col-xs-6, {
+  width : 10vw;
+}
+
+.col-xs-2{
+  width : 1vw;
 }

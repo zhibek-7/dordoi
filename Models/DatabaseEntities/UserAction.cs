@@ -52,5 +52,15 @@ namespace Models.DatabaseEntities
         /// Ссылка на перевод (для регистрации активности по добавлению, удалению и редактированию проектов локализации
         /// </summary>
         public int? ID_Project { get; set; }
+
+        public UserAction(){}
+
+        public UserAction(int userId, string descript, int actionTypeID)
+        {
+            ID_User = userId;
+            ID_worktype = actionTypeID;
+            Description = descript;
+            Datetime = DateTime.Now;
+        }
     }
 }
