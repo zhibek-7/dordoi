@@ -1,3 +1,4 @@
+<!--
 <div class="container-fluide">
   <div class="row">
     <div class="col-sm-8">
@@ -16,8 +17,10 @@
         <button mat-raised-button><mat-icon>how_to_reg</mat-icon></button>
         <button *ngIf="currentProject" mat-raised-button routerLink='/{{ currentProject.id }}'>Перейти к странице проекта</button>
     </div>
+
   </div>
 </div>
+-->
 
 <h1>
   <span *ngIf="currentProject">
@@ -26,32 +29,54 @@
 
   настройки
 </h1>
+<!-- меню -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item">
+              <a class="nav-item nav-link" routerLink='/create-project/all-settings/'>
+                <mat-icon class="nav-item" >tune</mat-icon></a>
+          </li>
+        <li class="nav-item active">
+            <a class="nav-item nav-link active" href="./Translation">Переводы</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-item nav-link" href="./Files">Файлы</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-item nav-link" href="./Participants">Переводчики</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-item nav-link" routerLink="reports">Отчеты</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link" href="#">TM & MT</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link" href="./Glossaries">Словарь</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-item nav-link" href="./Strings">Строки</a>
+        </li>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light navbar-category">
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav navbar-custom">
-      <a class="nav-item nav-link" routerLink='/create-project/all-settings/'>
-        <mat-icon class="nav-item" >tune</mat-icon></a>
-        <a class="nav-item nav-link active" href="./Translation">Переводы</a>
-        <a class="nav-item nav-link" href="./Files">Файлы</a>
-        <a class="nav-item nav-link" href="./Participants">Переводчики</a>
-        <a class="nav-item nav-link" routerLink="reports">Отчеты</a>
-        <a class="nav-item nav-link" href="#">TM & MT</a>
-       <!-- <a class="nav-item nav-link" href="#">Скриншоты</a>>-->
-        <a class="nav-item nav-link" href="./Glossaries">Словарь</a>
-      <a class="nav-item nav-link" href="./Strings">Строки</a>
+      </ul>
     </div>
-  </div>
-</nav>
+  </nav>
 
+
+
+<!-- кнопки -->
 <div class="download">
   <div class="btn-group ">
-    <button mat-menu-item (click)="file.click()" type="button" class="btn btn-success">
+    <button mat-menu-item (click)="file.click()" type="button" class="btn btn-default">
       <mat-icon>cloud_upload</mat-icon>
       <span style="margin-left: 1rem;">Собрать и скачать</span>
       <input type="file" #file (change)="filesUpload(file.files)" hidden>
     </button>
-    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+    <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
       <span class="sr-only">Toggle Dropdown</span>
     </button>
