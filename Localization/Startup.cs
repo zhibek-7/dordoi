@@ -85,7 +85,7 @@ namespace Localization
                 => appBuilder.Run(async context =>
                 {
                     var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    var unhandledException = errorFeature.Error;
+                    var unhandledException = errorFeature?.Error;
                     this._exceptionLog.WriteLn("Localization web app unhandled exception.", unhandledException);
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 }));
