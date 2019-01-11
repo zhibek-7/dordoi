@@ -61,7 +61,7 @@ export class ProjectPageComponent implements OnInit {
 
     var projectId = Number(sessionStorage.getItem('ProjecID'));
 
-    this.languagesService.getLanguageList()//getByProjectId(projectId)
+    this.languagesService.getByProjectId(projectId)
       .subscribe(Languages => { this.langList = Languages; },
         error => console.error(error));
 
@@ -70,7 +70,7 @@ export class ProjectPageComponent implements OnInit {
         project => { this.currentProject = project; },
         error => console.error(error));
 
-    this.userService.getUserList1("Elena") //getProjectParticipantList(projectId)
+    this.userService.getProjectParticipantList(projectId)
       .subscribe(
         Users => { this.userList = Users; },
         error => console.error(error));
