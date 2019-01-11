@@ -1,13 +1,18 @@
+import { Locale } from 'src/app/models/database-entities/locale.type';
+import { LocalizationProject } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
+
 export class Glossaries
 {
   id: number;
   name: string;
 
-  localeId: number;
-  localeName: string;
+  locales: Locale[];// [number, string];
+  //localeId: number;
+  //localeName: string;
 
-  localizationProjectId: number;
-  localizationProjectName: string;
+  localizationProjects: LocalizationProject[];// [number, string];
+  //localizationProjectId: number;
+  //localizationProjectName: string;
 }
 
 export class GlossariesDTO

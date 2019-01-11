@@ -2,7 +2,7 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb nav-border">
-    <li class="breadcrumb-item active nav-element-gray" aria-current="page">Словари</li>
+    <li class="breadcrumb-item active nav-element-gray" aria-current="page"> Словари </li>
   </ol>
 </nav>
 
@@ -10,7 +10,9 @@
     <ul class="navbar-nav nav">
 
       <li class="nav-item">
-        <button type="button" class="btn nav-element"> Создать глоссарий</button>
+        <button type="button" class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать глоссарий </button>
+        <!--<app-add-glossary-form-modal [glossary]="glossary" (newGlossarySubmitted)="addNewGlossary($event)" #addGlossaryFormModal></app-add-glossary-form-modal>-->
+        <app-add-glossary-form-modal (newGlossarySubmitted)="addNewGlossary($event)" #addGlossaryFormModal></app-add-glossary-form-modal>
       </li>
 
       <li class="nav-item">
@@ -65,9 +67,9 @@
 </div>
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item>Очистить от терминов</button>
-  <button mat-menu-item>Удалить глоссарий</button>
+  <button mat-menu-item> Очистить от терминов </button>
+  <button mat-menu-item> Удалить глоссарий </button>
 </mat-menu>
 
 
-<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger">Невозможно подключиться к БД</h4>
+<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

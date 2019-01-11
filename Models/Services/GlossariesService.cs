@@ -18,10 +18,10 @@ namespace Models.Services
         }
 
 
-        public async Task<IEnumerable<Glossaries>> GetAllAsync()
-        {
-            return await this._glossariesRepository.GetAllAsync();
-        }
+        //public async Task<IEnumerable<Glossaries>> GetAllAsync()
+        //{
+        //    return await this._glossariesRepository.GetAllAsync();
+        //}
 
         public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync()
         {

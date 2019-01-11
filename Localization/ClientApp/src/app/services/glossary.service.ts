@@ -18,14 +18,14 @@ export class GlossaryService
     return this.httpClient.get<Glossaries>(GlossaryService.connectionUrl + id);
   }
 
-  getGlossaries(): Observable<Glossaries[]>
-  {
-    return this.httpClient.get<Glossaries[]>(GlossaryService.connectionUrl);
-  }
+  //getGlossaries(): Observable<Glossaries[]>
+  //{
+  //  return this.httpClient.get<Glossaries[]>(GlossaryService.connectionUrl);
+  //}
 
   getGlossariesDTO(): Observable<GlossariesDTO[]>
   {
-    return this.httpClient.get<GlossariesDTO[]>(GlossaryService.connectionUrl + "ToDTO");
+    return this.httpClient.get<GlossariesDTO[]>(GlossaryService.connectionUrl/* + "ToDTO"*/);
   }
 
 }

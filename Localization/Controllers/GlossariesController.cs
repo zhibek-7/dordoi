@@ -19,14 +19,14 @@ namespace Localization.Controllers
             this._glossariesService = glossariesService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<Glossaries>> GetAllAsync()
-        {
-            return await this._glossariesService.GetAllAsync();
-        }
+        //[HttpGet]
+        //public async Task<IEnumerable<Glossaries>> GetAllAsync()
+        //{
+        //    return await this._glossariesService.GetAllAsync();
+        //}
 
         [HttpGet]
-        [Route("ToDTO")]
+        //[Route("ToDTO")]
         public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync()
         {
             return await this._glossariesService.GetAllToDTOAsync();

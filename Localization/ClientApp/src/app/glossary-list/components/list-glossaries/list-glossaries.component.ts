@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-
 import { MatSort, MatTableDataSource } from '@angular/material';
 
 import { GlossaryService } from 'src/app/services/glossary.service';
+
 import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
 
 @Component({
@@ -11,7 +11,7 @@ import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
   styleUrls: ['./list-glossaries.component.css'],
   providers: [GlossaryService]
 })
-export class ListGlossariesComponent
+export class ListGlossariesComponent //implements OnInit
 {
   //glossaries: GlossariesDTO[];
 
@@ -25,6 +25,11 @@ export class ListGlossariesComponent
   {
     this.getGlossariesDTO();
   }
+
+  //ngOnInit()
+  //{
+  //  this.getGlossariesDTO();
+  //}
 
   ngAfterViewInit()
   {
@@ -46,4 +51,13 @@ export class ListGlossariesComponent
       });
   }
 
+  addNewGlossary(newGlossary: Glossaries) {
+    //if (!this.glossary)
+    //  return;
+
+    //this.glossariesService.addNewGlossary(this.glossary.id, newTerm, newTerm.partOfSpeechId)
+    //  .subscribe(
+    //  //() => this.requestDataReloadService.requestUpdate()
+    //  );
+  }
 }
