@@ -3,13 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Localization", ".\Localization\Localization.csproj", "{D737283A-D902-4D48-9D2C-0C795E369A53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Localization", "Localization\Localization.csproj", "{D737283A-D902-4D48-9D2C-0C795E369A53}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", ".\DAL\DAL.csproj", "{8F13E6EE-166D-4FC2-83C7-A4BD15F45FDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{8F13E6EE-166D-4FC2-83C7-A4BD15F45FDF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", ".\Models\Models.csproj", "{B4BDCFF5-DBCA-4F93-9054-464E35D4C526}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{B4BDCFF5-DBCA-4F93-9054-464E35D4C526}"
+	ProjectSection(ProjectDependencies) = postProject
+		{596F84D1-3F85-419B-81D6-9D0963653C7A} = {596F84D1-3F85-419B-81D6-9D0963653C7A}
+	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", ".\Utilities\Utilities.csproj", "{596F84D1-3F85-419B-81D6-9D0963653C7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Utilities\Utilities.csproj", "{596F84D1-3F85-419B-81D6-9D0963653C7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
