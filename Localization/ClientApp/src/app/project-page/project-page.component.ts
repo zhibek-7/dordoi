@@ -27,7 +27,7 @@ export class ProjectPageComponent implements OnInit {
   currentProject: LocalizationProject;
 
   langList: Array<Locale>;
-  userList: Array<User>;
+  userList = new Array<User>();
   workTypeList: Array<WorkType>;
   userActionsList: Array<UserAction>;
   dataSource = new MatTableDataSource(this.userActionsList);
@@ -61,7 +61,7 @@ export class ProjectPageComponent implements OnInit {
 
     var projectId = Number(sessionStorage.getItem('ProjecID'));
 
-    this.languagesService.getByProjectId(projectId)
+    this.languagesService.getLanguageList()//getByProjectId(projectId)
       .subscribe(Languages => { this.langList = Languages; },
         error => console.error(error));
 
@@ -70,9 +70,10 @@ export class ProjectPageComponent implements OnInit {
         project => { this.currentProject = project; },
         error => console.error(error));
 
-    this.userService.getProjectParticipantList(projectId)
-      .subscribe(Users => { this.userList = Users; },
-      error => console.error(error));
+    this.userService.getUserList1("Elena") //getProjectParticipantList(projectId)
+      .subscribe(
+        Users => { this.userList = Users; },
+        error => console.error(error));
 
     this.userActionsService.getActionsList()
       .subscribe(actions => {
@@ -80,8 +81,6 @@ export class ProjectPageComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.userActionsList);
         },
         error => console.error(error));
-
-    
 
     this.filtredUsers = this.userList;
   }
@@ -116,5 +115,12 @@ export class ProjectPageComponent implements OnInit {
     function filtredArr(language) {
       return language === currentLang;
     }
+  }
+
+  applyActionsFilter()
+  {
+    console.log(this.selectedWorkType);
+    console.log(this.selectedUser);
+    console.log(this.selectedLang);
   }
 }

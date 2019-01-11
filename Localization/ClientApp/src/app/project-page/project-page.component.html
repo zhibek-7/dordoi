@@ -92,28 +92,28 @@
 
   <div class="tab-pane fade" id="acivity" role="tabpanel" aria-labelledby="acivity-tab">
 
-    <mat-form-field style="margin-right: 1rem;">
-      <mat-select [(value)]="selectedWorkType" (selectionChange)="applyFilterUsers($event)">
-        <mat-option value="none">Все события</mat-option>
-        <mat-option *ngFor="let workType of workTypeList" [value]="workType.id">{{workType.name}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field style="margin-right: 1rem;">
+        <mat-select [(value)]="selectedWorkType" (selectionChange)="applyActionsFilter()">
+          <mat-option value="none">Все события</mat-option>
+          <mat-option *ngFor="let workType of workTypeList" [value]="workType.id">{{workType.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-form-field style="margin-right: 1rem;">
-      <mat-select [(value)]="selectedLang" (selectionChange)="applyFilterLang($event)">
-        <mat-option value="none">Все языки</mat-option>
-        <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field style="margin-right: 1rem;">
+        <mat-select [(value)]="selectedLang" (selectionChange)="applyActionsFilter()">
+          <mat-option value="none">Все языки</mat-option>
+          <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-select [(value)]="selectedUser" (selectionChange)="applyFilterUsers($event)">
-        <mat-option value="none">Все пользователи</mat-option>
-        <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name}}</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-select [(value)]="selectedUser" (selectionChange)="applyActionsFilter()">
+          <mat-option value="none">Все пользователи</mat-option>
+          <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-accordion *ngFor="let user of filtredUsers" class="mb-4">
+      <mat-accordion *ngFor="let user of filtredUsers" class="mb-4">
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title>

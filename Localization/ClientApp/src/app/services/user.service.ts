@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/database-entities/user.type';
-import { Observable, of } from 'rxjs';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
@@ -21,5 +22,4 @@ export class UserService {
   getPhotoById(userId: number): Observable<Blob> {
     return this.httpClient.post(this.url + userId.toString() + '/getPhoto/', null, { responseType: 'blob' });
   }
-
 }

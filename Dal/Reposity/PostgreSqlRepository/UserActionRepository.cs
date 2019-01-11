@@ -192,30 +192,140 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddAuthorizeActionAsync(int userId)
         {
-            UserAction act = new UserAction()
-            {
-                Datetime = DateTime.Now,
-                Description = "",
-                ID_User = userId,
-                ID_worktype = (int)WorkTypes.Authorize
-            };
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.Authorize);
             return await AddAsync(act);
         }
 
         /// <summary>
-        /// Добавить запись о вхоже в систему
+        /// Добавить запись о входе в систему
         /// </summary>
         /// <param name="userId">Идентификатор пользователя</param>
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddLoginActionAsync(int userId)
         {
-            UserAction act = new UserAction()
-            {
-                Datetime = DateTime.Now,
-                Description = "",
-                ID_User = userId,
-                ID_worktype = (int)WorkTypes.Login
-            };
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.Login);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о создании проекта
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddCreateProjectActionAsync(int userId, int projectId)
+        {// Authorize = 1, //1	Авторизация пользователя    
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.CreateProject);
+            act.ID_Project = projectId;
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о добавлении файла
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddAddFileActionAsync(int userId)
+        {   
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.AddFile);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись об обновлении файла
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddUpdateFileActionAsync(int userId)
+        {   
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.UpdateFile);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о добавлении строки
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddAddStringActionAsync(int userId)
+        {   
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.AddString);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись об обновлении строки
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddUpdateStringActionAsync(int userId)
+        {   
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.UpdateString);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись об удалении строки
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddDeleteStringActionAsync(int userId)
+        {   
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.DeleteString);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о добавлении перевода
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddAddTraslationActionAsync(int userId)
+        { 
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.AddTraslation);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись об удалении перевода
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddDeleteTranslationActionAsync(int userId)
+        {// Authorize = 1, //1	Авторизация пользователя    
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.DeleteTranslation);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись об обновлении перевода
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddUpdateTranslationActionAsync(int userId)
+        {  
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.UpdateTranslation);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о подтверждении перевода
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddConfirmTranslationActionAsync(int userId)
+        {  
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.ConfirmTranslation);
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о подтверждении перевода
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddChoseTranslationActionAsync(int userId)
+        {  
+            UserAction act = new UserAction(userId, "", (int) WorkTypes.ChoseTranslation);
             return await AddAsync(act);
         }
     }
