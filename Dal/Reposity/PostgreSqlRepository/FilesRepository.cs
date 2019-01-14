@@ -328,10 +328,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var parser = new Parser())
                         {
                             var translationSubstrings = parser.Parse(file);
-                            var n = translationSubstrings.Count;
+                            var translationSubstringsCount = translationSubstrings.Count;
+                            var n = translationSubstringsCount;
                             foreach (var translationSubstring in translationSubstrings)
                             {
                                 n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
+                            }
+                            if (n == 0)
+                            {
+                                file.StringsCount = translationSubstringsCount;
+                                sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
+                                await connection.ExecuteAsync(sqlString, file, transaction);
                             }
                             transaction.Commit();
                             return n == 0;
