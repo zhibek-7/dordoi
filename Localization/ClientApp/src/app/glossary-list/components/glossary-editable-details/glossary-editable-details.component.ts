@@ -43,56 +43,30 @@ export class GlossaryEditableDetailsComponent implements OnInit
     this.loadAvailableLocalizationProjects();
   }
 
+  //---------------- Locales
   loadAvailableLanguages()
   {
-    //this.glossariesService.getLocales()
-    //  .subscribe(locale => this.selectedLocales = locale,
-    //  error => console.error(error));
+    this.glossariesService.getLocales()
+      .subscribe(locale => //this.availableLocalizationProjects = localizationProject,
 
+      {
+        this.selectedLocales = locale;
+        this.availableLocales = locale
+          .map(local =>
+            new Selectable<Locale>(
+              local,
+              false//this.selectedLocalizationProjects.some(selectedLocalizationProjects => selectedLocalizationProjects.id == localProject.id)
+            ));
+      },
 
-
-  //  this.translationSubstringService.getTranslationLocalesForString(this.translationSubstring.id)
-  //    .subscribe(localesForTranslationSubstring =>
-  //      this.projectsService.getProject(this.projectsService.currentProjectId)
-  //        .subscribe(project =>
-  //          this.languageService.getLanguageList()
-  //            .subscribe(allLocales => {
-  //              this.selectedLocales = localesForTranslationSubstring;
-  //              this.availableLocales = allLocales
-  //                .filter(locale => locale.id != project.ID_SourceLocale)
-  //                .map(locale =>
-  //                  new Selectable<Locale>(
-  //                    locale,
-  //                    this.selectedLocales.some(selectedLocale => selectedLocale.id == locale.id)));
-  //            },
-  //              error => console.log(error)),
-  //          error => console.log(error)),
-  //      error => console.log(error));
-  //}
-
-  //loadAvailableLanguages() {
-  //  this.glossariesService.getTranslationLocalesForTerm(this.glossary.id, this.term.id)
-  //    .subscribe(localesForCurrentTerm =>
-  //      this.glossariesService.getGlossaryLocale(this.glossary.id)
-  //        .subscribe(currentGlossaryLocale =>
-  //          this.languageService.getLanguageList()
-  //            .subscribe(allLocales => {
-  //              this.selectedLocales = localesForCurrentTerm;
-  //              this.availableLocales = allLocales
-  //                .filter(locale => locale.id != currentGlossaryLocale.id)
-  //                .map(locale =>
-  //                  new Selectable<Locale>(
-  //                    locale,
-  //                    this.selectedLocales.some(currentTermLocale => currentTermLocale.id == locale.id)));
-  //            },
-  //              error => console.log(error))));
+        error => console.error(error));
   }
 
   setSelectedLocales(newSelection: Locale[]) {
     this.selectedLocales = newSelection;
   }
 
-  //----------------
+  //---------------- LocalizationProjects
   loadAvailableLocalizationProjects()
   {
     this.glossariesService.getlocalizationProjectForSelectDTO()
