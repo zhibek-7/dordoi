@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
                                 <div class="col-1 "> <input type="checkbox" class="form-check-input" [(ngModel)]="translation.confirmed" (change)="changeTranslate(translation)"> </div>
-                                <div class="col-1 align-self-center"><img (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon" src="../../../assets/icons/main/bin.png"></div>
+                                <div *ngIf="!translation.confirmed" class="col-1 align-self-center"><img (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon" src="../../../assets/icons/main/bin.png"></div>
                             </div>
                         </li>
                     </ul>

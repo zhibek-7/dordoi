@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="row context">
-        <div class="contextPicker col-sm-2" (click)="contextShowClick()">Контекст</div>
+        <div class="contextPicker col-sm-1" (click)="contextShowClick()">Контекст</div>
         <div *ngIf="showContextBlock">
           <mat-icon class="arrowIcon">expand_less</mat-icon>
         </div>
@@ -27,7 +27,7 @@
           <mat-icon class="arrowIcon">expand_more</mat-icon>
         </div>
         <div *ngIf="showContextBlock">
-        <div class="contextEdit col-sm-2" (click)="editContextModal.show()">Редактировать контекст</div>
+        <div class="contextEdit col-sm-6" (click)="editContextModal.show()">Редактировать контекст</div>
         <context-edit-modal-component #editContextModal [currentPhrase] = "phraseForTranslate" (onEnterContext) = "enterContext($event)"></context-edit-modal-component>
         </div>
       </div>

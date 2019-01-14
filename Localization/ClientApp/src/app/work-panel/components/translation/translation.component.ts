@@ -59,7 +59,7 @@ export class TranslationComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
 
         dialogConfig.data = {
-            selectedWord: selectedWord
+            selectedWord: selectedWord.toString()
         };
         dialogConfig.panelClass = 'selectionDialog';
 
@@ -68,11 +68,9 @@ export class TranslationComponent implements OnInit {
         dialogConfig.position = {
             'top': positionY,
             'left': positionX
-        }        
+        }       
         
         let dialogRef = this.selectionDialog.open(SelectedWordModalComponent, dialogConfig);
-
-        console.log(event);
     }  
     
            
@@ -143,7 +141,6 @@ export class TranslationComponent implements OnInit {
         this.translatedPhrase.id = insertedTranslationId;
 
         await this.translationService.getAllTranslationsInStringById(this.phraseForTranslate.id);
-        console.log(this.translatedPhrase);
         this.shareTranslatedPhraseService.sumbitTranslatedPhrase(this.translatedPhrase);
 
         this.translatedText = null;

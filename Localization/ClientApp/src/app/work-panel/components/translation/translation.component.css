@@ -43,7 +43,7 @@
 }
 
 .contextEdit {
-    margin-left: -3%;
+    /* margin-left: -3%; */
     cursor: pointer;
     font-size: 0.8em;
 }
