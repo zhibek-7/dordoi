@@ -13,6 +13,10 @@ namespace Models.DatabaseEntities
 
         public int ID_Role { get; set; }
 
+        public string UserName { get; set; }
+
+        public string RoleName { get; set; }
+
         public bool Active { get; set; }
 
     }
