@@ -36,6 +36,9 @@ export class AddGlossaryFormModalComponent extends ModalComponent  implements On
 
   submitNewGlossary() {
     this.hide();
+    console.log(this.newGlossary.name)
+    console.log(this.newGlossary.locales.length)
+    console.log(this.newGlossary.localizationProjects.length)
     this.newGlossarySubmitted.emit(this.newGlossary);
   }
 

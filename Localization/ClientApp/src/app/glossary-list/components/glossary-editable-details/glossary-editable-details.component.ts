@@ -100,7 +100,7 @@ export class GlossaryEditableDetailsComponent implements OnInit
   }
 
   setSelectedLocales(newSelection: Locale[]) {
-    this.selectedLocales = newSelection;
+    this.newGlossary.locales = newSelection; //this.selectedLocales = newSelection;
   }
 
   //---------------- LocalizationProjects
@@ -128,10 +128,11 @@ export class GlossaryEditableDetailsComponent implements OnInit
 
   toggleSelection(localizationProject: Selectable<localizationProjectForSelectDTO>) {
     localizationProject.isSelected = !localizationProject.isSelected;
-    //this.raiseSelectionChanged();
+    this.raiseSelectionChanged();
   }
 
-  //raiseSelectionChanged() {
-  //  this.selectedLocalizationProjectsChanged.emit(this.selectedLocalizationProjects);
-  //}
+  raiseSelectionChanged() {
+    //this.selectedLocalizationProjectsChanged.emit(this.selectedLocalizationProjects);
+    this.newGlossary.localizationProjects = this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model);
+  }
 }
