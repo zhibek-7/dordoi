@@ -14,6 +14,12 @@ export class ProjectsService {
         return +sessionStorage.getItem('ProjecID');
     }
 
+    get currentProjectName(): string {
+        return +sessionStorage.getItem('ProjectName');
+    }
+
+
+
     getProjects(): Observable<LocalizationProject[]> {
       console.log("getProject-->");
     return this.httpClient.get<LocalizationProject[]>(this.controllerUrl + "List");
