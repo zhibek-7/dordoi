@@ -11,8 +11,11 @@ namespace Models.Parser
     /// <summary>
     /// Класс, реализующий логику распарсивания в виде функций-парсеров, обрабатывающих объекты класса <see cref="File"/> и возвращающих списки <see cref="List{}"/> объектов класса <see cref="TranslationSubstring"/>
     /// </summary>
-    public class Parser : IDisposable
+    public class Parser
     {
+        /// <summary>
+        /// Поле, предназначенное для логирования класса
+        /// </summary>
         protected readonly ILogTools _logger = new LogTools();
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace Models.Parser
         //public List<TranslationSubstring> TranslationSubstrings;
 
         /// <summary>
-        /// Конструктор, инициализирующий поле класса <see cref="ParseFunctions"/> - словарь функций-парсеров
+        /// Инициализирует объект класса <see cref="Parser"/>
         /// </summary>
         public Parser()
         {
@@ -80,7 +83,11 @@ namespace Models.Parser
             //this.RcPattern = "\\s*(\\d+)\\s*,\\s*\"((?:[^\"]|(?<=\\\\)\")*)\"\\s*";
         }
 
-        
+        /// <summary>
+        /// Метод, предназначенный для распасрсивания файла всеми представленными в словаре <see cref="ParseFunctions"/> функциями-парсерами
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Cловарь, в котором ключ <see cref="string"/> - расширение, а значение - выделенный соответствующим парсером список <see cref="List{}"/> объектов класса <see cref="TranslationSubstring"/></returns>
         public Dictionary<string, List<TranslationSubstring>> UseAllParsers(File file)
         {
             _logger.WriteLn(string.Format("Попытка распарсивания файла {0} всеми доступными парсерами", file.Name));
@@ -91,17 +98,28 @@ namespace Models.Parser
             return ans;
         }
 
+        /// <summary>
+        /// Метод, предназначенный для распарсивания файла: функция-парсер подбирается в зависимости от значения аргумента <paramref name="extension"/>
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <param name="extension">Необязательный аргумент: если указан, принудительно используется соответствующий парсер, в противном случае - парсер подбирается автоматически</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/>, выделенных из файла выбранным (или автоматически подобранным) парсером</returns>
         public List<TranslationSubstring> Parse(File file, string extension = "")
         {
             _logger.WriteLn(string.Format("Попытка распарсивания файла {0}", file.Name));
             string ext = string.IsNullOrEmpty(extension) ? file.Name.Split('.').Last().ToLower() : extension;
             var ts = new List<TranslationSubstring>();
-            if (ParseFunctions.ContainsKey(ext)) ts = ParseFunctions[ext](file); else throw new ParserException(0);
-            if (ts.Count == 0) throw new ParserException(1);
+            if (ParseFunctions.ContainsKey(ext)) ts = ParseFunctions[ext](file); else throw new ParserException(ParserException.ParserExceptionTypes.WrongExtension);
+            if (ts.Count == 0) throw new ParserException(ParserException.ParserExceptionTypes.NoElements);
             _logger.WriteLn(string.Format("Файл {0} успешно распарсен{1}", file.Name, string.IsNullOrEmpty(extension) ? string.Empty : string.Format(" (принудительно применен парсер для расширения '{0}')", ext)));
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'po'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsPo(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'po'", file.Name));
@@ -116,6 +134,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'properties'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsProperties(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'properties'", file.Name));
@@ -130,6 +153,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'json'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsJson(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'json'", file.Name));
@@ -145,6 +173,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'strings'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsStrings(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'strings'", file.Name));
@@ -159,6 +192,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'csv'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsCsv(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'csv'", file.Name));
@@ -173,6 +211,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'xml'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsXml(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'xml'", file.Name));
@@ -196,6 +239,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'php'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsPhp(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'php'", file.Name));
@@ -223,6 +271,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'resx'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsResx(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'resx'", file.Name));
@@ -237,6 +290,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'string'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsString(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'string'", file.Name));
@@ -251,6 +309,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'txt'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsTxt(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'txt'", file.Name));
@@ -265,6 +328,11 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'rc'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsRc(File file)
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'rc'", file.Name));
@@ -277,11 +345,6 @@ namespace Models.Parser
             }
             _logger.WriteLn(string.Format("Парсер 'rc'-файлов обнаружил в файле {0} записей: {1}", file.Name, ts.Count));
             return ts;
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }
