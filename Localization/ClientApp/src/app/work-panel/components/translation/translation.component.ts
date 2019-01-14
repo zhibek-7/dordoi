@@ -143,6 +143,7 @@ export class TranslationComponent implements OnInit {
         this.translatedPhrase.id = insertedTranslationId;
 
         await this.translationService.getAllTranslationsInStringById(this.phraseForTranslate.id);
+        console.log(this.translatedPhrase);
         this.shareTranslatedPhraseService.sumbitTranslatedPhrase(this.translatedPhrase);
 
         this.translatedText = null;
