@@ -15,7 +15,7 @@ export class ProjectsService {
     }
 
     get currentProjectName(): string {
-        return +sessionStorage.getItem('ProjectName');
+        return sessionStorage.getItem('ProjectName');
     }
 
 
