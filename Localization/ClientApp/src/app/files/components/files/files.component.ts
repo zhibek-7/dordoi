@@ -56,12 +56,10 @@ export class FilesComponent implements OnInit {
     });
   };
 
-  addFolder(parentNode?: TreeNode): void {
-    const folderName = "Folder";
-
+  addFolder(newFolder: File, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
-    this.fileService.addFolder(folderName, this.projectsService.currentProjectId, parentId).subscribe(
+    this.fileService.addFolder(newFolder.name, this.projectsService.currentProjectId, parentId).subscribe(
       node => this.addNode(node, parentNode),
       error => alert(error.error)
     );

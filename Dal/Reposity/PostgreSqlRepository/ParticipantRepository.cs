@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
+using Models.DTO.Participants;
 using Models.Interfaces.Repository;
 using SqlKata;
 
@@ -104,7 +105,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             { "rolename", "Roles.Name" },
         };
 
-        public async Task<IEnumerable<Participant>> GetByProjectIdAsync(
+        public async Task<IEnumerable<ParticipantDTO>> GetByProjectIdAsync(
             int projectId,
             string search,
             int[] roleIds,
@@ -142,7 +143,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 var getParticipantsByProjectIdCompiledQuery = this._compiler.Compile(query);
                 this.LogQuery(getParticipantsByProjectIdCompiledQuery);
-                var participants = await dbConnection.QueryAsync<Participant>(
+                var participants = await dbConnection.QueryAsync<ParticipantDTO>(
                     sql: getParticipantsByProjectIdCompiledQuery.Sql,
                     param: getParticipantsByProjectIdCompiledQuery.NamedBindings);
                 dbConnection.Close();

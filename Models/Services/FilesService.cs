@@ -13,9 +13,15 @@ namespace Models.Services
 
         private readonly IFilesRepository _filesRepository;
 
-        public FilesService(IFilesRepository filesRepository)
+        private readonly IGlossaryRepository _glossaryRepository;
+
+        public FilesService(
+            IFilesRepository filesRepository,
+            IGlossaryRepository glossaryRepository
+            )
         {
             this._filesRepository = filesRepository;
+            this._glossaryRepository = glossaryRepository;
         }
 
         public async Task<IEnumerable<Node<File>>> GetAll()
@@ -117,6 +123,12 @@ namespace Models.Services
             // {
             //     throw new Exception($"File by id \"{id}\" not found");
             // }
+
+            var glossary = await this._glossaryRepository.GetByFileIdAsync(id);
+            if (glossary != null)
+            {
+                throw new Exception("Deletion of glossary file is forbidden.");
+            }
 
             var deleteSuccessfully = await this._filesRepository.RemoveAsync(id);
             if (!deleteSuccessfully)

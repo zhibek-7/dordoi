@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Mvc;
-using Models.DatabaseEntities;
+using Models.DTO.Participants;
 
 namespace Localization.Controllers
 {
@@ -31,7 +31,7 @@ namespace Localization.Controllers
             public bool? sortAscending { get; set; }
         }
         [HttpPost("byProjectId/{projectId}/list")]
-        public async Task<IEnumerable<Participant>> GetParticipantsByProjectIdAsync(
+        public async Task<IEnumerable<ParticipantDTO>> GetParticipantsByProjectIdAsync(
             int projectId,
             [FromBody] GetParticipantsByProjectIdParam param
             )

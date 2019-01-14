@@ -2,7 +2,7 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb nav-border">
-    <li class="breadcrumb-item active nav-element-gray" aria-current="page">Словари</li>
+    <li class="breadcrumb-item active nav-element-gray" aria-current="page"> Словари </li>
   </ol>
 </nav>
 
@@ -10,7 +10,8 @@
     <ul class="navbar-nav nav">
 
       <li class="nav-item">
-        <button type="button" class="btn nav-element"> Создать глоссарий</button>
+        <button type="button" class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать глоссарий </button>
+        <app-add-glossary-form-modal (newGlossarySubmitted)="addNewGlossary($event)" #addGlossaryFormModal></app-add-glossary-form-modal>
       </li>
 
       <li class="nav-item">
@@ -47,7 +48,7 @@
     </ng-container>
 
     <ng-container matColumnDef="additionalButtons">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell><!--mat-sort-header-->
       <mat-cell *matCellDef="let row">
 
         <button mat-button [matMenuTriggerFor]="menu">
@@ -65,9 +66,9 @@
 </div>
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item>Очистить от терминов</button>
-  <button mat-menu-item>Удалить глоссарий</button>
+  <button mat-menu-item> Очистить от терминов </button>
+  <button mat-menu-item> Удалить глоссарий </button>
 </mat-menu>
 
 
-<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger">Невозможно подключиться к БД</h4>
+<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

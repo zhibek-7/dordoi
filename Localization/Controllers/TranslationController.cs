@@ -42,7 +42,7 @@ namespace Localization.WebApi
             }
 
             int insertedTranslationId = await translationRepository.AddAsync(translation);
-            _userActionRepository.AddAddTraslationActionAsync(translation.ID_User, 0, translation.ID, translation.ID_String, translation.ID_Locale) ;//TODO поменять идентификатор проекта
+            //_userActionRepository.AddAddTraslationActionAsync(translation.ID_User, 0, translation.ID, translation.ID_String, translation.ID_Locale) ;//TODO поменять идентификатор проекта
             return Ok(insertedTranslationId);
         }
 
@@ -103,7 +103,7 @@ namespace Localization.WebApi
                 return BadRequest($"Failed to remove translation with id \"{ idTranslation }\" from database");
             }
 
-            _userActionRepository.AddDeleteTranslationActionAsync(300, 0, idTranslation);//TODO поменять на пользователя когда будет реализована авторизация
+            //_userActionRepository.AddDeleteTranslationActionAsync(300, 0, idTranslation);//TODO поменять на пользователя когда будет реализована авторизация
 
             return Ok();
         }
@@ -132,7 +132,7 @@ namespace Localization.WebApi
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
 
-            _userActionRepository.AddConfirmTranslationActionAsync(300, 0, idTranslation);//TODO поменять на пользователя когда будет реализована авторизация
+            //_userActionRepository.AddConfirmTranslationActionAsync(300, 0, idTranslation);//TODO поменять на пользователя когда будет реализована авторизация
             return Ok();
         }
 
@@ -159,7 +159,7 @@ namespace Localization.WebApi
             {
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
-            _userActionRepository.AddUpdateTranslationActionAsync(300, 0, foundedTranslation.ID, foundedTranslation.ID_String, foundedTranslation.ID_Locale, "Убрали галочку");
+            //_userActionRepository.AddUpdateTranslationActionAsync(300, 0, foundedTranslation.ID, foundedTranslation.ID_String, foundedTranslation.ID_Locale, "Убрали галочку");
             return Ok();
         }
 
@@ -176,7 +176,7 @@ namespace Localization.WebApi
             var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation);
             if (!updatedSuccessfuly)
                 return this.BadRequest();
-            _userActionRepository.AddUpdateTranslationActionAsync(300, 0, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            //_userActionRepository.AddUpdateTranslationActionAsync(300, 0, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return this.Ok();
         }
 

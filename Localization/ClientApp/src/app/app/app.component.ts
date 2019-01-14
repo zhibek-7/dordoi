@@ -32,9 +32,17 @@ export class AppComponent implements OnInit{
   getCurrentProject(currentProject: LocalizationProject) {
     this.currentProject = currentProject;
 
-    this.name = currentProject.name;
+
+    //this.name = currentProject.name;
+    console.log('ProjectName  currentProject.name ==' + currentProject.name);
+    this.name =  this.projectService.currentProjectName;
+    console.log('ProjectName projectsService.currentProjectName ==' + this.name);
+
+
     sessionStorage.setItem('ProjectName', currentProject.name);
     sessionStorage.setItem('ProjecID', currentProject.id.toString());
+
+
 
   }
 }

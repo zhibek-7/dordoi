@@ -12,7 +12,12 @@
 }
 
 .offersBlock {
-    padding: 30px 30px 10px 30px;
+    padding: 2px 2px 2px 2px;
+}
+
+
+.list-group-item{
+  padding: 2px 2px 2px 2px;
 }
 
 .userIcon {
@@ -25,7 +30,7 @@
 }
 
 .translatedText {
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 .translationInfo {
@@ -42,26 +47,26 @@
     text-align: center;
     color: gray;
     padding: 12vh;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 .otherLanguages {
     text-align: center;
     color: gray;
     padding: 12vh;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 .searchByMemory {
     padding: 15px;
     text-align: justify;
     color: gray;
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 .form-check-input {
-    width: 1.3rem;
-    height: 1.3rem;
+    width: 0.8rem;
+    height: 0.8rem;
     bottom: 0.6em;
 }
 
@@ -73,4 +78,30 @@
 .labelSimilarTranlsations{
     color: gray;
     font-size: 0.8em;
+    margin-left: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+
+.col-lg-6{
+  font-size: 0.8rem;
+}
+.userLogin
+{
+  font-size: 0.8rem;
+}
+
+
+.arrowIcon {    
+    cursor: pointer;
+}
+
+.align-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mat-icon {
+    color: grey;
 }
