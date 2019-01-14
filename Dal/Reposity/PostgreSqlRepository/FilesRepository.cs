@@ -345,7 +345,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
                         //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
                         transaction.Rollback();
-                        return false;
+                        throw;
                     }
                     catch (Exception exception)
                     {
