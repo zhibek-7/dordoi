@@ -18,14 +18,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly string connectionString;
         private ILogTools _log;
 
-        private readonly ITranslationSubstringRepository _translationSubstringRepository;
-
         public FilesRepository(ITranslationSubstringRepository translationSubstringRepository)
         {
             //TODO потом нужно переделать. Не должно быть статика
             connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
             _log = ExceptionLog.GetLog();
-            this._translationSubstringRepository = translationSubstringRepository;
         }
 
         public FilesRepository(string connectionString)
@@ -192,14 +189,6 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> RemoveAsync(int id)
         {
-            // TODO : full db dependecies removing, common transaction
-            var fileStrings = await this._translationSubstringRepository.GetStringsByFileIdAsync(fileId: id);
-            foreach (var fileString in fileStrings)
-            {
-                await this._translationSubstringRepository.DeleteTranslationLocalesAsync(fileString.ID);
-                await this._translationSubstringRepository.RemoveAsync(fileString.ID);
-            }
-
             // Sql string for delete query
             var sqlString = "DELETE FROM \"Files\" WHERE \"ID\" = @id";
 
