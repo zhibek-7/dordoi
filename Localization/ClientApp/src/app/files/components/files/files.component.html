@@ -1,7 +1,8 @@
 <div>
     <div>
         <label class="btn btn-secondary">Add file <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
-        <button class="btn btn-secondary" (click)="addFolder()">Add folder</button>
+        <button class="btn btn-secondary" (click)="addFolderModal.show()">Add folder</button>
+        <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event)"></app-add-folder-modal>
     </div>
 </div>
 
@@ -23,10 +24,11 @@
             <td class="col-xs-2"><button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button></td>
             <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2"><button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button></td>
             <td class="col-xs-2">
+                <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event, rowNode.node)"></app-add-folder-modal>
                 <div class="dropdown">
                     <button id="contextMenu" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="contextMenu">
-                        <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolder(rowNode.node)">Add
+                        <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolderModal.show()">Add
                             folder</button>
                         <button class="dropdown-item" *ngIf="rowData.isFolder">Add file
                            <input type="file" style="display: none;" (change)="onFileUpload($event, rowNode.node)">
