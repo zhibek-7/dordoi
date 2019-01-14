@@ -11,7 +11,7 @@ namespace Models.Parser
     /// <summary>
     /// Класс, реализующий логику распарсивания в виде функций-парсеров, обрабатывающих объекты класса <see cref="File"/> и возвращающих списки <see cref="List{}"/> объектов класса <see cref="TranslationSubstring"/>
     /// </summary>
-    public class Parser
+    public class Parser : IDisposable
     {
         /// <summary>
         /// Поле, предназначенное для логирования класса
@@ -93,7 +93,7 @@ namespace Models.Parser
             _logger.WriteLn(string.Format("Попытка распарсивания файла {0} всеми доступными парсерами", file.Name));
             var ans = new Dictionary<string, List<TranslationSubstring>>();
             foreach (var pf in ParseFunctions) ans.Add(pf.Key, pf.Value(file));
-            var max = ans.First(a=> a.Value.Count == ans.Values.Max(v => v.Count));
+            var max = ans.First(a => a.Value.Count == ans.Values.Max(v => v.Count));
             _logger.WriteLn(string.Format("Для файла {0} наиболее релевантен '{1}'-парсер (обнаружено записей: {2})", file.Name, max.Key, max.Value.Count));
             return ans;
         }
@@ -345,6 +345,11 @@ namespace Models.Parser
             }
             _logger.WriteLn(string.Format("Парсер 'rc'-файлов обнаружил в файле {0} записей: {1}", file.Name, ts.Count));
             return ts;
+        }
+
+        public void Dispose()
+        {
+            //TODO потом
         }
     }
 }
