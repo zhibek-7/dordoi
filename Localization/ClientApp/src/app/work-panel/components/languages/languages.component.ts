@@ -9,7 +9,7 @@ import { Translation } from '../../../models/database-entities/translation.type'
 import { TranslationWithFile } from '../../localEntites/translations/translationWithFile.type';
 import { SimilarTranslation } from '../../localEntites/translations/similarTranslation.type';
 
-import 'jquery-ui/ui/widgets/tabs.js';
+// import 'jquery-ui/ui/widgets/tabs.js';
 import * as $ from 'jquery';
 
 @Component({
@@ -60,7 +60,6 @@ export class LanguagesComponent implements OnInit {
             $("#nav-offers").addClass("active show");                                                  
         });                 
         
-
         // Событие, срабатываемое при введении варианта перевода
         this.shareTranslatedPhraseService.onSumbit.subscribe(translation => this.listOfTranslations.push(translation));
     }
