@@ -10,24 +10,6 @@ html {
   font-size: 1rem;
 }
 
-@include media-breakpoint-up(sm) {
-  html {
-    font-size: 1.2rem;
-  }
-}
-
-@include media-breakpoint-up(md) {
-  html {
-    font-size: 1.4rem;
-  }
-}
-
-@include media-breakpoint-up(lg) {
-  html {
-    font-size: 1.6rem;
-  }
-}
-
 @media (min-width: 576px) {
     html {
         font-size: 1.2rem;
@@ -35,7 +17,7 @@ html {
 }
 
 
-@media (min-width: 1400px) {
+@media (min-width: 900px) {
     html {
         font-size: 1rem;
     }
