@@ -17,16 +17,9 @@ namespace Localization.Controllers
         private readonly LocaleRepository _localeRepository = new LocaleRepository();
         private readonly LocalizationProjectRepository _localizationProjectRepository = new LocalizationProjectRepository();
 
-        public GlossariesController(GlossariesService glossariesService 
-            //, LocaleRepository localeRepository, LocalizationProjectRepository localizationProjectRepository
-            )
+        public GlossariesController(GlossariesService glossariesService)
         {
             _glossariesService = glossariesService;
-            //_localeRepository = localeRepository;
-            //_localizationProjectRepository = localizationProjectRepository;
-
-            //_localeRepository = new LocaleRepository();
-            //_localizationProjectRepository = new LocalizationProjectRepository();
         }
 
         //[HttpPost]
@@ -51,6 +44,15 @@ namespace Localization.Controllers
         public async Task<IEnumerable<localizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
         {
             return await _localizationProjectRepository.GetAllForSelectDTOAsync();
+        }
+
+        [HttpPost("newGlossary")]
+        public async Task AddGlossaryAsync(Glossaries glossary)//(int glossaryId, [FromBody] TranslationSubstring newTerm, [FromQuery] int? partOfSpeechId)
+        {
+            await _glossariesService.AddNewGlossaryAsync(glossary);
+                    //glossaryId: glossaryId,
+                    //newTerm: newTerm,
+                    //partOfSpeechId: partOfSpeechId);
         }
     }
 }

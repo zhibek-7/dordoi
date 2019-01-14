@@ -3,6 +3,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 
 import { Glossaries } from 'src/app/models/DTO/glossaries.type';
+import { Locale } from 'src/app/models/database-entities/locale.type';
+import { localizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
 
 @Component({
   selector: 'app-add-glossary-form-modal',
@@ -39,8 +41,8 @@ export class AddGlossaryFormModalComponent extends ModalComponent  implements On
 
   resetNewGlossaryModel() {
     this.newGlossary = new Glossaries();
-    this.newGlossary.locales = null;
-    this.newGlossary.localizationProjects = null;
+    this.newGlossary.locales = [];
+    this.newGlossary.localizationProjects = [];
   }
 
 }

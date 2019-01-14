@@ -55,9 +55,9 @@ export class ListGlossariesComponent //implements OnInit
     //if (!this.glossary)
     //  return;
 
-    //this.glossariesService.addNewGlossary(this.glossary.id, newTerm, newTerm.partOfSpeechId)
-    //  .subscribe(
-    //  //() => this.requestDataReloadService.requestUpdate()
-    //  );
+    this.glossariesService.addNewGlossary(newGlossary)//(this.glossary.id, newTerm, newTerm.partOfSpeechId)
+      .subscribe(
+      //() => this.requestDataReloadService.requestUpdate()
+      );
   }
 }

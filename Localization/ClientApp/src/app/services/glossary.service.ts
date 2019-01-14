@@ -32,4 +32,18 @@ export class GlossaryService
   getlocalizationProjectForSelectDTO(): Observable<localizationProjectForSelectDTO[]> {
     return this.httpClient.get<localizationProjectForSelectDTO[]>(GlossaryService.connectionUrl + "localizationProjects/list");
   }
+
+  addNewGlossary(glossary: Glossaries)//(glossaryId: number, newTerm: TranslationSubstring, partOfSpeechId: number | null)
+    : Observable<Object> {
+    //let params = new HttpParams();
+    //if (partOfSpeechId !== null) {
+    //  params = params.set('partOfSpeechId', partOfSpeechId.toString());
+    //}
+    return this.httpClient.post(GlossaryService.connectionUrl + "newGlossary", glossary);
+      //+ glossaryId + '/terms', newTerm,
+      //{
+      //  params: params
+      //})
+      //.pipe(catchError(this.handleError));
+  }
 }

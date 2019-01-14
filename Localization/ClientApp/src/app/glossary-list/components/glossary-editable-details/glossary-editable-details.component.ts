@@ -59,7 +59,44 @@ export class GlossaryEditableDetailsComponent implements OnInit
             ));
       },
 
-        error => console.error(error));
+      error => console.error(error));
+
+
+  //  this.translationSubstringService.getTranslationLocalesForString(this.translationSubstring.id)
+  //    .subscribe(localesForTranslationSubstring =>
+  //      this.projectsService.getProject(this.projectsService.currentProjectId)
+  //        .subscribe(project =>
+  //          this.languageService.getLanguageList()
+  //            .subscribe(allLocales => {
+  //              this.selectedLocales = localesForTranslationSubstring;
+  //              this.availableLocales = allLocales
+  //                .filter(locale => locale.id != project.ID_SourceLocale)
+  //                .map(locale =>
+  //                  new Selectable<Locale>(
+  //                    locale,
+  //                    this.selectedLocales.some(selectedLocale => selectedLocale.id == locale.id)));
+  //            },
+  //              error => console.log(error)),
+  //          error => console.log(error)),
+  //      error => console.log(error));
+  //}
+
+  //loadAvailableLanguages() {
+  //  this.glossariesService.getTranslationLocalesForTerm(this.glossary.id, this.term.id)
+  //    .subscribe(localesForCurrentTerm =>
+  //      this.glossariesService.getGlossaryLocale(this.glossary.id)
+  //        .subscribe(currentGlossaryLocale =>
+  //          this.languageService.getLanguageList()
+  //            .subscribe(allLocales => {
+  //              this.selectedLocales = localesForCurrentTerm;
+  //              this.availableLocales = allLocales
+  //                .filter(locale => locale.id != currentGlossaryLocale.id)
+  //                .map(locale =>
+  //                  new Selectable<Locale>(
+  //                    locale,
+  //                    this.selectedLocales.some(currentTermLocale => currentTermLocale.id == locale.id)));
+  //            },
+  //              error => console.log(error))));
   }
 
   setSelectedLocales(newSelection: Locale[]) {
