@@ -14,18 +14,23 @@ namespace Models.Services
 
         public GlossariesService(IGlossariesRepository glossariesRepository)
         {
-            this._glossariesRepository = glossariesRepository;
+            _glossariesRepository = glossariesRepository;
         }
 
 
-        public async Task<IEnumerable<Glossaries>> GetAllAsync()
-        {
-            return await this._glossariesRepository.GetAllAsync();
-        }
+        //public async Task<IEnumerable<Glossaries>> GetAllAsync()
+        //{
+        //    return await _glossariesRepository.GetAllAsync();
+        //}
 
         public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync()
         {
-            return await this._glossariesRepository.GetAllToDTOAsync();
+            return await _glossariesRepository.GetAllToDTOAsync();
+        }
+
+        public async Task AddNewGlossaryAsync(Glossaries glossary)
+        {
+            var temp = glossary;
         }
     }
 }
