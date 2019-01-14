@@ -95,12 +95,28 @@ export class FilesComponent implements OnInit {
       // Insert node object in founded index position
       this.files.splice(lastIndex, 0, addedNode);
     }
-
-    this.files = [...this.files];
+    this.reloadView();
   }
 
   deleteNode(node: TreeNode): void {
-    this.fileService.deleteNode(node.data).subscribe(response => console.log(response));
+    this.fileService.deleteNode(node.data)
+      .subscribe(response => {
+        console.log(response);
+        let indexOfNodeInRootFiles = this.files.lastIndexOf(node);
+        let nodeIsRoot = indexOfNodeInRootFiles > -1;
+        if (nodeIsRoot) {
+          this.files.splice(indexOfNodeInRootFiles, 1);
+        }
+        else {
+          let parentChildren = node.parent.children;
+          parentChildren.splice(parentChildren.lastIndexOf(node), 1);
+        }
+        this.reloadView();
+      });
+  }
+
+  reloadView() {
+    this.files = [...this.files];
   }
 
   updateNode(data: FileData): void {
@@ -109,8 +125,9 @@ export class FilesComponent implements OnInit {
 
   onFileUpload(event: any, parentNode?: TreeNode): void {
     const file = event.target.files[0];
-
-    this.addFile(file, parentNode);
+    if (file) {
+      this.addFile(file, parentNode);
+    }
     // event.files.forEach(file => this.fileService.addFile(file).subscribe(node => this.files = [...this.files, node]));
   }
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-using Models.DTO.Files;
 using Models.Extensions;
 using Models.Interfaces.Repository;
 using Models.Models;
@@ -14,9 +13,15 @@ namespace Models.Services
 
         private readonly IFilesRepository _filesRepository;
 
-        public FilesService(IFilesRepository filesRepository)
+        private readonly IGlossaryRepository _glossaryRepository;
+
+        public FilesService(
+            IFilesRepository filesRepository,
+            IGlossaryRepository glossaryRepository
+            )
         {
             this._filesRepository = filesRepository;
+            this._glossaryRepository = glossaryRepository;
         }
 
         public async Task<IEnumerable<Node<File>>> GetAll()
@@ -71,7 +76,7 @@ namespace Models.Services
                 ID_LocalizationProject = projectId,
             };
 
-            return await this.AddNode(newFile);
+            return await this.AddNode(newFile, insertToDbAction: this.InsertFileToDbAsync);
         }
 
         public async Task<Node<File>> AddFolder(FolderModel newFolderModel)
@@ -89,7 +94,7 @@ namespace Models.Services
                 ID_FolderOwner = newFolderModel.ParentId,
                 ID_LocalizationProject = newFolderModel.ProjectId
             };
-            return await AddNode(newFolder);
+            return await AddNode(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
         }
 
         public async Task UpdateNode(int id, File file)
@@ -98,7 +103,7 @@ namespace Models.Services
             // var foundedFile = await filesRepository.GetByID(id);
             // if (foundedFile == null)
             // {
-            //     return NotFound($"File by id \"{id}\" not found");
+            //     throw new Exception($"File by id \"{id}\" not found");
             // }
 
             file.ID = id;
@@ -116,8 +121,14 @@ namespace Models.Services
             // var foundedFile = await filesRepository.GetByID(id);
             // if (foundedFile == null)
             // {
-            //     return NotFound($"File by id \"{id}\" not found");
+            //     throw new Exception($"File by id \"{id}\" not found");
             // }
+
+            var glossary = await this._glossaryRepository.GetByFileIdAsync(id);
+            if (glossary != null)
+            {
+                throw new Exception("Deletion of glossary file is forbidden.");
+            }
 
             var deleteSuccessfully = await this._filesRepository.RemoveAsync(id);
             if (!deleteSuccessfully)
@@ -126,26 +137,40 @@ namespace Models.Services
             }
         }
 
-        private async Task<Node<File>> AddNode(File file)
+        private async Task<Node<File>> AddNode(File file, Func<File, Task> insertToDbAction)
         {
             if (file.ID_FolderOwner.HasValue)
             {
                 var parentFile = await this._filesRepository.GetByIDAsync(file.ID_FolderOwner.Value);
                 if (parentFile?.IsFolder == false)
                 {
-                    throw new Exception($"Can not add new node \"{file.Name}\" in file node");
+                    throw new Exception($"Can not add new node \"{file.Name}\" with file as parent node");
                 }
             }
 
-            var fileUploaded = await this._filesRepository.Upload(file);
-            if (!fileUploaded)
-            {
-                throw new Exception($"Failed to insert folder/file \"{file.Name}\" in database");
-            }
+            await insertToDbAction(file);
 
             var addedFile = await this._filesRepository.GetByNameAndParentId(file.Name, file.ID_FolderOwner);
             var icon = GetIconByFile(addedFile);
             return new Node<File>(addedFile, icon);
+        }
+
+        private async Task InsertFileToDbAsync(File file)
+        {
+            var fileUploaded = await this._filesRepository.Upload(file);
+            if (!fileUploaded)
+            {
+                throw new Exception($"Failed to insert file \"{file.Name}\" in database");
+            }
+        }
+
+        private async Task InsertFolderToDbAsync(File file)
+        {
+            var folderAdded = await this._filesRepository.AddAsync(file) > 0;
+            if (!folderAdded)
+            {
+                throw new Exception($"Failed to insert folder \"{file.Name}\" in database");
+            }
         }
 
         private string GetIconByFile(File file)

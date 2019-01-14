@@ -1,6 +1,6 @@
 .directoryBlock, .addCommentBlock  {
   background-color: #F6F5F1;
-  height: 2.5rem;
+  height: 1.5rem;
 }
 
 .nav-tabs {
@@ -20,17 +20,28 @@
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    padding: 2px;
+
 }
 
-.inputSearch {
+.list-group{
+  margin-top: 1rem;
+}
+
+
+.list-group-item-action{
+  padding: 2px 2px 2px 1rem;
+}
+
+/* .inputSearch {
     padding-top: 2%;
     padding-left: 0%;
     padding-right: 1%;
-}
+} */
 
-.inputSearch input {
+/* .inputSearch input {
     border-radius: 0%
-}
+} */
 
 .form-control {
   padding: 0px;
@@ -39,17 +50,24 @@
 .conditionsBlock {
     text-align: center;
     padding-top: 40%;
-    font-size: 1.2em;
+    font-size: 1em;
     color: grey;
 }
 
 .userNameRow {
   color: #A4BF82;
+  font-size: 0.8rem;
+}
+
+.col-6{
+  font-size: 0.8rem;
 }
 
 .controlText{
   color: #A4BF82;
   cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px 2px 2px 2px;
 }
 
 .greenBtn {
@@ -61,3 +79,21 @@
   width: 50%;
   height: 40%;
 }
+
+.addCommentBlock {
+  padding-top: 0.3rem;
+}
+
+.arrowIcon {    
+  cursor: pointer;
+}
+
+.align-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.mat-icon {
+  color: grey;
+}
+

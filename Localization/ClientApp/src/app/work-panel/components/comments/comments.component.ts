@@ -22,6 +22,8 @@ export class CommentsComponent implements OnInit {
     fileToUpload: File = null;
     imageUrl: string = undefined;
 
+    addCommentText: string = "";
+
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService ) { 
 
         // Событие, срабатываемое при выборе фразы для перевода
@@ -42,17 +44,18 @@ export class CommentsComponent implements OnInit {
     };
 
     // Добавление комментарие
-    public async addComment(textFromInput: string){
-        let comment: Comment = new Comment(301, this.stringId, textFromInput);        // поменять на id реального пользователя, когда появится
+    public async addComment(){
+        let comment: Comment = new Comment(301, this.stringId, this.addCommentText);        //TODO поменять на id реального пользователя, когда появится
         let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
         this.commentsList.push(insertedComment);
+
+        this.addCommentText = null;
     }
 
     // Событие, срабатываемое при нажатии клавиши Enter при добавлении нового комментария
     onEnterPress(event: any){
         if(event.which == 13 || event.keyCode == 13){
-            this.addComment(event.target.value);
-            event.target.value = null;
+            this.addComment();            
         }
     }
 

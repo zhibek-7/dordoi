@@ -6,6 +6,7 @@ import { CurrentProjectSettingsComponent } from '../current-project-settings/cur
 import { ProjectPageComponent } from '../project-page/project-page.component';
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
+import { UserRegistrationComponent } from '../user-registration/user-registration.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,6 @@ const routes: Routes = [
     path: 'Projects/:id',
     component: CurrentProjectSettingsComponent
   },
-
   {
     path: 'New-project',
     component: NewProjectComponent
@@ -64,6 +64,10 @@ const routes: Routes = [
   {
     path: 'pj/:id',
     component: ProjectPageComponent
+  },
+  {
+    path: 'user-registration',
+    loadChildren: '../user-registration/user-registration.module#UserRegistrationModule'
   },
   {
     path: '**',

@@ -1,9 +1,7 @@
 import { LocalizationProject } from './../../../models/database-entities/localizationProject.type';
 import { Component, OnInit} from '@angular/core';
 import { ProjectsService } from '../../../services/projects.service';
-
-import { FormControl} from '@angular/forms';
-
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -29,23 +27,27 @@ export class AllSettingsComponent implements OnInit {
   currentProjectlogo = '';
   currentProjectid = 1;
   currentProjecturl = '';
+ 
 
-  pjName = new FormControl();
-  pjDescription = new FormControl();
-  pjPublic = new FormControl();
-  pjPrivate = new FormControl();
-  pjFileTrue = new FormControl();
-  pjSkipUntranslStrTrue = new FormControl();
-  pjExportTrue = new FormControl();
-  pjNotificationTrue = new FormControl();
+  settings_proj = new FormGroup({
+    pjName : new FormControl(),
+    pjDescription : new FormControl(),
+    pjPublic : new FormControl(),
+    pjPrivate : new FormControl(),
+    pjFileTrue : new FormControl(),
+    pjSkipUntranslStrTrue : new FormControl(),
+    pjExportTrue : new FormControl(),
+    pjNotificationTrue : new FormControl()
+  });
 
+
+   
 
   ngOnInit() {
     this.currentProjectName = sessionStorage.getItem('ProjectName');
     console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-
- 
+   
 
   }
 
@@ -66,21 +68,17 @@ export class AllSettingsComponent implements OnInit {
   url?: string;
 
   addProject() {
-    console.log("!!!=" + this.pjName.value);
-    console.log("!!!=" + this.pjDescription.value);
-    console.log("!!!=" + this.pjPublic.value);
-    console.log("!!!=" + this.pjPrivate.value);
-    console.log("!!!=" + this.pjFileTrue.value);
-    console.log("!!!=" + this.pjSkipUntranslStrTrue.value);
-    console.log("!!!=" + this.pjExportTrue.value);
-    console.log("!!!=" + this.pjNotificationTrue.value);
-    let newProject: LocalizationProject = new LocalizationProject(this.pjName.value, this.pjName.value, this.pjDescription.value);// поменять на id реального пользователя, когда появится
-
-
-    
+    console.log("!!!=" + this.settings_proj.get('pjName').value);
+    console.log("!!!=" + this.settings_proj.get('pjDescription').value);
+    console.log("!!!=" + this.settings_proj.get('pjPublic').value);
+    //console.log("!!!=" + this.settings_proj.get('pjPrivate').value);
+    console.log("!!!=" + this.settings_proj.get('pjFileTrue').value);
+    console.log("!!!=" + this.settings_proj.get('pjSkipUntranslStrTrue').value);
+    console.log("!!!=" + this.settings_proj.get('pjExportTrue').value);
+    let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
     this.projectsService.addProject(newProject);
-
   }
 
 
 }
+
