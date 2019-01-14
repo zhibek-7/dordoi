@@ -6,17 +6,13 @@ import { GlossaryService } from 'src/app/services/glossary.service';
 
 import { Glossaries } from 'src/app/models/DTO/glossaries.type';
 
-
-//import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
-//import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
-//import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 import { LanguageService } from 'src/app/services/languages.service';
 import { ProjectsService } from 'src/app/services/projects.service';
 
 import { Selectable } from 'src/app/shared/models/selectable.model';
 
 import { Locale } from 'src/app/models/database-entities/locale.type';
-import { LocalizationProject } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
+import { localizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
 
 @Component({
   selector: 'app-glossary-editable-details',
@@ -31,21 +27,30 @@ export class GlossaryEditableDetailsComponent implements OnInit
   availableLocales: Selectable<Locale>[] = [];
   selectedLocales: Locale[] = [];
   
-
-  //localizationProjects: LocalizationProject[] = [];
+  availableLocalizationProjects: Selectable<localizationProjectForSelectDTO>[] = [];
+  selectedLocalizationProjects: localizationProjectForSelectDTO[] = [];
 
 
   constructor(
     private glossariesService: GlossaryService,
+
     private projectsService: ProjectsService,
-    //private translationSubstringService: TranslationSubstringService,
     private languageService: LanguageService,
   ) { }
 
   ngOnInit() {
+    this.loadAvailableLanguages();
+    this.loadAvailableLocalizationProjects();
   }
 
-  loadAvailableLanguages() {
+  loadAvailableLanguages()
+  {
+    //this.glossariesService.getLocales()
+    //  .subscribe(locale => this.selectedLocales = locale,
+    //  error => console.error(error));
+
+
+
   //  this.translationSubstringService.getTranslationLocalesForString(this.translationSubstring.id)
   //    .subscribe(localesForTranslationSubstring =>
   //      this.projectsService.getProject(this.projectsService.currentProjectId)
@@ -87,4 +92,35 @@ export class GlossaryEditableDetailsComponent implements OnInit
     this.selectedLocales = newSelection;
   }
 
+  //----------------
+  loadAvailableLocalizationProjects()
+  {
+    this.glossariesService.getlocalizationProjectForSelectDTO()
+      .subscribe(localizationProject => //this.availableLocalizationProjects = localizationProject,
+
+      {
+        this.selectedLocalizationProjects = localizationProject;
+        this.availableLocalizationProjects = localizationProject
+          .map(localProject =>
+            new Selectable<localizationProjectForSelectDTO>(
+              localProject,
+              false//this.selectedLocalizationProjects.some(selectedLocalizationProjects => selectedLocalizationProjects.id == localProject.id)
+            ));
+      },
+
+    error => console.error(error));
+  }
+
+  //get selectedLocalizationProjects(): localizationProjectForSelectDTO[] {
+  //  return this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model);
+  //}
+
+  toggleSelection(localizationProject: Selectable<localizationProjectForSelectDTO>) {
+    localizationProject.isSelected = !localizationProject.isSelected;
+    //this.raiseSelectionChanged();
+  }
+
+  //raiseSelectionChanged() {
+  //  this.selectedLocalizationProjectsChanged.emit(this.selectedLocalizationProjects);
+  //}
 }

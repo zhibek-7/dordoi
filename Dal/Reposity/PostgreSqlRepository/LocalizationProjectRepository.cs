@@ -91,6 +91,19 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async System.Threading.Tasks.Task<IEnumerable<Models.DTO.localizationProjectForSelectDTO>> GetAllForSelectDTOAsync()
+        {
+            using (IDbConnection dbConnection = context.Connection)
+            {
+                dbConnection.Open();
+                IEnumerable<Models.DTO.localizationProjectForSelectDTO> result = 
+                    await dbConnection.QueryAsync<Models.DTO.localizationProjectForSelectDTO>
+                    ("SELECT \"ID\", \"Name\" FROM \"LocalizationProjects\"");
+                dbConnection.Close();
+                return result;
+            }
+        }
+
         public bool Remove(int Id)
         {
             throw new NotImplementedException();

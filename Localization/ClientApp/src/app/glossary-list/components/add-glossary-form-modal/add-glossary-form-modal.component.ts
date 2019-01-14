@@ -41,7 +41,6 @@ export class AddGlossaryFormModalComponent extends ModalComponent  implements On
     this.newGlossary = new Glossaries();
     this.newGlossary.locales = null;
     this.newGlossary.localizationProjects = null;
-    //this.newGlossary.isEditable = true;
   }
 
 }

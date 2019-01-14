@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
+  //Убрать не нужные
   MatIconModule,
   MatInputModule,
   MatButtonModule,
@@ -41,8 +42,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
   imports:
   [
     FormsModule,
-    CommonModule,
+      CommonModule,
 
+    //Убрать не нужные
     MatIconModule,
     MatInputModule,
     MatButtonModule,
@@ -54,6 +56,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     MatTableModule,
     MatDividerModule,
     MatExpansionModule,
+    //
 
     MatNativeDateModule,
     MatSortModule,

@@ -1,5 +1,5 @@
 import { Locale } from 'src/app/models/database-entities/locale.type';
-import { LocalizationProject } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
+import { localizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
 
 export class Glossaries
 {
@@ -10,7 +10,7 @@ export class Glossaries
   //localeId: number;
   //localeName: string;
 
-  localizationProjects: LocalizationProject[];// [number, string];
+  localizationProjects: localizationProjectForSelectDTO[];// [number, string];
   //localizationProjectId: number;
   //localizationProjectName: string;
 }

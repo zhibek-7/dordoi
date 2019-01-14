@@ -11,7 +11,6 @@
 
       <li class="nav-item">
         <button type="button" class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать глоссарий </button>
-        <!--<app-add-glossary-form-modal [glossary]="glossary" (newGlossarySubmitted)="addNewGlossary($event)" #addGlossaryFormModal></app-add-glossary-form-modal>-->
         <app-add-glossary-form-modal (newGlossarySubmitted)="addNewGlossary($event)" #addGlossaryFormModal></app-add-glossary-form-modal>
       </li>
 
@@ -49,7 +48,7 @@
     </ng-container>
 
     <ng-container matColumnDef="additionalButtons">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell><!--mat-sort-header-->
       <mat-cell *matCellDef="let row">
 
         <button mat-button [matMenuTriggerFor]="menu">
