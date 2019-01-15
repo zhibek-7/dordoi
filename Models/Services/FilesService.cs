@@ -111,11 +111,11 @@ namespace Models.Services
         public async Task UpdateNode(int id, File file)
         {
             // Check if file by id exists in database
-            // var foundedFile = await filesRepository.GetByID(id);
-            // if (foundedFile == null)
-            // {
-            //     throw new Exception($"File by id \"{id}\" not found");
-            // }
+            var foundedFile = await this._filesRepository.GetByIDAsync(id);
+            if (foundedFile == null)
+            {
+                throw new Exception($"Не найдено файла/папки с id \"{id}\".");
+            }
 
             file.ID = id;
             file.DateOfChange = DateTime.Now;
@@ -129,11 +129,11 @@ namespace Models.Services
         public async Task DeleteNode(int id)
         {
             // Check if file by id exists in database
-            // var foundedFile = await filesRepository.GetByID(id);
-            // if (foundedFile == null)
-            // {
-            //     throw new Exception($"File by id \"{id}\" not found");
-            // }
+            var foundedFile = await this._filesRepository.GetByIDAsync(id);
+            if (foundedFile == null)
+            {
+                throw new Exception($"Не найдено файла/папки с id \"{id}\".");
+            }
 
             var glossary = await this._glossaryRepository.GetByFileIdAsync(id);
             if (glossary != null)
