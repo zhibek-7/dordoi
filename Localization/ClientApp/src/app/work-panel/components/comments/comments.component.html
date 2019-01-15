@@ -18,7 +18,7 @@
                             <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
                                 <div class="oneCommentBlock">
                                     <div class="row">
-                                        <div class="col-6 userNameRow">{{comment.userName}}</div><div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m:ss'}}</div>
+                                        <div class="col-6 userNameRow">{{comment.userName}}</div><div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m'}}</div>
                                     </div>
                                     <div *ngIf="!commentEdited">
                                         <div class="row">

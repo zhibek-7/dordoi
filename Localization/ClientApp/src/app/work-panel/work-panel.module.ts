@@ -22,6 +22,7 @@ import { ShareWordFromModalService } from './localServices/share-word-from-modal
 import { TranslationService } from '../services/translationService.service';
 import { CommentService } from '../services/comment.service';
 import { ProjectsService } from '../services/projects.service';
+import { GlossariesService } from '../services/glossaries.service';
 
 import {
   MatIconModule,
@@ -61,7 +62,8 @@ import {
         ShareWordFromModalService,
         TranslationService,
         CommentService,
-        ProjectsService
+        ProjectsService,
+        GlossariesService
     ],
 })
 export class WorkPanelModule {}

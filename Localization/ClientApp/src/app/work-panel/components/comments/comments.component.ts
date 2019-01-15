@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 
 import { CommentService } from '../../../services/comment.service';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
+import { GlossariesService } from 'src/app/services/glossaries.service';
 
+import { Term } from 'src/app/models/Glossaries/term.type';
 import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
  
@@ -13,6 +15,7 @@ import { CommentWithUser } from '../../localEntites/comments/commentWithUser.typ
 })
 export class CommentsComponent implements OnInit {
 
+    //Переменные для блока с комментариями
     commentsList: Array<CommentWithUser>;
 
     stringId: number;
@@ -24,12 +27,18 @@ export class CommentsComponent implements OnInit {
 
     addCommentText: string = "";
 
-    constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService ) { 
+    // Переменные для блока с Глоссарием
+    termsList: Array<Term>;
+
+    constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService,
+            private glossariesService: GlossariesService ) { 
+
+        this.getTerms();  
 
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
             this.stringId = pickedPhrase.id;
-            this.getComments(this.stringId);            
+            this.getComments(this.stringId);                      
         });
     }
 
@@ -118,6 +127,14 @@ export class CommentsComponent implements OnInit {
                 break;
             }
         }
+    }
+
+    // Поление всех терминов из всех глоссариев присоедененных к проекту локализации
+    getTerms(){
+        this.glossariesService.getAllTermsFromAllGlossarisInProject(0)
+            .subscribe(allTermsInProject => {
+                this.termsList = allTermsInProject;
+            });
     }
 
 }

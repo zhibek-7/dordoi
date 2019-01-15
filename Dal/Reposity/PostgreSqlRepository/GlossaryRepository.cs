@@ -2,6 +2,7 @@
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
+using Models.PartialEntities.Glossary;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -338,6 +339,45 @@ namespace DAL.Reposity.PostgreSqlRepository
                     param: getTranslationLocalesCompiledQuery.NamedBindings);
                 dbConnection.Close();
                 return translationLocalesForTerm;
+            }
+        }
+
+        /// <summary>
+        /// Получить все термины из всех глоссариев присоедененных к проекту локализации, по id необходимого проекта локализации
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
+        {
+            string query =  "SELECT " +
+                            "TS.\"ID\" AS \"ID\"," +
+                            "TS.\"SubstringToTranslate\" AS \"TermText\", " +
+                            "TS.\"Description\" AS \"TermDesciption\", " +
+                            "G.\"Name\" AS \"GlossaryName\" " +
+                            "FROM \"LocalizationProjects\" AS LP " +
+                            "INNER JOIN \"LocalizationProjectsGlossaries\" AS LPG ON LP.\"ID\" = LPG.\"ID_LocalizationProject\" " +
+                            "INNER JOIN \"Glossaries\" AS G ON G.\"ID\" = LPG.\"ID_Glossary\" " +
+                            "INNER JOIN \"Files\" AS F ON F.\"ID\" = G.\"ID_File\" " +
+                            "INNER JOIN \"TranslationSubstrings\" AS TS ON TS.\"ID_FileOwner\" = F.\"ID\" " +
+                            "WHERE LP.\"ID\" = @ProjectId";
+
+            try
+            {
+                using (var dbConnection = _context.Connection)
+                {
+                    dbConnection.Open();
+                    IEnumerable<TermWithGlossary> allTerms = await dbConnection.QueryAsync<TermWithGlossary>(query, new { ProjectId = projectId });
+                    dbConnection.Close();
+
+                    return allTerms;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return null;
             }
         }
 
