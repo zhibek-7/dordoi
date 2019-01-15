@@ -57,7 +57,7 @@ export class TranslationComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
 
         dialogConfig.data = {
-            selectedWord: selectedWord
+            selectedWord: selectedWord.toString()
         };
         dialogConfig.panelClass = 'selectionDialog';
 
@@ -69,8 +69,6 @@ export class TranslationComponent implements OnInit {
         }        
         
         let dialogRef = this.selectionDialog.open(SelectedWordModalComponent, dialogConfig);
-
-        console.log(event);
     }  
     
            

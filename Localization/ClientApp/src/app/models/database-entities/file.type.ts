@@ -12,4 +12,5 @@ export class File {
     folder: string;
     id_LocalizationProject: number;
     id_FolderOwner: number;
+    isLastVersion: boolean;
 }

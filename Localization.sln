@@ -7,7 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Localization", ".\Localizat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", ".\DAL\DAL.csproj", "{8F13E6EE-166D-4FC2-83C7-A4BD15F45FDF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", ".\Models\Models.csproj", "{B4BDCFF5-DBCA-4F93-9054-464E35D4C526}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{B4BDCFF5-DBCA-4F93-9054-464E35D4C526}"
+	ProjectSection(ProjectDependencies) = postProject
+		{596F84D1-3F85-419B-81D6-9D0963653C7A} = {596F84D1-3F85-419B-81D6-9D0963653C7A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", ".\Utilities\Utilities.csproj", "{596F84D1-3F85-419B-81D6-9D0963653C7A}"
 EndProject

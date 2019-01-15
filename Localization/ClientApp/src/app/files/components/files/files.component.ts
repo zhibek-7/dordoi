@@ -19,6 +19,8 @@ export class FilesComponent implements OnInit {
 
   cols: any[];
 
+  searchFilesNamesString: string = '';
+
   selectedNode: TreeNode;
 
   isLoading: boolean;
@@ -49,19 +51,17 @@ export class FilesComponent implements OnInit {
   getFiles(): void {
     this.isLoading = true;
 
-    this.fileService.getFiles().subscribe(files => {
+    this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId, this.searchFilesNamesString).subscribe(files => { 
       this.files = files;
 
       this.isLoading = false;
     });
   };
 
-  addFolder(parentNode?: TreeNode): void {
-    const folderName = "Folder";
-
+  addFolder(newFolder: File, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
-    this.fileService.addFolder(folderName, this.projectsService.currentProjectId, parentId).subscribe(
+    this.fileService.addFolder(newFolder.name, this.projectsService.currentProjectId, parentId).subscribe(
       node => this.addNode(node, parentNode),
       error => alert(error.error)
     );
@@ -95,12 +95,28 @@ export class FilesComponent implements OnInit {
       // Insert node object in founded index position
       this.files.splice(lastIndex, 0, addedNode);
     }
-
-    this.files = [...this.files];
+    this.reloadView();
   }
 
   deleteNode(node: TreeNode): void {
-    this.fileService.deleteNode(node.data).subscribe(response => console.log(response));
+    this.fileService.deleteNode(node.data)
+      .subscribe(response => {
+        console.log(response);
+        let indexOfNodeInRootFiles = this.files.lastIndexOf(node);
+        let nodeIsRoot = indexOfNodeInRootFiles > -1;
+        if (nodeIsRoot) {
+          this.files.splice(indexOfNodeInRootFiles, 1);
+        }
+        else {
+          let parentChildren = node.parent.children;
+          parentChildren.splice(parentChildren.lastIndexOf(node), 1);
+        }
+        this.reloadView();
+      });
+  }
+
+  reloadView() {
+    this.files = [...this.files];
   }
 
   updateNode(data: FileData): void {
@@ -109,8 +125,9 @@ export class FilesComponent implements OnInit {
 
   onFileUpload(event: any, parentNode?: TreeNode): void {
     const file = event.target.files[0];
-
-    this.addFile(file, parentNode);
+    if (file) {
+      this.addFile(file, parentNode);
+    }
     // event.files.forEach(file => this.fileService.addFile(file).subscribe(node => this.files = [...this.files, node]));
   }
 

@@ -7,9 +7,7 @@ import { ProjectPageComponent } from '../project-page/project-page.component';
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
 
-//
-import { ListGlossariesComponent } from '../glossaries/components/list-glossaries/list-glossaries.component';
-//
+import { UserRegistrationComponent } from '../user-registration/user-registration.component';
 
 const routes: Routes = [
   {
@@ -28,7 +26,6 @@ const routes: Routes = [
     path: 'Projects/:id',
     component: CurrentProjectSettingsComponent
   },
-
   {
     path: 'New-project',
     component: NewProjectComponent
@@ -41,13 +38,10 @@ const routes: Routes = [
     path: 'Glossaries',
     loadChildren: '../glossaries/glossaries.model#GlossariesModule'
   },
-  //
   {
     path: 'list-glossaries',
-    //loadChildren: '../glossaries/glossaries.model#GlossariesModule'
-    component: ListGlossariesComponent
+    loadChildren: '../glossary-list/list-glossaries/list-glossaries.module#ListGlossariesModule'
   },
-  //
   {
     path: 'example',
     loadChildren: '../example/example.model#ExampleModule'
@@ -72,6 +66,13 @@ const routes: Routes = [
     path: 'pj/:id',
     component: ProjectPageComponent
   },
+
+  {
+    path: 'user-registration',
+    component: UserRegistrationComponent
+    /*loadChildren: '../user-registration/user-registration.modele.ts#UserRegistrationModule'*/
+  },
+
   {
     path: '**',
     component: UserAccountComponent

@@ -1,4 +1,4 @@
-﻿namespace Models.DTO.Files
+﻿namespace Models.DatabaseEntities
 {
     public class FolderModel
     {
