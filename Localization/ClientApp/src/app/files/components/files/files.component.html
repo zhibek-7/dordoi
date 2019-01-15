@@ -4,6 +4,9 @@
     <button class="btn btn-secondary" (click)="addFolderModal.show()">Add folder</button>
     <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event)"></app-add-folder-modal>
   </div>
+  <div>
+    <input type="text" [(ngModel)]="searchFilesNamesString" (input)="getFiles()" />
+  </div>
 </div>
 
 <p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">

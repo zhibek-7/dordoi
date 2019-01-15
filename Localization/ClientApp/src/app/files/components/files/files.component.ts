@@ -19,6 +19,8 @@ export class FilesComponent implements OnInit {
 
   cols: any[];
 
+  searchFilesNamesString: string = '';
+
   selectedNode: TreeNode;
 
   isLoading: boolean;
@@ -49,7 +51,7 @@ export class FilesComponent implements OnInit {
   getFiles(): void {
     this.isLoading = true;
 
-    this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId).subscribe(files => {
+    this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId, this.searchFilesNamesString).subscribe(files => { 
       this.files = files;
 
       this.isLoading = false;

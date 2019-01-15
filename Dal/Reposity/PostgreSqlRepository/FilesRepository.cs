@@ -376,5 +376,27 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
+        {
+            var fileNamesSearchPattern = $"%{fileNamesSearch}%";
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query = new Query("Files")
+                    .Where("ID_LocalizationProject", projectId)
+                    .WhereLike("Name", fileNamesSearchPattern);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                var files = await dbConnection.QueryAsync<File>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+                return files;
+            }
+        }
+
     }
 }
