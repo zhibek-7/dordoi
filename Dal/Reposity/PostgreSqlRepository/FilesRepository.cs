@@ -469,7 +469,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = new Query("Files")
-                    .Where("ID_LocalizationProject", projectId);
+                    .Where("ID_LocalizationProject", projectId)
+                    .Where("IsLastVersion", true);
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
@@ -490,6 +491,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 var query = new Query("Files")
                     .Where("ID_LocalizationProject", projectId)
+                    .Where("IsLastVersion", true)
                     .WhereLike("Name", fileNamesSearchPattern);
 
                 var compiledQuery = this._compiler.Compile(query);
