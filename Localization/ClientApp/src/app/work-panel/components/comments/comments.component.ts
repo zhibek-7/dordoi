@@ -53,18 +53,17 @@ export class CommentsComponent implements OnInit {
     };
 
     // Добавление комментарие
-    public async addComment(){
-        let comment: Comment = new Comment(301, this.stringId, this.addCommentText);        //TODO поменять на id реального пользователя, когда появится
+    public async addComment(textFromInput: string){
+        let comment: Comment = new Comment(301, this.stringId, textFromInput);        // поменять на id реального пользователя, когда появится
         let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
         this.commentsList.push(insertedComment);
-
-        this.addCommentText = null;
     }
 
     // Событие, срабатываемое при нажатии клавиши Enter при добавлении нового комментария
     onEnterPress(event: any){
         if(event.which == 13 || event.keyCode == 13){
-            this.addComment();            
+            this.addComment(event.target.value);
+            event.target.value = null;
         }
     }
 

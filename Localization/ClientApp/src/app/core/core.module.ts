@@ -13,10 +13,11 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { CurrentProjectSettingsComponent } from '../current-project-settings/current-project-settings.component';
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
-import { UserRegistrationComponent } from '../user-registration/user-registration.component';
 import { ProjectPageComponent } from '../project-page/project-page.component';
 
-
+//
+import { ListGlossariesComponent } from '../glossaries/components/list-glossaries/list-glossaries.component';
+//
 
 import {
   MatIconModule,
@@ -30,7 +31,7 @@ import {
   MatTableModule,
   MatDividerModule,
   MatExpansionModule,
-  MatNativeDateModule,
+  MatNativeDateModule, 
   MatSortModule,
   MatMenuModule} from '@angular/material';
 
@@ -56,6 +57,13 @@ import {
    MatDividerModule,
    MatExpansionModule,
    ReactiveFormsModule
+
+   //
+   ,
+   MatNativeDateModule,
+   MatSortModule,
+      MatMenuModule,
+   //
     ],
   declarations: [
     NotFoundComponent,
@@ -64,6 +72,9 @@ import {
     NewProjectComponent,
     UserAccountComponent,
     ProjectPageComponent,
+    //
+    ListGlossariesComponent
+    //
     ],
     exports: [
         RouterModule,

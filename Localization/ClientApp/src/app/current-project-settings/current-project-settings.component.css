@@ -1,7 +1,3 @@
-
-  .table {
-    font-size: 14px;
-  }
 .breadcrumb {
     display: inline-flex;
     padding: .2rem 1rem;
@@ -18,7 +14,6 @@
 
 h1 {
     font-weight: 600;
-    font-size: 30px;
 }
 
 .navbar-category {

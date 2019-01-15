@@ -121,7 +121,7 @@ namespace Utilities.Logs
             StringBuilder sb = GetStr(str);
             GetCurrenLog().Error(err, sb.ToString());
 
-            Console.WriteLine(".." + str + err?.Message);
+            Console.WriteLine(".." + str + err.Message);
         }
 
         /// <summary>

@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UserRegistrationService } from '../services/user-registration.service';
-import { FormGroup, FormGroupDirective, NgForm, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormGroupDirective, NgForm, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { User } from '../user-account/user';
 
 @Component({
   selector: 'app-user-registration',
-  
-  templateUrl: './user-registration.component.html',
+  templateUrl: './user-resistration.component.html',
   styles: [`
         input.ng-touched.ng-invalid {border:solid red 2px;}
         input.ng-touched.ng-valid {border:solid green 2px;}
@@ -17,24 +16,16 @@ import { User } from '../user-account/user';
 
 export class UserRegistrationComponent implements OnInit {
   hide = true;
-  regForm: FormGroup;
-  constructor() {
-    this.regForm = new FormGroup({
-      "userEmailFormContol" : new FormControl(),
-      "userNameFormControl" : new FormControl(),
-      "userPasswordFormControl" : new FormControl(),
-      "confirmPasswordFormControl" : new FormControl()
-    });
-  }
+  userEmailFormContol = new FormControl();
+  userNameFormControl = new FormControl();
+  userPasswordFormControl = new FormControl();
+  confirmPasswordFormControl = new FormControl();
 
   ngOnInit() {
-
-  }
-  //ngOnInit() {
-  //  this.userEmailFormContol = new FormControl('', [Validators.required,
-  //    Validators.pattern("[a-zA-Z_]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}")]);
-  //  this.userNameFormControl = new FormControl('', Validators.required);
-  //}  
+    this.userEmailFormContol = new FormControl('', [Validators.required,
+      Validators.pattern("[a-zA-Z_]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}")]);
+    this.userNameFormControl = new FormControl('', Validators.required);
+  }  
 }
 
 function equalPasswordValidator(password: any): ValidatorFn {

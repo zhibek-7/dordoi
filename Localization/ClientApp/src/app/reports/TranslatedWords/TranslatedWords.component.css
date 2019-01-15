@@ -6,8 +6,9 @@ div.reportParamHolder {
 }
 
   div.reportParamHolder button {
+    background: #90a100;
     padding-left: 10px;
-
+    color: #f5f5f5;
   }
 
 input.daterangePicker {

@@ -45,7 +45,6 @@ namespace Localization.WebApi
                 return BadRequest("Модель не соответсвует");
             }
 
-            comment.DateTime = DateTime.Now;
             int insertedCommentId = await commentRepository.AddAsync(comment);
             CommentWithUserInfo commentWithUserInfo = await commentRepository.GetByIDWithUserInfoAsync(insertedCommentId);
             return Ok(commentWithUserInfo);

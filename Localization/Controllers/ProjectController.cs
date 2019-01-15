@@ -14,12 +14,10 @@ namespace Localization.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly LocalizationProjectRepository _localizationProjectRepository;
-        private readonly UserActionRepository _userActionRepository;
 
         public ProjectController()
         {
             _localizationProjectRepository = new LocalizationProjectRepository();
-            _userActionRepository = new UserActionRepository();
         }
 
         [HttpGet]
@@ -45,7 +43,6 @@ namespace Localization.Controllers
         public LocalizationProject AddProject([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync(300, project.ID, project.ID_SourceLocale);//TODO поменять на пользователя когда будет реализована авторизация
             return project;
         }
 
@@ -54,7 +51,6 @@ namespace Localization.Controllers
         public LocalizationProject AddProjectT([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync(300, project.ID, project.ID_SourceLocale);//TODO поменять на пользователя когда будет реализована авторизация
             return project;
         }
 

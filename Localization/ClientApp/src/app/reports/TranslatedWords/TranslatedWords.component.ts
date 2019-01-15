@@ -72,7 +72,7 @@ export class TranslatedWordsComponent implements OnInit {
   public Folders: File[];
 
   //Название отчета
-  msg: string = "Отчет";
+  msg: string = "Лучшие участники";
 
   //Переменные для фильтра выборки
   userName: string;

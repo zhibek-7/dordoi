@@ -18,7 +18,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly string connectionString;
         private ILogTools _log;
 
-        public FilesRepository(ITranslationSubstringRepository translationSubstringRepository)
+        public FilesRepository()
         {
             //TODO потом нужно переделать. Не должно быть статика
             connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
@@ -317,17 +317,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var parser = new Parser())
                         {
                             var translationSubstrings = parser.Parse(file);
-                            var translationSubstringsCount = translationSubstrings.Count;
-                            var n = translationSubstringsCount;
+                            var n = translationSubstrings.Count;
                             foreach (var translationSubstring in translationSubstrings)
                             {
                                 n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
-                            }
-                            if (n == 0)
-                            {
-                                file.StringsCount = translationSubstringsCount;
-                                sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
-                                await connection.ExecuteAsync(sqlString, file, transaction);
                             }
                             transaction.Commit();
                             return n == 0;
@@ -345,7 +338,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
                         //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
                         transaction.Rollback();
-                        throw;
+                        return false;
                     }
                     catch (Exception exception)
                     {

@@ -36,5 +36,7 @@ namespace Models.DatabaseEntities
         public bool NotifyConfirm { get; set; }
 
         public byte[] Logo { get; set; }
+
+        public bool notifynewcomment { get; set; }
     }
 }

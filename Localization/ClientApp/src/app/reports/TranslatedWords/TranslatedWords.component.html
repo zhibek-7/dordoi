@@ -1,6 +1,6 @@
 <div class="reportParamHolder">
   <p class="daterangePicker">
-    <span>Диапазон дат </span>
+    <span>Диапазон дат</span><br>
     <input type="text" matInput
            ngxDaterangepickerMd
            [locale]="{cancelLabel: ' Отмена ', applyLabel: ' ОК ', format: 'DD-MM-YYYY'}"
@@ -12,35 +12,23 @@
            value="{{getReportPeriod()}}"/>
   </p>
   <div>
-    <div classs="div_bg">
-
-    <!--
-        <div class="col">
-            <select class="form-control m-1" [(ngModel)]="selectedFileId" (change)="applyActionsFilter()" [(value)]="userId2">
-              <option [ngValue]="-1">Все пользователи</option>
-              <option *ngFor="let u of Users" [ngValue]="u.id">{{u.name}}</option>
-            </select>
-          </div>
-        -->
-
-
-        <mat-form-field appearance="outline"  class="input_text"  style="margin-right: 1rem;">
-          <mat-label >Пользователь</mat-label>
-          <mat-select [(value)]="userId" placeholder="Пользователь" style=" color: green;padding: 2px">
+    <div stile="display: inline-block;">
+      <p>
+        <mat-form-field appearance="outline">
+          <mat-label>Пользователь</mat-label>
+          <mat-select [(value)]="userId" placeholder="Пользователь">
             <mat-option value="-1" selected>Все пользователи</mat-option>
             <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name}}"</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-form-field appearance="outline">
           <mat-label>Язык перевода</mat-label>
           <mat-select [(value)]="localeId" placeholder="Язык перевода">
             <mat-option value="-1" selected>Все языки</mat-option>
             <mat-option *ngFor="let lang of Languages" value="{{lang.id}}">"{{lang.name}}"</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-form-field appearance="outline">
           <mat-label>Вид работ</mat-label>
           <mat-select [(value)]="workType" placeholder="Вид работы">
             <mat-option value="Все" selected>Все</mat-option>
@@ -48,34 +36,36 @@
             <mat-option value="Редактура">Редактура</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+      </p>
+      <p>
+        <mat-form-field appearance="outline">
           <mat-label>Подсчет объема по</mat-label>
           <mat-select [(value)]="volumeCalcType" placeholder="Подсчет объема по">
             <mat-option value="false" selected>словам</mat-option>
             <mat-option value="true">знакам с пробелами</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-form-field appearance="outline">
           <mat-label>Основа для подсчета</mat-label>
           <mat-select [(value)]="calcBasisType" placeholder="Основа для подсчета">
             <mat-option value="false" selected>Исходный язык</mat-option>
             <mat-option value="true">Язык перевода</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
-          <mat-label>Начальная папка</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-label>Начальная папк</mat-label>
           <mat-select [(value)]="initialFolderId" placeholder="Начальная папка">
             <mat-option value="0">Все</mat-option>
             <mat-option *ngFor="let folder of Folders" value="{{folder.id}}">"{{folder.name}}"</mat-option>
           </mat-select>
         </mat-form-field>
+      </p>
     </div>
     <div>
-      <button (click)="clickEvent()" class="btn  btn-outline-dark">
+      <button (click)="clickEvent()">
         Построить отчет
       </button>
-      <button (click)="download()" class="btn  btn-outline-dark">
+      <button (click)="download()">
         Экспорт отчетов
       </button>
     </div>

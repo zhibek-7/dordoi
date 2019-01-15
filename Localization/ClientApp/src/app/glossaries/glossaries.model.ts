@@ -21,6 +21,10 @@ import { SetLanguagesFormModalComponent } from 'src/app/glossaries/components/se
 import { LanguageService } from 'src/app/services/languages.service';
 import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term-details-editable/term-details-editable.component';
 
+//
+//import { ListGlossariesComponent } from 'src/app/glossaries/components/list-glossaries/list-glossaries.component';
+//
+
 
 @NgModule({
   imports: [
@@ -39,6 +43,10 @@ import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term
     EditTermFormComponent,
     SetLanguagesFormModalComponent,
     TermDetailsEditableComponent,
+
+    //
+    //ListGlossariesComponent
+    //
   ],
   providers: [
     RequestDataReloadService,
