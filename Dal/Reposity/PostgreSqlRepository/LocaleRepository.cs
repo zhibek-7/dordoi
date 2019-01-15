@@ -40,7 +40,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "SELECT l.* FROM \"Locales\" l " +
                     " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
                     " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
-                    " where lp.\"ID\" = @Id", new { Id = projectId });
+                    " where lp.\"ID\" = @Id", new { projectId });
                 dbConnection.Close();
                 return users;
             }

@@ -12,8 +12,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class AllSettingsComponent implements OnInit {
   args = 'ascending';
   reverse = false;
+
   constructor(private projectsService: ProjectsService) { }
   currentProjectName = '';
+  currentProjectId = null;
   currentProjectDescription = '';
   currentProjectPublic = true;
   currentProjectPrivate = false;
@@ -45,8 +47,10 @@ export class AllSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.currentProjectName = sessionStorage.getItem('ProjectName');
+    this.currentProjectId = sessionStorage.getItem('ProjecID');
     console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+
    
 
   }
@@ -76,6 +80,7 @@ export class AllSettingsComponent implements OnInit {
     console.log("!!!=" + this.settings_proj.get('pjSkipUntranslStrTrue').value);
     console.log("!!!=" + this.settings_proj.get('pjExportTrue').value);
     let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
+
     this.projectsService.addProject(newProject);
   }
 

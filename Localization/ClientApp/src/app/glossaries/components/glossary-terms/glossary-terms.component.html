@@ -1,4 +1,3 @@
-<div class="table-responsive"> 
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -23,15 +22,14 @@
     <td>{{termViewModel.term.value}}</td>
     <td>{{termViewModel.term.description}}</td>
     <td>
-      <div class="btn-group"  role="group">
-        <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
+      <div class="btn-group">
+        <button class="btn" (click)="editTermFormModal.show()">Изменить</button>
         <app-edit-term-form-modal #editTermFormModal [glossary]="glossary" [term]="termViewModel.term"></app-edit-term-form-modal>
-        <button class="btn btn-link" (click)="deleteTermModal.show()">Удалить</button>
+        <button class="btn" (click)="deleteTermModal.show()">Удалить</button>
         <app-delete-term-confirmation-modal #deleteTermModal [term]="termViewModel.term" (deleteTermConfirmed)="deleteTerm(termViewModel.term)"></app-delete-term-confirmation-modal>
-        <button class="btn btn-link" (click)="setLanguagesFormModal.show()">Задать язык</button>
+        <button class="btn" (click)="setLanguagesFormModal.show()">Задать язык</button>
         <app-set-languages-form-modal #setLanguagesFormModal [glossary]="glossary" [term]="termViewModel.term"></app-set-languages-form-modal>
       </div>
     </td>
   </tr>
 </table>
-</div>

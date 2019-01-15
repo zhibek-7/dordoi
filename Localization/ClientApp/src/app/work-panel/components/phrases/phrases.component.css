@@ -5,12 +5,7 @@
 .searchBlock, .pagesBlock  {
     background-color: #F6F5F1;
     padding-top: 0.3rem;
-    height: 2rem;
-}
-
-.filter_list{
-    padding: 0.3rem;
-    height: 0.8rem;
+    height: 2.5rem;
 }
 
 .inputSearch input {
@@ -33,52 +28,24 @@
 }
 
 .colorIcon {
-    height: 0.7em;
-    width: 0.7em;
+    height: 20px;
+    width: 20px;
 }
 
 .numberOfPages {
-    font-size: 0.8em;
+    font-size: 1.2em;
     color: gray;
     margin-bottom: .2rem;
 }
 
-.arrowIcon {
+.arrowIcon {    
     cursor: pointer;
 }
 .align-center {
   display: flex;
-  justify-con-tent: center;
+  justify-content: center;
   align-items: center;
 }
 .mat-icon {
   color: grey;
 }
-
-.col-11{
-  font-size: 1em;
-  padding: 0em
-}
-
-.div {
-  font-size: 1em;
-}
-
-.list-group-item{
-  padding: 2px;
-  padding-left: 1.2em;
-  padding-right: 1em;
-}
-
-.col-1{
-  padding: 0em
-}
-.col-2{
-  padding: 0em
-}
-
-.col-9{
-  padding: 0em;
-  font-size: 0.8em
-}
-

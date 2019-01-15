@@ -1,18 +1,18 @@
 <div class="phrasesBlock">
 
   <div class="searchBlock">
-    <div class="container align-center">
+    <div class="container align-center" style="padding:0px;">
       <div class="row" style="width: 100%;">
-        <div class="col-2 align-center arrowIcon" (click)="getStrings()" style="padding:0px;">
+        <div class="col-2 align-center" (click)="getStrings()" style="padding:0px;">
           <mat-icon>search</mat-icon>
         </div>
         <form class="col-8">
-          <div class="inputSearch">
+          <div class=" inputSearch">
             <input type="text" [(ngModel)]="searchText" name="first" class="form-control input-lg" placeholder="Поиск в файле"
               class="col-9">
           </div>
         </form>
-        <div class="col-2 float-right align-center arrowIcon" style="padding:0px;">
+        <div class="col-2 float-right align-center" style="padding:0px;">
           <mat-icon (click)="filterPhrasesClick()">filter_list</mat-icon>
         </div>
       </div>
@@ -26,8 +26,8 @@
           <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText"
             (click)="choosePhrase(phrase)">
             <div class="row">
-              <div class="col-1"><img class="colorIcon"></div>
-              <div class="col-11"> {{phrase.substringToTranslate}} </div>
+              <div class="col-1" style="padding:0px;"><img class="colorIcon"></div>
+              <div class="col-11" style="padding:0px;"> {{phrase.substringToTranslate}} </div>
             </div>
           </li>
         </ul>

@@ -15,7 +15,5 @@ namespace Models.Interfaces.Repository
         Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId);
 
         Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId);
-
-        Task<Glossary> GetByFileIdAsync(int fileId);
     }
 }

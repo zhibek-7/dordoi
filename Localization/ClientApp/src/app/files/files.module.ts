@@ -6,17 +6,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { TreeTableModule } from 'primeng/treetable';
 
 import { FilesRoutingModule } from 'src/app/files/files-routing.module';
-import { SharedModule } from 'src/app/shared/shared.module';
 
 import { FilesComponent } from 'src/app/files/components/files/files.component';
-import { AddFolderModalComponent } from 'src/app/files/components/add-folder-modal/add-folder-modal.component';
 
 import { FileService } from 'src/app/services/file.service';
 
 @NgModule({
   declarations: [
     FilesComponent,
-    AddFolderModalComponent,
   ],
   imports: [
     FormsModule,
@@ -24,7 +21,6 @@ import { FileService } from 'src/app/services/file.service';
     HttpClientModule,
     TreeTableModule,
     FilesRoutingModule,
-    SharedModule,
   ],
   providers: [
     FileService,

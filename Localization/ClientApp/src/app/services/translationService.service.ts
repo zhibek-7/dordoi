@@ -48,6 +48,6 @@ export class TranslationService {
 
     findSimilarTranslations(currentProjectId: number, translationSubsting: TranslationSubstring): Observable<SimilarTranslation[]>{        
         return this.http.post<SimilarTranslation[]>(this.url + '/FindSimilarTranslations/' + currentProjectId, translationSubsting);
-    }    
+    }
 
 }

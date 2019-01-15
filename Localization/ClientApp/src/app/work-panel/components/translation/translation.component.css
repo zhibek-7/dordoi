@@ -1,36 +1,36 @@
 
 .controlBlock {
-    font-size: 1em;
+    font-size: 1.5em;
     color: gray;
     height: 3vh;
 }
 
 .hideBlocksIcons {
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
 }
 
 .rightHideIcon {
-    margin-top: 1.5em;
-    margin-right: 1.5em;
+    margin-top: 12%;
+    margin-right: 5%;
 }
 
 .contextBlock {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    padding-top: 1em;
-    height: 20vh;
-  }
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 1%;
+    height: 15.5vh;
+}
 
 .textForTranslate {
-    font-size: 1.2em;
+    font-size: 1.3em;
 }
 
 .context {
     margin-top: 1%;
     color: #A4BF82;
-    font-size: 1em;
+    font-size: 1.1em;
 }
 
 .verticalLine {
@@ -43,15 +43,14 @@
 }
 
 .contextEdit {
-    /* margin-left: -3%; */
+    margin-left: -3%;
     cursor: pointer;
-    font-size: 0.8em;
 }
 
 .objectInCode {
     color: gray;
     margin-top: 0.5%;
-    font-size: 1em;
+    font-size: 1.05em;
 }
 
 .workWithTranslation {
@@ -59,23 +58,17 @@
 }
 
 .translateTextArea {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 3%;
+    padding-right: 3%;
 }
 
 .translateTextArea textarea {
     /* min-height: 29.3vh; */
-    height: 5rem;
     resize: none;
 }
 
-.arrowIcon {
+.arrowIcon {   
     cursor: pointer;
-}
-
-.mat-icon{
-  width: 10px;
-  height: 10px;
 }
 
 .importIcon {
@@ -94,26 +87,16 @@
     padding-left: 2%;
 }
 .translationBlockWithoutPhrase {
-    margin-top: 35%;
+    margin-top: 35%;    
 }
 
 .phraseUndifinedBlock {
-    font-size: 1em;
+    font-size: 2em;
     color: gray;
 }
 
 .selectionDialog{
     padding: 0;
 }
-
-.col-sm-2{
-  font-style: 0.8em
-}
-
-.col-2{
-  font-style: 0.8em;
-  padding: 2px;
-}
-
 
 

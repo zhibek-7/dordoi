@@ -10,7 +10,6 @@ namespace Models.DatabaseEntities
 
         public int? StringsCount { get; set; }
         public int? Version { get; set; }
-        public bool? IsLastVersion { get; set; }
         public int? Priority { get; set; }
 
         public string Encoding { get; set; }

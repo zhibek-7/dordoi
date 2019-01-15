@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
@@ -19,7 +18,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly string connectionString;
         private ILogTools _log;
 
-        public FilesRepository(ITranslationSubstringRepository translationSubstringRepository)
+        public FilesRepository()
         {
             //TODO потом нужно переделать. Не должно быть статика
             connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
@@ -160,10 +159,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             // Sql string to insert query
             var sqlString = "INSERT INTO \"Files\" (\"Name\", \"Description\", \"DateOfChange\", " +
                             "\"StringsCount\", \"Version\", \"Priority\", \"Encoding\", \"OriginalFullText\", " +
-                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\", \"IsLastVersion\") " +
+                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\") " +
                             "VALUES (@Name, @Description, @DateOfChange, @StringsCount, @Version, " +
                             "@Priority, @Encoding, @OriginalFullText, @IsFolder, @ID_LocalizationProject, " +
-                            "@ID_FolderOwner, @IsLastVersion)";
+                            "@ID_FolderOwner)";
 
             try
             {
@@ -225,7 +224,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             var sqlString = "UPDATE \"Files\" SET \"Name\" = @Name, \"DateOfChange\" = @DateOfChange, " +
                             "\"StringsCount\" = @StringsCount, \"Encoding\" = @Encoding, " +
                             "\"ID_FolderOwner\" = @ID_FolderOwner, \"OriginalFullText\" = @OriginalFullText, " +
-                            "\"IsFolder\" = @IsFolder, \"IsLastVersion\" = @IsLastVersion WHERE \"ID\" = @Id";
+                            "\"IsFolder\" = @IsFolder WHERE \"ID\" = @Id";
 
             try
             {
@@ -265,7 +264,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "\"Encoding\", " +
                             "\"IsFolder\", " +
                             "\"OriginalFullText\"" +
-                            "\"IsLastVersion\"" +
                             ") " +
                             "VALUES (" +
                             "@ID_LocalizationProject," +
@@ -276,8 +274,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "@ID_FolderOwner, " +
                             "@Encoding, " +
                             "@IsFolder, " +
-                            "@OriginalFullText," +
-                            "@IsLastVersion" +
+                            "@OriginalFullText" +
                             ") " +
                             "RETURNING \"ID\"";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -320,17 +317,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var parser = new Parser())
                         {
                             var translationSubstrings = parser.Parse(file);
-                            var translationSubstringsCount = translationSubstrings.Count;
-                            var n = translationSubstringsCount;
+                            var n = translationSubstrings.Count;
                             foreach (var translationSubstring in translationSubstrings)
                             {
                                 n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
-                            }
-                            if (n == 0)
-                            {
-                                file.StringsCount = translationSubstringsCount;
-                                sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
-                                await connection.ExecuteAsync(sqlString, file, transaction);
                             }
                             transaction.Commit();
                             return n == 0;
@@ -348,7 +338,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
                         //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
                         transaction.Rollback();
-                        throw;
+                        return false;
                     }
                     catch (Exception exception)
                     {
@@ -360,138 +350,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> Load(int id, int id_locale = -1)
-        {
-            var sqlFileQuery = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
-            //var sqlTranslationSubstringQuery = ""
-            //var sqlTranslationQuery = "SELECT \"OriginalFullText\" FROM \"Files\"";
-
-            using (var connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-                var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
-                if (id_locale != -1)
-                {
-                    var sqlTranslationSubstringsQuery = "SELECT * FROM \"TranslationSubstring\" WHERE \"ID_FileOwner\" = @id";
-                    var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
-                    translationSubstrings.Sort((x,y) => x.PositionInText.CompareTo(y.PositionInText));
-                    for (int i = translationSubstrings.Count - 1; i>=0; i--)
-                    {
-                        var sqlTranslationQuery = "SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1";
-                        var translation = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id_locale });
-                    }
-                }
-                else
-                {
-                    using (var sw = new System.IO.StreamWriter(System.IO.File.Open("NEED_filePath", System.IO.FileMode.CreateNew), Encoding.GetEncoding(file.Encoding)))
-                    {
-                        sw.Write(file.OriginalFullText);
-                    }
-                }
-                return null;
-                //try
-                //{
-                //    var insertedId = await connection.ExecuteScalarAsync<int?>(sqlFileQuery, file, transaction);
-                //    if (!insertedId.HasValue)
-                //    {
-                //        this._loggerError.WriteLn("Insertion into files didn't return id.");
-                //        transaction.Rollback();
-                //        return false;
-                //    }
-                //    file.ID = insertedId.Value;
-
-                //    if (file.IsFolder)
-                //    {
-                //        transaction.Commit();
-                //        return true;
-                //    }
-
-                //    sqlFileQuery = "INSERT INTO \"TranslationSubstrings\" " +
-                //                "(" +
-                //                "\"SubstringToTranslate\", " +
-                //                "\"Context\", " +
-                //                "\"ID_FileOwner\", " +
-                //                "\"Value\", " +
-                //                "\"PositionInText\"" +
-                //                ") " +
-                //                "VALUES (" +
-                //                "@SubstringToTranslate, " +
-                //                "@Context, " +
-                //                "@ID_FileOwner, " +
-                //                "@Value, " +
-                //                "@PositionInText" +
-                //                ")";
-                //    using (var parser = new Parser())
-                //    {
-                //        var translationSubstrings = parser.Parse(file);
-                //        var translationSubstringsCount = translationSubstrings.Count;
-                //        var n = translationSubstringsCount;
-                //        foreach (var translationSubstring in translationSubstrings)
-                //        {
-                //            n -= await connection.ExecuteAsync(sqlFileQuery, translationSubstring, transaction);
-                //        }
-                //        if (n == 0)
-                //        {
-                //            file.StringsCount = translationSubstringsCount;
-                //            sqlFileQuery = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
-                //            await connection.ExecuteAsync(sqlFileQuery, file, transaction);
-                //        }
-                //        transaction.Commit();
-                //        return n == 0;
-                //    }
-                //}
-                //catch (NpgsqlException exception)
-                //{
-                //    this._loggerError.WriteLn("Ошибка в Upload NpgsqlException ", exception);
-                //    transaction.Rollback();
-                //    return false;
-                //}
-                //catch (ParserException exception)
-                //{
-                //    this._loggerError.WriteLn("Ошибка в блоке распарсивания: ", exception);
-                //    //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
-                //    //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
-                //    transaction.Rollback();
-                //    throw;
-                //}
-                //catch (Exception exception)
-                //{
-                //    this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} Exception ", exception);
-                //    transaction.Rollback();
-                //    return false;
-                //}
-
-            }
-        }
-
         public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = new Query("Files")
                     .Where("ID_LocalizationProject", projectId);
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-
-                dbConnection.Open();
-                var files = await dbConnection.QueryAsync<File>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
-                return files;
-            }
-        }
-
-        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
-        {
-            var fileNamesSearchPattern = $"%{fileNamesSearch}%";
-            using (var dbConnection = new NpgsqlConnection(connectionString))
-            {
-                var query = new Query("Files")
-                    .Where("ID_LocalizationProject", projectId)
-                    .WhereLike("Name", fileNamesSearchPattern);
-
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from "rxjs/operators";
 
@@ -24,12 +24,8 @@ export class FileService {
       );
   }
 
-  getFilesByProjectIdAsTree(projectId: number, fileNamesSearch?: string): Observable<TreeNode[]> {
-    let body: any = { };
-    if (fileNamesSearch && fileNamesSearch != '') {
-      body.fileNamesSearch = fileNamesSearch;
-    }
-    return this.http.post<TreeNode[]>(this._url + '/byProjectId/' + projectId, body)
+  getFilesByProjectIdAsTree(projectId: number): Observable<TreeNode[]> {
+    return this.http.get<TreeNode[]>(this._url + '/byProjectId/' + projectId)
       .pipe(
         catchError(this.handleError('getFilesByProjectIdAsTree', []))
       );

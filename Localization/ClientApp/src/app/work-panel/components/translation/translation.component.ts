@@ -38,13 +38,11 @@ export class TranslationComponent implements OnInit {
         private translationSubstringService: TranslationSubstringService,
         private selectionDialog: MatDialog) {
 
-            
-
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
-            this.phraseForTranslate = pickedPhrase;                
-            this.translatedText = null;
-        });                              
+                this.phraseForTranslate = pickedPhrase;                
+                this.translatedText = null;
+            });                              
     }
 
     //Действия при двойном клике по слову
@@ -59,7 +57,7 @@ export class TranslationComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
 
         dialogConfig.data = {
-            selectedWord: selectedWord.toString()
+            selectedWord: selectedWord
         };
         dialogConfig.panelClass = 'selectionDialog';
 
@@ -68,9 +66,11 @@ export class TranslationComponent implements OnInit {
         dialogConfig.position = {
             'top': positionY,
             'left': positionX
-        }       
+        }        
         
         let dialogRef = this.selectionDialog.open(SelectedWordModalComponent, dialogConfig);
+
+        console.log(event);
     }  
     
            
@@ -144,7 +144,7 @@ export class TranslationComponent implements OnInit {
         this.shareTranslatedPhraseService.sumbitTranslatedPhrase(this.translatedPhrase);
 
         this.translatedText = null;
-        this.translatedPhrase = null;               
+        this.translatedPhrase = null;       
         
         $("#btnSave").attr("disabled", true); 
         $("#btnSave").attr("disabled", false);  // хорошо бы найти стиль который убирает обводку кнопки после нажатия(убирать его другим способом)
