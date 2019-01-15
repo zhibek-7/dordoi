@@ -49,7 +49,7 @@ export class FilesComponent implements OnInit {
   getFiles(): void {
     this.isLoading = true;
 
-    this.fileService.getFiles().subscribe(files => {
+    this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId).subscribe(files => {
       this.files = files;
 
       this.isLoading = false;
