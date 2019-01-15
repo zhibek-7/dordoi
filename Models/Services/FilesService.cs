@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 using Models.Extensions;
@@ -30,10 +31,19 @@ namespace Models.Services
             return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
         }
 
-        public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(int projectId)
+        public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
         {
-            var files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId);
-            return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
+            IEnumerable<File> files;
+            if (string.IsNullOrEmpty(fileNamesSearch))
+            {
+                files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId);
+                return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => this.GetIconByFile(file));
+            }
+            else
+            {
+                files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch);
+                return files?.Select(file => new Node<File>(file, this.GetIconByFile(file)));
+            }
         }
 
         public async Task<File> GetById(int id)

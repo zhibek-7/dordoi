@@ -160,10 +160,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             // Sql string to insert query
             var sqlString = "INSERT INTO \"Files\" (\"Name\", \"Description\", \"DateOfChange\", " +
                             "\"StringsCount\", \"Version\", \"Priority\", \"Encoding\", \"OriginalFullText\", " +
-                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\") " +
+                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\", \"IsLastVersion\") " +
                             "VALUES (@Name, @Description, @DateOfChange, @StringsCount, @Version, " +
                             "@Priority, @Encoding, @OriginalFullText, @IsFolder, @ID_LocalizationProject, " +
-                            "@ID_FolderOwner)";
+                            "@ID_FolderOwner, @IsLastVersion)";
 
             try
             {
@@ -225,7 +225,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             var sqlString = "UPDATE \"Files\" SET \"Name\" = @Name, \"DateOfChange\" = @DateOfChange, " +
                             "\"StringsCount\" = @StringsCount, \"Encoding\" = @Encoding, " +
                             "\"ID_FolderOwner\" = @ID_FolderOwner, \"OriginalFullText\" = @OriginalFullText, " +
-                            "\"IsFolder\" = @IsFolder WHERE \"ID\" = @Id";
+                            "\"IsFolder\" = @IsFolder, \"IsLastVersion\" = @IsLastVersion WHERE \"ID\" = @Id";
 
             try
             {
@@ -265,6 +265,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "\"Encoding\", " +
                             "\"IsFolder\", " +
                             "\"OriginalFullText\"" +
+                            "\"IsLastVersion\"" +
                             ") " +
                             "VALUES (" +
                             "@ID_LocalizationProject," +
@@ -275,7 +276,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "@ID_FolderOwner, " +
                             "@Encoding, " +
                             "@IsFolder, " +
-                            "@OriginalFullText" +
+                            "@OriginalFullText," +
+                            "@IsLastVersion" +
                             ") " +
                             "RETURNING \"ID\"";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -468,6 +470,28 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 var query = new Query("Files")
                     .Where("ID_LocalizationProject", projectId);
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                dbConnection.Open();
+                var files = await dbConnection.QueryAsync<File>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+                dbConnection.Close();
+                return files;
+            }
+        }
+
+        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
+        {
+            var fileNamesSearchPattern = $"%{fileNamesSearch}%";
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query = new Query("Files")
+                    .Where("ID_LocalizationProject", projectId)
+                    .WhereLike("Name", fileNamesSearchPattern);
+
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 

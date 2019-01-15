@@ -9,10 +9,6 @@ export class ShareTranslatedPhraseService {
 
     sumbitTranslatedPhrase(translation: Translation){
         this.onSumbit.emit(translation);        
-    }
-
-    deleteTranlationFromOffers(){
-        
-    }
+    }   
 
 }

@@ -18,6 +18,7 @@ import { SelectedWordModalComponent } from './components/selected-word-modal/sel
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
 import { SharePhraseService } from './localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from './localServices/share-translated-phrase.service';
+import { ShareWordFromModalService } from './localServices/share-word-from-modal.service';
 import { TranslationService } from '../services/translationService.service';
 import { CommentService } from '../services/comment.service';
 import { ProjectsService } from '../services/projects.service';
@@ -57,6 +58,7 @@ import {
     providers: [
         SharePhraseService,
         ShareTranslatedPhraseService,
+        ShareWordFromModalService,
         TranslationService,
         CommentService,
         ProjectsService
