@@ -19,7 +19,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly string connectionString;
         private ILogTools _log;
 
-        public FilesRepository(ITranslationSubstringRepository translationSubstringRepository)
+        public FilesRepository()
         {
             //TODO потом нужно переделать. Не должно быть статика
             connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
