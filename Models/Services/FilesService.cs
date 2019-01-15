@@ -84,6 +84,7 @@ namespace Models.Services
                 //TODO: file encoding
                 Encoding = "",
                 ID_LocalizationProject = projectId,
+                IsLastVersion = true,
             };
 
             return await this.AddNode(newFile, insertToDbAction: this.InsertFileToDbAsync);
