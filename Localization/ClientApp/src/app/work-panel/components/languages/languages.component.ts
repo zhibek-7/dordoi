@@ -11,6 +11,7 @@ import { SimilarTranslation } from '../../localEntites/translations/similarTrans
 
 // import 'jquery-ui/ui/widgets/tabs.js';
 import * as $ from 'jquery';
+import { ShareWordFromModalService } from '../../localServices/share-word-from-modal.service';
 
 @Component({
     selector: 'languages-component',
@@ -30,7 +31,8 @@ export class LanguagesComponent implements OnInit {
     searchByMemoryText: string = "";
 
     constructor(private sharePhraseService: SharePhraseService, private shareTranslatedPhraseService: ShareTranslatedPhraseService,
-                private translationService: TranslationService, private projectService: ProjectsService) {
+                private translationService: TranslationService, private projectService: ProjectsService,
+                private shareWordFromModalService: ShareWordFromModalService) {
         
         this.listOfTranslations = [];
         this.listOfTranslationsByMemory = [];
@@ -62,6 +64,23 @@ export class LanguagesComponent implements OnInit {
         
         // Событие, срабатываемое при введении варианта перевода
         this.shareTranslatedPhraseService.onSumbit.subscribe(translation => this.listOfTranslations.push(translation));
+
+        // Событие, срабатываемое при поиске слова по памяти переводов из модального окна
+        this.shareWordFromModalService.onClickFindInMemory.subscribe(word => {
+            this.searchByMemoryText = word;
+
+            this.searchByMemory();
+
+            // переключает TabBar на вкладку "Предложения языка" при смене слова для перевода
+            let activeTab = $(".languagesOptionsBlock .nav-tabs .active").attr('href');
+
+            if(activeTab != "#nav-memorySearch"){
+                $("a[href='"+ activeTab +"']").removeClass("active show").attr("aria-selected", false);
+                $(activeTab).removeClass("active show")
+            }
+            $("a[href='#nav-memorySearch']").addClass("active show").attr("aria-selected", true);
+            $("#nav-memorySearch").addClass("active show");  
+        });
     }
 
 
