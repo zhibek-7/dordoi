@@ -31,6 +31,7 @@ import { ProjectsService } from 'src/app/services/projects.service';
 
 
 import { SharedModule } from 'src/app/shared/shared.module';
+import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
 @NgModule({
   declarations:
@@ -70,7 +71,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
   [
     GlossaryService,
     LanguageService,
-    ProjectsService
+    ProjectsService,
+    RequestDataReloadService
   ]
 })
 export class ListGlossariesModule { }

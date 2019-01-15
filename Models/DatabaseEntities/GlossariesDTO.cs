@@ -1,8 +1,8 @@
 ﻿using Models.DatabaseEntities;
 
 namespace Models.DatabaseEntities
-{
-    public class GlossariesDTO : BaseEntity
+{    
+    public class GlossariesDTO : BaseEntity //переименовать в GlossariesTableViewDTO и перенести обратно в dto
     {
         // public int ID { get; set; }
         public string Name { get; set; }

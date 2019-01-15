@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Models.DatabaseEntities;
+using Models.DTO;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -67,5 +68,70 @@ namespace DAL.Reposity.PostgreSqlRepository
             return resultDTO;
         }
 
+        public async Task AddNewGlossaryAsync(GlossariesForEditing glossary)
+        {
+            try
+            {
+                var newGlossaries = new
+                {
+                    Name = glossary.Name,
+                    Description = glossary.Description,
+                    ID_File = (int?)null
+                };
+                var query = new Query("Glossaries").AsInsert(newGlossaries, true);          
+                               
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+
+                    var idOfNewGlossary = await dbConnection
+                        .ExecuteScalarAsync<int>(
+                            sql: compiledQuery.Sql,
+                            param: compiledQuery.NamedBindings
+                            );
+
+                    var GlossariesLocales = glossary.Locales.Select(t => new
+                    {
+                        ID_Glossary = idOfNewGlossary,
+                        ID_Locale = t.ID
+                    }).ToList();
+                    foreach (var element in GlossariesLocales)
+                    {
+                        var queryGlossariesLocales = new Query("GlossariesLocales").AsInsert(element);
+                        var compiledQueryGlossariesLocales = this._compiler.Compile(queryGlossariesLocales);
+                        this.LogQuery(compiledQueryGlossariesLocales);
+                        await dbConnection.ExecuteAsync(
+                                sql: compiledQueryGlossariesLocales.Sql,
+                                param: compiledQueryGlossariesLocales.NamedBindings
+                                );
+                    }
+
+
+                    var LocalizationProjectsGlossaries = glossary.LocalizationProjects.Select(t => new
+                    {
+                        ID_Glossary = idOfNewGlossary,
+                        ID_LocalizationProject = t.ID
+                    }).ToList();
+                    foreach (var element in LocalizationProjectsGlossaries)
+                    {
+                        var queryLocalizationProjectsGlossaries = new Query("LocalizationProjectsGlossaries").AsInsert(element);
+                        var compiledQueryLocalizationProjectsGlossaries = this._compiler.Compile(queryLocalizationProjectsGlossaries);
+                        this.LogQuery(compiledQueryLocalizationProjectsGlossaries);
+                        await dbConnection.ExecuteAsync(
+                                sql: compiledQueryLocalizationProjectsGlossaries.Sql,
+                                param: compiledQueryLocalizationProjectsGlossaries.NamedBindings
+                                );
+                    }
+                    dbConnection.Close();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

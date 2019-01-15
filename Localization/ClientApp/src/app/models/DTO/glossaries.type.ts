@@ -5,6 +5,7 @@ export class Glossaries
 {
   id: number;
   name: string;
+  description: string;
 
   locales: Locale[];// [number, string];
   //localeId: number;

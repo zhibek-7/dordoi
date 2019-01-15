@@ -4,6 +4,7 @@ import { MatSort, MatTableDataSource } from '@angular/material';
 import { GlossaryService } from 'src/app/services/glossary.service';
 
 import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
+import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
 @Component({
   selector: 'app-list-glossaries',
@@ -11,7 +12,7 @@ import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
   styleUrls: ['./list-glossaries.component.css'],
   providers: [GlossaryService]
 })
-export class ListGlossariesComponent //implements OnInit
+export class ListGlossariesComponent implements OnInit
 {
   //glossaries: GlossariesDTO[];
 
@@ -21,15 +22,17 @@ export class ListGlossariesComponent //implements OnInit
 
   isDataSourceLoaded: boolean = true;
 
-  constructor(private glossariesService: GlossaryService)
+  constructor(private glossariesService: GlossaryService,
+    private requestDataReloadService: RequestDataReloadService)
+  {
+    this.requestDataReloadService.updateRequested.subscribe(() => this.getGlossariesDTO());
+    //this.getGlossariesDTO();
+  }
+
+  ngOnInit()
   {
     this.getGlossariesDTO();
   }
-
-  //ngOnInit()
-  //{
-  //  this.getGlossariesDTO();
-  //}
 
   ngAfterViewInit()
   {
@@ -37,11 +40,7 @@ export class ListGlossariesComponent //implements OnInit
   }
 
   getGlossariesDTO()
-  {
-    //this.glossariesService.getGlossariesDTO()
-    //  .subscribe(glossaries => this.glossaries = glossaries,
-    //  error => console.error(error));
-    
+  {    
     this.glossariesService.getGlossariesDTO()
       .subscribe(glossaries => this.dataSource.data = glossaries,
       error =>
@@ -52,12 +51,9 @@ export class ListGlossariesComponent //implements OnInit
   }
 
   addNewGlossary(newGlossary: Glossaries) {
-    //if (!this.glossary)
-    //  return;
-
-    this.glossariesService.addNewGlossary(newGlossary)//(this.glossary.id, newTerm, newTerm.partOfSpeechId)
+    this.glossariesService.addNewGlossary(newGlossary)
       .subscribe(
-      //() => this.requestDataReloadService.requestUpdate()
+      () => this.requestDataReloadService.requestUpdate()
       );
   }
 }

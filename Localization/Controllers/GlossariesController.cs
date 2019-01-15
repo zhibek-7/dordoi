@@ -47,12 +47,9 @@ namespace Localization.Controllers
         }
 
         [HttpPost("newGlossary")]
-        public async Task AddGlossaryAsync(Glossaries glossary)//(int glossaryId, [FromBody] TranslationSubstring newTerm, [FromQuery] int? partOfSpeechId)
+        public async Task AddGlossaryAsync(GlossariesForEditing glossary)
         {
             await _glossariesService.AddNewGlossaryAsync(glossary);
-                    //glossaryId: glossaryId,
-                    //newTerm: newTerm,
-                    //partOfSpeechId: partOfSpeechId);
         }
     }
 }

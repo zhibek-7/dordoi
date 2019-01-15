@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-//using Models.DTO;
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities;
+using Models.DTO;
 
 namespace Models.Services
 {
@@ -28,9 +26,9 @@ namespace Models.Services
             return await _glossariesRepository.GetAllToDTOAsync();
         }
 
-        public async Task AddNewGlossaryAsync(Glossaries glossary)
+        public async Task AddNewGlossaryAsync(GlossariesForEditing glossary)
         {
-            var temp = glossary;
+            await _glossariesRepository.AddNewGlossaryAsync(glossary);
         }
     }
 }
