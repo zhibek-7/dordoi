@@ -36,7 +36,7 @@ namespace Models.Parser
                 case 0: { this._message = "Файл с данным расширением не поддерживается системой."; break; }
                 case 1: { this._message = "Элементы для перевода не обнаружены."; break; }
             }
-            _loggerError.WriteLn(string.Format("Исключение в классе {0}: {1}", typeof(Parser).ToString(),  this._message), this);
+            _loggerError.WriteLn(string.Format("Исключение в классе {0}: {1}", nameof(Parser),  this._message), this);
         }
 
         /// <summary>
