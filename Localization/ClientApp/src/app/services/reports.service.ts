@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { TranslatedWordsReportRow } from "../models/Reports/TranslatedWordsReportRow";
 import { Observable } from 'rxjs';
 
