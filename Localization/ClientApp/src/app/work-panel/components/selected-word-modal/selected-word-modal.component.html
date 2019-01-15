@@ -1,9 +1,9 @@
 <div class="custom-dialog-container">
   <!-- <p>{{data.selectedWord}}</p> -->
   <div class="list-group menuOptions">
-    <a class="list-group-item list-group-item-action arrowIcon" (click)="searchInMemory(data.selectedWord)" >Поиск по памяти переводов</a>
-    <a class="list-group-item list-group-item-action arrowIcon" (click)="searchInGlossary(data.selectedWord)">Поиск в Глоссарий</a>
-    <a class="list-group-item list-group-item-action arrowIcon" (click)="addInGlossary(data.selectedWord)">Добавить в Глоссарий</a>
+    <a class="list-group-item list-group-item-action arrowIcon" (click)="searchInMemory()">Поиск по памяти переводов</a>
+    <a class="list-group-item list-group-item-action arrowIcon" (click)="searchInGlossary()">Поиск в Глоссарий</a>
+    <a id="addGlossaryLink" class="list-group-item list-group-item-action arrowIcon" (click)="addInGlossary()" target="_blank" routerLink="Glossaries">Добавить в Глоссарий</a>
   </div>
 </div>
 
