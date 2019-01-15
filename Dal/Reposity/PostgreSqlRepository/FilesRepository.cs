@@ -159,10 +159,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             // Sql string to insert query
             var sqlString = "INSERT INTO \"Files\" (\"Name\", \"Description\", \"DateOfChange\", " +
                             "\"StringsCount\", \"Version\", \"Priority\", \"Encoding\", \"OriginalFullText\", " +
-                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\") " +
+                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\", \"IsLastVersion\") " +
                             "VALUES (@Name, @Description, @DateOfChange, @StringsCount, @Version, " +
                             "@Priority, @Encoding, @OriginalFullText, @IsFolder, @ID_LocalizationProject, " +
-                            "@ID_FolderOwner)";
+                            "@ID_FolderOwner, @IsLastVersion)";
 
             try
             {
@@ -224,7 +224,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             var sqlString = "UPDATE \"Files\" SET \"Name\" = @Name, \"DateOfChange\" = @DateOfChange, " +
                             "\"StringsCount\" = @StringsCount, \"Encoding\" = @Encoding, " +
                             "\"ID_FolderOwner\" = @ID_FolderOwner, \"OriginalFullText\" = @OriginalFullText, " +
-                            "\"IsFolder\" = @IsFolder WHERE \"ID\" = @Id";
+                            "\"IsFolder\" = @IsFolder, \"IsLastVersion\" = @IsLastVersion WHERE \"ID\" = @Id";
 
             try
             {
@@ -264,6 +264,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "\"Encoding\", " +
                             "\"IsFolder\", " +
                             "\"OriginalFullText\"" +
+                            "\"IsLastVersion\"" +
                             ") " +
                             "VALUES (" +
                             "@ID_LocalizationProject," +
@@ -274,7 +275,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "@ID_FolderOwner, " +
                             "@Encoding, " +
                             "@IsFolder, " +
-                            "@OriginalFullText" +
+                            "@OriginalFullText," +
+                            "@IsLastVersion" +
                             ") " +
                             "RETURNING \"ID\"";
             using (var connection = new NpgsqlConnection(connectionString))
