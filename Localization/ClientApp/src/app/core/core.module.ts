@@ -12,6 +12,7 @@ import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
 import { ProjectPageComponent } from '../project-page/project-page.component';
 import { UserRegistrationComponent } from '../user-registration/user-registration.component';
+import { DeleteProjectComponent } from '../create-project/components/delete-project/delete-project.component';
 
 import {
   MatIconModule,
@@ -25,7 +26,7 @@ import {
   MatTableModule,
   MatDividerModule,
   MatExpansionModule,
-  MatNativeDateModule, 
+  MatNativeDateModule,
   MatSortModule,
   MatMenuModule} from '@angular/material';
 
@@ -66,7 +67,8 @@ import {
     NewProjectComponent,
     UserAccountComponent,
     ProjectPageComponent,
-    UserRegistrationComponent
+    UserRegistrationComponent,
+    DeleteProjectComponent
     ],
     exports: [
         RouterModule,
