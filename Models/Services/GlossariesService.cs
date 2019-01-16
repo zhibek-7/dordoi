@@ -21,7 +21,7 @@ namespace Models.Services
         //    return await _glossariesRepository.GetAllAsync();
         //}
 
-        public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync()
+        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
         {
             return await _glossariesRepository.GetAllToDTOAsync();
         }
@@ -29,6 +29,11 @@ namespace Models.Services
         public async Task AddNewGlossaryAsync(GlossariesForEditing glossary)
         {
             await _glossariesRepository.AddNewGlossaryAsync(glossary);
+        }
+
+        public async Task DeleteGlossaryAsync(int id)
+        {
+            await _glossariesRepository.DeleteGlossaryAsync(id);
         }
     }
 }

@@ -7,7 +7,8 @@ namespace Models.Interfaces.Repository
 {
     public interface IGlossariesRepository : IBaseRepositoryAsync<Glossaries>
     {
-        Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync();
+        Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync();
         Task AddNewGlossaryAsync(GlossariesForEditing glossary);
+        Task DeleteGlossaryAsync(int id);
     }
 }

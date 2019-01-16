@@ -43,7 +43,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\models\database-entities\workType.type.ts" />
-    <None Remove="ClientApp\src\app\models\DTO\glossaries.type.ts" />
+    <None Remove="ClientApp\src\app\models\DTO\glossariesDTO.type.ts" />
     <None Remove="ClientApp\src\app\models\DTO\localizationProjectForSelectDTO.type.ts" />
     <None Remove="ClientApp\src\app\services\glossary.service.ts" />
     <None Remove="ClientApp\src\app\services\reports.service.ts" />
@@ -64,7 +64,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\models\database-entities\workType.type.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\models\DTO\glossaries.type.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\DTO\glossariesDTO.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\models\DTO\localizationProjectForSelectDTO.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\glossary.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\reports.service.ts" />

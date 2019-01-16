@@ -7,25 +7,32 @@
 </nav>
 
 <nav class="navbar navbar-expand nav">
-    <ul class="navbar-nav nav">
+  <ul class="navbar-nav nav">
 
-      <li class="nav-item">
-        <button type="button" class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать глоссарий </button>
-        <app-add-glossary-form-modal (newGlossarySubmitted)="addNewGlossary($event)" #addGlossaryFormModal></app-add-glossary-form-modal>
-      </li>
+    <li class="nav-item">
+      <button class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать глоссарий </button>
+      <app-add-glossary-form-modal #addGlossaryFormModal (newGlossarySubmitted)="addNewGlossary($event)"></app-add-glossary-form-modal>
+    </li>
 
-      <li class="nav-item">
-        <button type="button" class="btn nav-element"> Очистить </button>
-      </li>
+    <li class="nav-item">
+      <button class="btn nav-element" (click)="editTermFormModal.show()"> Редактировать глоссарий </button>
+      <app-edit-glossary-form-modal #editGlossaryFormModal [newGlossary]="newGlossary" ></app-edit-glossary-form-modal>
+    </li>
 
-      <li class="nav-item">
-        <a class="btn nav-element" id="DeleteGlossaries" role="button" aria-haspopup="true" >
-          <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
-        </a>
-      </li>
+    <li class="nav-item">
+      <button type="button" class="btn nav-element"> Очистить </button>
+    </li>
 
-    </ul>
+    <li class="nav-item">
+      <button class="btn nav-element" (click)="confirmDeleteGlossary.show(); getConfirmDeleteGlossary()">
+        <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
+      </button>
+      <app-confirm-delete-glossary #confirmDeleteGlossary [glossary]="glossaryForDelete" (confirmedDelete)="deleteGlossary($event)"></app-confirm-delete-glossary>
+    </li>
+
+  </ul>
 </nav>
+
 
 <div class="table-border">
 
@@ -34,17 +41,17 @@
 
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Имя словаря </label> </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.name}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="localesName">
       <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Языки </label> </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.localesName}} </mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.localesName}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="localizationProjectsName">
       <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Проекты </label> </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.localizationProjectsName}} </mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.localizationProjectsName}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="additionalButtons">
@@ -59,15 +66,26 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;">
-    </mat-row>
+    <!--<mat-row *matRowDef="let row; columns: displayedColumns;">-->
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             [ngClass]="{selected: row.isSelected}"
+             (click)="selected(row)">
+      <!--[ngClass]="{hovered: row.hovered, highlighted: row.highlighted}"-->
+      <!--(click)="row.highlighted = !row.highlighted"-->
+      <!--(mouseover)="row.hovered = true"
+          (mouseout)="row.hovered = false"-->
+    </mat-row> 
+
+
+
   </mat-table>
 
 </div>
 
 <mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="editTermFormModal.show(row)"> Редактировать глоссарий </button>
   <button mat-menu-item> Очистить от терминов </button>
-  <button mat-menu-item> Удалить глоссарий </button>
+  <button mat-menu-item (click)="confirmDeleteGlossary.show(); getConfirmDeleteGlossary()"> Удалить глоссарий </button>
 </mat-menu>
 
 

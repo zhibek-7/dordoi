@@ -22,8 +22,10 @@ import {
 import { ListGlossariesRoutingModule } from '../list-glossaries/list-glossaries-routing.module';
 
 import { ListGlossariesComponent } from '../components/list-glossaries/list-glossaries.component';
-import { AddGlossaryFormModalComponent } from '../components/add-glossary-form-modal/add-glossary-form-modal.component';
 import { GlossaryEditableDetailsComponent } from '../components/glossary-editable-details/glossary-editable-details.component';
+import { AddGlossaryFormModalComponent } from '../components/add-glossary-form-modal/add-glossary-form-modal.component';
+import { EditGlossaryFormModalComponent } from '../components/edit-glossary-form-modal/edit-glossary-form-modal.component';
+import { ConfirmDeleteGlossaryComponent } from '../components/confirm-delete-glossary/confirm-delete-glossary.component';
 
 import { GlossaryService } from 'src/app/services/glossary.service';
 import { LanguageService } from 'src/app/services/languages.service';
@@ -37,8 +39,10 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
   declarations:
   [
     ListGlossariesComponent,
+    GlossaryEditableDetailsComponent,
     AddGlossaryFormModalComponent,
-    GlossaryEditableDetailsComponent
+    EditGlossaryFormModalComponent,
+    ConfirmDeleteGlossaryComponent
   ],
   imports:
   [

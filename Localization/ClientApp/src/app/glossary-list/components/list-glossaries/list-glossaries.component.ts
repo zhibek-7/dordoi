@@ -3,7 +3,10 @@ import { MatSort, MatTableDataSource } from '@angular/material';
 
 import { GlossaryService } from 'src/app/services/glossary.service';
 
-import { Glossaries, GlossariesDTO } from 'src/app/models/DTO/glossaries.type';
+import { GlossariesForEditing, GlossariesTableViewDTO } from 'src/app/models/DTO/glossariesDTO.type';
+import { Glossary } from 'src/app/models/database-entities/glossary.type';
+
+import { Selectable } from 'src/app/shared/models/selectable.model';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
 @Component({
@@ -14,19 +17,20 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
 })
 export class ListGlossariesComponent implements OnInit
 {
-  //glossaries: GlossariesDTO[];
-
   displayedColumns: string[] = ['name', 'localesName', 'localizationProjectsName', 'additionalButtons'];
-  private dataSource = new MatTableDataSource();
+  private dataSource = new MatTableDataSource<Selectable<GlossariesTableViewDTO>>();
   @ViewChild(MatSort) sort: MatSort;
 
   isDataSourceLoaded: boolean = true;
 
-  constructor(private glossariesService: GlossaryService,
-    private requestDataReloadService: RequestDataReloadService)
+  newGlossary: GlossariesForEditing = new GlossariesForEditing(); //переименовать в editableGlossary
+  glossaryForDelete: Glossary = new Glossary();
+
+  private indexSelected: number;
+
+  constructor(private glossariesService: GlossaryService, private requestDataReloadService: RequestDataReloadService)
   {
     this.requestDataReloadService.updateRequested.subscribe(() => this.getGlossariesDTO());
-    //this.getGlossariesDTO();
   }
 
   ngOnInit()
@@ -42,7 +46,8 @@ export class ListGlossariesComponent implements OnInit
   getGlossariesDTO()
   {    
     this.glossariesService.getGlossariesDTO()
-      .subscribe(glossaries => this.dataSource.data = glossaries,
+      .subscribe(glossaries => this.dataSource.data = //glossaries,
+        glossaries.map(glossary => new Selectable<GlossariesTableViewDTO>(glossary, false)),
       error =>
       {
         this.isDataSourceLoaded = false;
@@ -50,10 +55,34 @@ export class ListGlossariesComponent implements OnInit
       });
   }
 
-  addNewGlossary(newGlossary: Glossaries) {
-    this.glossariesService.addNewGlossary(newGlossary)
-      .subscribe(
-      () => this.requestDataReloadService.requestUpdate()
-      );
+  selected(element: Selectable<GlossariesTableViewDTO>)
+  {
+    if (this.dataSource.data.filter(t => t.isSelected).length > 0)
+    {
+      this.dataSource.data[this.indexSelected].isSelected = false;
+    }
+    element.isSelected = !element.isSelected;
+    this.indexSelected = this.dataSource.data.findIndex(t => t.isSelected);
   }
+
+  addNewGlossary(newGlossary: GlossariesForEditing)
+  {
+    this.glossariesService.addNewGlossary(newGlossary)
+      .subscribe(() => this.requestDataReloadService.requestUpdate());
+  }
+
+  getConfirmDeleteGlossary()
+  {
+    var selectedElement = this.dataSource.data[this.indexSelected].model;
+    this.glossaryForDelete = new Glossary();
+    this.glossaryForDelete.id = selectedElement.id;
+    this.glossaryForDelete.name = selectedElement.name;
+  }
+
+  deleteGlossary(glossary: Glossary)
+  {
+    this.glossariesService.deleteGlossary(glossary.id)
+      .subscribe(() => this.requestDataReloadService.requestUpdate());
+  }
+
 }

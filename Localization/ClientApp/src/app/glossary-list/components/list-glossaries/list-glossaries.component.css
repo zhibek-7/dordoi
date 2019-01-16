@@ -1,10 +1,10 @@
-mat-menu-content > .cdk-focused,
+/*mat-menu-content > .cdk-focused,
 mat-menu-content > .cdk-mouse-focused
 {
   border: 0px solid #dee2e6;
   border-radius: 0px;
   background-color: white;
-}
+}*/
 
 .nav-border
 {
@@ -86,3 +86,10 @@ table th
   width : 1vw;
 }
 
+/*.mat-row.hovered {
+  background: #eee;
+}*/
+
+.mat-row.selected {
+  background: #999;
+}

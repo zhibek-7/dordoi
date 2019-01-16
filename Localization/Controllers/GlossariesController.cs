@@ -29,7 +29,7 @@ namespace Localization.Controllers
         //}
 
         [HttpGet]
-        public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync() //Переименовать в GetAllDTOAsync
+        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync() //Переименовать в GetAllDTOAsync
         {
             return await _glossariesService.GetAllToDTOAsync(); //Переименовать в GetAllDTOAsync
         }
@@ -46,10 +46,16 @@ namespace Localization.Controllers
             return await _localizationProjectRepository.GetAllForSelectDTOAsync();
         }
 
-        [HttpPost("newGlossary")]
+        [HttpPost("newGlossary")]//переименовать в addGlossary
         public async Task AddGlossaryAsync(GlossariesForEditing glossary)
         {
             await _glossariesService.AddNewGlossaryAsync(glossary);
+        }
+
+        [HttpDelete("deleteGlossary/{glossaryId}")]
+        public async Task DeleteGlossaryAsync(int glossaryId)
+        {
+            await _glossariesService.DeleteGlossaryAsync(glossaryId);
         }
     }
 }

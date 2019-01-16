@@ -1,10 +1,8 @@
 import { Component, OnInit, NgModule, Input, Output, EventEmitter } from '@angular/core';
 
-//import { SetLanguagesComponent } from 'src/app/shared/components/set-languages/set-languages.component';
-
 import { GlossaryService } from 'src/app/services/glossary.service';
 
-import { Glossaries } from 'src/app/models/DTO/glossaries.type';
+import { GlossariesForEditing } from 'src/app/models/DTO/glossariesDTO.type';
 
 import { LanguageService } from 'src/app/services/languages.service';
 import { ProjectsService } from 'src/app/services/projects.service';
@@ -22,7 +20,7 @@ import { localizationProjectForSelectDTO } from 'src/app/models/DTO/localization
 export class GlossaryEditableDetailsComponent implements OnInit
 {
   @Input()
-  newGlossary: Glossaries;
+  newGlossary: GlossariesForEditing; //переименовать в glossary
 
   availableLocales: Selectable<Locale>[] = [];
   selectedLocales: Locale[] = [];
@@ -47,92 +45,46 @@ export class GlossaryEditableDetailsComponent implements OnInit
   loadAvailableLanguages()
   {
     this.glossariesService.getLocales()
-      .subscribe(locale => //this.availableLocalizationProjects = localizationProject,
-
+      .subscribe(locale =>
       {
         this.selectedLocales = locale;
         this.availableLocales = locale
           .map(local =>
             new Selectable<Locale>(
               local,
-              false//this.selectedLocalizationProjects.some(selectedLocalizationProjects => selectedLocalizationProjects.id == localProject.id)
+              false//this.selectedLocales.some(selectedLocale => selectedLocale.id == local.id)
             ));
       },
-
       error => console.error(error));
-
-
-  //  this.translationSubstringService.getTranslationLocalesForString(this.translationSubstring.id)
-  //    .subscribe(localesForTranslationSubstring =>
-  //      this.projectsService.getProject(this.projectsService.currentProjectId)
-  //        .subscribe(project =>
-  //          this.languageService.getLanguageList()
-  //            .subscribe(allLocales => {
-  //              this.selectedLocales = localesForTranslationSubstring;
-  //              this.availableLocales = allLocales
-  //                .filter(locale => locale.id != project.ID_SourceLocale)
-  //                .map(locale =>
-  //                  new Selectable<Locale>(
-  //                    locale,
-  //                    this.selectedLocales.some(selectedLocale => selectedLocale.id == locale.id)));
-  //            },
-  //              error => console.log(error)),
-  //          error => console.log(error)),
-  //      error => console.log(error));
-  //}
-
-  //loadAvailableLanguages() {
-  //  this.glossariesService.getTranslationLocalesForTerm(this.glossary.id, this.term.id)
-  //    .subscribe(localesForCurrentTerm =>
-  //      this.glossariesService.getGlossaryLocale(this.glossary.id)
-  //        .subscribe(currentGlossaryLocale =>
-  //          this.languageService.getLanguageList()
-  //            .subscribe(allLocales => {
-  //              this.selectedLocales = localesForCurrentTerm;
-  //              this.availableLocales = allLocales
-  //                .filter(locale => locale.id != currentGlossaryLocale.id)
-  //                .map(locale =>
-  //                  new Selectable<Locale>(
-  //                    locale,
-  //                    this.selectedLocales.some(currentTermLocale => currentTermLocale.id == locale.id)));
-  //            },
-  //              error => console.log(error))));
   }
 
   setSelectedLocales(newSelection: Locale[]) {
-    this.newGlossary.locales = newSelection; //this.selectedLocales = newSelection;
+    this.newGlossary.locales = newSelection;
   }
 
   //---------------- LocalizationProjects
   loadAvailableLocalizationProjects()
   {
     this.glossariesService.getlocalizationProjectForSelectDTO()
-      .subscribe(localizationProject => //this.availableLocalizationProjects = localizationProject,
-
+      .subscribe(localizationProject =>
       {
         this.selectedLocalizationProjects = localizationProject;
         this.availableLocalizationProjects = localizationProject
           .map(localProject =>
             new Selectable<localizationProjectForSelectDTO>(
               localProject,
-              false//this.selectedLocalizationProjects.some(selectedLocalizationProjects => selectedLocalizationProjects.id == localProject.id)
+              false//this.selectedLocalizationProjects.some(selectedLocalizationProject => selectedLocalizationProject.id == localProject.id)
             ));
       },
-
     error => console.error(error));
   }
-
-  //get selectedLocalizationProjects(): localizationProjectForSelectDTO[] {
-  //  return this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model);
-  //}
-
+  
   toggleSelection(localizationProject: Selectable<localizationProjectForSelectDTO>) {
     localizationProject.isSelected = !localizationProject.isSelected;
     this.raiseSelectionChanged();
   }
 
   raiseSelectionChanged() {
-    //this.selectedLocalizationProjectsChanged.emit(this.selectedLocalizationProjects);
     this.newGlossary.localizationProjects = this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model);
   }
 }

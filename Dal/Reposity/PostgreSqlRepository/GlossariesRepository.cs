@@ -55,10 +55,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync()
+        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
         {
             var temp = await GetAllAsync();
-            var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesDTO
+            var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesTableViewDTO
             {
                 ID = t.Key,
                 Name = t.FirstOrDefault().Name,
@@ -125,6 +125,47 @@ namespace DAL.Reposity.PostgreSqlRepository
                                 param: compiledQueryLocalizationProjectsGlossaries.NamedBindings
                                 );
                     }
+                    dbConnection.Close();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task DeleteGlossaryAsync(int id)
+        {
+            try
+            {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+
+                    var queryGlossariesLocales = new Query("GlossariesLocales").Where("ID_Glossary", id).AsDelete();
+                    var compiledQueryGlossariesLocales = this._compiler.Compile(queryGlossariesLocales);
+                    this.LogQuery(compiledQueryGlossariesLocales);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQueryGlossariesLocales.Sql,
+                        param: compiledQueryGlossariesLocales.NamedBindings
+                    );
+                    
+                    var queryLocalizationProjectsGlossaries = new Query("LocalizationProjectsGlossaries").Where("ID_Glossary", id).AsDelete();
+                    var compiledQueryLocalizationProjectsGlossaries = this._compiler.Compile(queryLocalizationProjectsGlossaries);
+                    this.LogQuery(compiledQueryLocalizationProjectsGlossaries);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQueryLocalizationProjectsGlossaries.Sql,
+                        param: compiledQueryLocalizationProjectsGlossaries.NamedBindings
+                    );
+
+                    var query = new Query("Glossaries").Where("ID", id).AsDelete();
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+                    
                     dbConnection.Close();
                 }
             }
