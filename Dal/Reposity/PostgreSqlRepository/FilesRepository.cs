@@ -363,104 +363,49 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<File> Load(int id, int id_locale = -1)
         {
             var sqlFileQuery = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
-            //var sqlTranslationSubstringQuery = ""
-            //var sqlTranslationQuery = "SELECT \"OriginalFullText\" FROM \"Files\"";
-
             using (var connection = new NpgsqlConnection(connectionString))
             {
-                connection.Open();
-                var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
-                if (id_locale != -1)
+                try
                 {
-                    var sqlTranslationSubstringsQuery = "SELECT * FROM \"TranslationSubstring\" WHERE \"ID_FileOwner\" = @id";
-                    var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
-                    translationSubstrings.Sort((x,y) => x.PositionInText.CompareTo(y.PositionInText));
-                    for (int i = translationSubstrings.Count - 1; i>=0; i--)
+                    connection.Open();
+                    var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
+                    if (id_locale != -1)
                     {
-                        var sqlTranslationQuery = "SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1";
-                        var translation = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id_locale });
+                        var sqlLocalizationProjectQuery = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @ID_LocalizationProject";
+                        var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { file.ID });
+                        var sqlTranslationSubstringsQuery = "SELECT * FROM \"TranslationSubstring\" WHERE \"ID_FileOwner\" = @id";
+                        var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
+                        translationSubstrings.Sort((x, y) => x.PositionInText.CompareTo(y.PositionInText));
+                        var output = file.OriginalFullText;
+                        for (int i = translationSubstrings.Count - 1; i >= 0; i--)
+                        {
+                            var sqlTranslationQuery = string.Format("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale{0} SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND \"Confirmed\" = true" : "");
+                            var translation = await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery, new { translationSubstrings[i].ID, id_locale });
+                            if (translation == null && localizationProject.original_if_string_is_not_translated) continue;
+                            output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
+                        }
+                        //how to send output file to front-end?
                     }
+                    else
+                    {
+                        //using (var sw = new System.IO.StreamWriter(System.IO.File.Open("NEED_filePath", System.IO.FileMode.CreateNew), Encoding.GetEncoding(file.Encoding)))
+                        //{
+                        //    sw.Write(file.OriginalFullText);
+                        //}
+                        //how to send original file to front-end ?
+                    }
+                    return null;
                 }
-                else
+                catch (NpgsqlException exception)
                 {
-                    using (var sw = new System.IO.StreamWriter(System.IO.File.Open("NEED_filePath", System.IO.FileMode.CreateNew), Encoding.GetEncoding(file.Encoding)))
-                    {
-                        sw.Write(file.OriginalFullText);
-                    }
+                    this._loggerError.WriteLn("Ошибка в Upload NpgsqlException ", exception);
+                    return null;
                 }
-                return null;
-                //try
-                //{
-                //    var insertedId = await connection.ExecuteScalarAsync<int?>(sqlFileQuery, file, transaction);
-                //    if (!insertedId.HasValue)
-                //    {
-                //        this._loggerError.WriteLn("Insertion into files didn't return id.");
-                //        transaction.Rollback();
-                //        return false;
-                //    }
-                //    file.ID = insertedId.Value;
-
-                //    if (file.IsFolder)
-                //    {
-                //        transaction.Commit();
-                //        return true;
-                //    }
-
-                //    sqlFileQuery = "INSERT INTO \"TranslationSubstrings\" " +
-                //                "(" +
-                //                "\"SubstringToTranslate\", " +
-                //                "\"Context\", " +
-                //                "\"ID_FileOwner\", " +
-                //                "\"Value\", " +
-                //                "\"PositionInText\"" +
-                //                ") " +
-                //                "VALUES (" +
-                //                "@SubstringToTranslate, " +
-                //                "@Context, " +
-                //                "@ID_FileOwner, " +
-                //                "@Value, " +
-                //                "@PositionInText" +
-                //                ")";
-                //    using (var parser = new Parser())
-                //    {
-                //        var translationSubstrings = parser.Parse(file);
-                //        var translationSubstringsCount = translationSubstrings.Count;
-                //        var n = translationSubstringsCount;
-                //        foreach (var translationSubstring in translationSubstrings)
-                //        {
-                //            n -= await connection.ExecuteAsync(sqlFileQuery, translationSubstring, transaction);
-                //        }
-                //        if (n == 0)
-                //        {
-                //            file.StringsCount = translationSubstringsCount;
-                //            sqlFileQuery = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
-                //            await connection.ExecuteAsync(sqlFileQuery, file, transaction);
-                //        }
-                //        transaction.Commit();
-                //        return n == 0;
-                //    }
-                //}
-                //catch (NpgsqlException exception)
-                //{
-                //    this._loggerError.WriteLn("Ошибка в Upload NpgsqlException ", exception);
-                //    transaction.Rollback();
-                //    return false;
-                //}
-                //catch (ParserException exception)
-                //{
-                //    this._loggerError.WriteLn("Ошибка в блоке распарсивания: ", exception);
-                //    //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
-                //    //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
-                //    transaction.Rollback();
-                //    throw;
-                //}
-                //catch (Exception exception)
-                //{
-                //    this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} Exception ", exception);
-                //    transaction.Rollback();
-                //    return false;
-                //}
-
+                catch (Exception exception)
+                {
+                    this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} Exception ", exception);
+                    return null;
+                }
             }
         }
 
