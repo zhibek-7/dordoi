@@ -7,6 +7,7 @@ import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { Term } from 'src/app/models/Glossaries/term.type';
+import { TermWithGlossary } from '../work-panel/localEntites/terms/termWithGlossary.type';
 
 @Injectable()
 export class GlossariesService {
@@ -109,8 +110,8 @@ export class GlossariesService {
   }
 
   // Получить все термины из всех глоссариев присоедененных к проекту локализации, по id необходимого проекта локализации
-  getAllTermsFromAllGlossarisInProject(projectId: number): Observable<Term[]> {
-    return this.httpClient.post<Term[]>(GlossariesService.connectionUrl + '/FindAllTermsInProjects/', projectId)
+  getAllTermsFromAllGlossarisInProject(projectId: number): Observable<TermWithGlossary[]> {
+    return this.httpClient.post<TermWithGlossary[]>(GlossariesService.connectionUrl + '/FindAllTermsInProjects/', projectId)
       .pipe(catchError(this.handleError));
   }
 

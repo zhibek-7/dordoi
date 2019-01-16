@@ -20,6 +20,11 @@ namespace Models.PartialEntities.Glossary
         /// <summary>
         /// Глоссарий в котором содержится термин
         /// </summary>
+        public int GlossaryId { get; set; }
+
+        /// <summary>
+        /// Глоссарий в котором содержится термин
+        /// </summary>
         public string GlossaryName { get; set; }
     }
 }

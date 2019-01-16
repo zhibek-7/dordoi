@@ -350,9 +350,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
         {
             string query =  "SELECT " +
-                            "TS.\"ID\" AS \"ID\"," +
+                            "DISTINCT ON (TS.\"ID\") TS.\"ID\" AS \"ID\"," +
                             "TS.\"SubstringToTranslate\" AS \"TermText\", " +
-                            "TS.\"Description\" AS \"TermDesciption\", " +
+                            "TS.\"Description\" AS \"TermDesciption\"," +
+                            "G.\"ID\" AS \"GlossaryId\", " +
                             "G.\"Name\" AS \"GlossaryName\" " +
                             "FROM \"LocalizationProjects\" AS LP " +
                             "INNER JOIN \"LocalizationProjectsGlossaries\" AS LPG ON LP.\"ID\" = LPG.\"ID_LocalizationProject\" " +

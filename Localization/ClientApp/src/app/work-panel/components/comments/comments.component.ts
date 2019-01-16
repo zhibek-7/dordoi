@@ -3,11 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommentService } from '../../../services/comment.service';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 import { GlossariesService } from 'src/app/services/glossaries.service';
+import { ShareWordFromModalService } from '../../localServices/share-word-from-modal.service';
 
-import { Term } from 'src/app/models/Glossaries/term.type';
+import { TermWithGlossary } from '../../localEntites/terms/termWithGlossary.type';
 import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
  
+import * as $ from 'jquery';
+
 @Component({
     selector: 'comments-component',
     templateUrl: './comments.component.html',
@@ -16,7 +19,7 @@ import { CommentWithUser } from '../../localEntites/comments/commentWithUser.typ
 export class CommentsComponent implements OnInit {
 
     //Переменные для блока с комментариями
-    commentsList: Array<CommentWithUser>;
+    commentsList: CommentWithUser[];
 
     stringId: number;
     commentEdited = false;
@@ -28,17 +31,48 @@ export class CommentsComponent implements OnInit {
     addCommentText: string = "";
 
     // Переменные для блока с Глоссарием
-    termsList: Array<Term>;
+    termsList: TermWithGlossary[];
+
+    searchTermText: string = '';
+
 
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService,
-            private glossariesService: GlossariesService ) { 
+            private glossariesService: GlossariesService, private shareWordFromModalService: ShareWordFromModalService ) { 
+
+        this.commentsList = [];
+        this.termsList = [];
 
         this.getTerms();  
 
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
             this.stringId = pickedPhrase.id;
-            this.getComments(this.stringId);                      
+            this.getComments(this.stringId);      
+            
+            // переключает TabBar на вкладку "Комментарии" при смене слова для перевода
+            let activeTab = $(".directoryBlock .nav-tabs .active").attr('href');
+
+            if(activeTab != "#nav-comment"){
+                $("a[href='"+ activeTab +"']").removeClass("active show").attr("aria-selected", false);
+                $(activeTab).removeClass("active show")
+            }
+            $("a[href='#nav-comment']").addClass("active show").attr("aria-selected", true);
+            $("#nav-comment").addClass("active show");      
+        });
+
+        // Событие, срабатываемое при поиске слова в глоссарие из модального окна
+        this.shareWordFromModalService.onClickFindInGlossary.subscribe(word => {
+            this.searchTermText = word;
+        
+            // переключает TabBar на вкладку "Глоссарии"
+            let activeTab = $(".directoryBlock .nav-tabs .active").attr('href');
+
+            if(activeTab != "#nav-condition"){
+                $("a[href='"+ activeTab +"']").removeClass("active show").attr("aria-selected", false);
+                $(activeTab).removeClass("active show")
+            }
+            $("a[href='#nav-condition']").addClass("active show").attr("aria-selected", true);
+            $("#nav-condition").addClass("active show");  
         });
     }
 
@@ -62,7 +96,7 @@ export class CommentsComponent implements OnInit {
     }
 
     // Событие, срабатываемое при нажатии клавиши Enter при добавлении нового комментария
-    onEnterPress(event: any){
+    onEnterPressComment(event: any){
         if(event.which == 13 || event.keyCode == 13){
             this.addComment();            
         }
@@ -131,10 +165,43 @@ export class CommentsComponent implements OnInit {
 
     // Поление всех терминов из всех глоссариев присоедененных к проекту локализации
     getTerms(){
-        this.glossariesService.getAllTermsFromAllGlossarisInProject(0)
+        this.glossariesService.getAllTermsFromAllGlossarisInProject(0)      //TODO поменять на id реального проекта, когда появится
             .subscribe(allTermsInProject => {
                 this.termsList = allTermsInProject;
             });
+    }
+
+    // Функция проверки кол-ва вариантов перевода по поиску по памяти
+    checkNumberOfTermsInProject(){
+        if(this.termsList.length == 0){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    // Событие, срабатываемое при нажатии клавиши Enter при поиске в глоссарие 
+    onEnterPressGlossary(event: any){
+        if(event.which == 13 || event.keyCode == 13){
+            this.addComment();            
+        }
+    }
+
+    deleteTermClick(glossaryId: number, termId: number){
+        this.glossariesService.deleteTerm(glossaryId, termId)
+            .subscribe();
+
+        for(var i = 0; i < this.termsList.length; i++) {
+            if(this.termsList[i].id == termId) {
+                this.termsList.splice(i, 1);                
+                break;
+            }
+        }
+    }
+
+    updateTermClick(){
+
     }
 
 }

@@ -71,7 +71,7 @@ export class LanguagesComponent implements OnInit {
 
             this.searchByMemory();
 
-            // переключает TabBar на вкладку "Предложения языка" при смене слова для перевода
+            // переключает TabBar на вкладку "Поиск по памяти переводов"
             let activeTab = $(".languagesOptionsBlock .nav-tabs .active").attr('href');
 
             if(activeTab != "#nav-memorySearch"){

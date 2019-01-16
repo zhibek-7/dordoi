@@ -15,13 +15,16 @@
   background: #fcfaef;
 }
 
-.commentsFiled .list-group {
-    height: 75vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    padding: 2px;
+.tabsBlock{
+  margin-top: 1rem;
+}
 
+.tabsBlock .list-group {
+  height: 75vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px;
 }
 
 .list-group{

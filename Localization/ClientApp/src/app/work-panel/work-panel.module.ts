@@ -16,6 +16,8 @@ import { ContextEditModalComponent } from './components/context-edit-modal/conte
 import { SelectedWordModalComponent } from './components/selected-word-modal/selected-word-modal.component';
 
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
+import { FilterTermsPipe } from './pipes/filter-terms.pipe';
+import { SortArrayPipe } from './pipes/sort-array.pipe';
 import { SharePhraseService } from './localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from './localServices/share-translated-phrase.service';
 import { ShareWordFromModalService } from './localServices/share-word-from-modal.service';
@@ -39,6 +41,8 @@ import {
         TranslationComponent,
         ContextEditModalComponent,
         FilterPhrasesPipe,
+        FilterTermsPipe,
+        SortArrayPipe,
         SelectedWordModalComponent
     ],
     imports: [
