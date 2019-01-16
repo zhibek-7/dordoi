@@ -22,12 +22,15 @@ export class SelectedWordModalComponent implements OnInit {
   }
 
   searchInMemory(){
-    this.dialogRef.close();
+    this.dialogRef.close();    
 
     this.shareWordFromModalService.clickFindInMemory(this.selectedWord);
   }
 
   searchInGlossary(){
+    this.dialogRef.close();
+
+    this.shareWordFromModalService.clickFindInGlossary(this.selectedWord);
   }
 
   addInGlossary(){

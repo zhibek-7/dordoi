@@ -77,11 +77,11 @@
                     <div class="container align-center" style="padding:0px;">
                         <div class="row" style="width: 100%;">                                
                             <form class="col-11">
-                        <div class="mb-1">
-                                    <input type="text" name="searchByMemoryText" [(ngModel)]="searchByMemoryText" class="form-control input-lg" 
-                            placeholder="Поиск по памяти переводов ..." (keyup)="onEnterPress($event)">
-                        </div>
-                    </form>
+                                <div class="mb-1">
+                                            <input type="text" name="searchByMemoryText" [(ngModel)]="searchByMemoryText" class="form-control input-lg" 
+                                    placeholder="Поиск по памяти переводов ..." (keyup)="onEnterPress($event)">
+                                </div>
+                            </form>
                             <div class="col-1 float-right align-center arrowIcon">
                                 <mat-icon (click)="searchByMemory()">search</mat-icon>
                             </div>

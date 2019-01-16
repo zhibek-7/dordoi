@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-
+using Models.PartialEntities.Glossary;
 
 namespace Models.Interfaces.Repository
 {
@@ -17,5 +17,7 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId);
 
         Task<Glossary> GetByFileIdAsync(int fileId);
+
+        Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId);
     }
 }

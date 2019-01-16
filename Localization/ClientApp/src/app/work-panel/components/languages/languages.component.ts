@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../localServices/share-translated-phrase.service';
+import { ShareWordFromModalService } from '../../localServices/share-word-from-modal.service';
 import { TranslationService } from '../../../services/translationService.service';
 import { ProjectsService } from '../../../services/projects.service';
 
@@ -11,7 +12,6 @@ import { SimilarTranslation } from '../../localEntites/translations/similarTrans
 
 // import 'jquery-ui/ui/widgets/tabs.js';
 import * as $ from 'jquery';
-import { ShareWordFromModalService } from '../../localServices/share-word-from-modal.service';
 
 @Component({
     selector: 'languages-component',
@@ -71,7 +71,7 @@ export class LanguagesComponent implements OnInit {
 
             this.searchByMemory();
 
-            // переключает TabBar на вкладку "Предложения языка" при смене слова для перевода
+            // переключает TabBar на вкладку "Поиск по памяти переводов"
             let activeTab = $(".languagesOptionsBlock .nav-tabs .active").attr('href');
 
             if(activeTab != "#nav-memorySearch"){
