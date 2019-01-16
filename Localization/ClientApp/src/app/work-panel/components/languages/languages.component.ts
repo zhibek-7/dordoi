@@ -181,14 +181,14 @@ export class LanguagesComponent implements OnInit {
 
     // Поиск по памяти переводов
     searchByMemory(){
-        let currentProjectId = this.projectService.currentProjectId;
+            let currentProjectId = this.projectService.currentProjectId;
 
         this.translationService.findTranslationByMemory(currentProjectId, this.searchByMemoryText)
-            .subscribe(
-                translations => {
-                    this.listOfTranslationsByMemory = translations;
-                }
-            )
+                .subscribe(
+                    translations => {
+                        this.listOfTranslationsByMemory = translations;
+                    }
+                )
 
         this.searchByMemoryText = null;
     }

@@ -51,8 +51,7 @@ export class ProjectsService {
     return this.httpClient.get<LocalizationProject>(this.controllerUrl + "edit/{Id}");
     }
   deleteProject(Id: number) {
-    console.log("deleteProject-->" +Id);
-    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/{Id}");
-
+    console.log("deleteProject-->" + Id);
+    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id );
   }
 }

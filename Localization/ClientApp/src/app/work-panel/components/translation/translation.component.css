@@ -21,7 +21,7 @@
     padding-right: 1.5em;
     padding-top: 1em;
     height: 20vh;
-  }
+}
 
 .textForTranslate {
     font-size: 1.2em;
@@ -69,7 +69,7 @@
     resize: none;
 }
 
-.arrowIcon {
+.arrowIcon {   
     cursor: pointer;
 }
 
@@ -94,7 +94,7 @@
     padding-left: 2%;
 }
 .translationBlockWithoutPhrase {
-    margin-top: 35%;
+    margin-top: 35%;    
 }
 
 .phraseUndifinedBlock {

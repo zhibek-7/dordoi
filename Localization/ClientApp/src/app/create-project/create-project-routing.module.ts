@@ -19,8 +19,8 @@ const routes: Routes = [
     component: SettingsComponent
 
   },
-  {
-    path: 'delete',
+  {//  path: 'Projects/:id',
+    path: 'delete/:id',
     component: DeleteProjectComponent
 
   }

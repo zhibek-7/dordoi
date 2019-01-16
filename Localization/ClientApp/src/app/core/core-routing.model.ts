@@ -6,7 +6,9 @@ import { CurrentProjectSettingsComponent } from '../current-project-settings/cur
 import { ProjectPageComponent } from '../project-page/project-page.component';
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
+
 import { UserRegistrationComponent } from '../user-registration/user-registration.component';
+import { DeleteProjectComponent } from '../create-project/components/delete-project/delete-project.component';
 
 const routes: Routes = [
   {
@@ -66,9 +68,16 @@ const routes: Routes = [
     component: ProjectPageComponent
   },
   {
-    path: 'user-registration',
-    loadChildren: '../user-registration/user-registration.module#UserRegistrationModule'
+    path: 'delete/:id',
+    component: DeleteProjectComponent
+
   },
+  {
+    path: 'user-registration',
+    component: UserRegistrationComponent
+    /*loadChildren: '../user-registration/user-registration.modele.ts#UserRegistrationModule'*/
+  },
+
   {
     path: '**',
     component: UserAccountComponent

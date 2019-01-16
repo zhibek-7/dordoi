@@ -42,7 +42,5 @@ export class AppComponent implements OnInit{
     sessionStorage.setItem('ProjectName', currentProject.name);
     sessionStorage.setItem('ProjecID', currentProject.id.toString());
 
-
-
   }
 }

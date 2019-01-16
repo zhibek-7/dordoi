@@ -16,7 +16,7 @@
                     <div class="panel-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
-                                <div class="oneCommentBlock">
+                                <div class="oneCommentBlock">                                 
                                     <div class="row">
                                         <div class="col-6 userNameRow">{{comment.userName}}</div><div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m:ss'}}</div>
                                     </div>
@@ -30,7 +30,7 @@
                                             -->
                                             <button class="btn btn-link" (click)="changeCommentClick(comment)">Изменить</button>
                                             <button class="btn btn-link" (click)="deleteCommentClick(comment.commentId)">Удалить</button>
-                                          </div>
+                                        </div>
                                     </div>
                                     <div *ngIf="commentEdited">
                                       <div class="row">
@@ -64,7 +64,7 @@
                     <div class="container align-center" style="padding:0px;">
                         <div class="row" style="width: 100%;">                                
                             <form class="col-10">
-                                <div class="inputSearch">
+                    <div class=" inputSearch">
                                     <input type="text"  id="addCommentInput" name="first" class="form-control input-lg" placeholder="Новый комментарий" [(ngModel)]="addCommentText"
                                     class="col-11" (keyup)="onEnterPress($event)">
                                 </div>
@@ -73,7 +73,7 @@
                                 <mat-icon (click)="addComment()">add_comment</mat-icon>
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
             </div>
 
