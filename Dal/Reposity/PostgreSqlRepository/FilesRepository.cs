@@ -250,7 +250,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "\"ID_FolderOwner\", " +
                             "\"Encoding\", " +
                             "\"IsFolder\", " +
-                            "\"OriginalFullText\"" +
+                            "\"OriginalFullText\", " +
                             "\"IsLastVersion\"" +
                             ") " +
                             "VALUES (" +
@@ -262,7 +262,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "@ID_FolderOwner, " +
                             "@Encoding, " +
                             "@IsFolder, " +
-                            "@OriginalFullText," +
+                            "@OriginalFullText, " +
                             "@IsLastVersion" +
                             ") " +
                             "RETURNING \"ID\"";
