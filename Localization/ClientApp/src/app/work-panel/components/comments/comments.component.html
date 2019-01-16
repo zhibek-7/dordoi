@@ -25,9 +25,11 @@
                                             <div class="col-12">{{comment.comment}} </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-6">{{comment.dateTime | date: 'd MMMM H:m'}}</div>
-                                            <div class="col-3"><div class="controlText" (click)="changeCommentClick(comment)">Изменить</div></div>
+                                           <!-- <div class="col-3"><div class="controlText" (click)="changeCommentClick(comment)">Изменить</div></div>
                                             <div class="col-3"><div class="controlText" (click)="deleteCommentClick(comment.commentId)">Удалить</div></div>
+                                            -->
+                                            <button class="btn btn-link" (click)="changeCommentClick(comment)">Изменить</button>
+                                            <button class="btn btn-link" (click)="deleteCommentClick(comment.commentId)">Удалить</button>
                                         </div>
                                     </div>
                                     <div *ngIf="commentEdited">
@@ -59,11 +61,20 @@
                 </div>
 
                 <div class="addCommentBlock">
+                    <div class="container align-center" style="padding:0px;">
+                        <div class="row" style="width: 100%;">                                
+                            <form class="col-10">
                     <div class=" inputSearch">
-                        <input type="text" id="addCommentInput" class="form-control input-sm" placeholder="Новый комментарий" (keyup)="onEnterPress($event)" >
+                                    <input type="text"  id="addCommentInput" name="first" class="form-control input-lg" placeholder="Новый комментарий" [(ngModel)]="addCommentText"
+                                    class="col-11" (keyup)="onEnterPress($event)">
+                                </div>
+                            </form>
+                            <div class="col-1 float-right align-center arrowIcon" style="padding:0px;">
+                                <mat-icon (click)="addComment()">add_comment</mat-icon>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="tab-pane fade" id="nav-condition" role="tabpanel" aria-labelledby="nav-condition-tab">

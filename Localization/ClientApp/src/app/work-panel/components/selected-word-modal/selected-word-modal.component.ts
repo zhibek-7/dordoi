@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ShareWordFromModalService } from '../../localServices/share-word-from-modal.service';
 
 @Component({
   selector: 'selected-word-modal-component',
@@ -8,15 +9,29 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 })
 export class SelectedWordModalComponent implements OnInit {
 
-  @Input() selectedWord: string;
+  selectedWord: string;
 
   constructor(private dialogRef: MatDialogRef<SelectedWordModalComponent>,
+    private shareWordFromModalService: ShareWordFromModalService,
     @Inject(MAT_DIALOG_DATA) public data: any ) {
 
-      this.dialogRef.updatePosition({ top: '50px', left: '50px' });
+      this.selectedWord = this.data.selectedWord;      
   }
 
   ngOnInit() {
+  }
+
+  searchInMemory(){
+    this.dialogRef.close();
+
+    this.shareWordFromModalService.clickFindInMemory(this.selectedWord);
+  }
+
+  searchInGlossary(){
+  }
+
+  addInGlossary(){
+    this.dialogRef.close();
   }
 
 }

@@ -13,6 +13,20 @@ namespace Localization.WebApi
     [ApiController]
     public class ReportController : ControllerBase
     {
+        public class reportParamsDTO
+        {
+            public int projectId { get; set; }
+            public string start { get; set; }
+            public string end { get; set; }
+            public bool volumeCalcType { get; set; }
+            public bool calcBasisType { get; set; }
+            public int userId { get; set; }
+            public int localeId { get; set; }
+            public string workType { get; set; }
+            public int initialFolderId { get; set; }
+        }
+
+
         /// <summary>
         /// Получаем отчет
         /// </summary>
@@ -28,19 +42,11 @@ namespace Localization.WebApi
         /// <returns>Строки отчета</returns>
         [HttpPost]
         [Route("TranslatedWords")]
-        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport(
-            int projectId,
-            string start,
-            string end,
-            bool volumeCalcType,
-            bool calcBasisType,
-            int userId,
-            int localeId,
-            string workType,
-            int initialFolderId)
+        public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport([FromBody] reportParamsDTO _params)
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport();
-            return translatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType);
+            return translatedWords.GetRows(_params.projectId, DateTime.Parse(_params.start), DateTime.Parse(_params.end), 
+                _params.userId, _params.localeId, _params.volumeCalcType, _params.calcBasisType);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Models.DTO;
 using Models.Services;
@@ -11,25 +12,47 @@ namespace Localization.Controllers
     [ApiController]
     public class GlossariesController : ControllerBase
     {
-
         private readonly GlossariesService _glossariesService;
+
+        private readonly LocaleRepository _localeRepository = new LocaleRepository();
+        private readonly LocalizationProjectRepository _localizationProjectRepository = new LocalizationProjectRepository();
 
         public GlossariesController(GlossariesService glossariesService)
         {
-            this._glossariesService = glossariesService;
+            _glossariesService = glossariesService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<Glossaries>> GetAllAsync()
-        {
-            return await this._glossariesService.GetAllAsync();
-        }
+        //[HttpPost]
+        //public async Task<IEnumerable<Glossaries>> GetAllAsync()
+        //{
+        //    return await _glossariesService.GetAllAsync();
+        //}
 
         [HttpGet]
-        [Route("ToDTO")]
-        public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync()
+        public async Task<IEnumerable<GlossariesDTO>> GetAllToDTOAsync() //Переименовать в GetAllDTOAsync
         {
-            return await this._glossariesService.GetAllToDTOAsync();
+            return await _glossariesService.GetAllToDTOAsync(); //Переименовать в GetAllDTOAsync
+        }
+
+        [HttpGet("locales/list")]
+        public async Task<IEnumerable<Locale>> GetLocalesAsync()
+        {
+            return await _localeRepository.GetAllAsync();
+        }
+
+        [HttpGet("localizationProjects/list")]
+        public async Task<IEnumerable<localizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
+        {
+            return await _localizationProjectRepository.GetAllForSelectDTOAsync();
+        }
+
+        [HttpPost("newGlossary")]
+        public async Task AddGlossaryAsync(Glossaries glossary)//(int glossaryId, [FromBody] TranslationSubstring newTerm, [FromQuery] int? partOfSpeechId)
+        {
+            await _glossariesService.AddNewGlossaryAsync(glossary);
+                    //glossaryId: glossaryId,
+                    //newTerm: newTerm,
+                    //partOfSpeechId: partOfSpeechId);
         }
     }
 }

@@ -54,6 +54,22 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<Glossary> GetByFileIdAsync(int fileId)
+        {
+            using (var dbConnection = this._context.Connection)
+            {
+                dbConnection.Open();
+                var sql = "SELECT * FROM \"Glossaries\" WHERE \"ID_File\" = @FileId LIMIT 1";
+                var param = new { FileId = fileId };
+                this.LogQuery(sql, param);
+                var glossary = await dbConnection.QueryFirstOrDefaultAsync<Glossary>(
+                    sql: sql,
+                    param: param);
+                dbConnection.Close();
+                return glossary;
+            }
+        }
+
         public Task<bool> RemoveAsync(int id)
         {
             throw new NotImplementedException();

@@ -91,6 +91,19 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async System.Threading.Tasks.Task<IEnumerable<Models.DTO.localizationProjectForSelectDTO>> GetAllForSelectDTOAsync()
+        {
+            using (IDbConnection dbConnection = context.Connection)
+            {
+                dbConnection.Open();
+                IEnumerable<Models.DTO.localizationProjectForSelectDTO> result = 
+                    await dbConnection.QueryAsync<Models.DTO.localizationProjectForSelectDTO>
+                    ("SELECT \"ID\", \"Name\" FROM \"LocalizationProjects\"");
+                dbConnection.Close();
+                return result;
+            }
+        }
+
         public bool Remove(int Id)
         {
             throw new NotImplementedException();
@@ -114,12 +127,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (IDbConnection db = context.Connection)
             {
 
-              project.ID_SourceLocale = 1;
-             var sqlQuery = "INSERT INTO \"LocalizationProjects\" (\"Name\", \"Description\", \"URL\", \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
+                var sqlQuery = "INSERT INTO \"LocalizationProjects\" (\"Name\", \"Description\", \"URL\", \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
               + project.Name + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.DateOfCreation + "','"
               + project.LastActivity + "','" + project.ID_SourceLocale + "','" + project.AbleToDownload + "','" + project.AbleToLeftErrors + "','"
               + project.DefaultString + "','" + project.NotifyNew + "','" + project.NotifyFinish + "','" + project.NotifyConfirm + "','" + project.Logo + "')";
-             int? projectId = db.Query<int>(sqlQuery, project).FirstOrDefault();
+
+
+                int? projectId = db.Query<int>(sqlQuery, project).FirstOrDefault();
                 project.ID = (int)projectId;
 
                 //Не нужно дважды вызывать
@@ -135,9 +149,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             using (IDbConnection db = context.Connection)
             {
-                var sqlQuery = "DELETE FROM \"LocalizationProjects\" " +
-                  "WHERE \"ID\" ="+id;
+
+                var sqlQuery = "DELETE * FROM  LocalizationProjects  WHERE ID = '" + id + "'";
                 db.Execute(sqlQuery, new { id });
+
+
             }
         }
 

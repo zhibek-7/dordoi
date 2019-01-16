@@ -6,18 +6,18 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Модель для записи действий пользователей в системе
     /// </summary>
-    public class UserAction: BaseEntity
+    public class UserAction : BaseEntity
     {
         /// <summary>
         /// ИД пользователя совершившего действие
         /// </summary>
         [Required]
-        public int  ID_User { get; set; }
+        public int ID_User { get; set; }
         /// <summary>
         /// ИД вида деятельности 
         /// </summary>
         [Required]
-        public int  ID_worktype { get; set; }
+        public int ID_worktype { get; set; }
         /// <summary>
         /// Вид деятельности в виде строки
         /// </summary>
@@ -35,7 +35,7 @@ namespace Models.DatabaseEntities
         /// <summary>
         /// Ссылка на язык
         /// </summary>
-        public int?  ID_Locale { get; set; }
+        public int? ID_Locale { get; set; }
         /// <summary>
         /// Ссылка на файл (для регистрации активности по добавлению, удалению и редактированию файлов
         /// </summary>
@@ -52,5 +52,18 @@ namespace Models.DatabaseEntities
         /// Ссылка на перевод (для регистрации активности по добавлению, удалению и редактированию проектов локализации
         /// </summary>
         public int? ID_Project { get; set; }
+
+
+        public UserAction() { }
+
+        public UserAction(int userId, string descript, int actionTypeID)
+        {
+            ID_User = userId;
+            ID_worktype = actionTypeID;
+            Description = descript;
+            Datetime = DateTime.Now;
+        }
+
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Models.DatabaseEntities;
+using Models.DTO;
 
 namespace Models.DatabaseEntities
 {
@@ -7,9 +8,11 @@ namespace Models.DatabaseEntities
     {
         public string Name { get; set; }
 
+        public IEnumerable<Locale> Locales { get; set; }
         public string LocaleID { get; set; }
         public string LocaleName { get; set; }
 
+        public IEnumerable<localizationProjectForSelectDTO> LocalizationProjects { get; set; }
         public string LocalizationProjectID { get; set; }
         public string LocalizationProjectName { get; set; }
     }
