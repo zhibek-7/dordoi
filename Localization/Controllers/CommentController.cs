@@ -76,7 +76,7 @@ namespace Localization.WebApi
         /// Получает все комментарии
         /// </summary>
         /// <returns>Список комментариев</returns>
-        public async Task<ActionResult<IEnumerable<Comments>>>  GetComments()
+        public async Task<ActionResult<IEnumerable<Comments>>> GetComments()
         {
             IEnumerable<Comments> comments = await commentRepository.GetAllAsync();
             return Ok(comments);
@@ -146,10 +146,35 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPost("UploadImage")]
         public async Task<ActionResult> UploadImage()
-        {           
+        {
 
             var content = Request.Form.Files["Image"];
+            string fileName = content.FileName;
+            long fileLength = content.Length;
+            //Stream file = content.OpenReadStream;
 
+            if (content != null && fileLength > 0)
+            {
+                using (var readStream = content.OpenReadStream())
+                {
+                    byte[] imageData = null;
+                    // считываем переданный файл в массив байтов
+                    using (var binaryReader = new BinaryReader(content.OpenReadStream()))
+                    {
+                        imageData = binaryReader.ReadBytes((int)fileLength);
+
+                        Image img = new Image();
+                        img.ID_User = 301;
+                        img.Name = fileName;
+                        img.DateTimeAdded = DateTime.Now;
+                        img.Data = imageData;
+
+                        int insertedCommentId = await commentRepository.AddFileAsync(img);
+                    }
+                }
+
+
+            }
             return Ok();
         }
 
