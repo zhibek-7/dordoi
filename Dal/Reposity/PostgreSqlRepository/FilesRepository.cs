@@ -16,6 +16,36 @@ namespace DAL.Reposity.PostgreSqlRepository
     public class FilesRepository : BaseRepository, IFilesRepository
     {
 
+        private readonly string _insertFileSql =
+            "INSERT INTO \"Files\" (" +
+            "\"ID_LocalizationProject\", " +
+            "\"Name\", " +
+            "\"Description\", " +
+            "\"DateOfChange\", " +
+            "\"StringsCount\", " +
+            "\"Version\", " +
+            "\"Priority\", " +
+            "\"ID_FolderOwner\", " +
+            "\"Encoding\", " +
+            "\"IsFolder\", " +
+            "\"OriginalFullText\", " +
+            "\"IsLastVersion\"" +
+            ") " +
+            "VALUES (" +
+            "@ID_LocalizationProject," +
+            "@Name, " +
+            "@Description, " +
+            "@DateOfChange, " +
+            "@StringsCount, " +
+            "@Version, " +
+            "@Priority, " +
+            "@ID_FolderOwner, " +
+            "@Encoding, " +
+            "@IsFolder, " +
+            "@OriginalFullText, " +
+            "@IsLastVersion" +
+            ")";
+
         private readonly string connectionString;
 
         public FilesRepository()
@@ -144,12 +174,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<int> AddAsync(File file)
         {
-            var sqlString = "INSERT INTO \"Files\" (\"Name\", \"Description\", \"DateOfChange\", " +
-                            "\"StringsCount\", \"Version\", \"Priority\", \"Encoding\", \"OriginalFullText\", " +
-                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\", \"IsLastVersion\") " +
-                            "VALUES (@Name, @Description, @DateOfChange, @StringsCount, @Version, " +
-                            "@Priority, @Encoding, @OriginalFullText, @IsFolder, @ID_LocalizationProject, " +
-                            "@ID_FolderOwner, @IsLastVersion)";
+            var sqlString = this._insertFileSql;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -208,16 +233,16 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> UpdateAsync(File file)
         {
-            var sqlString = "UPDATE \"Files\" SET \"Name\" = @Name, \"DateOfChange\" = @DateOfChange, " +
-                            "\"StringsCount\" = @StringsCount, \"Encoding\" = @Encoding, " +
-                            "\"ID_FolderOwner\" = @ID_FolderOwner, \"OriginalFullText\" = @OriginalFullText, " +
-                            "\"IsFolder\" = @IsFolder, \"IsLastVersion\" = @IsLastVersion WHERE \"ID\" = @Id";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(sqlString, param: file);
-                    var updatedRows = await connection.ExecuteAsync(sqlString, file);
+                    var query = new Query("Files")
+                        .AsUpdate(file)
+                        .Where("ID", file.ID);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var updatedRows = await connection.ExecuteAsync(compiledQuery.Sql, compiledQuery.NamedBindings);
 
                     // Return "updated rows count more than 0" result
                     return updatedRows > 0;
@@ -241,31 +266,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> Upload(File file)
         {
-            var sqlString = "INSERT INTO \"Files\" (" +
-                            "\"ID_LocalizationProject\", " +
-                            "\"Name\", " +
-                            "\"Description\", " +
-                            "\"DateOfChange\", " +
-                            "\"StringsCount\", " +
-                            "\"ID_FolderOwner\", " +
-                            "\"Encoding\", " +
-                            "\"IsFolder\", " +
-                            "\"OriginalFullText\", " +
-                            "\"IsLastVersion\"" +
-                            ") " +
-                            "VALUES (" +
-                            "@ID_LocalizationProject," +
-                            "@Name, " +
-                            "@Description, " +
-                            "@DateOfChange, " +
-                            "@StringsCount, " +
-                            "@ID_FolderOwner, " +
-                            "@Encoding, " +
-                            "@IsFolder, " +
-                            "@OriginalFullText, " +
-                            "@IsLastVersion" +
-                            ") " +
-                            "RETURNING \"ID\"";
+            var sqlString = this._insertFileSql + " RETURNING \"ID\"";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
