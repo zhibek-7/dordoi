@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
+using Models.PartialEntities.Glossary;
 
 namespace Models.Services
 {
@@ -96,6 +97,11 @@ namespace Models.Services
                 glossaryId: glossaryId,
                 updatedTerm: updatedTerm,
                 partOfSpeechId: partOfSpeechId);
+        }
+
+        public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
+        {
+            return await _glossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
         }
 
     }

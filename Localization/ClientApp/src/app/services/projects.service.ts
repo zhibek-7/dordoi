@@ -14,6 +14,12 @@ export class ProjectsService {
         return +sessionStorage.getItem('ProjecID');
     }
 
+    get currentProjectName(): string {
+        return sessionStorage.getItem('ProjectName');
+    }
+
+
+
     getProjects(): Observable<LocalizationProject[]> {
       console.log("getProject-->");
     return this.httpClient.get<LocalizationProject[]>(this.controllerUrl + "List");
@@ -45,8 +51,7 @@ export class ProjectsService {
     return this.httpClient.get<LocalizationProject>(this.controllerUrl + "edit/{Id}");
     }
   deleteProject(Id: number) {
-    console.log("deleteProject-->" +Id);
-    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/{Id}");
-
+    console.log("deleteProject-->" + Id);
+    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id );
   }
 }

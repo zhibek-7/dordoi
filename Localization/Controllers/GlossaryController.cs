@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
+using Models.PartialEntities.Glossary;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -119,6 +120,19 @@ namespace Localization.WebApi
                 glossaryId: glossaryId,
                 termId: termId,
                 localesIds: localesIds);
+        }
+
+        /// <summary>
+        /// Получить все термины из всех глоссариев присоедененных к проекту локализации, по id необходимого проекта локализации
+        /// </summary>
+        /// <param name="projectId">id проекта локализации в котором необходимо найти все термины</param>
+        /// <returns>Список терминов</returns>
+        [HttpPost("FindAllTermsInProjects")]
+        public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync([FromBody] int projectId)
+        {
+            var allTerms = await _glossaryService.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
+
+            return allTerms;
         }
 
     }

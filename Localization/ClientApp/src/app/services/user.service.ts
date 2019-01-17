@@ -7,14 +7,22 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class UserService {
 
-  private url: string = "api/User/";
+  private url: string = 'api/User/';
 
   constructor(private httpClient: HttpClient) { }
+
+  get currentUserId(): number {
+    return +sessionStorage.getItem('currentUserID');
+  }
+
+  get currentUserName(): string {
+    return sessionStorage.getItem('currentUserName');
+  }
 
   getUserList(): Observable<User[]> {
     return this.httpClient.post<User[]>(this.url + "List", null);
   }
-  
+
   getProjectParticipantList(projectId: number): Observable < User[] > {
     return this.httpClient.post<User[]>(this.url + "List/projectId:" + projectId, null);
   }

@@ -49,6 +49,40 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+
+        /// <summary>
+        /// Добавить файл в комментарий
+        /// </summary>
+        /// <param name="comment">комментарий</param>
+        /// <returns></returns>
+        public async Task<int> AddFileAsync(Comments comment)
+        {
+
+            var query = "INSERT INTO \"Images\" (\"Name\",  \"ID_User\", \"Data\", url) VALUES('test',  @ID_User,  '‰PNG','')";
+            /*
+                    var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
+                                    "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
+                                    "RETURNING  \"Comments\".\"ID\"";
+            */
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
+                    dbConnection.Close();
+                    return idOfInsertedRow;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return 0;
+            }
+        }
+
         /// <summary>
         /// Получить все комментарии
         /// </summary>
@@ -238,6 +272,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+
+        /// <summary>
+        /// Добавить файл в комментарий
+        /// </summary>
+        /// <param name="comment">комментарий</param>
+        /// <returns></returns>
+        public async Task<int> AddFileAsync(Image img)
+        {
+            var query = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
+                        "VALUES (@Name,  @ID_User, @Data, @url) " +
+                        "RETURNING  \"Images\".\"ID\"";
+
+            try
+            {
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, img);
+                    dbConnection.Close();
+                    return idOfInsertedRow;
+                }
+            }
+            catch (Exception exception)
+            {
+                // Внесение записи в журнал логирования
+                Console.WriteLine(exception.Message);
+
+                return 0;
+            }
+        }
         /// <summary>
         /// Загрузить картинку в базу данных
         /// </summary>

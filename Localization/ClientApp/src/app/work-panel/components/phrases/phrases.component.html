@@ -7,7 +7,7 @@
           <mat-icon>search</mat-icon>
         </div>
         <form class="col-8">
-          <div class="inputSearch">
+          <div class=" inputSearch">
             <input type="text" [(ngModel)]="searchText" name="first" class="form-control input-lg" placeholder="Поиск в файле"
               class="col-9">
           </div>
@@ -23,7 +23,7 @@
     <div class="panel panel-primary">
       <div class="panel-body">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText"
+          <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText | sort:'substringToTranslate' "
             (click)="choosePhrase(phrase)">
             <div class="row">
               <div class="col-1"><img class="colorIcon"></div>

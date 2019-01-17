@@ -1,50 +1,72 @@
-<div>
-    <div>
-        <label class="btn btn-secondary">Add file <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
-        <button class="btn btn-secondary" (click)="addFolder()">Add folder</button>
-    </div>
+<div class="row m-2">
+  <div class="col">
+    <label class="btn btn-secondary">Add file <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
+    <button class="btn btn-secondary" (click)="addFolderModal.show()">Add folder</button>
+    <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event)"></app-add-folder-modal>
+  </div>
+  <div class="col">
+    <input type="text" [(ngModel)]="searchFilesNamesString" (input)="getFiles()" placeholder="Искать по файлам" />
+  </div>
 </div>
 
 <p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">
-    <ng-template pTemplate="header" let-columns>
-        <tr>
-            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': col.textalign}">{{col.header}}</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-        <tr [ttSelectableRow]="rowNode">
-            <td [ttEditableColumn]="rowData" class="col-xs-6">
-                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
-                {{rowData.name}}
-            </td>
-            <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">{{rowData.stringsCount}}</td>
-            <td class="col-xs-2"><button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>Update</button></td>
-            <td class="col-xs-2"><button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button></td>
-            <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2"><button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button></td>
-            <td class="col-xs-2">
-                <div class="dropdown">
-                    <button id="contextMenu" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="contextMenu">
-                        <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolder(rowNode.node)">Add
-                            folder</button>
-                        <button class="dropdown-item" *ngIf="rowData.isFolder">Add file
-                           <input type="file" style="display: none;" (change)="onFileUpload($event, rowNode.node)">
-                        </button>
-                        <div class="dropdown-divider" *ngIf="rowData.isFolder"></div>
-                        <button class="dropdown-item" *ngIf="!rowData.isFolder" (click)="newVersion(rowNode.node)"
-                            disabled>Update</button>
-                        <div class="dropdown-divider" *ngIf="!rowData.isFolder"></div>
-                        <button class="dropdown-item" (click)="renameNode(rowNode.node)" disabled>Rename</button>
-                        <button class="dropdown-item" (click)="deleteNode(rowNode.node)">Delete</button>
-                    </div>
-                </div>
-              </td>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage" let-columns>
-        <tr>
-            <td [attr.colspan]="columns.length" style="text-align:center;">No records found</td>
-        </tr>
-    </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': col.textalign}">{{col.header}}</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+    <tr [ttSelectableRow]="rowNode">
+      <td [ttEditableColumn]="rowData" class="col-xs-6">
+        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+        <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
+        {{rowData.name}}
+      </td>
+      <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
+        {{rowData.stringsCount}}
+      </td>
+      <td class="col-xs-2">
+        <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>Update</button>
+      </td>
+      <td class="col-xs-2">
+        <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button>
+      </td>
+      <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+        <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button>
+      </td>
+      <td class="col-xs-2">
+        <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event, rowNode.node)"></app-add-folder-modal>
+        <div class="dropdown">
+          <button id="contextMenu" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Menu
+          </button>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="contextMenu">
+            <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolderModal.show()">
+              Add folder
+            </button>
+            <button class="dropdown-item" *ngIf="rowData.isFolder">
+              Add file
+              <input type="file" style="display: none;" (change)="onFileUpload($event, rowNode.node)">
+            </button>
+            <div class="dropdown-divider" *ngIf="rowData.isFolder"></div>
+            <button class="dropdown-item" *ngIf="!rowData.isFolder" (click)="newVersion(rowNode.node)" disabled>
+              Update
+            </button>
+            <div class="dropdown-divider" *ngIf="!rowData.isFolder"></div>
+            <button class="dropdown-item" (click)="renameNode(rowNode.node)" disabled>
+              Rename
+            </button>
+            <button class="dropdown-item" (click)="deleteNode(rowNode.node)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length" style="text-align:center;">No records found</td>
+    </tr>
+  </ng-template>
 </p-treeTable>

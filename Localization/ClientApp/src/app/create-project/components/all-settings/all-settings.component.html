@@ -63,10 +63,13 @@
     </mat-checkbox>
   
   </div>
-    <div>
-      <button type="submit" mat-raised-button color="primary" style="width: 15rem;" (click)="addProject()">Сохранить проект</button>
-      <button mat-raised-button color="primary" style="width: 15rem;" (click)="addProject($event)" >Удалить проект</button>
-    </div>
+  <div>
+    <button type="submit" mat-raised-button color="primary" style="width: 15rem;" (click)="addProject()">Сохранить проект</button>
+
+    <!--<a class="nav-item nav-link" routerLink='/create-project/all-settings/'>-->
+
+      <button mat-raised-button color="primary" style="width: 15rem;" routerLink='/create-project/delete/{{currentProjectId}}'>Удалить проект</button>
+  </div>
 </form>
 
 <router-outlet></router-outlet>

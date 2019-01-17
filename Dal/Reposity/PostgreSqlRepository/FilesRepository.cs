@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
@@ -9,89 +10,76 @@ using Models.Interfaces.Repository;
 using Models.Parser;
 using Npgsql;
 using SqlKata;
-using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
     {
+
         private readonly string connectionString;
-        private ILogTools _log;
 
-        private readonly ITranslationSubstringRepository _translationSubstringRepository;
-
-        public FilesRepository(ITranslationSubstringRepository translationSubstringRepository)
+        public FilesRepository()
         {
             //TODO потом нужно переделать. Не должно быть статика
             connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
-            _log = ExceptionLog.GetLog();
-            this._translationSubstringRepository = translationSubstringRepository;
         }
 
         public FilesRepository(string connectionString)
         {
             this.connectionString = connectionString;
-            _log = ExceptionLog.GetLog();
         }
 
         public async Task<IEnumerable<File>> GetAllAsync()
         {
-            // Sql string to select all rows
             var sqlString = "SELECT * FROM \"Files\"";
-
             try
             {
-                // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-
-                    Task<IEnumerable<File>> quer = connection.QueryAsync<File>(sqlString);
-                    // Execute select query and return enumerable of file objects
-                    return await quer;
+                    this.LogQuery(sqlString);
+                    return await connection.QueryAsync<File>(sqlString);
                 }
             }
             catch (NpgsqlException exception)
             {
-                // Custom logging
-                _log.WriteLn("Ошибка в GetAll NpgsqlException ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
                 return null;
             }
             catch (Exception exception)
             {
-                // Custom logging
-                _log.WriteLn("Ошибка в GetAll exception ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
 
         public async Task<File> GetByIDAsync(int id)
         {
-            // Sql string to select row by id
             var sqlString = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
-
             try
             {
-                // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    // Execute select query and return file object
-                    return await connection.QuerySingleOrDefaultAsync<File>(sqlString, new { id });
+                    var param = new { id };
+                    this.LogQuery(sqlString, param);
+                    return await connection.QuerySingleOrDefaultAsync<File>(sqlString, param);
                 }
             }
             catch (NpgsqlException exception)
             {
-                // Custom logging
-                _log.WriteLn("Ошибка в GetByID NpgsqlException ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
                 return null;
             }
             catch (Exception exception)
             {
-                // Custom logging
-                _log.WriteLn("Ошибка в GetByID exception ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -99,31 +87,28 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<File> GetByNameAndParentId(string name, int? parentId)
         {
             var parentExp = parentId.HasValue ? "\"ID_FolderOwner\" = @parentId" : "\"ID_FolderOwner\" IS NULL";
-
-            // Sql string to select row by name and parent id
             var sqlString = $"SELECT * FROM \"Files\" WHERE \"Name\" LIKE @name AND {parentExp}";
-
             try
             {
-                // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    // Execute select query and return file object
-                    return await connection.QuerySingleOrDefaultAsync<File>(sqlString, new { name, parentId });
+                    var param = new { name, parentId };
+                    this.LogQuery(sqlString, param);
+                    return await connection.QuerySingleOrDefaultAsync<File>(sqlString, param);
                 }
             }
             catch (NpgsqlException exception)
             {
-                // Custom logging
-                _log.WriteLn("Ошибка в GetByNameAndParentId NpgsqlException ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByNameAndParentId)} {nameof(NpgsqlException)} ",
+                    exception);
                 return null;
             }
             catch (Exception exception)
             {
-                // Custom logging
-                _log.WriteLn("Ошибка в GetByNameAndParentId exception ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByNameAndParentId)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -132,84 +117,74 @@ namespace DAL.Reposity.PostgreSqlRepository
         public IEnumerable<File> GetInitialFolders(int projectId)
         {
             var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL";
-
             try
             {
-                // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    // Execute select query and return enumerable of file objects
-                    return connection.Query<File>(sqlString, new { projectId });
+                    var param = new { projectId };
+                    this.LogQuery(sqlString, param);
+                    return connection.Query<File>(sqlString, param);
                 }
             }
             catch (NpgsqlException exception)
             {
-                // Custom logging
-                _log.WriteLn("Ошибка в GetInitialFolders NpgsqlException ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetInitialFolders)} {nameof(NpgsqlException)} ",
+                    exception);
                 return null;
             }
             catch (Exception exception)
             {
-                _log.WriteLn("Ошибка в GetInitialFolders exception ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetInitialFolders)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
 
         public async Task<int> AddAsync(File file)
         {
-            // Sql string to insert query
             var sqlString = "INSERT INTO \"Files\" (\"Name\", \"Description\", \"DateOfChange\", " +
                             "\"StringsCount\", \"Version\", \"Priority\", \"Encoding\", \"OriginalFullText\", " +
-                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\") " +
+                            "\"IsFolder\", \"ID_LocalizationProject\", \"ID_FolderOwner\", \"IsLastVersion\") " +
                             "VALUES (@Name, @Description, @DateOfChange, @StringsCount, @Version, " +
                             "@Priority, @Encoding, @OriginalFullText, @IsFolder, @ID_LocalizationProject, " +
-                            "@ID_FolderOwner)";
-
+                            "@ID_FolderOwner, @IsLastVersion)";
             try
             {
-                // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    // Execute insert query and return count of inserted rows
+                    this.LogQuery(sqlString, param: file);
+                    // return count of inserted rows
                     return await connection.ExecuteAsync(sqlString, file);
                 }
             }
             catch (NpgsqlException exception)
             {
-                _log.WriteLn("Ошибка в Add NpgsqlException ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
                 return 0;
             }
             catch (Exception exception)
             {
-                _log.WriteLn("Ошибка в Add Exception ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
         }
 
         public async Task<bool> RemoveAsync(int id)
         {
-            // TODO : full db dependecies removing, common transaction
-            var fileStrings = await this._translationSubstringRepository.GetStringsByFileIdAsync(fileId: id);
-            foreach (var fileString in fileStrings)
-            {
-                await this._translationSubstringRepository.DeleteTranslationLocalesAsync(fileString.ID);
-                await this._translationSubstringRepository.RemoveAsync(fileString.ID);
-            }
-
-            // Sql string for delete query
             var sqlString = "DELETE FROM \"Files\" WHERE \"ID\" = @id";
-
             try
             {
-                // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    // Execute delete query
-                    var deletedRows = await connection.ExecuteAsync(sqlString, new { id });
+                    var param = new { id };
+                    this.LogQuery(sqlString, param);
+                    var deletedRows = await connection.ExecuteAsync(sqlString, param);
 
                     // Return result "deleted rows count more than 0"
                     return deletedRows > 0;
@@ -217,32 +192,31 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                _log.WriteLn("Ошибка в Remove NpgsqlException ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
                 return false;
             }
             catch (Exception exception)
             {
-                _log.WriteLn("Ошибка в Remove exception ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
 
         public async Task<bool> UpdateAsync(File file)
         {
-            // Sql string for update query
             var sqlString = "UPDATE \"Files\" SET \"Name\" = @Name, \"DateOfChange\" = @DateOfChange, " +
                             "\"StringsCount\" = @StringsCount, \"Encoding\" = @Encoding, " +
                             "\"ID_FolderOwner\" = @ID_FolderOwner, \"OriginalFullText\" = @OriginalFullText, " +
-                            "\"IsFolder\" = @IsFolder WHERE \"ID\" = @Id";
-
+                            "\"IsFolder\" = @IsFolder, \"IsLastVersion\" = @IsLastVersion WHERE \"ID\" = @Id";
             try
             {
-                // Using new posgresql connection
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    // Execute update query
+                    this.LogQuery(sqlString, param: file);
                     var updatedRows = await connection.ExecuteAsync(sqlString, file);
 
                     // Return "updated rows count more than 0" result
@@ -251,14 +225,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                _log.WriteLn("Ошибка в Update NpgsqlException ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
                 return false;
             }
             catch (Exception exception)
             {
-                _log.WriteLn("Ошибка в Update exception ", exception);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -274,7 +250,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "\"ID_FolderOwner\", " +
                             "\"Encoding\", " +
                             "\"IsFolder\", " +
-                            "\"OriginalFullText\"" +
+                            "\"OriginalFullText\", " +
+                            "\"IsLastVersion\"" +
                             ") " +
                             "VALUES (" +
                             "@ID_LocalizationProject," +
@@ -285,7 +262,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "@ID_FolderOwner, " +
                             "@Encoding, " +
                             "@IsFolder, " +
-                            "@OriginalFullText" +
+                            "@OriginalFullText, " +
+                            "@IsLastVersion" +
                             ") " +
                             "RETURNING \"ID\"";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -295,6 +273,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     try
                     {
+                        this.LogQuery(sqlString, param: file);
                         var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, file, transaction);
                         if (!insertedId.HasValue)
                         {
@@ -328,10 +307,19 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var parser = new Parser())
                         {
                             var translationSubstrings = parser.Parse(file);
-                            var n = translationSubstrings.Count;
+                            var translationSubstringsCount = translationSubstrings.Count;
+                            var n = translationSubstringsCount;
                             foreach (var translationSubstring in translationSubstrings)
                             {
+                                this.LogQuery(sqlString, param: translationSubstring);
                                 n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
+                            }
+                            if (n == 0)
+                            {
+                                file.StringsCount = translationSubstringsCount;
+                                sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
+                                this.LogQuery(sqlString, param: file);
+                                await connection.ExecuteAsync(sqlString, file, transaction);
                             }
                             transaction.Commit();
                             return n == 0;
@@ -339,7 +327,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
                     catch (NpgsqlException exception)
                     {
-                        this._loggerError.WriteLn("Ошибка в Upload NpgsqlException ", exception);
+                        this._loggerError.WriteLn(
+                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} {nameof(NpgsqlException)} ",
+                            exception);
                         transaction.Rollback();
                         return false;
                     }
@@ -349,14 +339,66 @@ namespace DAL.Reposity.PostgreSqlRepository
                         //здесь фронтенд создает новый объект Parser и с помощью функции UseAllParsers получает Dictonary со всевозможными вариантами распарсивания
                         //ошибка возникает (пока) только в двух случаях: файл имеет неподдерживаемое системой расширение или внутри него не обнаружено строк для перевода
                         transaction.Rollback();
-                        return false;
+                        throw;
                     }
                     catch (Exception exception)
                     {
-                        this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} Exception ", exception);
+                        this._loggerError.WriteLn(
+                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} {nameof(Exception)} ",
+                            exception);
                         transaction.Rollback();
                         return false;
                     }
+                }
+            }
+        }
+
+        public async Task<File> Load(int id, int id_locale = -1)
+        {
+            var sqlFileQuery = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
+
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
+                    if (id_locale != -1)
+                    {
+                        var sqlLocalizationProjectQuery = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @ID_LocalizationProject";
+                        var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { file.ID });
+                        var sqlTranslationSubstringsQuery = "SELECT * FROM \"TranslationSubstring\" WHERE \"ID_FileOwner\" = @id";
+                        var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
+                        translationSubstrings.Sort((x, y) => x.PositionInText.CompareTo(y.PositionInText));
+                        var output = file.OriginalFullText;
+                        for (int i = translationSubstrings.Count - 1; i >= 0; i--)
+                        {
+                            var sqlTranslationQuery = string.Format("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale{0} SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND \"Confirmed\" = true" : "");
+                            var translation = await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery, new { translationSubstrings[i].ID, id_locale });
+                            if (translation == null && localizationProject.original_if_string_is_not_translated) continue;
+                            output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
+                        }
+                        //how to send output file to front-end?
+                    }
+                    else
+                    {
+                        //using (var sw = new System.IO.StreamWriter(System.IO.File.Open("NEED_filePath", System.IO.FileMode.CreateNew), Encoding.GetEncoding(file.Encoding)))
+                        //{
+                        //    sw.Write(file.OriginalFullText);
+                        //}
+                        //how to send original file to front-end ?
+                    }
+                    return null;
+                }
+                catch (NpgsqlException exception)
+                {
+                    this._loggerError.WriteLn("Ошибка в Upload NpgsqlException ", exception);
+                    return null;
+                }
+                catch (Exception exception)
+                {
+                    this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} Exception ", exception);
+                    return null;
                 }
             }
         }
@@ -366,17 +408,35 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = new Query("Files")
-                    .Where("ID_LocalizationProject", projectId);
+                    .Where("ID_LocalizationProject", projectId)
+                    .Where("IsLastVersion", true);
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
-                var files = await dbConnection.QueryAsync<File>(
+                return await dbConnection.QueryAsync<File>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings
                     );
-                dbConnection.Close();
-                return files;
+            }
+        }
+
+        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
+        {
+            var fileNamesSearchPattern = $"%{fileNamesSearch}%";
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query = new Query("Files")
+                    .Where("ID_LocalizationProject", projectId)
+                    .Where("IsLastVersion", true)
+                    .WhereLike("Name", fileNamesSearchPattern);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                return await dbConnection.QueryAsync<File>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
             }
         }
 

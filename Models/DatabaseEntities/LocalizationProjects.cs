@@ -36,5 +36,11 @@ namespace Models.DatabaseEntities
         public bool NotifyConfirm { get; set; }
 
         public byte[] Logo { get; set; }
+
+        public bool notifynewcomment { get; set; }
+
+        public bool original_if_string_is_not_translated { get; set; }
+
+        public bool export_only_approved_translations { get; set; }
     }
 }

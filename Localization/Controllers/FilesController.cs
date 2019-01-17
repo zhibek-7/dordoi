@@ -33,10 +33,14 @@ namespace Localization.WebApi
             return Ok(files);
         }
 
-        [HttpGet("byProjectId/{projectId}")]
-        public async Task<ActionResult<IEnumerable<Node<File>>>> GetByProjectId(int projectId)
+        public class GetByProjectIdParams
         {
-            var files = await this._filesService.GetByProjectIdAsync(projectId: projectId);
+            public string FileNamesSearch { get; set; }
+        }
+        [HttpPost("byProjectId/{projectId}")]
+        public async Task<ActionResult<IEnumerable<Node<File>>>> GetByProjectId(int projectId, [FromBody] GetByProjectIdParams param)
+        {
+            var files = await this._filesService.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: param.FileNamesSearch);
             if (files == null)
             {
                 return BadRequest("Files not found");

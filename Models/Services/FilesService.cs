@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 using Models.Extensions;
@@ -30,10 +31,19 @@ namespace Models.Services
             return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
         }
 
-        public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(int projectId)
+        public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
         {
-            var files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId);
-            return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
+            IEnumerable<File> files;
+            if (string.IsNullOrEmpty(fileNamesSearch))
+            {
+                files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId);
+                return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => this.GetIconByFile(file));
+            }
+            else
+            {
+                files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch);
+                return files?.Select(file => new Node<File>(file, this.GetIconByFile(file)));
+            }
         }
 
         public async Task<File> GetById(int id)
@@ -51,7 +61,7 @@ namespace Models.Services
             var foundedFile = await this._filesRepository.GetByNameAndParentId(fileName, parentId);
             if (foundedFile != null)
             {
-                throw new Exception($"File \"{fileName}\" already exists");
+                throw new Exception($"Файл \"{fileName}\" уже есть.");
             }
 
             string fileContent = string.Empty;
@@ -74,6 +84,7 @@ namespace Models.Services
                 //TODO: file encoding
                 Encoding = "",
                 ID_LocalizationProject = projectId,
+                IsLastVersion = true,
             };
 
             return await this.AddNode(newFile, insertToDbAction: this.InsertFileToDbAsync);
@@ -84,7 +95,7 @@ namespace Models.Services
             var foundedFolder = await this._filesRepository.GetByNameAndParentId(newFolderModel.Name, newFolderModel.ParentId);
             if (foundedFolder != null)
             {
-                throw new Exception($"Folder \"{newFolderModel.Name}\" already exists");
+                throw new Exception($"Папка \"{newFolderModel.Name}\" уже есть.");
             }
 
             var newFolder = new File
@@ -100,40 +111,40 @@ namespace Models.Services
         public async Task UpdateNode(int id, File file)
         {
             // Check if file by id exists in database
-            // var foundedFile = await filesRepository.GetByID(id);
-            // if (foundedFile == null)
-            // {
-            //     throw new Exception($"File by id \"{id}\" not found");
-            // }
+            var foundedFile = await this._filesRepository.GetByIDAsync(id);
+            if (foundedFile == null)
+            {
+                throw new Exception($"Не найдено файла/папки с id \"{id}\".");
+            }
 
             file.ID = id;
             file.DateOfChange = DateTime.Now;
             var updatedSuccessfully = await this._filesRepository.UpdateAsync(file);
             if (!updatedSuccessfully)
             {
-                throw new Exception($"Failed to update file with id \"{id}\" in database");
+                throw new Exception($"Не удалось обновить файл \"{foundedFile.Name}\".");
             }
         }
 
         public async Task DeleteNode(int id)
         {
             // Check if file by id exists in database
-            // var foundedFile = await filesRepository.GetByID(id);
-            // if (foundedFile == null)
-            // {
-            //     throw new Exception($"File by id \"{id}\" not found");
-            // }
+            var foundedFile = await this._filesRepository.GetByIDAsync(id);
+            if (foundedFile == null)
+            {
+                throw new Exception($"Не найдено файла/папки с id \"{id}\".");
+            }
 
             var glossary = await this._glossaryRepository.GetByFileIdAsync(id);
             if (glossary != null)
             {
-                throw new Exception("Deletion of glossary file is forbidden.");
+                throw new Exception("Удаление файла словаря запрещено.");
             }
 
             var deleteSuccessfully = await this._filesRepository.RemoveAsync(id);
             if (!deleteSuccessfully)
             {
-                throw new Exception($"Failed to remove file with id \"{id}\" from database");
+                throw new Exception($"Не удалось удалить файл, имеющий id \"{id}\".");
             }
         }
 
@@ -144,7 +155,7 @@ namespace Models.Services
                 var parentFile = await this._filesRepository.GetByIDAsync(file.ID_FolderOwner.Value);
                 if (parentFile?.IsFolder == false)
                 {
-                    throw new Exception($"Can not add new node \"{file.Name}\" with file as parent node");
+                    throw new Exception($"Нельзя добавить файл/папку \"{file.Name}\", т.к. нельзя иметь файл в качестве родителя.");
                 }
             }
 
@@ -160,7 +171,7 @@ namespace Models.Services
             var fileUploaded = await this._filesRepository.Upload(file);
             if (!fileUploaded)
             {
-                throw new Exception($"Failed to insert file \"{file.Name}\" in database");
+                throw new Exception($"Не удалось добавить файл \"{file.Name}\" в базу данных.");
             }
         }
 
@@ -169,7 +180,7 @@ namespace Models.Services
             var folderAdded = await this._filesRepository.AddAsync(file) > 0;
             if (!folderAdded)
             {
-                throw new Exception($"Failed to insert folder \"{file.Name}\" in database");
+                throw new Exception($"Не удалось добавить папку \"{file.Name}\" в базу данных.");
             }
         }
 
