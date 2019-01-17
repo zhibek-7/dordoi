@@ -57,5 +57,12 @@ namespace Localization.Controllers
         {
             await _glossariesService.DeleteGlossaryAsync(glossaryId);
         }
+
+        [HttpDelete("clearGlossary/{glossaryId}")]
+        public async Task ClearGlossaryAsync(int glossaryId)
+        {
+            await _glossariesService.ClearGlossaryAsync(glossaryId);
+        }
+
     }
 }

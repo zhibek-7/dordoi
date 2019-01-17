@@ -78,11 +78,13 @@ table th
   text-align : justify;
 }
 
-.col-xs-6, {
+.col-xs-6
+{
   width : 10vw;
 }
 
-.col-xs-2{
+.col-xs-2
+{
   width : 1vw;
 }
 

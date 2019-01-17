@@ -26,6 +26,7 @@ import { GlossaryEditableDetailsComponent } from '../components/glossary-editabl
 import { AddGlossaryFormModalComponent } from '../components/add-glossary-form-modal/add-glossary-form-modal.component';
 import { EditGlossaryFormModalComponent } from '../components/edit-glossary-form-modal/edit-glossary-form-modal.component';
 import { ConfirmDeleteGlossaryComponent } from '../components/confirm-delete-glossary/confirm-delete-glossary.component';
+import { ConfirmClearGlossaryOfTermsComponent } from '../components/confirm-clear-glossary-of-terms/confirm-clear-glossary-of-terms.component';
 
 import { GlossaryService } from 'src/app/services/glossary.service';
 import { LanguageService } from 'src/app/services/languages.service';
@@ -42,7 +43,8 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
     GlossaryEditableDetailsComponent,
     AddGlossaryFormModalComponent,
     EditGlossaryFormModalComponent,
-    ConfirmDeleteGlossaryComponent
+    ConfirmDeleteGlossaryComponent,
+    ConfirmClearGlossaryOfTermsComponent
   ],
   imports:
   [

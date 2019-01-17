@@ -20,14 +20,15 @@
     </li>
 
     <li class="nav-item">
-      <button type="button" class="btn nav-element"> Очистить </button>
+      <button type="button" class="btn nav-element" (click)="confirmClearGlossary.show(); getConfirm()"> Очистить </button>
+      <app-confirm-clear-glossary-of-terms #confirmClearGlossary [glossary]="glossaryForConfirm" (confirmedClear)="clearGlossary($event)"></app-confirm-clear-glossary-of-terms>
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="confirmDeleteGlossary.show(); getConfirmDeleteGlossary()">
+      <button class="btn nav-element" (click)="confirmDeleteGlossary.show(); getConfirm()">
         <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
       </button>
-      <app-confirm-delete-glossary #confirmDeleteGlossary [glossary]="glossaryForDelete" (confirmedDelete)="deleteGlossary($event)"></app-confirm-delete-glossary>
+      <app-confirm-delete-glossary #confirmDeleteGlossary [glossary]="glossaryForConfirm" (confirmedDelete)="deleteGlossary($event)"></app-confirm-delete-glossary>
     </li>
 
   </ul>

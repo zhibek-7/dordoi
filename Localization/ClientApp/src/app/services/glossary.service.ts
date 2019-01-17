@@ -43,4 +43,10 @@ export class GlossaryService
   {
     return this.httpClient.delete(GlossaryService.connectionUrl + "deleteGlossary/" + glossaryId);
   }
+
+  clearGlossary(glossaryId: number): Observable<Object>
+  {
+    return this.httpClient.delete(GlossaryService.connectionUrl + "clearGlossary/" + glossaryId);
+  }
+
 }

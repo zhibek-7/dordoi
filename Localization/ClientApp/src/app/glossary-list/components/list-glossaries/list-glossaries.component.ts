@@ -24,7 +24,7 @@ export class ListGlossariesComponent implements OnInit
   isDataSourceLoaded: boolean = true;
 
   newGlossary: GlossariesForEditing = new GlossariesForEditing(); //переименовать в editableGlossary
-  glossaryForDelete: Glossary = new Glossary();
+  glossaryForConfirm: Glossary = new Glossary();
 
   private indexSelected: number;
 
@@ -71,17 +71,22 @@ export class ListGlossariesComponent implements OnInit
       .subscribe(() => this.requestDataReloadService.requestUpdate());
   }
 
-  getConfirmDeleteGlossary()
+  getConfirm()
   {
     var selectedElement = this.dataSource.data[this.indexSelected].model;
-    this.glossaryForDelete = new Glossary();
-    this.glossaryForDelete.id = selectedElement.id;
-    this.glossaryForDelete.name = selectedElement.name;
+    this.glossaryForConfirm = new Glossary();
+    this.glossaryForConfirm.id = selectedElement.id;
+    this.glossaryForConfirm.name = selectedElement.name;
   }
 
   deleteGlossary(glossary: Glossary)
   {
     this.glossariesService.deleteGlossary(glossary.id)
+      .subscribe(() => this.requestDataReloadService.requestUpdate());
+  }
+
+  clearGlossary(glossary: Glossary) {
+    this.glossariesService.clearGlossary(glossary.id)
       .subscribe(() => this.requestDataReloadService.requestUpdate());
   }
 

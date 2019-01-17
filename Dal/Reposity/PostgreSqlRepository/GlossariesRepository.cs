@@ -141,6 +141,35 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = this._context.Connection)
                 {
                     dbConnection.Open();
+                    /*
+                    при удалени глосария нужно удалить файл, строки, термины и переводы
+                      
+                    все из TranslationSubstrings и Files удалю по Glossaries.ID_File                    
+                    еще Translations (ID_String), на них CommentsImages(ID_Comment),Comments(ID_TranslationSubstrings)
+
+                    констрейны нужно сделать, что бы автоматом
+                    */
+
+
+                    //var queryGlossariesStrings = new Query("GlossariesStrings").Where("ID_Glossary", id).AsDelete();
+                    //var compiledQueryGlossariesStrings = this._compiler.Compile(queryGlossariesStrings);
+                    //this.LogQuery(compiledQueryGlossariesStrings);
+                    //await dbConnection.ExecuteAsync(
+                    //    sql: compiledQueryGlossariesStrings.Sql,
+                    //    param: compiledQueryGlossariesStrings.NamedBindings
+                    //);
+
+                    //var queryTranslationSubstrings = new Query("TranslationSubstrings").Where("ID_FileOwner", fileId).AsDelete();
+                    //var compiledQueryTranslationSubstrings = this._compiler.Compile(queryTranslationSubstrings);
+                    //this.LogQuery(compiledQueryTranslationSubstrings);
+                    //await dbConnection.ExecuteAsync(
+                    //    sql: compiledQueryTranslationSubstrings.Sql,
+                    //    param: compiledQueryTranslationSubstrings.NamedBindings
+                    //);
+
+
+
+
 
                     var queryGlossariesLocales = new Query("GlossariesLocales").Where("ID_Glossary", id).AsDelete();
                     var compiledQueryGlossariesLocales = this._compiler.Compile(queryGlossariesLocales);
@@ -174,5 +203,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 throw ex;
             }
         }
+        
     }
 }

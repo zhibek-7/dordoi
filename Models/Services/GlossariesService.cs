@@ -10,9 +10,12 @@ namespace Models.Services
     {
         private readonly IGlossariesRepository _glossariesRepository;
 
-        public GlossariesService(IGlossariesRepository glossariesRepository)
+        private readonly GlossaryService _glossaryService;
+        
+        public GlossariesService(IGlossariesRepository glossariesRepository, GlossaryService glossaryService)
         {
             _glossariesRepository = glossariesRepository;
+            _glossaryService = glossaryService;
         }
 
 
@@ -35,5 +38,11 @@ namespace Models.Services
         {
             await _glossariesRepository.DeleteGlossaryAsync(id);
         }
+
+        public async Task ClearGlossaryAsync(int id)
+        {
+            //await _glossaryService.DeleteTermsAsync(id);
+        }
+
     }
 }
