@@ -52,7 +52,7 @@ export class FileService {
     }
     else {
       // null is not valid, eliding parameter is not valid
-      formData.append('parentId', 'null');
+      formData.append('parentId', '');
     }
 
     return this.http.post<TreeNode>(url, formData);
