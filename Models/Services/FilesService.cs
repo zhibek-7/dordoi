@@ -58,7 +58,7 @@ namespace Models.Services
 
         public async Task<Node<File>> AddFile(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
         {
-            var foundedFile = await this._filesRepository.GetByNameAndParentId(fileName, parentId);
+            var foundedFile = await this._filesRepository.GetLastVersionByNameAndParentId(fileName, parentId);
             if (foundedFile != null)
             {
                 throw new Exception($"Файл \"{fileName}\" уже есть.");
@@ -71,28 +71,76 @@ namespace Models.Services
                 fileContent = fileContentStreamReader.ReadToEnd();
             }
 
-            var newFile = new File
-            {
-                Name = fileName,
-                DateOfChange = DateTime.Now,
-                OriginalFullText = fileContent,
-                StringsCount = 0,
-                Version = 0,
-                Priority = 0,
-                IsFolder = false,
-                ID_FolderOwner = parentId,
-                //TODO: file encoding
-                Encoding = "",
-                ID_LocalizationProject = projectId,
-                IsLastVersion = true,
-            };
+            var newFile = this.GetNewFileModel();
+            newFile.Name = fileName;
+            newFile.OriginalFullText = fileContent;
+            newFile.ID_FolderOwner = parentId;
+            newFile.ID_LocalizationProject = projectId;
 
             return await this.AddNode(newFile, insertToDbAction: this.InsertFileToDbAsync);
         }
 
+        public async Task<Node<File>> UpdateFileVersion(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
+        {
+            var version = 0;
+            var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentId(fileName, parentId);
+            if (lastVersionDbFile != null)
+            {
+                if (lastVersionDbFile.IsFolder)
+                {
+                    throw new Exception("Нельзя обновить папку.");
+                }
+
+                lastVersionDbFile.IsLastVersion = false;
+                if (!lastVersionDbFile.Version.HasValue)
+                {
+                    lastVersionDbFile.Version = 0;
+                }
+                version = lastVersionDbFile.Version.Value + 1;
+
+                // TODO: single transaction?
+                var updatedSuccessfully = await this._filesRepository.UpdateAsync(lastVersionDbFile);
+                if (!updatedSuccessfully)
+                {
+                    throw new Exception("Не удалось обновить старый файл.");
+                }
+            }
+
+            string fileContent = string.Empty;
+            using (fileContentStream)
+            using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
+            {
+                fileContent = fileContentStreamReader.ReadToEnd();
+            }
+
+            var newVersionFile = this.GetNewFileModel();
+            newVersionFile.Name = fileName;
+            newVersionFile.OriginalFullText = fileContent;
+            newVersionFile.ID_FolderOwner = parentId;
+            newVersionFile.ID_LocalizationProject = projectId;
+            newVersionFile.Version = version;
+
+            return await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
+        }
+
+        private File GetNewFileModel()
+        {
+            return new File()
+            {
+                DateOfChange = DateTime.Now,
+                StringsCount = 0,
+                Version = 0,
+                Priority = 0,
+                IsFolder = false,
+                //TODO: file encoding
+                Encoding = "",
+                IsLastVersion = true,
+            };
+        }
+
         public async Task<Node<File>> AddFolder(FolderModel newFolderModel)
         {
-            var foundedFolder = await this._filesRepository.GetByNameAndParentId(newFolderModel.Name, newFolderModel.ParentId);
+            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentId(newFolderModel.Name, newFolderModel.ParentId);
             if (foundedFolder != null)
             {
                 throw new Exception($"Папка \"{newFolderModel.Name}\" уже есть.");
@@ -118,6 +166,8 @@ namespace Models.Services
             }
 
             file.ID = id;
+            file.Version = foundedFile.Version;
+            file.IsLastVersion = foundedFile.IsLastVersion;
             file.DateOfChange = DateTime.Now;
             var updatedSuccessfully = await this._filesRepository.UpdateAsync(file);
             if (!updatedSuccessfully)
@@ -161,7 +211,7 @@ namespace Models.Services
 
             await insertToDbAction(file);
 
-            var addedFile = await this._filesRepository.GetByNameAndParentId(file.Name, file.ID_FolderOwner);
+            var addedFile = await this._filesRepository.GetLastVersionByNameAndParentId(file.Name, file.ID_FolderOwner);
             var icon = GetIconByFile(addedFile);
             return new Node<File>(addedFile, icon);
         }

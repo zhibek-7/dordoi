@@ -77,6 +77,17 @@ namespace Localization.WebApi
                     projectId: projectId);
         }
 
+        [HttpPost("updateFileVersion/byProjectId/{projectId}")]
+        public async Task<ActionResult<Node<File>>> UpdateFileVersion(IFormFile file, [FromForm] int? parentId, int projectId)
+        {
+            using (var fileContentStream = file.OpenReadStream())
+                return await this._filesService.UpdateFileVersion(
+                    fileName: file.FileName,
+                    fileContentStream: fileContentStream,
+                    parentId: parentId,
+                    projectId: projectId);
+        }
+
         // POST api/files/add/folder
         [HttpPost("add/folderByProjectId/{projectId}")]
         public async Task<ActionResult<Node<File>>> AddFolder([FromBody] FolderModel newFolder, int projectId)

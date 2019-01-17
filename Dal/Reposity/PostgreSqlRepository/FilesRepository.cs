@@ -114,30 +114,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetByNameAndParentId(string name, int? parentId)
+        public async Task<File> GetLastVersionByNameAndParentId(string name, int? parentId)
         {
-            var parentExp = parentId.HasValue ? "\"ID_FolderOwner\" = @parentId" : "\"ID_FolderOwner\" IS NULL";
-            var sqlString = $"SELECT * FROM \"Files\" WHERE \"Name\" LIKE @name AND {parentExp}";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { name, parentId };
-                    this.LogQuery(sqlString, param);
-                    return await connection.QuerySingleOrDefaultAsync<File>(sqlString, param);
+                    var query = new Query("Files")
+                        .Where("ID_FolderOwner", parentId)
+                        .WhereLike("Name", name)
+                        .Where("IsLastVersion", true);
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    return await connection.QuerySingleOrDefaultAsync<File>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                        );
                 }
             }
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByNameAndParentId)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetLastVersionByNameAndParentId)} {nameof(NpgsqlException)} ",
                     exception);
                 return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByNameAndParentId)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetLastVersionByNameAndParentId)} {nameof(Exception)} ",
                     exception);
                 return null;
             }

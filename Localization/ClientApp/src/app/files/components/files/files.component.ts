@@ -76,6 +76,18 @@ export class FilesComponent implements OnInit {
     );
   }
 
+  updateFileVersion(event: any, oldNode: TreeNode): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.fileService.updateFileVersion(file, this.projectsService.currentProjectId)
+        .subscribe(newNode => {
+          let parentNode = oldNode.parent;
+          this.deleteNode(oldNode);
+          this.addNode(newNode, parentNode);
+        })
+    }
+  }
+
   addNode(addedNode: TreeNode, parent: TreeNode): void {
     // Nodes (parent children or root)
     const nodes = parent ? [...parent.children] : [...this.files];
@@ -98,21 +110,25 @@ export class FilesComponent implements OnInit {
     this.reloadView();
   }
 
-  deleteNode(node: TreeNode): void {
+  deleteFile(node: TreeNode): void {
     this.fileService.deleteNode(node.data)
       .subscribe(response => {
         console.log(response);
-        let indexOfNodeInRootFiles = this.files.lastIndexOf(node);
-        let nodeIsRoot = indexOfNodeInRootFiles > -1;
-        if (nodeIsRoot) {
-          this.files.splice(indexOfNodeInRootFiles, 1);
-        }
-        else {
-          let parentChildren = node.parent.children;
-          parentChildren.splice(parentChildren.lastIndexOf(node), 1);
-        }
-        this.reloadView();
+        this.deleteNode(node);
       });
+  }
+
+  deleteNode(node: TreeNode) {
+    let indexOfNodeInRootFiles = this.files.lastIndexOf(node);
+    let nodeIsRoot = indexOfNodeInRootFiles > -1;
+    if (nodeIsRoot) {
+      this.files.splice(indexOfNodeInRootFiles, 1);
+    }
+    else {
+      let parentChildren = node.parent.children;
+      parentChildren.splice(parentChildren.lastIndexOf(node), 1);
+    }
+    this.reloadView();
   }
 
   reloadView() {
