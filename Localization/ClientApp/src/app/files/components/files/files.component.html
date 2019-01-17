@@ -22,6 +22,9 @@
         <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
         {{rowData.name}}
       </td>
+      <td class="col-xs-2">
+        {{rowData.dateOfChange | date: 'dd/MM/yyyy'}}
+      </td>
       <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
         {{rowData.stringsCount}}
       </td>

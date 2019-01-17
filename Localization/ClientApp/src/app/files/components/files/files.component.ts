@@ -38,6 +38,7 @@ export class FilesComponent implements OnInit {
 
     this.cols = [
       { field: 'name', header: 'Имя' },
+      { field: 'dateOfChange', header: 'Дата изменения' },
       { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
       { width: '50px' },
       { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
