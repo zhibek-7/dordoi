@@ -180,29 +180,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<int> AddAsync(File file)
         {
-            var sqlString = this._insertFileSql;
-            try
+            var sqlString = this._insertFileSql + " RETURNING \"ID\"";
+            using (var connection = new NpgsqlConnection(connectionString))
             {
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    this.LogQuery(sqlString, param: file);
-                    // return count of inserted rows
-                    return await connection.ExecuteAsync(sqlString, file);
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddAsync)} {nameof(NpgsqlException)} ",
-                    exception);
-                return 0;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddAsync)} {nameof(Exception)} ",
-                    exception);
-                return 0;
+                this.LogQuery(sqlString, param: file);
+                return await connection.ExecuteScalarAsync<int>(sqlString, file);
             }
         }
 

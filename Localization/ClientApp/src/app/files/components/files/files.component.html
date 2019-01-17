@@ -3,6 +3,10 @@
     <label class="btn btn-secondary">Добавить файл <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
     <button class="btn btn-secondary" (click)="addFolderModal.show()">Создать папку</button>
     <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event)"></app-add-folder-modal>
+    <button class="btn btn-secondary" (click)="folderInput.value = ''; folderInput.click()">
+      Загрузить папку
+      <input type="file" #folderInput webkitdirectory style="display: none;" (change)="uploadFolder(folderInput.files)">
+    </button>
   </div>
   <div class="col">
     <input type="text" [(ngModel)]="searchFilesNamesString" (input)="getFiles()" placeholder="Искать по файлам" />
@@ -53,6 +57,10 @@
             </button>
             <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolderModal.show()">
               Создать папку
+            </button>
+            <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="folderInput.value = ''; folderInput.click()">
+              Загрузить папку
+              <input type="file" #folderInput webkitdirectory style="display: none;" (change)="uploadFolder(folderInput.files, rowNode.node)">
             </button>
             <div class="dropdown-divider" *ngIf="rowData.isFolder"></div>
             <button class="dropdown-item" *ngIf="!rowData.isFolder" (click)="updateFileInput.click()">

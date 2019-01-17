@@ -80,6 +80,25 @@ export class FileService {
     return this.http.post<TreeNode>(url, { name, parentId });
   }
 
+  uploadFolder(files, projectId: number, parentId?: number): Observable<any> {
+    const url = `${this._url}/upload/folderByProjectId/${projectId}`;
+
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('files', file, file.webkitRelativePath);
+    }
+    if (parentId) {
+      formData.append('parentId', parentId.toString());
+    }
+    else {
+      // null is not valid, eliding parameter is not valid
+      formData.append('parentId', '');
+    }
+
+    return this.http.post<TreeNode>(url, formData)
+      .pipe(catchError(this.handleError('Upload folder')));
+  }
+
   updateNode(data: FileData): Observable<any> {
     const url = `${this._url}/update/${data.id}`;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Models.DatabaseEntities;
 using Models.Extensions;
 using Models.Interfaces.Repository;
@@ -138,6 +139,25 @@ namespace Models.Services
             };
         }
 
+        private File GetNewFolderModel()
+        {
+            return new File()
+            {
+                DateOfChange = DateTime.Now,
+                IsFolder = true,
+                IsLastVersion = true,
+            };
+        }
+
+        private File GetNewFolderModel(string folderName, int? folderOwnerId, int localizationProjectId)
+        {
+            var newFolder = this.GetNewFolderModel();
+            newFolder.Name = folderName;
+            newFolder.ID_FolderOwner = folderOwnerId;
+            newFolder.ID_LocalizationProject = localizationProjectId;
+            return newFolder;
+        }
+
         public async Task<Node<File>> AddFolder(FolderModel newFolderModel)
         {
             var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentId(newFolderModel.Name, newFolderModel.ParentId);
@@ -146,14 +166,57 @@ namespace Models.Services
                 throw new Exception($"Папка \"{newFolderModel.Name}\" уже есть.");
             }
 
-            var newFolder = new File
-            {
-                Name = newFolderModel.Name,
-                IsFolder = true,
-                ID_FolderOwner = newFolderModel.ParentId,
-                ID_LocalizationProject = newFolderModel.ProjectId
-            };
+            var newFolder = this.GetNewFolderModel(
+                folderName: newFolderModel.Name,
+                folderOwnerId: newFolderModel.ParentId,
+                localizationProjectId: newFolderModel.ProjectId
+                );
             return await AddNode(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
+        }
+
+        public async Task AddFolderWithContents(IFormFileCollection files, int? parentId, int projectId)
+        {
+            foreach (var file in files)
+            {
+                var relativePathToFile = file.FileName;
+                var directoriesToFile =
+                    System.IO.Path.GetDirectoryName(relativePathToFile)
+                        .Split(System.IO.Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+                var lastParentId = parentId;
+                foreach(var directoryName in directoriesToFile)
+                {
+                    var directoryDbModel = await this._filesRepository.GetLastVersionByNameAndParentId(directoryName, lastParentId);
+                    if (directoryDbModel == null)
+                    {
+                        var newFolder = this.GetNewFolderModel(
+                            folderName: directoryName,
+                            folderOwnerId: lastParentId,
+                            localizationProjectId: projectId
+                            );
+                        lastParentId = await this._filesRepository.AddAsync(newFolder);
+                    }
+                    else
+                    {
+                        lastParentId = directoryDbModel.ID;
+                    }
+                }
+
+                var fileName = System.IO.Path.GetFileName(relativePathToFile);
+
+                string fileContent = string.Empty;
+                using (var fileContentStream = file.OpenReadStream())
+                using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
+                {
+                    fileContent = fileContentStreamReader.ReadToEnd();
+                }
+
+                var newFile = this.GetNewFileModel();
+                newFile.Name = fileName;
+                newFile.OriginalFullText = fileContent;
+                newFile.ID_FolderOwner = lastParentId;
+                newFile.ID_LocalizationProject = projectId;
+                await this.InsertFileToDbAsync(newFile);
+            }
         }
 
         public async Task UpdateNode(int id, File file)
@@ -227,10 +290,13 @@ namespace Models.Services
 
         private async Task InsertFolderToDbAsync(File file)
         {
-            var folderAdded = await this._filesRepository.AddAsync(file) > 0;
-            if (!folderAdded)
+            try
             {
-                throw new Exception($"Не удалось добавить папку \"{file.Name}\" в базу данных.");
+                await this._filesRepository.AddAsync(file);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Не удалось добавить папку \"{file.Name}\" в базу данных.", exception);
             }
         }
 

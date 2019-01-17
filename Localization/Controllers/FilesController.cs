@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -94,6 +95,16 @@ namespace Localization.WebApi
         {
             newFolder.ProjectId = projectId;
             return await this._filesService.AddFolder(newFolder);
+        }
+
+        [HttpPost("upload/folderByProjectId/{projectId}")]
+        public async Task UploadFolderWithContents(IFormFileCollection files, [FromForm] int? parentId, int projectId)
+        {
+            await this._filesService.AddFolderWithContents(
+                files: files,
+                parentId: parentId,
+                projectId: projectId
+                );
         }
 
         // PUT api/files/update/5

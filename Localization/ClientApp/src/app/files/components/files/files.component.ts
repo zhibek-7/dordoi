@@ -68,6 +68,15 @@ export class FilesComponent implements OnInit {
     );
   }
 
+  uploadFolder(files, parentNode?: TreeNode): void {
+    const parentId = parentNode ? parentNode.data.id : null;
+
+    this.fileService.uploadFolder(files, this.projectsService.currentProjectId, parentId).subscribe(
+      () => {
+        this.getFiles();
+      });
+  }
+
   addFile(file: File, parentNode: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
