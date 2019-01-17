@@ -37,11 +37,11 @@ export class FilesComponent implements OnInit {
     console.log('Projec=' + sessionStorage.getItem('Projec'));
 
     this.cols = [
-      { field: 'name', header: 'Name' },
-      { field: 'stringsCount', header: 'Strings', width: '100px', textalign: 'right' },
+      { field: 'name', header: 'Имя' },
+      { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
       { width: '50px' },
-      { field: 'version', header: 'Version', width: '80px', textalign: 'center' },
-      { field: 'priority', header: 'Priority', width: '80px', textalign: 'center' },
+      { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
+      { field: 'priority', header: 'Приоритет', width: '80px', textalign: 'center' },
       { width: '50px' }
     ];
 
