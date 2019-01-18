@@ -11,6 +11,7 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch);
         Task<File> GetLastVersionByNameAndParentId(string name, int? parentId);
         IEnumerable<File> GetInitialFolders(int projectId);
+        Task RemoveAllVersionsAsync(File file);
     }
 
 

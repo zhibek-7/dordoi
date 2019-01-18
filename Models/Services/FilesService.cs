@@ -242,9 +242,9 @@ namespace Models.Services
             }
         }
 
-        public async Task DeleteNode(int id)
+        public async Task DeleteNode(File file)
         {
-            // Check if file by id exists in database
+            var id = file.ID;
             var foundedFile = await this._filesRepository.GetByIDAsync(id);
             if (foundedFile == null)
             {
@@ -257,11 +257,7 @@ namespace Models.Services
                 throw new Exception("Удаление файла словаря запрещено.");
             }
 
-            var deleteSuccessfully = await this._filesRepository.RemoveAsync(id);
-            if (!deleteSuccessfully)
-            {
-                throw new Exception($"Не удалось удалить файл, имеющий id \"{id}\".");
-            }
+            await this._filesRepository.RemoveAllVersionsAsync(file: file);
         }
 
         private async Task<Node<File>> AddNode(File file, Func<File, Task> insertToDbAction)
