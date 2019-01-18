@@ -1,4 +1,4 @@
-<form  [formGroup]="settings_proj" name="formName" (ngSubmit)="addProject()">
+<form  [formGroup]="settings_proj" name="formName" (ngSubmit)="editProject()">
   <div style="display: inline-block;" >
     <mat-form-field>
       <input matInput  formControlName="pjName" name="ctrlName " value='{{currentProjectName}}'  [(ngModel)]="currentProjectName"  placeholder="Название проекта">
@@ -64,7 +64,7 @@
   
   </div>
   <div>
-    <button type="submit" mat-raised-button color="primary" style="width: 15rem;" (click)="addProject()">Сохранить проект</button>
+    <button type="submit" mat-raised-button color="primary" style="width: 15rem;" (click)="editProject()">Сохранить проект</button>
 
     <!--<a class="nav-item nav-link" routerLink='/create-project/all-settings/'>-->
 

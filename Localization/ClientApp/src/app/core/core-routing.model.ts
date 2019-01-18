@@ -70,7 +70,6 @@ const routes: Routes = [
   //{
   //  path: 'delete/:id',
   //  component: DeleteProjectComponent
-
   //},
   {
     path: 'user-registration',
