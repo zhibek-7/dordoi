@@ -51,9 +51,9 @@
             Меню
           </button>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="contextMenu">
-            <button class="dropdown-item" *ngIf="rowData.isFolder">
+            <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="fileInput.value = ''; fileInput.click()">
               Добавить файл
-              <input type="file" style="display: none;" (change)="onFileUpload($event, rowNode.node)">
+              <input type="file" #fileInput style="display: none;" (change)="onFileUpload($event, rowNode.node)">
             </button>
             <button class="dropdown-item" *ngIf="rowData.isFolder" (click)="addFolderModal.show()">
               Создать папку
