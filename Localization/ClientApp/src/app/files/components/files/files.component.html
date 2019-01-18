@@ -65,6 +65,7 @@
             <div class="dropdown-divider" *ngIf="rowData.isFolder"></div>
             <button class="dropdown-item" *ngIf="!rowData.isFolder" (click)="updateFileInput.click()">
               Обновить
+              <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
             </button>
             <div class="dropdown-divider" *ngIf="!rowData.isFolder"></div>
             <button class="dropdown-item" (click)="renameNode(rowNode.node)" disabled>
