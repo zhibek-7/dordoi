@@ -116,10 +116,10 @@ namespace Localization.WebApi
         }
 
         // DELETE api/files/delete/5
-        [HttpPost("delete")]
-        public async Task<IActionResult> DeleteNode([FromBody] File fileToDelete)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteNode(int id)
         {
-            await this._filesService.DeleteNode(fileToDelete);
+            await this._filesService.DeleteNode(id);
             return Ok();
         }
 

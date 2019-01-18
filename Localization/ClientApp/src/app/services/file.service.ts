@@ -107,9 +107,9 @@ export class FileService {
   }
 
   deleteNode(data: FileData): Observable<any> {
-    const url = `${this._url}/delete`;
+    const url = `${this._url}/delete/${data.id}`;
 
-    return this.http.post(url, data)
+    return this.http.delete(url)
       .pipe(catchError(this.handleError('Delete node')));
   }
 
