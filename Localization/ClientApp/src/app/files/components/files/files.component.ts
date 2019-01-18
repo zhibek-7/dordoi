@@ -89,9 +89,10 @@ export class FilesComponent implements OnInit {
   updateFileVersion(event: any, oldNode: TreeNode): void {
     const file = event.target.files[0];
     if (file) {
-      this.fileService.updateFileVersion(file, this.projectsService.currentProjectId)
+      const parentNode = oldNode.parent;
+      const parentId = parentNode ? parentNode.data.id : null;
+      this.fileService.updateFileVersion(file, this.projectsService.currentProjectId, parentId)
         .subscribe(newNode => {
-          let parentNode = oldNode.parent;
           this.deleteNode(oldNode);
           this.addNode(newNode, parentNode);
         })
