@@ -44,12 +44,24 @@ export class ProjectsService {
 
 
     //return this.httpClient.get<Project>(this.controllerUrl + 1);
-    }
+  }
 
-  updateProject(Id: number) {
-    console.log("updateProject-->" +Id);
-    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "edit/{Id}");
-    }
+
+
+  async updateProject(Id: number, project: LocalizationProject) {
+    console.log("updateProject-->" + Id);
+    console.log(project);
+    project.id = Id;
+    let asyncResult = await this.httpClient.post<LocalizationProject>(this.controllerUrl + "edit/" + Id, project).toPromise();
+
+    return asyncResult;
+  }
+
+
+  //updateProject(Id: number, project: LocalizationProject) {
+  //  console.log("updateProject-->" + Id);
+  //  return this.httpClient.get<LocalizationProject>(this.controllerUrl + "edit/" + Id);
+  //  }
   deleteProject(Id: number) {
     console.log("deleteProject-->" + Id);
     return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id );

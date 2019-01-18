@@ -79,11 +79,53 @@ export class AllSettingsComponent implements OnInit {
     console.log("!!!=" + this.settings_proj.get('pjFileTrue').value);
     console.log("!!!=" + this.settings_proj.get('pjSkipUntranslStrTrue').value);
     console.log("!!!=" + this.settings_proj.get('pjExportTrue').value);
-    let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
+    //let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
 
-    this.projectsService.addProject(newProject);
+   // this.projectsService.addProject(newProject);
+  }
+  editProject(Id: number): void {
+    console.log("!!!=" + this.settings_proj.get('pjName').value);
+    console.log("!!!=" + this.settings_proj.get('pjDescription').value);
+    console.log("!!!=" + this.settings_proj.get('pjPublic').value);
+    console.log("!!!=" + this.settings_proj.get('pjPrivate').value);
+    console.log("!!!=" + this.settings_proj.get('pjFileTrue').value);
+    console.log("!!!=" + this.settings_proj.get('pjSkipUntranslStrTrue').value);
+    console.log("!!!=" + this.settings_proj.get('pjExportTrue').value);
+    let newProject: LocalizationProject = new LocalizationProject(
+      this.currentProjectId,
+      this.settings_proj.get('pjName').value,
+      this.settings_proj.get('pjDescription').value,
+     // this.settings_proj.get('pjDescription').value,
+      this.settings_proj.get('pjPublic').value,//visibility
+    //  this.settings_proj.get('pjDescription').value,//date dateOfCreation
+     // this.settings_proj.get('pjDescription').value,//date lastActivity
+      this.settings_proj.get('pjFileTrue').value,//ableToDownload
+      this.settings_proj.get('pjSkipUntranslStrTrue').value,//ableToLeftErrors
+      this.settings_proj.get('pjExportTrue').value,
+      this.settings_proj.get('pjPublic').value,
+      this.settings_proj.get('pjExportTrue').value,
+      this.settings_proj.get('pjExportTrue').value,
+      this.settings_proj.get('pjExportTrue').value,
+      this.settings_proj.get('pjExportTrue').value,
+      this.settings_proj.get('pjExportTrue').value);// поменять на id реального пользователя, когда появится
+    Id = this.currentProjectId;
+    this.projectsService.updateProject(Id, newProject);
   }
 
 
+  /*
+visibility: boolean,
+    dateOfCreation: Date,
+    lastActivity: Date,
+    ableToDownload: boolean,
+    ableToLeftErrors: boolean,
+    defaultString: boolean,
+    notifyNew: boolean,
+    notifyFinish: boolean,
+    notifyConfirm: boolean,
+    notifynewcomment: boolean,
+    export_only_approved_translations: boolean,
+    original_if_string_is_not_translated: boolean
+*/
 }
 
