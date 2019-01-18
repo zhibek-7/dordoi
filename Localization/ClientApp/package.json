@@ -30,6 +30,7 @@
     "jquery-ui": "^1.12.1",
     "moment": "2.22.2",
     "ngx-daterangepicker-material": "^1.2.6",
+    "ngx-spinner": "^6.1.2",
     "npm": "^6.5.0",
     "primeng": "^7.0.0",
     "primeui": "^4.1.15",
