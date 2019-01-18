@@ -219,6 +219,20 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task RemoveAllVersionsAsync(File file)
+        {
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                var query = new Query("Files")
+                    .Where("Name", file.Name)
+                    .Where("ID_FolderOwner", file.ID_FolderOwner)
+                    .AsDelete();
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                await connection.ExecuteAsync(compiledQuery.Sql, compiledQuery.NamedBindings);
+            }
+        }
+
         public async Task<bool> UpdateAsync(File file)
         {
             try
