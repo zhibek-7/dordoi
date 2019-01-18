@@ -257,7 +257,19 @@ namespace Models.Services
                 throw new Exception("Удаление файла словаря запрещено.");
             }
 
-            await this._filesRepository.RemoveAllVersionsAsync(file: file);
+            var tempFileModel = foundedFile;
+            do
+            {
+                await this._filesRepository.RemoveAsync(id: tempFileModel.ID);
+                if (tempFileModel.Id_PreviousVersion.HasValue)
+                {
+                    tempFileModel = await this._filesRepository.GetByIDAsync(tempFileModel.Id_PreviousVersion.Value);
+                }
+                else
+                {
+                    break;
+                }
+            } while (tempFileModel != null);
         }
 
         private async Task<Node<File>> AddNode(File file, Func<File, Task> insertToDbAction)
