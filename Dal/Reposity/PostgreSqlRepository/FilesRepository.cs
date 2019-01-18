@@ -342,16 +342,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> Load(int id, int id_locale = -1)
+        public async Task<System.IO.FileStream> Load(int id, int id_locale = -1)
         {
             var sqlFileQuery = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
-
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
+                    var tempFileName = string.Format("{0}_{1}", System.IO.Path.GetTempPath() + Guid.NewGuid().ToString(), file.Name);
                     if (id_locale != -1)
                     {
                         var sqlLocalizationProjectQuery = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @ID_LocalizationProject";
@@ -367,17 +367,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                             if (translation == null && localizationProject.original_if_string_is_not_translated) continue;
                             output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
-                        //how to send output file to front-end?
+                        
+                        var fs = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+                        {
+                            sw.Write(output);
+                        }
+                        return fs;
                     }
                     else
                     {
-                        //using (var sw = new System.IO.StreamWriter(System.IO.File.Open("NEED_filePath", System.IO.FileMode.CreateNew), Encoding.GetEncoding(file.Encoding)))
-                        //{
-                        //    sw.Write(file.OriginalFullText);
-                        //}
-                        //how to send original file to front-end ?
+                        var fs = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+                        {
+                            sw.Write(file.OriginalFullText);
+                        }
+                        return fs;
                     }
-                    return null;
                 }
                 catch (NpgsqlException exception)
                 {
