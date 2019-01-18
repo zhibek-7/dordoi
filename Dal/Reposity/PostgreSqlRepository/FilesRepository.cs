@@ -152,7 +152,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         //Нужно для формирования отчетов
         public IEnumerable<File> GetInitialFolders(int projectId)
         {
-            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL";
+            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL " +
+                "AND \"IsLastVersion\"=true";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
