@@ -85,7 +85,7 @@ namespace Models.Services
 
         public async Task<Node<File>> UpdateFileVersion(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
         {
-            var version = 0;
+            var version = this._initialFileVersion;
             var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentId(fileName, parentId);
             if (lastVersionDbFile != null)
             {
