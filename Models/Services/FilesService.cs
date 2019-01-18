@@ -122,6 +122,7 @@ namespace Models.Services
             newVersionFile.ID_FolderOwner = parentId;
             newVersionFile.ID_LocalizationProject = projectId;
             newVersionFile.Version = version;
+            newVersionFile.Id_PreviousVersion = lastVersionDbFile?.ID;
 
             return await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
         }

@@ -29,7 +29,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "\"Encoding\", " +
             "\"IsFolder\", " +
             "\"OriginalFullText\", " +
-            "\"IsLastVersion\"" +
+            "\"IsLastVersion\", " +
+            "\"Id_PreviousVersion\"" +
             ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
@@ -43,7 +44,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Encoding, " +
             "@IsFolder, " +
             "@OriginalFullText, " +
-            "@IsLastVersion" +
+            "@IsLastVersion, " +
+            "@Id_PreviousVersion" +
             ")";
 
         private readonly string connectionString;
