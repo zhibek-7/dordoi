@@ -8,7 +8,7 @@ import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
 
 import { UserRegistrationComponent } from '../user-registration/user-registration.component';
-import { DeleteProjectComponent } from '../create-project/components/delete-project/delete-project.component';
+//import { DeleteProjectComponent } from '../create-project/components/delete-project/delete-project.component';
 
 const routes: Routes = [
   {
@@ -67,11 +67,11 @@ const routes: Routes = [
     path: 'pj/:id',
     component: ProjectPageComponent
   },
-  {
-    path: 'delete/:id',
-    component: DeleteProjectComponent
+  //{
+  //  path: 'delete/:id',
+  //  component: DeleteProjectComponent
 
-  },
+  //},
   {
     path: 'user-registration',
     component: UserRegistrationComponent
