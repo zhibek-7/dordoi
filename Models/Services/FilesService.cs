@@ -13,6 +13,8 @@ namespace Models.Services
     public class FilesService
     {
 
+        private readonly int _initialFileVersion = 1;
+
         private readonly IFilesRepository _filesRepository;
 
         private readonly IGlossaryRepository _glossaryRepository;
@@ -95,7 +97,7 @@ namespace Models.Services
                 lastVersionDbFile.IsLastVersion = false;
                 if (!lastVersionDbFile.Version.HasValue)
                 {
-                    lastVersionDbFile.Version = 0;
+                    lastVersionDbFile.Version = this._initialFileVersion;
                 }
                 version = lastVersionDbFile.Version.Value + 1;
 
@@ -130,7 +132,7 @@ namespace Models.Services
             {
                 DateOfChange = DateTime.Now,
                 StringsCount = 0,
-                Version = 0,
+                Version = this._initialFileVersion,
                 Priority = 0,
                 IsFolder = false,
                 //TODO: file encoding
