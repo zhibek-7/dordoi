@@ -38,14 +38,18 @@ namespace Localization
         public void ConfigureServices(IServiceCollection services)
         {
             ///Как идея использовать класс, который видно во всех методах.
-            //var connectionString = Configuration.GetConnectionString("db_connection");
-            var connectionString = Settings.GetStringDB();
+            var connectionString = Configuration.GetConnectionString("db_connection");
+
+            services.AddScoped<ISetttings>(provider => new Settings(connectionString));
+            //var connectionString = Settings.GetStringDB();
 
             // TODO нужно будет переделать все классы под этот вариант
             services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
             services.AddScoped<IGlossaryRepository>(provider => new GlossaryRepository(connectionString));
             services.AddScoped<IGlossariesRepository>(provider => new GlossariesRepository(connectionString));
             services.AddScoped<ITranslationSubstringRepository>(provider => new TranslationSubstringRepository(connectionString));
+
+
 
 
             services.AddScoped<FilesService>();
