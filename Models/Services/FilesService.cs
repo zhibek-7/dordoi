@@ -353,6 +353,11 @@ namespace Models.Services
                 {
                     throw new Exception("Указанный родитель не является папкой.");
                 }
+
+                if (fileId == newParentId.Value)
+                {
+                    throw new Exception("Папка не может быть родительской по отношению к себе.");
+                }
             }
 
             await this._filesRepository.ChangeParentFolderAsync(
