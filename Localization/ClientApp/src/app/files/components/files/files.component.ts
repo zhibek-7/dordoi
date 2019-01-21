@@ -20,11 +20,22 @@ export class FilesComponent implements OnInit {
 
   cols: any[];
 
+  pasteMenuItem: MenuItem;
+
   contextMenuItems: MenuItem[];
 
   searchFilesNamesString: string = '';
 
-  selectedNode: TreeNode;
+  _selectedNode: TreeNode;
+  get selectedNode(): TreeNode {
+    return this._selectedNode;
+  }
+  set selectedNode(value: TreeNode) {
+    this._selectedNode = value;
+    this.pasteMenuItem.visible = this._selectedNode.data.isFolder;
+  }
+
+  cuttedNode: TreeNode;
 
   isLoading: boolean;
 
@@ -50,12 +61,31 @@ export class FilesComponent implements OnInit {
       { }
     ];
 
+    this.pasteMenuItem = { label: 'Вставить', command: (event) => { this.moveCurrentlyCutted(this.selectedNode) }, disabled: true };
     this.contextMenuItems = [
       { label: 'Toggle', command: (event) => { this.toggleFile(this.selectedNode) } },
+      { label: 'Вырезать', command: (event) => { this.pseudoCut(this.selectedNode) } },
+      this.pasteMenuItem,
       { label: 'Удалить', command: (event) => { this.deleteFile(this.selectedNode) } },
     ];
 
     this.getFiles();
+  }
+
+  pseudoCut(selectedNode: TreeNode): void {
+    this.cuttedNode = selectedNode;
+    this.pasteMenuItem.disabled = false;
+  }
+
+  moveCurrentlyCutted(selectedNode: TreeNode): void {
+    this.fileService.changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
+      .subscribe(() => {
+        this.deleteNode(this.cuttedNode);
+        this.addNode(this.cuttedNode, selectedNode);
+        this.cuttedNode = null;
+        this.pasteMenuItem.disabled = true;
+      },
+      error => alert(error));
   }
 
   getFiles(): void {
