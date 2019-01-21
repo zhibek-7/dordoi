@@ -20,5 +20,6 @@ namespace Models.DatabaseEntities
 
         public int ID_LocalizationProject { get; set; }
         public int? ID_FolderOwner { get; set; }
+        public int? Id_PreviousVersion { get; set; }
     }
 }

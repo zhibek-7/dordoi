@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Models.DatabaseEntities
 {
-    public class Translation: BaseEntity
+    public class Translation : BaseEntity
     {
         [Required]
         public int ID_String { get; set; }

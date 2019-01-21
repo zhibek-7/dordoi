@@ -29,7 +29,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "\"Encoding\", " +
             "\"IsFolder\", " +
             "\"OriginalFullText\", " +
-            "\"IsLastVersion\"" +
+            "\"IsLastVersion\", " +
+            "\"Id_PreviousVersion\"" +
             ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
@@ -43,7 +44,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Encoding, " +
             "@IsFolder, " +
             "@OriginalFullText, " +
-            "@IsLastVersion" +
+            "@IsLastVersion, " +
+            "@Id_PreviousVersion" +
             ")";
 
         private readonly string connectionString;
@@ -152,7 +154,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         //Нужно для формирования отчетов
         public IEnumerable<File> GetInitialFolders(int projectId)
         {
-            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL";
+            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL " +
+                "AND \"IsLastVersion\"=true";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -293,26 +296,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                                     "@Value, " +
                                     "@PositionInText" +
                                     ")";
-                        using (var parser = new Parser())
+                        var translationSubstrings = new Parser().Parse(file);
+                        var translationSubstringsCount = translationSubstrings.Count;
+                        var n = translationSubstringsCount;
+                        foreach (var translationSubstring in translationSubstrings)
                         {
-                            var translationSubstrings = parser.Parse(file);
-                            var translationSubstringsCount = translationSubstrings.Count;
-                            var n = translationSubstringsCount;
-                            foreach (var translationSubstring in translationSubstrings)
-                            {
-                                this.LogQuery(sqlString, param: translationSubstring);
-                                n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
-                            }
-                            if (n == 0)
-                            {
-                                file.StringsCount = translationSubstringsCount;
-                                sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
-                                this.LogQuery(sqlString, param: file);
-                                await connection.ExecuteAsync(sqlString, file, transaction);
-                            }
-                            transaction.Commit();
-                            return n == 0;
+                            this.LogQuery(sqlString, param: translationSubstring);
+                            n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
                         }
+                        if (n == 0)
+                        {
+                            file.StringsCount = translationSubstringsCount;
+                            sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
+                            this.LogQuery(sqlString, param: file);
+                            await connection.ExecuteAsync(sqlString, file, transaction);
+                        }
+                        transaction.Commit();
+                        return n == 0;
                     }
                     catch (NpgsqlException exception)
                     {
@@ -342,16 +342,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> Load(int id, int id_locale = -1)
+        public async Task<System.IO.FileStream> Load(int id, int id_locale = -1)
         {
             var sqlFileQuery = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
-
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
+                    var tempFileName = string.Format("{0}_{1}", System.IO.Path.GetTempPath() + Guid.NewGuid().ToString(), file.Name);
                     if (id_locale != -1)
                     {
                         var sqlLocalizationProjectQuery = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @ID_LocalizationProject";
@@ -367,17 +367,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                             if (translation == null && localizationProject.original_if_string_is_not_translated) continue;
                             output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
-                        //how to send output file to front-end?
+                        
+                        var fs = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+                        {
+                            sw.Write(output);
+                        }
+                        return fs;
                     }
                     else
                     {
-                        //using (var sw = new System.IO.StreamWriter(System.IO.File.Open("NEED_filePath", System.IO.FileMode.CreateNew), Encoding.GetEncoding(file.Encoding)))
-                        //{
-                        //    sw.Write(file.OriginalFullText);
-                        //}
-                        //how to send original file to front-end ?
+                        var fs = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+                        {
+                            sw.Write(file.OriginalFullText);
+                        }
+                        return fs;
                     }
-                    return null;
                 }
                 catch (NpgsqlException exception)
                 {

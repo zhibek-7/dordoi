@@ -7,7 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Models.DatabaseEntities;
-using Models.DTO;
+using Models.DatabaseEntities.DTO;
+using Npgsql;
+using System;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -39,20 +41,36 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "LocalizationProjects.ID as LocalizationProjectID",
                     "LocalizationProjects.Name as LocalizationProjectName"
                 );
-
-            using (var dbConnection = this._context.Connection)
+            try
             {
-                dbConnection.Open();
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var glossaries = await dbConnection.QueryAsync<Glossaries>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                var glossaries = await dbConnection.QueryAsync<Glossaries>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
-
-                dbConnection.Close();
-                return glossaries;
+                    dbConnection.Close();
+                    return glossaries;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
         }
 
         public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
@@ -78,8 +96,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     Description = glossary.Description,
                     ID_File = (int?)null
                 };
-                var query = new Query("Glossaries").AsInsert(newGlossaries, true);          
-                               
+                var query = new Query("Glossaries").AsInsert(newGlossaries, true);
+
                 using (var dbConnection = this._context.Connection)
                 {
                     dbConnection.Open();
@@ -128,9 +146,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     dbConnection.Close();
                 }
             }
-            catch (System.Exception ex)
+            catch (NpgsqlException exception)
             {
-                throw ex;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.AddNewGlossaryAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.AddNewGlossaryAsync)} {nameof(Exception)} ",
+                    exception);
             }
         }
 
@@ -178,7 +204,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQueryGlossariesLocales.Sql,
                         param: compiledQueryGlossariesLocales.NamedBindings
                     );
-                    
+
                     var queryLocalizationProjectsGlossaries = new Query("LocalizationProjectsGlossaries").Where("ID_Glossary", id).AsDelete();
                     var compiledQueryLocalizationProjectsGlossaries = this._compiler.Compile(queryLocalizationProjectsGlossaries);
                     this.LogQuery(compiledQueryLocalizationProjectsGlossaries);
@@ -194,15 +220,22 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
                     );
-                    
                     dbConnection.Close();
                 }
             }
-            catch (System.Exception ex)
+            catch (NpgsqlException exception)
             {
-                throw ex;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.DeleteGlossaryAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.DeleteGlossaryAsync)} {nameof(Exception)} ",
+                    exception);
             }
         }
-        
+
     }
 }

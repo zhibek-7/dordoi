@@ -11,7 +11,7 @@ namespace Models.Parser
     /// <summary>
     /// Класс, реализующий логику распарсивания в виде функций-парсеров, обрабатывающих объекты класса <see cref="File"/> и возвращающих списки <see cref="List{}"/> объектов класса <see cref="TranslationSubstring"/>
     /// </summary>
-    public class Parser : IDisposable
+    public class Parser
     {
         /// <summary>
         /// Поле, предназначенное для логирования класса
@@ -347,9 +347,5 @@ namespace Models.Parser
             return ts;
         }
 
-        public void Dispose()
-        {
-            //TODO потом
-        }
     }
 }

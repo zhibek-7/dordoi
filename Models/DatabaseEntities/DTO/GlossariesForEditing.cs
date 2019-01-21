@@ -1,7 +1,7 @@
 ﻿using Models.DatabaseEntities;
 using System.Collections.Generic;
 
-namespace Models.DTO
+namespace Models.DatabaseEntities.DTO
 {
     public class GlossariesForEditing : BaseEntity
     {
@@ -12,6 +12,6 @@ namespace Models.DTO
 
         public IEnumerable<Locale> Locales { get; set; }
 
-        public IEnumerable<localizationProjectForSelectDTO> LocalizationProjects { get; set; }
+        public IEnumerable<LocalizationProjectForSelectDTO> LocalizationProjects { get; set; }
     }
 }

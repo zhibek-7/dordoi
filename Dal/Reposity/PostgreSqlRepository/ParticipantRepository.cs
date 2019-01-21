@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
-using Models.DTO.Participants;
+using Models.DatabaseEntities.DTO.Participants;
 using Models.Interfaces.Repository;
 using SqlKata;
 

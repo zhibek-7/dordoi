@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Models.DatabaseEntities;
 
-namespace Models.Comments
-{    
+namespace Models.DatabaseEntities.Comment
+{
     public class CommentWithUserInfo
     {
         public int CommentId { get; set; }

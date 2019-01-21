@@ -2,11 +2,12 @@
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
-using Models.PartialEntities.Glossary;
+using Models.DatabaseEntities.PartialEntities.Glossary;
 using SqlKata;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -27,46 +28,95 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
-            using (var dbConnection = this._context.Connection)
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var selectAllGlossariesSql = "SELECT * FROM \"Glossaries\"";
+                    this.LogQuery(selectAllGlossariesSql);
+                    var glossaries = await dbConnection.QueryAsync<Glossary>(selectAllGlossariesSql);
+                    dbConnection.Close();
+                    return glossaries;
+                }
+            }
+
+            catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var selectAllGlossariesSql = "SELECT * FROM \"Glossaries\"";
-                this.LogQuery(selectAllGlossariesSql);
-                var glossaries = await dbConnection.QueryAsync<Glossary>(selectAllGlossariesSql);
-                dbConnection.Close();
-                return glossaries;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
         public async Task<Glossary> GetByIDAsync(int id)
         {
-            using (var dbConnection = this._context.Connection)
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1";
+                    var getGlossaryByIdParam = new { GlossaryId = id };
+                    this.LogQuery(getGlossaryByIdSql, getGlossaryByIdParam);
+                    var glossary = await dbConnection.QueryFirstAsync<Glossary>(
+                        sql: getGlossaryByIdSql,
+                        param: getGlossaryByIdParam);
+                    dbConnection.Close();
+                    return glossary;
+                }
+            }
+            catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1";
-                var getGlossaryByIdParam = new { GlossaryId = id };
-                this.LogQuery(getGlossaryByIdSql, getGlossaryByIdParam);
-                var glossary = await dbConnection.QueryFirstAsync<Glossary>(
-                    sql: getGlossaryByIdSql,
-                    param: getGlossaryByIdParam);
-                dbConnection.Close();
-                return glossary;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
         public async Task<Glossary> GetByFileIdAsync(int fileId)
         {
-            using (var dbConnection = this._context.Connection)
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var sql = "SELECT * FROM \"Glossaries\" WHERE \"ID_File\" = @FileId LIMIT 1";
+                    var param = new { FileId = fileId };
+                    this.LogQuery(sql, param);
+                    var glossary = await dbConnection.QueryFirstOrDefaultAsync<Glossary>(
+                        sql: sql,
+                        param: param);
+                    dbConnection.Close();
+                    return glossary;
+                }
+            }          
+           catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var sql = "SELECT * FROM \"Glossaries\" WHERE \"ID_File\" = @FileId LIMIT 1";
-                var param = new { FileId = fileId };
-                this.LogQuery(sql, param);
-                var glossary = await dbConnection.QueryFirstOrDefaultAsync<Glossary>(
-                    sql: sql,
-                    param: param);
-                dbConnection.Close();
-                return glossary;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetByFileIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetByFileIdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
@@ -77,128 +127,195 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> UpdateAsync(Glossary item)
         {
-            using (var dbConnection = this._context.Connection)
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var updateGlossarySql =
+                        "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
+                        "WHERE \"ID\"=@ID";
+                    var updateGlossaryParam = item;
+                    this.LogQuery(updateGlossarySql, updateGlossaryParam);
+                    await dbConnection.ExecuteAsync(
+                        sql: updateGlossarySql,
+                        param: updateGlossaryParam);
+                    dbConnection.Close();
+                    return true;
+                }
+            }
+           catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var updateGlossarySql =
-                    "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
-                    "WHERE \"ID\"=@ID";
-                var updateGlossaryParam = item;
-                this.LogQuery(updateGlossarySql, updateGlossaryParam);
-                await dbConnection.ExecuteAsync(
-                    sql: updateGlossarySql,
-                    param: updateGlossaryParam);
-                dbConnection.Close();
-                return true;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
+                return false;
             }
         }
 
         public async Task DeleteTermAsync(int glossaryId, int termId)
         {
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                var deleteGlossaryStingAssotiationSql =
-                    "DELETE FROM \"GlossariesStrings\" " +
-                    "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
-                var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
-                this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
-                await dbConnection
-                    .ExecuteAsync(
-                        sql: deleteGlossaryStingAssotiationSql,
-                        param: deleteGlossaryStingAssotiationParam);
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var deleteGlossaryStingAssotiationSql =
+                        "DELETE FROM \"GlossariesStrings\" " +
+                        "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
+                    var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
+                    this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
+                    await dbConnection
+                        .ExecuteAsync(
+                            sql: deleteGlossaryStingAssotiationSql,
+                            param: deleteGlossaryStingAssotiationParam);
 
-                var deleteStingSql = "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId";
-                var deleteStingParam = new { TermId = termId };
-                this.LogQuery(deleteStingSql, deleteStingParam);
-                await dbConnection
-                    .ExecuteAsync(
-                        sql: deleteStingSql,
-                        param: deleteStingParam);
-                dbConnection.Close();
+                    var deleteStingSql = "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId";
+                    var deleteStingParam = new { TermId = termId };
+                    this.LogQuery(deleteStingSql, deleteStingParam);
+                    await dbConnection
+                        .ExecuteAsync(
+                            sql: deleteStingSql,
+                            param: deleteStingParam);
+                    dbConnection.Close();
+                }
             }
+           catch (NpgsqlException exception)
+            {
+              this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+               //return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermAsync)} {nameof(Exception)} ",
+                    exception);
+              //return false;
+            }
+
         }
 
         public async Task<int> AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                var insertNewStingSql =
-                    "INSERT INTO \"TranslationSubstrings\" " +
-                    "(" +
-                    "\"SubstringToTranslate\", " +
-                    "\"Description\", " +
-                    "\"Context\", " +
-                    "\"TranslationMaxLength\", " +
-                    "\"ID_FileOwner\", " +
-                    "\"Value\", " +
-                    "\"PositionInText\"" +
-                    ") VALUES " +
-                    "(" +
-                    "@SubstringToTranslate, " +
-                    "@Description, " +
-                    "@Context, " +
-                    "@TranslationMaxLength, " +
-                    "@ID_FileOwner, " +
-                    "@Value, " +
-                    "@PositionInText" +
-                    ") " +
-                    "RETURNING \"ID\"";
-                var insertNewStingParam = newTerm;
-                this.LogQuery(insertNewStingSql, insertNewStingParam);
-                var idOfNewTerm = await dbConnection
-                    .ExecuteScalarAsync<int>(
-                        sql: insertNewStingSql,
-                        param: insertNewStingParam);
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var insertNewStingSql =
+                        "INSERT INTO \"TranslationSubstrings\" " +
+                        "(" +
+                        "\"SubstringToTranslate\", " +
+                        "\"Description\", " +
+                        "\"Context\", " +
+                        "\"TranslationMaxLength\", " +
+                        "\"ID_FileOwner\", " +
+                        "\"Value\", " +
+                        "\"PositionInText\"" +
+                        ") VALUES " +
+                        "(" +
+                        "@SubstringToTranslate, " +
+                        "@Description, " +
+                        "@Context, " +
+                        "@TranslationMaxLength, " +
+                        "@ID_FileOwner, " +
+                        "@Value, " +
+                        "@PositionInText" +
+                        ") " +
+                        "RETURNING \"ID\"";
+                    var insertNewStingParam = newTerm;
+                    this.LogQuery(insertNewStingSql, insertNewStingParam);
+                    var idOfNewTerm = await dbConnection
+                        .ExecuteScalarAsync<int>(
+                            sql: insertNewStingSql,
+                            param: insertNewStingParam);
 
-                var instertGlossaryStringAssotiationSql =
-                    "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\",\"ID_PartOfSpeech\") VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
-                var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm, PartsOfSpeechId = partOfSpeechId };
-                this.LogQuery(instertGlossaryStringAssotiationSql, instertGlossaryStringAssotiationParam);
-                await dbConnection
-                    .ExecuteAsync(
-                        sql: instertGlossaryStringAssotiationSql,
-                        param: instertGlossaryStringAssotiationParam);
-                dbConnection.Close();
-                return idOfNewTerm;
+                    var instertGlossaryStringAssotiationSql =
+                        "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\",\"ID_PartOfSpeech\") VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
+                    var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm, PartsOfSpeechId = partOfSpeechId };
+                    this.LogQuery(instertGlossaryStringAssotiationSql, instertGlossaryStringAssotiationParam);
+                    await dbConnection
+                        .ExecuteAsync(
+                            sql: instertGlossaryStringAssotiationSql,
+                            param: instertGlossaryStringAssotiationParam);
+                    dbConnection.Close();
+                    return idOfNewTerm;
+                }
+            }
+          
+           catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                      $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.AddNewTermAsync)} {nameof(NpgsqlException)} ",
+                      exception);
+                return 0;
+            }
+           catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.AddNewTermAsync)} {nameof(Exception)} ",
+                    exception);
+               return 0;
             }
         }
 
         public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)
         {
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                var updateTermSql =
-                    "UPDATE \"TranslationSubstrings\" SET " +
-                    "\"SubstringToTranslate\"=@SubstringToTranslate, " +
-                    "\"Description\"=@Description, " +
-                    "\"Context\"=@Context, " +
-                    "\"TranslationMaxLength\"=@TranslationMaxLength, " +
-                    "\"ID_FileOwner\"=@ID_FileOwner, " +
-                    "\"Value\"=@Value, " +
-                    "\"PositionInText\"=@PositionInText " +
-                    "WHERE \"ID\"=@ID";
-                var updateTermParam = updatedTerm;
-                this.LogQuery(updateTermSql, updateTermParam);
-                await dbConnection.ExecuteAsync(
-                    sql: updateTermSql,
-                    param: updateTermParam);
+            try {
 
-                var updateTermPartOfSpeechIdSql =
-                    "UPDATE \"GlossariesStrings\" SET " +
-                    "\"ID_PartOfSpeech\"=@PartOfSpeechId " +
-                    "WHERE \"ID_String\"=@StringId " +
-                    "AND \"ID_Glossary\"=@GlossaryId";
-                var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartOfSpeechId = partOfSpeechId };
-                this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
-                await dbConnection.ExecuteAsync(
-                    sql: updateTermPartOfSpeechIdSql,
-                    param: updateTermPartOfSpeechIdParam);
-                dbConnection.Close();
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var updateTermSql =
+                        "UPDATE \"TranslationSubstrings\" SET " +
+                        "\"SubstringToTranslate\"=@SubstringToTranslate, " +
+                        "\"Description\"=@Description, " +
+                        "\"Context\"=@Context, " +
+                        "\"TranslationMaxLength\"=@TranslationMaxLength, " +
+                        "\"ID_FileOwner\"=@ID_FileOwner, " +
+                        "\"Value\"=@Value, " +
+                        "\"PositionInText\"=@PositionInText " +
+                        "WHERE \"ID\"=@ID";
+                    var updateTermParam = updatedTerm;
+                    this.LogQuery(updateTermSql, updateTermParam);
+                    await dbConnection.ExecuteAsync(
+                        sql: updateTermSql,
+                        param: updateTermParam);
+
+                    var updateTermPartOfSpeechIdSql =
+                        "UPDATE \"GlossariesStrings\" SET " +
+                        "\"ID_PartOfSpeech\"=@PartOfSpeechId " +
+                        "WHERE \"ID_String\"=@StringId " +
+                        "AND \"ID_Glossary\"=@GlossaryId";
+                    var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartOfSpeechId = partOfSpeechId };
+                    this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
+                    await dbConnection.ExecuteAsync(
+                        sql: updateTermPartOfSpeechIdSql,
+                        param: updateTermPartOfSpeechIdParam);
+                    dbConnection.Close();
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                      $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.UpdateTermAsync)} {nameof(NpgsqlException)} ",
+                      exception);
+             //   return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.UpdateTermAsync)} {nameof(Exception)} ",
+                    exception);
+            //    return 0;
             }
         }
 
@@ -224,48 +341,79 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             if (sortBy == null)
                 sortBy = new[] { "id" };
+            try {
+                    using (var dbConnection = this._context.Connection)
+                    {
+                        dbConnection.Open();
+                        var query = this.GetAssotiatedTermsQuery(glossaryId, termPart);
 
-            using (var dbConnection = this._context.Connection)
+                        query = this.ApplyPagination(
+                            query: query,
+                            offset: offset,
+                            limit: limit);
+
+                        query = this.ApplySorting(
+                            query: query,
+                            columnNamesMappings: GlossaryRepository.TermsSortColumnNamesMapping,
+                            sortBy: sortBy,
+                            sortAscending: sortAscending);
+
+                        var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
+                        this.LogQuery(getGlossaryTermsCompiledQuery);
+                        var assotiatedTerms = await dbConnection.QueryAsync<Term>(
+                            sql: getGlossaryTermsCompiledQuery.Sql,
+                            param: getGlossaryTermsCompiledQuery.NamedBindings
+                            );
+                        dbConnection.Close();
+                        return assotiatedTerms;
+                    }
+            }
+            catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(glossaryId, termPart);
-
-                query = this.ApplyPagination(
-                    query: query,
-                    offset: offset,
-                    limit: limit);
-
-                query = this.ApplySorting(
-                    query: query,
-                    columnNamesMappings: GlossaryRepository.TermsSortColumnNamesMapping,
-                    sortBy: sortBy,
-                    sortAscending: sortAscending);
-
-                var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
-                this.LogQuery(getGlossaryTermsCompiledQuery);
-                var assotiatedTerms = await dbConnection.QueryAsync<Term>(
-                    sql: getGlossaryTermsCompiledQuery.Sql,
-                    param: getGlossaryTermsCompiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
-                return assotiatedTerms;
+                this._loggerError.WriteLn(
+                      $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsByGlossaryIdAsync)} {nameof(NpgsqlException)} ",
+                      exception);
+                   return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsByGlossaryIdAsync)} {nameof(Exception)} ",
+                    exception);
+                   return null;
             }
         }
 
         public async Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart)
         {
-            using (var dbConnection = this._context.Connection)
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var query = this.GetAssotiatedTermsQuery(glossaryId, termPart).AsCount();
+                    var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(getGlossaryTermsCountCompiledQuery);
+                    var assotiatedTermsCount = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: getGlossaryTermsCountCompiledQuery.Sql,
+                        param: getGlossaryTermsCountCompiledQuery.NamedBindings
+                        );
+                    dbConnection.Close();
+                    return assotiatedTermsCount;
+                }
+            }
+           catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var query = this.GetAssotiatedTermsQuery(glossaryId, termPart).AsCount();
-                var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
-                this.LogQuery(getGlossaryTermsCountCompiledQuery);
-                var assotiatedTermsCount = await dbConnection.ExecuteScalarAsync<int>(
-                    sql: getGlossaryTermsCountCompiledQuery.Sql,
-                    param: getGlossaryTermsCountCompiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
-                return assotiatedTermsCount;
+                this._loggerError.WriteLn(
+                      $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsCountAsync)} {nameof(NpgsqlException)} ",
+                      exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsCountAsync)} {nameof(Exception)} ",
+                    exception);
+                return 0;
             }
         }
 
@@ -304,42 +452,77 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
         {
-            using (var dbConnection = this._context.Connection)
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var getGlossaryLocaleSql = "SELECT * FROM \"Locales\" WHERE \"ID\" IN " +
+                        "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
+                        "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" WHERE \"ID_Glossary\"=@GlossaryId))";
+                    var getGlossaryLocaleParam = new { GlossaryId = glossaryId };
+                    this.LogQuery(getGlossaryLocaleSql, getGlossaryLocaleParam);
+                    var locale = await dbConnection
+                        .QueryFirstAsync<Locale>(
+                            sql: getGlossaryLocaleSql,
+                            param: getGlossaryLocaleParam);
+                    dbConnection.Close();
+                    return locale;
+                }
+
+            }
+           catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var getGlossaryLocaleSql = "SELECT * FROM \"Locales\" WHERE \"ID\" IN " +
-                    "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
-                    "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" WHERE \"ID_Glossary\"=@GlossaryId))";
-                var getGlossaryLocaleParam = new { GlossaryId = glossaryId };
-                this.LogQuery(getGlossaryLocaleSql, getGlossaryLocaleParam);
-                var locale = await dbConnection
-                    .QueryFirstAsync<Locale>(
-                        sql: getGlossaryLocaleSql,
-                        param: getGlossaryLocaleParam);
-                dbConnection.Close();
-                return locale;
+                this._loggerError.WriteLn(
+                      $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetLocaleByIdAsync)} {nameof(NpgsqlException)} ",
+                      exception);
+                return null;
+            }
+           catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetLocaleByIdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
         public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
         {
-            using (var dbConnection = this._context.Connection)
-            {
-                dbConnection.Open();
-                var getTranslationLocalesQuery =
-                    new Query("Locales")
-                    .WhereIn("ID",
-                        new Query("GlossariesLocales")
-                        .Select("ID_Locale")
-                        .Where("ID_Glossary", glossaryId));
-                var getTranslationLocalesCompiledQuery = this._compiler.Compile(getTranslationLocalesQuery);
-                this.LogQuery(getTranslationLocalesCompiledQuery);
-                var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
-                    sql: getTranslationLocalesCompiledQuery.Sql,
-                    param: getTranslationLocalesCompiledQuery.NamedBindings);
-                dbConnection.Close();
-                return translationLocalesForTerm;
+            try {
+                using (var dbConnection = this._context.Connection)
+                {
+                    dbConnection.Open();
+                    var getTranslationLocalesQuery =
+                        new Query("Locales")
+                        .WhereIn("ID",
+                            new Query("GlossariesLocales")
+                            .Select("ID_Locale")
+                            .Where("ID_Glossary", glossaryId));
+                    var getTranslationLocalesCompiledQuery = this._compiler.Compile(getTranslationLocalesQuery);
+                    this.LogQuery(getTranslationLocalesCompiledQuery);
+                    var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
+                        sql: getTranslationLocalesCompiledQuery.Sql,
+                        param: getTranslationLocalesCompiledQuery.NamedBindings);
+                    dbConnection.Close();
+                    return translationLocalesForTerm;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                      $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetTranslationLocalesAsync)} {nameof(NpgsqlException)} ",
+                      exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetTranslationLocalesAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
+
         }
 
         /// <summary>
@@ -349,7 +532,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
         {
-            string query =  "SELECT " +
+            string query = "SELECT " +
                             "DISTINCT ON (TS.\"ID\") TS.\"ID\" AS \"ID\"," +
                             "TS.\"SubstringToTranslate\" AS \"TermText\", " +
                             "TS.\"Description\" AS \"TermDesciption\"," +
@@ -367,17 +550,27 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = _context.Connection)
                 {
                     dbConnection.Open();
-                    IEnumerable<TermWithGlossary> allTerms = await dbConnection.QueryAsync<TermWithGlossary>(query, new { ProjectId = projectId });
+
+                    var param = new { ProjectId = projectId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TermWithGlossary> allTerms = await dbConnection.QueryAsync<TermWithGlossary>(query, param);
                     dbConnection.Close();
 
                     return allTerms;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                      $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync)} {nameof(NpgsqlException)} ",
+                      exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }

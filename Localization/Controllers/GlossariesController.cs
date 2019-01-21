@@ -1,7 +1,7 @@
 ﻿using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
-using Models.DTO;
+using Models.DatabaseEntities.DTO;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -41,7 +41,7 @@ namespace Localization.Controllers
         }
 
         [HttpGet("localizationProjects/list")]
-        public async Task<IEnumerable<localizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
+        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
         {
             return await _localizationProjectRepository.GetAllForSelectDTOAsync();
         }

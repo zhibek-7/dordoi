@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-using Models.DTO;
+using Models.DatabaseEntities.DTO;
 
 namespace Models.Interfaces.Repository
 {
