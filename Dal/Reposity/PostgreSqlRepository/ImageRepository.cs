@@ -6,16 +6,14 @@ using Dapper;
 using Models.DatabaseEntities;
 using DAL.Context;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class ImageRepository : IRepository<Image>
+    public class ImageRepository : BaseRepository, IRepository<Image>
     {
-        private PostgreSqlNativeContext context;
-
-        public ImageRepository()
+        public ImageRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         public void Add(Image user)
@@ -30,11 +28,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<Image> GetAll()
         {
-            using (IDbConnection dbConnection = context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 IEnumerable<Image> images = dbConnection.Query<Image>("SELECT * FROM \"Images\"").ToList();
-                dbConnection.Close();
                 return images;
             }
         }

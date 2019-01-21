@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
-using Models.DTO.Participants;
+using Models.DatabaseEntities.DTO.Participants;
 
 namespace Localization.Controllers
 {
@@ -18,7 +18,7 @@ namespace Localization.Controllers
 
         public ParticipantsController()
         {
-            this._participantsRepository = new ParticipantRepository();
+            this._participantsRepository = new ParticipantRepository(Settings.GetStringDB());
         }
 
         public class GetParticipantsByProjectIdParam

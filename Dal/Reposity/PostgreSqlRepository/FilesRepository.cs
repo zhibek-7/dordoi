@@ -15,7 +15,6 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
     {
-
         private readonly string _insertFileSql =
             "INSERT INTO \"Files\" (" +
             "\"ID_LocalizationProject\", " +
@@ -48,17 +47,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Id_PreviousVersion" +
             ")";
 
-        private readonly string connectionString;
-
-        public FilesRepository()
+        public FilesRepository(string connectionStr) : base(connectionStr)
         {
-            //TODO потом нужно переделать. Не должно быть статика
-            connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
-        }
-
-        public FilesRepository(string connectionString)
-        {
-            this.connectionString = connectionString;
         }
 
         public async Task<IEnumerable<File>> GetAllAsync()
@@ -364,10 +354,22 @@ namespace DAL.Reposity.PostgreSqlRepository
                         {
                             var sqlTranslationQuery = string.Format("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale{0} SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND \"Confirmed\" = true" : "");
                             var translation = await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery, new { translationSubstrings[i].ID, id_locale });
-                            if (translation == null && localizationProject.original_if_string_is_not_translated) continue;
+                            if (translation == null)
+                            {
+                                if (localizationProject.AbleToLeftErrors)
+                                {
+                                    int n = translationSubstrings[i].PositionInText;
+                                    while (n != 0 && (output[n - 1] != '\n' || output[n - 1] != '\r')) n--;
+                                    int m = output.IndexOfAny(new char[] { '\r', '\n' }, translationSubstrings[i].PositionInText);
+                                    while (m != output.Length - 1 && output[m + 1] != '\n') m++;
+                                    if (n > (i == 0 ? -1 : translationSubstrings[i - 1].PositionInText) && m < (i == translationSubstrings.Count - 1 ? output.Length : translationSubstrings[i + 1].PositionInText)) output = output.Remove(n, m - n + 1);
+                                    continue;
+                                }
+                                if (localizationProject.original_if_string_is_not_translated) continue;
+                            }
                             output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
-                        
+
                         var fs = System.IO.File.Create(tempFileName);
                         using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
                         {

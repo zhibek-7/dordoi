@@ -18,8 +18,8 @@ namespace Localization.Controllers
 
         public ProjectController()
         {
-            _localizationProjectRepository = new LocalizationProjectRepository();
-            _userActionRepository = new UserActionRepository();
+            _localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
+            _userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
         [HttpGet]

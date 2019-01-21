@@ -2,22 +2,20 @@
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
-using Models.PartialEntities.Glossary;
+using Models.DatabaseEntities.PartialEntities.Glossary;
 using SqlKata;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class GlossaryRepository : BaseRepository, IGlossaryRepository
     {
 
-        private readonly PostgreSqlNativeContext _context;
-
-        public GlossaryRepository()
+        public GlossaryRepository(string connectionString) : base(connectionString)
         {
-            this._context = PostgreSqlNativeContext.getInstance();
         }
 
         public Task<int> AddAsync(Glossary item)
@@ -27,45 +25,39 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var selectAllGlossariesSql = "SELECT * FROM \"Glossaries\"";
                 this.LogQuery(selectAllGlossariesSql);
                 var glossaries = await dbConnection.QueryAsync<Glossary>(selectAllGlossariesSql);
-                dbConnection.Close();
                 return glossaries;
             }
         }
 
         public async Task<Glossary> GetByIDAsync(int id)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1";
                 var getGlossaryByIdParam = new { GlossaryId = id };
                 this.LogQuery(getGlossaryByIdSql, getGlossaryByIdParam);
                 var glossary = await dbConnection.QueryFirstAsync<Glossary>(
                     sql: getGlossaryByIdSql,
                     param: getGlossaryByIdParam);
-                dbConnection.Close();
                 return glossary;
             }
         }
 
         public async Task<Glossary> GetByFileIdAsync(int fileId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var sql = "SELECT * FROM \"Glossaries\" WHERE \"ID_File\" = @FileId LIMIT 1";
                 var param = new { FileId = fileId };
                 this.LogQuery(sql, param);
                 var glossary = await dbConnection.QueryFirstOrDefaultAsync<Glossary>(
                     sql: sql,
                     param: param);
-                dbConnection.Close();
                 return glossary;
             }
         }
@@ -77,9 +69,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> UpdateAsync(Glossary item)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var updateGlossarySql =
                     "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
                     "WHERE \"ID\"=@ID";
@@ -88,16 +79,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 await dbConnection.ExecuteAsync(
                     sql: updateGlossarySql,
                     param: updateGlossaryParam);
-                dbConnection.Close();
                 return true;
             }
         }
 
         public async Task DeleteTermAsync(int glossaryId, int termId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var deleteGlossaryStingAssotiationSql =
                     "DELETE FROM \"GlossariesStrings\" " +
                     "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
@@ -115,7 +104,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .ExecuteAsync(
                         sql: deleteStingSql,
                         param: deleteStingParam);
-                dbConnection.Close();
             }
         }
 
@@ -123,9 +111,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
             newTerm.ID_FileOwner = glossary.ID_File;
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var insertNewStingSql =
                     "INSERT INTO \"TranslationSubstrings\" " +
                     "(" +
@@ -162,16 +149,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .ExecuteAsync(
                         sql: instertGlossaryStringAssotiationSql,
                         param: instertGlossaryStringAssotiationParam);
-                dbConnection.Close();
                 return idOfNewTerm;
             }
         }
 
         public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var updateTermSql =
                     "UPDATE \"TranslationSubstrings\" SET " +
                     "\"SubstringToTranslate\"=@SubstringToTranslate, " +
@@ -198,7 +183,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 await dbConnection.ExecuteAsync(
                     sql: updateTermPartOfSpeechIdSql,
                     param: updateTermPartOfSpeechIdParam);
-                dbConnection.Close();
             }
         }
 
@@ -225,9 +209,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             if (sortBy == null)
                 sortBy = new[] { "id" };
 
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query = this.GetAssotiatedTermsQuery(glossaryId, termPart);
 
                 query = this.ApplyPagination(
@@ -247,16 +230,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     sql: getGlossaryTermsCompiledQuery.Sql,
                     param: getGlossaryTermsCompiledQuery.NamedBindings
                     );
-                dbConnection.Close();
                 return assotiatedTerms;
             }
         }
 
         public async Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query = this.GetAssotiatedTermsQuery(glossaryId, termPart).AsCount();
                 var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
                 this.LogQuery(getGlossaryTermsCountCompiledQuery);
@@ -264,7 +245,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     sql: getGlossaryTermsCountCompiledQuery.Sql,
                     param: getGlossaryTermsCountCompiledQuery.NamedBindings
                     );
-                dbConnection.Close();
                 return assotiatedTermsCount;
             }
         }
@@ -304,9 +284,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var getGlossaryLocaleSql = "SELECT * FROM \"Locales\" WHERE \"ID\" IN " +
                     "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
                     "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" WHERE \"ID_Glossary\"=@GlossaryId))";
@@ -316,16 +295,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .QueryFirstAsync<Locale>(
                         sql: getGlossaryLocaleSql,
                         param: getGlossaryLocaleParam);
-                dbConnection.Close();
                 return locale;
             }
         }
 
         public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var getTranslationLocalesQuery =
                     new Query("Locales")
                     .WhereIn("ID",
@@ -337,7 +314,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
                     sql: getTranslationLocalesCompiledQuery.Sql,
                     param: getTranslationLocalesCompiledQuery.NamedBindings);
-                dbConnection.Close();
                 return translationLocalesForTerm;
             }
         }
@@ -349,7 +325,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
         {
-            string query =  "SELECT " +
+            string query = "SELECT " +
                             "DISTINCT ON (TS.\"ID\") TS.\"ID\" AS \"ID\"," +
                             "TS.\"SubstringToTranslate\" AS \"TermText\", " +
                             "TS.\"Description\" AS \"TermDesciption\"," +
@@ -364,12 +340,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (var dbConnection = _context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TermWithGlossary> allTerms = await dbConnection.QueryAsync<TermWithGlossary>(query, new { ProjectId = projectId });
-                    dbConnection.Close();
-
                     return allTerms;
                 }
             }

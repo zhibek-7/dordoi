@@ -21,7 +21,7 @@ namespace Localization.WebApi
 
         public TranslationController()
         {
-            translationRepository = new TranslationRepository();
+            translationRepository = new TranslationRepository(Settings.GetStringDB());
         }
 
         /// <summary>

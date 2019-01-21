@@ -6,6 +6,7 @@ using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -15,22 +16,18 @@ namespace DAL.Reposity.PostgreSqlRepository
         FirstLetter //2	Наачало предложения не с заглавной буквы                                                                                  
     }
 
-    class TranslationTroubleRepository: BaseRepository, ITranslationTroubleRepository
+    class TranslationTroubleRepository : BaseRepository, ITranslationTroubleRepository
     {
-        private PostgreSqlNativeContext context;
-
-        public TranslationTroubleRepository()
+        public TranslationTroubleRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         public async Task<int> AddAsync(TranslationTrouble item)
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var _sql = "INSERT INTO \"TranslationsTroubles\"" +
                                " (\"ID_Trouble\", \"Trouble\", \"ID_Translation\") " +
                                "VALUES (@ID_Trouble, @Trouble, @ID_Translation)";
@@ -56,12 +53,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     string SQLQuery = "DELETE FROM \"TranslationsTroubles\" WHERE \"ID\" = @Id";
                     dbConnection.Execute(SQLQuery, new { id });
-                    dbConnection.Close();
                 }
 
                 return true;
@@ -77,9 +72,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var _sql = "UPDATE \"TranslationsTroubles\"" +
                                " SET \"ID_Trouble\" = @ID_Trouble, \"Trouble\" = @Trouble, \"ID_Translation\" = @ID_Translation" +
                                " WHERE \"ID\" = @ID";
@@ -107,11 +101,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
                 TranslationTrouble trouble = null;
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     trouble = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE Id = @Id", new { id }).FirstOrDefault();
-                    dbConnection.Close();
                 }
                 return trouble;
             }
@@ -126,11 +118,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\"").ToList();
-                    dbConnection.Close();
                     return troubles;
                 }
             }
@@ -145,11 +135,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE \"ID_Translation\" = @Id", new { translationId }).ToList();
-                    dbConnection.Close();
                     return troubles;
                 }
             }

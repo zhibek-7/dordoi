@@ -1,4 +1,4 @@
-﻿namespace Models.DTO.Participants
+﻿namespace Models.DatabaseEntities.DTO.Participants
 {
     public class ParticipantDTO : DatabaseEntities.BaseEntity
     {

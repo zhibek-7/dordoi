@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Models.Comments
+namespace Models.DatabaseEntities.Comment
 {
     public class PostedImage
     {

@@ -12,11 +12,8 @@ namespace Models.Services
 {
     public class FilesService
     {
-
         private readonly int _initialFileVersion = 1;
-
         private readonly IFilesRepository _filesRepository;
-
         private readonly IGlossaryRepository _glossaryRepository;
 
         public FilesService(
@@ -186,7 +183,7 @@ namespace Models.Services
                     System.IO.Path.GetDirectoryName(relativePathToFile)
                         .Split(System.IO.Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
                 var lastParentId = parentId;
-                foreach(var directoryName in directoriesToFile)
+                foreach (var directoryName in directoriesToFile)
                 {
                     var directoryDbModel = await this._filesRepository.GetLastVersionByNameAndParentId(directoryName, lastParentId);
                     if (directoryDbModel == null)

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-using Models.PartialEntities.Glossary;
+using Models.DatabaseEntities.PartialEntities.Glossary;
 
 namespace Models.Interfaces.Repository
 {

@@ -1,7 +1,8 @@
 ﻿using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
-using Models.DTO;
+using Models.DatabaseEntities.DTO;
+using Models.Interfaces.Repository;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,13 +14,16 @@ namespace Localization.Controllers
     public class GlossariesController : ControllerBase
     {
         private readonly GlossariesService _glossariesService;
+        private readonly ILocaleRepository _localeRepository;//= new LocaleRepository();
+        private readonly ILocalizationProjectRepository _localizationProjectRepository;// = new LocalizationProjectRepository();
 
-        private readonly LocaleRepository _localeRepository = new LocaleRepository();
-        private readonly LocalizationProjectRepository _localizationProjectRepository = new LocalizationProjectRepository();
 
         public GlossariesController(GlossariesService glossariesService)
         {
             _glossariesService = glossariesService;
+
+            this._localeRepository = new LocaleRepository(Settings.GetStringDB());
+            this._localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
         }
 
         //[HttpPost]
@@ -41,7 +45,7 @@ namespace Localization.Controllers
         }
 
         [HttpGet("localizationProjects/list")]
-        public async Task<IEnumerable<localizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
+        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
         {
             return await _localizationProjectRepository.GetAllForSelectDTOAsync();
         }

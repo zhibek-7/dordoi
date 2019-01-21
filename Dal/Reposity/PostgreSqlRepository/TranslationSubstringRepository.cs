@@ -9,16 +9,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using SqlKata;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class TranslationSubstringRepository : BaseRepository, ITranslationSubstringRepository
     {
-        private PostgreSqlNativeContext context;
+        //private PostgreSqlNativeContext context;
 
-        public TranslationSubstringRepository()
+
+        public TranslationSubstringRepository(string connectionString) : base(connectionString)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         /// <summary>
@@ -41,11 +42,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.TranslationSubstring>(query);
-                    dbConnection.Close();
                     return strings;
                 }
             }
@@ -72,11 +71,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.TranslationSubstring>(query, new { Id = id });
-                    dbConnection.Close();
                     return foundedString;
                 }
             }
@@ -102,11 +99,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TranslationSubstring> filtredStrings = await dbConnection.QueryAsync<TranslationSubstring>(query);
-                    dbConnection.Close();
                     return filtredStrings;
                 }
             }
@@ -136,11 +131,10 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<TranslationSubstring>(query, new { Id = projectId });
-                    dbConnection.Close();
+
                     return strings;
                 }
             }
@@ -171,11 +165,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TranslationSubstring> stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(query, new { Id = fileId });
-                    dbConnection.Close();
                     return stringsInFile;
                 }
             }
@@ -190,7 +182,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> RemoveAsync(int id)
         {
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = new Query("TranslationSubstrings")
                     .Where("ID", id)
@@ -199,12 +191,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
                 await dbConnection.ExecuteAsync(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings
                     );
-                dbConnection.Close();
 
                 return true;
             }
@@ -212,7 +202,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> UpdateAsync(Models.DatabaseEntities.TranslationSubstring item)
         {
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = new Query("TranslationSubstrings")
                     .Where("ID", item.ID)
@@ -221,12 +211,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
                 await dbConnection.ExecuteAsync(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings
                     );
-                dbConnection.Close();
 
                 return true;
             }
@@ -259,7 +247,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 sortBy = new[] { "id" };
             }
 
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = this.GetByProjectIdQuery(
                     projectId: projectId,
@@ -280,13 +268,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
                 var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstring>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings
                     );
-                dbConnection.Close();
-
                 return translationSubstrings;
             }
         }
@@ -296,7 +281,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             int? fileId = null,
             string searchString = null)
         {
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = this.GetByProjectIdQuery(
                     projectId: projectId,
@@ -307,12 +292,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
                 var count = await dbConnection.ExecuteScalarAsync<int>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings
                     );
-                dbConnection.Close();
 
                 return count;
             }
@@ -360,7 +343,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Locale>> GetLocalesForStringAsync(int translationSubstringId)
         {
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query =
                     new Query("Locales")
@@ -372,12 +355,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
                 var locales = await dbConnection.QueryAsync<Locale>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings
                     );
-                dbConnection.Close();
 
                 return locales;
             }
@@ -385,9 +366,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task DeleteTranslationLocalesAsync(int translationSubstringId)
         {
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query =
                     new Query("TranslationsubStringsLocales")
                     .Where("Id_TranslationSubStrings", translationSubstringId)
@@ -397,15 +377,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                 await dbConnection.ExecuteAsync(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
-                dbConnection.Close();
             }
         }
 
         public async Task AddTranslationLocalesAsync(int translationSubstringId, IEnumerable<int> localesIds)
         {
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 foreach (var localeId in localesIds)
                 {
                     var sql =
@@ -424,7 +402,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: sql,
                         param: param);
                 }
-                dbConnection.Close();
             }
         }
 

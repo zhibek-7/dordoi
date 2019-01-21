@@ -18,7 +18,7 @@ namespace Localization.Controllers
 
         public UserController()
         {
-            userRepository = new UserRepository();
+            userRepository = new UserRepository(Settings.GetStringDB());
         }
 
         [HttpPost]
@@ -34,7 +34,7 @@ namespace Localization.Controllers
             return userRepository.GetByProjectID(projectId).ToList();
         }
 
-        
+
 
         [HttpPost("{userId}/getPhoto")]
         public async Task<byte[]> GetPhoto(int userId)

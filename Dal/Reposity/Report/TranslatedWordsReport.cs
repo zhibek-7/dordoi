@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Dapper;
 using Models.DatabaseEntities.Reports;
+using Npgsql;
 
 namespace DAL.Reposity.Report
 {
@@ -14,6 +15,13 @@ namespace DAL.Reposity.Report
     /// </summary>
     public class TranslatedWordsReport : BaseReport<TranslatedWordsReportRow>
     {
+        protected string connectionString;
+
+        public TranslatedWordsReport(string connectionStr)
+        {
+            this.connectionString = connectionStr;
+        }
+
         /// <summary>
         /// Функция получения строк отчета удовлетворяющих параметрам
         /// </summary>
@@ -34,13 +42,11 @@ namespace DAL.Reposity.Report
             bool countByChar = true,
             bool countTranslations = true)
         {
-            using (var dbConnection = Context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var sqlQuery = "SELECT name_ as Name, lang_ as language, worktype_ as workType, count_ as Translations" +
                                $" FROM TranslatedWords({projectID}, '{dateFrom.ToString("dd-MM-yyyy")}', '{dateTo.ToString("dd-MM-yyyy")}', {userId}, {localeId}, {countByChar}, {countTranslations});";
                 var rows = dbConnection.Query<TranslatedWordsReportRow>(sqlQuery, new { dateFrom, dateTo }).ToList();
-                dbConnection.Close();
                 return rows;
             }
         }

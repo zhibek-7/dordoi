@@ -8,40 +8,34 @@ using DAL.Context;
 using System.Threading.Tasks;
 using SqlKata;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocaleRepository : BaseRepository
+    public class LocaleRepository : BaseRepository, ILocaleRepository
     {
-        private PostgreSqlNativeContext context;
-
-        public LocaleRepository()
+        public LocaleRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         public async Task<IEnumerable<Locale>> GetAllAsync()
         {
-            using (IDbConnection dbConnection = context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>("SELECT * FROM \"Locales\"");
-                dbConnection.Close();
                 return users;
             }
         }
 
         public async Task<IEnumerable<Locale>> GetAllForProject(int projectId)
         {
-            using (IDbConnection dbConnection = context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(
                     "SELECT l.* FROM \"Locales\" l " +
                     " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
                     " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
                     " where lp.\"ID\" = @Id", new { Id = projectId });
-                dbConnection.Close();
                 return users;
             }
         }
@@ -49,9 +43,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Locale>> GetByUserIdAsync(int userId)
         {
-            using (var dbConnection = this.context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query =
                     new Query("Locales")
                     .WhereIn("ID",
@@ -63,7 +56,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var userLocales = await dbConnection.QueryAsync<Locale>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
-                dbConnection.Close();
                 return userLocales;
             }
         }

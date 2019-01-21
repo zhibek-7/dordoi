@@ -6,6 +6,7 @@ using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
+using Npgsql;
 using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -13,7 +14,9 @@ namespace DAL.Reposity.PostgreSqlRepository
     public class RoleRepository : BaseRepository, IRepositoryAsync<Role>
     {
 
-        private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
+        public RoleRepository(string connectionStr) : base(connectionStr)
+        {
+        }
 
         public Task<int> AddAsync(Role item)
         {
@@ -22,16 +25,14 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Role>> GetAllAsync()
         {
-            using (var dbConnection = _context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query = new Query("Roles");
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
                 var roles = await dbConnection.QueryAsync<Role>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
-                dbConnection.Close();
                 return roles;
             }
         }
