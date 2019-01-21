@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
 
 import { TreeNode } from 'primeng/api';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 import { FileService } from 'src/app/services/file.service';
 import { ProjectsService } from 'src/app/services/projects.service';
@@ -27,7 +28,8 @@ export class FilesComponent implements OnInit {
 
   constructor(
     private fileService: FileService,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private ngxSpinnerService: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
@@ -70,10 +72,11 @@ export class FilesComponent implements OnInit {
 
   uploadFolder(files, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
-
+    this.ngxSpinnerService.show();
     this.fileService.uploadFolder(files, this.projectsService.currentProjectId, parentId).subscribe(
       () => {
         this.getFiles();
+        this.ngxSpinnerService.hide();
       });
   }
 
@@ -89,9 +92,10 @@ export class FilesComponent implements OnInit {
   updateFileVersion(event: any, oldNode: TreeNode): void {
     const file = event.target.files[0];
     if (file) {
-      this.fileService.updateFileVersion(file, this.projectsService.currentProjectId)
+      const parentNode = oldNode.parent;
+      const parentId = parentNode ? parentNode.data.id : null;
+      this.fileService.updateFileVersion(file, this.projectsService.currentProjectId, parentId)
         .subscribe(newNode => {
-          let parentNode = oldNode.parent;
           this.deleteNode(oldNode);
           this.addNode(newNode, parentNode);
         })

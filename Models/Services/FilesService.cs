@@ -13,6 +13,8 @@ namespace Models.Services
     public class FilesService
     {
 
+        private readonly int _initialFileVersion = 1;
+
         private readonly IFilesRepository _filesRepository;
 
         private readonly IGlossaryRepository _glossaryRepository;
@@ -83,7 +85,7 @@ namespace Models.Services
 
         public async Task<Node<File>> UpdateFileVersion(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
         {
-            var version = 0;
+            var version = this._initialFileVersion;
             var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentId(fileName, parentId);
             if (lastVersionDbFile != null)
             {
@@ -95,7 +97,7 @@ namespace Models.Services
                 lastVersionDbFile.IsLastVersion = false;
                 if (!lastVersionDbFile.Version.HasValue)
                 {
-                    lastVersionDbFile.Version = 0;
+                    lastVersionDbFile.Version = this._initialFileVersion;
                 }
                 version = lastVersionDbFile.Version.Value + 1;
 
@@ -120,6 +122,7 @@ namespace Models.Services
             newVersionFile.ID_FolderOwner = parentId;
             newVersionFile.ID_LocalizationProject = projectId;
             newVersionFile.Version = version;
+            newVersionFile.Id_PreviousVersion = lastVersionDbFile?.ID;
 
             return await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
         }
@@ -130,7 +133,7 @@ namespace Models.Services
             {
                 DateOfChange = DateTime.Now,
                 StringsCount = 0,
-                Version = 0,
+                Version = this._initialFileVersion,
                 Priority = 0,
                 IsFolder = false,
                 //TODO: file encoding
@@ -239,9 +242,9 @@ namespace Models.Services
             }
         }
 
-        public async Task DeleteNode(int id)
+        public async Task DeleteNode(File file)
         {
-            // Check if file by id exists in database
+            var id = file.ID;
             var foundedFile = await this._filesRepository.GetByIDAsync(id);
             if (foundedFile == null)
             {
@@ -254,11 +257,19 @@ namespace Models.Services
                 throw new Exception("Удаление файла словаря запрещено.");
             }
 
-            var deleteSuccessfully = await this._filesRepository.RemoveAsync(id);
-            if (!deleteSuccessfully)
+            var tempFileModel = foundedFile;
+            do
             {
-                throw new Exception($"Не удалось удалить файл, имеющий id \"{id}\".");
-            }
+                await this._filesRepository.RemoveAsync(id: tempFileModel.ID);
+                if (tempFileModel.Id_PreviousVersion.HasValue)
+                {
+                    tempFileModel = await this._filesRepository.GetByIDAsync(tempFileModel.Id_PreviousVersion.Value);
+                }
+                else
+                {
+                    break;
+                }
+            } while (tempFileModel != null);
         }
 
         private async Task<Node<File>> AddNode(File file, Func<File, Task> insertToDbAction)

@@ -29,7 +29,7 @@
             </ng-container>
             <ng-container matColumnDef="settings">
               <td mat-cell *matCellDef="let project">
-                <a class="nav-link" role="button" aria-haspopup="true" routerLink='/projects/{{ project.id }}'>
+                <a class="nav-link" role="button" aria-haspopup="true" routerLink='/Projects/{{ project.id }}'>
                   <mat-icon>settings</mat-icon>
                 </a>
               </td>
@@ -42,7 +42,7 @@
                     <mat-icon>drag_indicator</mat-icon>
                   </a>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" routerLink='/projects/{{ project.id }}'>Удалить проект</a>
+                    <a class="dropdown-item" routerLink='/Projects/{{ project.id }}'>Удалить проект</a>
                   </div>
                 </div>
               </td>

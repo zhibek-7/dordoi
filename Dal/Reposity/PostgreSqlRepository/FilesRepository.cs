@@ -29,7 +29,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "\"Encoding\", " +
             "\"IsFolder\", " +
             "\"OriginalFullText\", " +
-            "\"IsLastVersion\"" +
+            "\"IsLastVersion\", " +
+            "\"Id_PreviousVersion\"" +
             ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
@@ -43,7 +44,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Encoding, " +
             "@IsFolder, " +
             "@OriginalFullText, " +
-            "@IsLastVersion" +
+            "@IsLastVersion, " +
+            "@Id_PreviousVersion" +
             ")";
 
         private readonly string connectionString;
@@ -152,7 +154,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         //Нужно для формирования отчетов
         public IEnumerable<File> GetInitialFolders(int projectId)
         {
-            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL";
+            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL " +
+                "AND \"IsLastVersion\"=true";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -293,26 +296,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                                     "@Value, " +
                                     "@PositionInText" +
                                     ")";
-                        using (var parser = new Parser())
+                        var translationSubstrings = new Parser().Parse(file);
+                        var translationSubstringsCount = translationSubstrings.Count;
+                        var n = translationSubstringsCount;
+                        foreach (var translationSubstring in translationSubstrings)
                         {
-                            var translationSubstrings = parser.Parse(file);
-                            var translationSubstringsCount = translationSubstrings.Count;
-                            var n = translationSubstringsCount;
-                            foreach (var translationSubstring in translationSubstrings)
-                            {
-                                this.LogQuery(sqlString, param: translationSubstring);
-                                n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
-                            }
-                            if (n == 0)
-                            {
-                                file.StringsCount = translationSubstringsCount;
-                                sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
-                                this.LogQuery(sqlString, param: file);
-                                await connection.ExecuteAsync(sqlString, file, transaction);
-                            }
-                            transaction.Commit();
-                            return n == 0;
+                            this.LogQuery(sqlString, param: translationSubstring);
+                            n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
                         }
+                        if (n == 0)
+                        {
+                            file.StringsCount = translationSubstringsCount;
+                            sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
+                            this.LogQuery(sqlString, param: file);
+                            await connection.ExecuteAsync(sqlString, file, transaction);
+                        }
+                        transaction.Commit();
+                        return n == 0;
                     }
                     catch (NpgsqlException exception)
                     {
