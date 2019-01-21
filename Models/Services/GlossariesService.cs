@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities;
-using Models.DTO;
+using Models.DatabaseEntities.DTO;
 
 namespace Models.Services
 {
@@ -11,7 +11,7 @@ namespace Models.Services
         private readonly IGlossariesRepository _glossariesRepository;
 
         private readonly GlossaryService _glossaryService;
-        
+
         public GlossariesService(IGlossariesRepository glossariesRepository, GlossaryService glossaryService)
         {
             _glossariesRepository = glossariesRepository;

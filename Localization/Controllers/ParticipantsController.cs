@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
-using Models.DTO.Participants;
+using Models.DatabaseEntities.DTO.Participants;
 
 namespace Localization.Controllers
 {

@@ -8,6 +8,7 @@ using Models.DatabaseEntities;
 using Npgsql;
 using Utilities.Logs;
 using Models.Interfaces.Repository;
+using Models.DatabaseEntities.DTO;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -91,13 +92,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async System.Threading.Tasks.Task<IEnumerable<Models.DTO.localizationProjectForSelectDTO>> GetAllForSelectDTOAsync()
+        public async System.Threading.Tasks.Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectDTOAsync()
         {
             using (IDbConnection dbConnection = context.Connection)
             {
                 dbConnection.Open();
-                IEnumerable<Models.DTO.localizationProjectForSelectDTO> result = 
-                    await dbConnection.QueryAsync<Models.DTO.localizationProjectForSelectDTO>
+                IEnumerable<LocalizationProjectForSelectDTO> result =
+                    await dbConnection.QueryAsync<LocalizationProjectForSelectDTO>
                     ("SELECT \"ID\", \"Name\" FROM \"LocalizationProjects\"");
                 dbConnection.Close();
                 return result;

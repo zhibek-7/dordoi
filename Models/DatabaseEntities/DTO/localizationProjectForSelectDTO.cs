@@ -1,8 +1,8 @@
 ﻿using Models.DatabaseEntities;
 
-namespace Models.DTO
+namespace Models.DatabaseEntities.DTO
 {
-    public class localizationProjectForSelectDTO : BaseEntity
+    public class LocalizationProjectForSelectDTO : BaseEntity
     {
         public string Name { get; set; }
     }

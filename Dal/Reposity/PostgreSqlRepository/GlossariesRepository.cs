@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Models.DatabaseEntities;
-using Models.DTO;
+using Models.DatabaseEntities.DTO;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -78,8 +78,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     Description = glossary.Description,
                     ID_File = (int?)null
                 };
-                var query = new Query("Glossaries").AsInsert(newGlossaries, true);          
-                               
+                var query = new Query("Glossaries").AsInsert(newGlossaries, true);
+
                 using (var dbConnection = this._context.Connection)
                 {
                     dbConnection.Open();
@@ -178,7 +178,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQueryGlossariesLocales.Sql,
                         param: compiledQueryGlossariesLocales.NamedBindings
                     );
-                    
+
                     var queryLocalizationProjectsGlossaries = new Query("LocalizationProjectsGlossaries").Where("ID_Glossary", id).AsDelete();
                     var compiledQueryLocalizationProjectsGlossaries = this._compiler.Compile(queryLocalizationProjectsGlossaries);
                     this.LogQuery(compiledQueryLocalizationProjectsGlossaries);
@@ -194,7 +194,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
                     );
-                    
+
                     dbConnection.Close();
                 }
             }
@@ -203,6 +203,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 throw ex;
             }
         }
-        
+
     }
 }

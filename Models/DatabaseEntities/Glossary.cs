@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Models.DatabaseEntities
 {
     public class Glossary : BaseEntity

@@ -1,6 +1,6 @@
 ﻿using Models.DatabaseEntities;
 
-namespace Models.PartialEntities.Glossary
+namespace Models.DatabaseEntities.PartialEntities.Glossary
 {
     public class TermWithGlossary : BaseEntity
     {
