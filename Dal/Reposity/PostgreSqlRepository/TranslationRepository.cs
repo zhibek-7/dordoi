@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.Translations;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -18,11 +19,8 @@ namespace DAL.Reposity.PostgreSqlRepository
     /// </summary>
     public class TranslationRepository : BaseRepository, IRepositoryAsync<Translation>
     {
-        private PostgreSqlNativeContext context;
-
-        public TranslationRepository()
+        public TranslationRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         /// <summary>
@@ -37,11 +35,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, item);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }
@@ -64,11 +60,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query);
-                    dbConnection.Close();
                     return translations;
                 }
             }
@@ -93,12 +87,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var translation = await dbConnection.QuerySingleOrDefaultAsync<Translation>(query, new { id });
-                    dbConnection.Close();
-
                     return translation;
                 }
             }
@@ -124,12 +115,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var deletedRows = await dbConnection.ExecuteAsync(query, new { id });
-                    dbConnection.Close();
-
                     return deletedRows > 0;
                 }
             }
@@ -150,9 +138,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = this.context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var updateTranslationSql =
                         "UPDATE \"Translations\" SET " +
                         "\"ID_String\"=@ID_String, " +
@@ -167,7 +154,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     await dbConnection.ExecuteAsync(
                         sql: updateTranslationSql,
                         param: updateTranslationParam);
-                    dbConnection.Close();
                     return true;
                 }
             }
@@ -191,11 +177,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query, new { Id = idString });
-                    dbConnection.Close();
                     return translations;
                 }
             }
@@ -221,12 +205,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var updatedRows = await dbConnection.ExecuteAsync(query, new { Id = idTranslation });
-                    dbConnection.Close();
-
                     return updatedRows > 0;
                 }
             }
@@ -252,12 +233,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var updatedRows = await dbConnection.ExecuteAsync(query, new { Id = idTranslation });
-                    dbConnection.Close();
-
                     return updatedRows > 0;
                 }
             }
@@ -287,11 +265,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<TranslationWithFile> translations = await dbConnection.QueryAsync<TranslationWithFile>(query, new { TranslationText = "%" + translationText + "%" });
-                    dbConnection.Close();
                     return translations;
                 }
             }
@@ -326,12 +302,10 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query,
                         new { TranslationSubstringText = translationSubstring.SubstringToTranslate, TranslationSubstringId = translationSubstring.ID, ProjectId = currentProjectId });
-                    dbConnection.Close();
                     return similarTranslations;
                 }
             }

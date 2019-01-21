@@ -15,13 +15,13 @@ namespace Localization.WebApi.work_panel
     public class WorkPanelController : ControllerBase
     {
         PostgreSqlEFContext context;
-        private readonly UserRepository userRepository = new UserRepository();
-        private readonly TranslationSubstringRepository stringRepository = new TranslationSubstringRepository();
+        private readonly UserRepository userRepository = new UserRepository(Settings.GetStringDB());
+        private readonly TranslationSubstringRepository stringRepository = new TranslationSubstringRepository(Settings.GetStringDB());
 
         public WorkPanelController(PostgreSqlEFContext context)
         {
             this.context = context;
-        }        
+        }
 
     }
 }

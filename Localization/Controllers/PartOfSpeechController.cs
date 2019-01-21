@@ -17,7 +17,7 @@ namespace Localization.WebApi
 
         public PartOfSpeechController()
         {
-            this._partOfSpeechRepository = new PartOfSpeechRepository();
+            this._partOfSpeechRepository = new PartOfSpeechRepository(Settings.GetStringDB());
         }
 
         [HttpGet]

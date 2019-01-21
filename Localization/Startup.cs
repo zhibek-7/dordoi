@@ -37,26 +37,29 @@ namespace Localization
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            ///TODO Уберу, сделаю как у всех. Такой метод выделяет память на класс, который может быть и не будет использоваться.
             ///Как идея использовать класс, который видно во всех методах.
-            //var connectionString = Configuration.GetConnectionString("MyWebApiConnection");
+            //var connectionString = Configuration.GetConnectionString("db_connection");
+            var connectionString = Settings.GetStringDB();
 
-            // 
-            //services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
+            // TODO нужно будет переделать все классы под этот вариант
+            services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
+            services.AddScoped<IGlossaryRepository>(provider => new GlossaryRepository(connectionString));
+            services.AddScoped<IGlossariesRepository>(provider => new GlossariesRepository(connectionString));
+            services.AddScoped<ITranslationSubstringRepository>(provider => new TranslationSubstringRepository(connectionString));
+
+
+            services.AddScoped<FilesService>();
+            services.AddScoped<GlossaryService>();
+            services.AddScoped<GlossariesService>();
+            /*
             services.AddScoped<IFilesRepository, FilesRepository>();
             services.AddScoped<FilesService>();
             services.AddScoped<IGlossaryRepository, GlossaryRepository>();
             services.AddScoped<GlossaryService>();
-
-            //
             services.AddScoped<IGlossariesRepository, GlossariesRepository>();
             services.AddScoped<GlossariesService>();
-            //
             services.AddScoped<ITranslationSubstringRepository, TranslationSubstringRepository>();
-            //
-            services.AddScoped<ITranslationTroubleRepository, TranslationTroubleRepository>();
-            services.AddScoped<TranslationsTroublesService>();
-
+            */
             ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////
             var corsBuilder = new CorsPolicyBuilder();
             corsBuilder.AllowAnyHeader();

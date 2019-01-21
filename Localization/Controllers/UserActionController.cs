@@ -18,7 +18,7 @@ namespace Localization.Controllers
 
         public UserActionController()
         {
-            userActionRepository = new UserActionRepository();
+            userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
         /// <summary>

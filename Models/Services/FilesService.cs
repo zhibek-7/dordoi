@@ -12,11 +12,8 @@ namespace Models.Services
 {
     public class FilesService
     {
-
         private readonly int _initialFileVersion = 1;
-
         private readonly IFilesRepository _filesRepository;
-
         private readonly IGlossaryRepository _glossaryRepository;
 
         public FilesService(
@@ -186,7 +183,7 @@ namespace Models.Services
                     System.IO.Path.GetDirectoryName(relativePathToFile)
                         .Split(System.IO.Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
                 var lastParentId = parentId;
-                foreach(var directoryName in directoriesToFile)
+                foreach (var directoryName in directoriesToFile)
                 {
                     var directoryDbModel = await this._filesRepository.GetLastVersionByNameAndParentId(directoryName, lastParentId);
                     if (directoryDbModel == null)
@@ -331,6 +328,39 @@ namespace Models.Services
             //return iconsSection.GetValue(extension, "assets/icons/file.png");
 
             return null;
+        }
+
+        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        {
+            var foundedFile = await this._filesRepository.GetByIDAsync(fileId);
+            if (foundedFile == null)
+            {
+                throw new Exception($"Не найдено файла/папки с id \"{fileId}\".");
+            }
+
+            if (newParentId.HasValue)
+            {
+                var newParent = await this._filesRepository.GetByIDAsync(id: newParentId.Value);
+                if (newParent == null)
+                {
+                    throw new Exception("Указанной родительской папки не существует.");
+                }
+
+                if (!newParent.IsFolder)
+                {
+                    throw new Exception("Указанный родитель не является папкой.");
+                }
+
+                if (fileId == newParentId.Value)
+                {
+                    throw new Exception("Папка не может быть родительской по отношению к себе.");
+                }
+            }
+
+            await this._filesRepository.ChangeParentFolderAsync(
+                fileId: fileId,
+                newParentId: newParentId
+                );
         }
 
     }

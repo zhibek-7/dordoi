@@ -16,7 +16,7 @@ namespace Localization.Controllers
 
         public WorkTypeController()
         {
-            workTypeRepository = new WorkTypeRepository();
+            workTypeRepository = new WorkTypeRepository(Settings.GetStringDB());
         }
 
         /// <summary>

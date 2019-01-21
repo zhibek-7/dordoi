@@ -13,14 +13,15 @@
   </div>
 </div>
 
-<p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">
+<p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode"
+             [(contextMenuSelection)]="selectedNode" [contextMenu]="filesListContextMenu" dataKey="id">
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': col.textalign}">{{col.header}}</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-    <tr [ttSelectableRow]="rowNode">
+    <tr [ttContextMenuRow]="rowNode">
       <td [ttEditableColumn]="rowData" class="col-xs-6">
         <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
         <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
@@ -71,9 +72,6 @@
             <button class="dropdown-item" (click)="renameNode(rowNode.node)" disabled>
               Переименовать
             </button>
-            <button class="dropdown-item" (click)="deleteFile(rowNode.node)">
-              Удалить
-            </button>
           </div>
         </div>
       </td>
@@ -85,3 +83,4 @@
     </tr>
   </ng-template>
 </p-treeTable>
+<p-contextMenu #filesListContextMenu [model]="contextMenuItems"></p-contextMenu>
