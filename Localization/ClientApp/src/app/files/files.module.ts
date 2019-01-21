@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
 
 import { TreeTableModule } from 'primeng/treetable';
+import { ContextMenuModule } from 'primeng/contextmenu';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
 import { FilesRoutingModule } from 'src/app/files/files-routing.module';
@@ -24,6 +25,7 @@ import { FileService } from 'src/app/services/file.service';
     CommonModule,
     HttpClientModule,
     TreeTableModule,
+    ContextMenuModule,
     FilesRoutingModule,
     SharedModule,
     NgxSpinnerModule,

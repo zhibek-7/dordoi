@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
 
-import { TreeNode } from 'primeng/api';
+import { TreeNode, MenuItem } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 import { FileService } from 'src/app/services/file.service';
@@ -19,6 +19,8 @@ export class FilesComponent implements OnInit {
   files: TreeNode[];
 
   cols: any[];
+
+  contextMenuItems: MenuItem[];
 
   searchFilesNamesString: string = '';
 
@@ -46,6 +48,10 @@ export class FilesComponent implements OnInit {
       { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
       { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
       { }
+    ];
+
+    this.contextMenuItems = [
+      { label: 'Toggle', command: (event) => { this.toggleFile(this.selectedNode) } }
     ];
 
     this.getFiles();
@@ -167,6 +173,11 @@ export class FilesComponent implements OnInit {
 
     // Return nodes length minus founded index
     return reversedIndex < 0 ? 0 : nodes.length - reversedIndex;
+  }
+
+  toggleFile(node) {
+    node.expanded = !node.expanded;
+    this.files = [...this.files];
   }
 
 }
