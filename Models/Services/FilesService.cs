@@ -85,7 +85,7 @@ namespace Models.Services
 
         public async Task<Node<File>> UpdateFileVersion(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
         {
-            var version = 0;
+            var version = this._initialFileVersion;
             var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentId(fileName, parentId);
             if (lastVersionDbFile != null)
             {
@@ -122,6 +122,7 @@ namespace Models.Services
             newVersionFile.ID_FolderOwner = parentId;
             newVersionFile.ID_LocalizationProject = projectId;
             newVersionFile.Version = version;
+            newVersionFile.Id_PreviousVersion = lastVersionDbFile?.ID;
 
             return await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
         }
@@ -256,7 +257,19 @@ namespace Models.Services
                 throw new Exception("Удаление файла словаря запрещено.");
             }
 
-            await this._filesRepository.RemoveAllVersionsAsync(file: file);
+            var tempFileModel = foundedFile;
+            do
+            {
+                await this._filesRepository.RemoveAsync(id: tempFileModel.ID);
+                if (tempFileModel.Id_PreviousVersion.HasValue)
+                {
+                    tempFileModel = await this._filesRepository.GetByIDAsync(tempFileModel.Id_PreviousVersion.Value);
+                }
+                else
+                {
+                    break;
+                }
+            } while (tempFileModel != null);
         }
 
         private async Task<Node<File>> AddNode(File file, Func<File, Task> insertToDbAction)

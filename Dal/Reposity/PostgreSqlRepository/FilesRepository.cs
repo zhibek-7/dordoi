@@ -29,7 +29,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "\"Encoding\", " +
             "\"IsFolder\", " +
             "\"OriginalFullText\", " +
-            "\"IsLastVersion\"" +
+            "\"IsLastVersion\", " +
+            "\"Id_PreviousVersion\"" +
             ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
@@ -43,7 +44,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Encoding, " +
             "@IsFolder, " +
             "@OriginalFullText, " +
-            "@IsLastVersion" +
+            "@IsLastVersion, " +
+            "@Id_PreviousVersion" +
             ")";
 
         private readonly string connectionString;
@@ -217,20 +219,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.RemoveAsync)} {nameof(Exception)} ",
                     exception);
                 return false;
-            }
-        }
-
-        public async Task RemoveAllVersionsAsync(File file)
-        {
-            using (var connection = new NpgsqlConnection(connectionString))
-            {
-                var query = new Query("Files")
-                    .Where("Name", file.Name)
-                    .Where("ID_FolderOwner", file.ID_FolderOwner)
-                    .AsDelete();
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                await connection.ExecuteAsync(compiledQuery.Sql, compiledQuery.NamedBindings);
             }
         }
 

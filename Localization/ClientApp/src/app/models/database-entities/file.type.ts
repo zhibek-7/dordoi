@@ -13,4 +13,5 @@ export class File {
     id_LocalizationProject: number;
     id_FolderOwner: number;
     isLastVersion: boolean;
+    id_PreviousVersion: number;
 }
