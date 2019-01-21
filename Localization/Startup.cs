@@ -53,6 +53,9 @@ namespace Localization
             services.AddScoped<GlossariesService>();
             //
             services.AddScoped<ITranslationSubstringRepository, TranslationSubstringRepository>();
+            //
+            services.AddScoped<ITranslationTroubleRepository, TranslationTroubleRepository>();
+            services.AddScoped<TranslationsTroublesService>();
 
             ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////
             var corsBuilder = new CorsPolicyBuilder();
