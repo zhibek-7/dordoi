@@ -51,7 +51,8 @@ export class FilesComponent implements OnInit {
     ];
 
     this.contextMenuItems = [
-      { label: 'Toggle', command: (event) => { this.toggleFile(this.selectedNode) } }
+      { label: 'Toggle', command: (event) => { this.toggleFile(this.selectedNode) } },
+      { label: 'Удалить', command: (event) => { this.deleteFile(this.selectedNode) } },
     ];
 
     this.getFiles();
