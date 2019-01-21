@@ -16,7 +16,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         FirstLetter //2	Наачало предложения не с заглавной буквы                                                                                  
     }
 
-    class TranslationTroubleRepository : BaseRepository, ITranslationTroubleRepository
+    public class TranslationTroubleRepository : BaseRepository, ITranslationTroubleRepository
     {
         public TranslationTroubleRepository(string connectionStr) : base(connectionStr)
         {
