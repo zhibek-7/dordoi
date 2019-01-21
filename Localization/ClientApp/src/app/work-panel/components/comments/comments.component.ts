@@ -8,7 +8,7 @@ import { ShareWordFromModalService } from '../../localServices/share-word-from-m
 import { TermWithGlossary } from '../../localEntites/terms/termWithGlossary.type';
 import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
- 
+
 import * as $ from 'jquery';
 
 @Component({
@@ -37,18 +37,18 @@ export class CommentsComponent implements OnInit {
 
 
     constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService,
-            private glossariesService: GlossariesService, private shareWordFromModalService: ShareWordFromModalService ) { 
+            private glossariesService: GlossariesService, private shareWordFromModalService: ShareWordFromModalService ) {
 
         this.commentsList = [];
         this.termsList = [];
 
-        this.getTerms();  
+        this.getTerms();
 
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
             this.stringId = pickedPhrase.id;
-            this.getComments(this.stringId);      
-            
+            this.getComments(this.stringId);
+
             // переключает TabBar на вкладку "Комментарии" при смене слова для перевода
             let activeTab = $(".directoryBlock .nav-tabs .active").attr('href');
 
@@ -57,13 +57,13 @@ export class CommentsComponent implements OnInit {
                 $(activeTab).removeClass("active show")
             }
             $("a[href='#nav-comment']").addClass("active show").attr("aria-selected", true);
-            $("#nav-comment").addClass("active show");      
+            $("#nav-comment").addClass("active show");
         });
 
         // Событие, срабатываемое при поиске слова в глоссарие из модального окна
         this.shareWordFromModalService.onClickFindInGlossary.subscribe(word => {
             this.searchTermText = word;
-        
+
             // переключает TabBar на вкладку "Глоссарии"
             let activeTab = $(".directoryBlock .nav-tabs .active").attr('href');
 
@@ -72,7 +72,7 @@ export class CommentsComponent implements OnInit {
                 $(activeTab).removeClass("active show")
             }
             $("a[href='#nav-condition']").addClass("active show").attr("aria-selected", true);
-            $("#nav-condition").addClass("active show");  
+            $("#nav-condition").addClass("active show");
         });
     }
 
@@ -83,7 +83,7 @@ export class CommentsComponent implements OnInit {
         this.commentService.getAllCommentsInStringById(idString)
             .subscribe( comments => {
                 this.commentsList = comments;
-        });        
+        });
     };
 
     // Добавление комментарие
@@ -98,7 +98,7 @@ export class CommentsComponent implements OnInit {
     // Событие, срабатываемое при нажатии клавиши Enter при добавлении нового комментария
     onEnterPressComment(event: any){
         if(event.which == 13 || event.keyCode == 13){
-            this.addComment();            
+            this.addComment();
         }
     }
 
@@ -107,13 +107,13 @@ export class CommentsComponent implements OnInit {
         this.commentsList = await [];
         this.changedComment = comment.comment;
         this.commentEdited = true
-        this.commentsList.push(comment);        
+        this.commentsList.push(comment);
     }
 
     // Отмена изменения комментария
     cancelChangingComment(commentId: number){
         this.endEditingMode();
-    }        
+    }
 
     // Сохранение измененного комментария
     async saveChangedComment(comment: CommentWithUser) {
@@ -173,7 +173,8 @@ export class CommentsComponent implements OnInit {
 
     // Функция проверки кол-ва вариантов перевода по поиску по памяти
     checkNumberOfTermsInProject(){
-        if(this.termsList.length == 0){
+        //if(this.termsList.length == 0){
+        if(this.termsList==null){
             return false;
         }
         else {
@@ -181,10 +182,10 @@ export class CommentsComponent implements OnInit {
         }
     }
 
-    // Событие, срабатываемое при нажатии клавиши Enter при поиске в глоссарие 
+    // Событие, срабатываемое при нажатии клавиши Enter при поиске в глоссарие
     onEnterPressGlossary(event: any){
         if(event.which == 13 || event.keyCode == 13){
-            this.addComment();            
+            this.addComment();
         }
     }
 
@@ -194,7 +195,7 @@ export class CommentsComponent implements OnInit {
 
         for(var i = 0; i < this.termsList.length; i++) {
             if(this.termsList[i].id == termId) {
-                this.termsList.splice(i, 1);                
+                this.termsList.splice(i, 1);
                 break;
             }
         }

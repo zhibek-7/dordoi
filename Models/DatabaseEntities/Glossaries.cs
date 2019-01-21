@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Models.DatabaseEntities;
-using Models.DTO;
-
-namespace Models.DatabaseEntities
+﻿namespace Models.DatabaseEntities
 {
     public class Glossaries : BaseEntity
     {

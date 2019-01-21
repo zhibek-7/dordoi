@@ -2,7 +2,7 @@
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
-using Models.PartialEntities.Glossary;
+using Models.DatabaseEntities.PartialEntities.Glossary;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -349,7 +349,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
         {
-            string query =  "SELECT " +
+            string query = "SELECT " +
                             "DISTINCT ON (TS.\"ID\") TS.\"ID\" AS \"ID\"," +
                             "TS.\"SubstringToTranslate\" AS \"TermText\", " +
                             "TS.\"Description\" AS \"TermDesciption\"," +
