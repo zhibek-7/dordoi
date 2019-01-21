@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel.DataAnnotations;
-
-namespace Models.DatabaseEntities
+﻿namespace Models.DatabaseEntities
 {
-    public class TranslationSubstring: BaseEntity
+    public class TranslationSubstring : BaseEntity
     {
         public string SubstringToTranslate { get; set; }
 
@@ -23,7 +18,7 @@ namespace Models.DatabaseEntities
 
         public bool? Outdated { get; set; }
 
-        public TranslationSubstring(){}
+        public TranslationSubstring() { }
 
         public TranslationSubstring(string substringToTranslate, string context, int id_FileOwner, string value, int positionInText)
         {

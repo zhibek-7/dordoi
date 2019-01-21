@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Models.DatabaseEntities;
-
-namespace Models.DatabaseEntities.Translations
+﻿namespace Models.DatabaseEntities.Translations
 {
     public class TranslationWithFile
     {

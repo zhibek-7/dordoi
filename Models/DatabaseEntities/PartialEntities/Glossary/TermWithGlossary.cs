@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Models.DatabaseEntities;
+﻿using Models.DatabaseEntities;
 
 namespace Models.PartialEntities.Glossary
 {
-    public class TermWithGlossary: BaseEntity
+    public class TermWithGlossary : BaseEntity
     {
         /// <summary>
         /// Текст термина
