@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
-using Models.Comments;
+using Models.DatabaseEntities.Comment;
 using System.Net.Http;
 using System.IO;
 
@@ -23,8 +23,10 @@ namespace Localization.WebApi
 
         public CommentController()
         {
-            commentRepository = new CommentRepository();
-            stringRepository = new TranslationSubstringRepository();
+            //this.commentRepository = commentRepository;
+            //this.stringRepository = stringRepository;
+            commentRepository = new CommentRepository(Settings.GetStringDB());
+            stringRepository = new TranslationSubstringRepository(Settings.GetStringDB());
         }
 
         /// <summary>

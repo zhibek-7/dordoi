@@ -5,13 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class PartOfSpeechRepository : BaseRepository, IRepository<PartOfSpeech>
     {
 
-        private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
+        public PartOfSpeechRepository(string connectionStr) : base(connectionStr)
+        {
+        }
 
         public void Add(PartOfSpeech item)
         {
@@ -40,9 +43,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<PartOfSpeech> GetByGlossaryId(int glossaryId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var getByGlossaryIdSql = "SELECT * FROM \"PartsOfSpeech\" WHERE \"LocaleID\" IN " +
                     "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
                     "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" " +
@@ -56,7 +58,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Query<PartOfSpeech>(
                         sql: getByGlossaryIdSql,
                         param: getByGlossaryIdParam);
-                dbConnection.Close();
                 return partsOfSpeechForLocale;
             }
         }

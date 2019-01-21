@@ -10,10 +10,10 @@ namespace Localization.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController: ControllerBase
+    public class RoleController : ControllerBase
     {
 
-        private RoleRepository _roleRepository = new RoleRepository();
+        private RoleRepository _roleRepository = new RoleRepository(Settings.GetStringDB());
 
         [HttpPost("list")]
         public async Task<IEnumerable<Role>> GetAllRoles()

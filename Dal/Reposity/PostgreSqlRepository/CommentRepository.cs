@@ -7,16 +7,14 @@ using System.Data;
 using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.Comment;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class CommentRepository : BaseRepository, IRepositoryAsync<Comments>
     {
-        private PostgreSqlNativeContext context;
-
-        public CommentRepository()
+        public CommentRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         /// <summary>
@@ -32,11 +30,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }
@@ -66,11 +62,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             */
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }
@@ -93,11 +87,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<Comments> comments = await dbConnection.QueryAsync<Comments>(query);
-                    dbConnection.Close();
                     return comments;
                 }
             }
@@ -126,11 +118,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, new { Id = idString });
-                    dbConnection.Close();
                     return comments;
                 }
             }
@@ -154,12 +144,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var comment = await dbConnection.QuerySingleOrDefaultAsync<Comments>(query, new { id });
-                    dbConnection.Close();
-
                     return comment;
                 }
             }
@@ -190,11 +177,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var comment = await dbConnection.QuerySingleOrDefaultAsync<CommentWithUserInfo>(query, new { id });
-                    dbConnection.Close();
 
                     return comment;
                 }
@@ -221,11 +206,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var deletedRows = await dbConnection.ExecuteAsync(query, new { id });
-                    dbConnection.Close();
 
                     return deletedRows > 0;
                 }
@@ -254,13 +237,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-
                     await dbConnection.ExecuteAsync(query, comment);
-
-                    dbConnection.Close();
                     return true;
                 }
             }
@@ -286,11 +265,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, img);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }
@@ -314,11 +291,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, image);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }

@@ -8,16 +8,14 @@ using System.Threading.Tasks;
 
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class GlossariesRepository : BaseRepository, IGlossariesRepository
     {
-        private readonly PostgreSqlNativeContext _context;
-
-        public GlossariesRepository()
+        public GlossariesRepository(string connectionStr) : base(connectionStr)
         {
-            this._context = PostgreSqlNativeContext.getInstance();
         }
 
         public async Task<IEnumerable<Glossaries>> GetAllAsync()
@@ -40,9 +38,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "LocalizationProjects.Name as LocalizationProjectName"
                 );
 
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
@@ -50,7 +47,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
 
-                dbConnection.Close();
+
                 return glossaries;
             }
         }
@@ -80,9 +77,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 };
                 var query = new Query("Glossaries").AsInsert(newGlossaries, true);
 
-                using (var dbConnection = this._context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
 
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
@@ -125,7 +121,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                                 param: compiledQueryLocalizationProjectsGlossaries.NamedBindings
                                 );
                     }
-                    dbConnection.Close();
+
                 }
             }
             catch (System.Exception ex)
@@ -138,9 +134,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = this._context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     /*
                     при удалени глосария нужно удалить файл, строки, термины и переводы
                       
@@ -195,7 +190,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                         param: compiledQuery.NamedBindings
                     );
 
-                    dbConnection.Close();
                 }
             }
             catch (System.Exception ex)

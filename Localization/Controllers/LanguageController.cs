@@ -16,7 +16,7 @@ namespace Localization.WebApi
 
         public LanguageController()
         {
-            _localeRepository = new LocaleRepository();
+            _localeRepository = new LocaleRepository(Settings.GetStringDB());
         }
 
         [HttpGet]

@@ -18,7 +18,7 @@ namespace Localization.Controllers
 
         public ParticipantsController()
         {
-            this._participantsRepository = new ParticipantRepository();
+            this._participantsRepository = new ParticipantRepository(Settings.GetStringDB());
         }
 
         public class GetParticipantsByProjectIdParam

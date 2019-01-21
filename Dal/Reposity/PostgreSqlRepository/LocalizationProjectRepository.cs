@@ -9,18 +9,14 @@ using Npgsql;
 using Utilities.Logs;
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.DTO;
+using System.Threading.Tasks;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectRepository : IRepository<LocalizationProject>
+    public class LocalizationProjectRepository : BaseRepository, IRepository<LocalizationProject>, ILocalizationProjectRepository
     {
-        private PostgreSqlNativeContext context;
-        private ILogTools _log;
-
-        public LocalizationProjectRepository()
+        public LocalizationProjectRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
-            _log = ExceptionLog.GetLog();
         }
 
         public void Add(LocalizationProject locale)
@@ -35,26 +31,24 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                // Using new posgresql connection
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var project = dbConnection.Query<LocalizationProject>(sqlString, new { Id }).FirstOrDefault();
-                    dbConnection.Close();
+
                     return project;
                 }
             }
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                _log.WriteLn("Ошибка в GetByID NpgsqlException ", exception);
+                _loggerError.WriteLn("Ошибка в GetByID NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
                 // Custom logging
-                _log.WriteLn("Ошибка в GetByID ", exception);
+                _loggerError.WriteLn("Ошибка в GetByID ", exception);
 
                 return null;
             }
@@ -67,40 +61,36 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                // Using new posgresql connection
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     IEnumerable<LocalizationProject> users = dbConnection.Query<LocalizationProject>(sqlString);
-                    dbConnection.Close();
+
                     return users;
                 }
             }
             catch (NpgsqlException exception)
             {
                 // Custom logging
-                _log.WriteLn("Ошибка в GetAll NpgsqlException ", exception);
+                _loggerError.WriteLn("Ошибка в GetAll NpgsqlException ", exception);
 
                 return null;
             }
             catch (Exception exception)
             {
                 // Custom logging
-                _log.WriteLn("Ошибка в GetAll ", exception);
+                _loggerError.WriteLn("Ошибка в GetAll ", exception);
 
                 return null;
             }
         }
 
-        public async System.Threading.Tasks.Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectDTOAsync()
+        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectDTOAsync()
         {
-            using (IDbConnection dbConnection = context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 IEnumerable<LocalizationProjectForSelectDTO> result =
                     await dbConnection.QueryAsync<LocalizationProjectForSelectDTO>
                     ("SELECT \"ID\", \"Name\" FROM \"LocalizationProjects\"");
-                dbConnection.Close();
                 return result;
             }
         }
@@ -125,7 +115,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void InsertProject(LocalizationProject project)
         {
-            using (IDbConnection db = context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
 
                 var sqlQuery = "INSERT INTO \"LocalizationProjects\" (\"Name\", \"Description\", \"URL\", \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
@@ -134,7 +124,7 @@ namespace DAL.Reposity.PostgreSqlRepository
               + project.DefaultString + "','" + project.NotifyNew + "','" + project.NotifyFinish + "','" + project.NotifyConfirm + "','" + project.Logo + "')";
 
 
-                int? projectId = db.Query<int>(sqlQuery, project).FirstOrDefault();
+                int? projectId = dbConnection.Query<int>(sqlQuery, project).FirstOrDefault();
                 project.ID = (int)projectId;
 
                 //Не нужно дважды вызывать
@@ -148,13 +138,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="id"></param>
         public void DeleteProject(int id)
         {
-            using (IDbConnection db = context.Connection)
+            using (var connection = new NpgsqlConnection(connectionString))
             {
-
                 var sqlQuery = "DELETE * FROM  LocalizationProjects  WHERE ID = '" + id + "'";
-                db.Execute(sqlQuery, new { id });
-
-
+                connection.Execute(sqlQuery, new { id });
             }
         }
 
@@ -166,11 +153,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void UpdateProject(LocalizationProject project)
         {
-            using (IDbConnection db = context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var sqlQuery = "UPDATE LocalizationProjects SET ID = '" + project.ID + "', Name = '" + project.Name + "', Description = '" + project.Description + "', URL = '" + project.URL + "', Visibility = '" + project.Visibility + "', DateOfCreation = '" + project.DateOfCreation + "', LastActivity = '" + project.LastActivity + "', ID_SourceLocale = '" + project.ID_SourceLocale + "', AbleToDownload = '" + project.AbleToDownload + "', AbleToLeftErrors = '" + project.AbleToLeftErrors + "', DefaultString = '" + project.DefaultString + "', NotifyNew = '" + project.NotifyNew + "', NotifyFinish = '" + project.NotifyFinish + "', NotifyConfirm = '" + project.NotifyConfirm
                     + "', Logo = '" + project.Logo + "'";
-                db.Execute(sqlQuery, project);
+                dbConnection.Execute(sqlQuery, project);
             }
         }
 

@@ -7,13 +7,20 @@ using Utilities.Logs;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public abstract class BaseRepository
+    public class BaseRepository
     {
+        //Строка подключения к БД
+        protected string connectionString;
 
         protected readonly ILogTools _logger = new LogTools();
         protected readonly ILogTools _loggerError = new ExceptionLog();
 
         protected readonly Compiler _compiler = new PostgresCompiler();
+
+        public BaseRepository(string connectionStr)
+        {
+            this.connectionString = connectionStr;
+        }
 
         protected void LogQuery(string sql)
         {

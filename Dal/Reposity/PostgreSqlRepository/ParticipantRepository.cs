@@ -8,6 +8,7 @@ using Dapper;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO.Participants;
 using Models.Interfaces.Repository;
+using Npgsql;
 using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -15,13 +16,14 @@ namespace DAL.Reposity.PostgreSqlRepository
     public class ParticipantRepository : BaseRepository, IRepositoryAsync<Models.DatabaseEntities.Participant>
     {
 
-        private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
+        public ParticipantRepository(string connectionStr) : base(connectionStr)
+        {
+        }
 
         public async Task<int> AddAsync(Participant newParticipant)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
 
                 var query = new Query("Participants")
                     .AsInsert(new[] {
@@ -43,7 +45,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 await dbConnection.ExecuteAsync(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
-                dbConnection.Close();
 
                 return newParticipant.ID;
             }
@@ -66,9 +67,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> UpdateAsync(Models.DatabaseEntities.Participant updatedParticipant)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query = new Query("Participants")
                     .Where("ID_LocalizationProject", updatedParticipant.ID_LocalizationProject)
                     .Where("ID_User", updatedParticipant.ID_User)
@@ -91,7 +91,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 await dbConnection.ExecuteAsync(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
-                dbConnection.Close();
+
                 return true;
             }
         }
@@ -121,9 +121,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 sortBy = new[] { "user_id" };
             }
 
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query = this.GetByProjectIdQuery(
                     projectId: projectId,
                     search: search,
@@ -146,16 +145,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var participants = await dbConnection.QueryAsync<ParticipantDTO>(
                     sql: getParticipantsByProjectIdCompiledQuery.Sql,
                     param: getParticipantsByProjectIdCompiledQuery.NamedBindings);
-                dbConnection.Close();
                 return participants;
             }
         }
 
         protected async Task<bool> InactiveParticipantsContainsAsync(int projectId, int userId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query = new Query("Participants")
                     .Where("Participants.ID_LocalizationProject", projectId)
                     .Where("Participants.ID_User", userId)
@@ -166,7 +163,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var participants = await dbConnection.QueryAsync<Models.DatabaseEntities.Participant>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
-                dbConnection.Close();
                 return participants.Any();
             }
         }
@@ -193,9 +189,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task SetInactiveAsync(int projectId, int userId)
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
                 var query = new Query("Participants")
                     .Where("ID_LocalizationProject", projectId)
                     .Where("ID_User", userId)
@@ -206,7 +201,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 await dbConnection.ExecuteAsync(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
-                dbConnection.Close();
             }
         }
 
@@ -217,10 +211,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             int[] localeIds
             )
         {
-            using (var dbConnection = this._context.Connection)
+            using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                dbConnection.Open();
-
                 var query = this.GetByProjectIdQuery(
                     projectId: projectId,
                     search: search,
@@ -234,7 +226,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     sql: getParticipantsCountCompiledQuery.Sql,
                     param: getParticipantsCountCompiledQuery.NamedBindings);
 
-                dbConnection.Close();
                 return participantsCount;
             }
         }

@@ -15,7 +15,6 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
     {
-
         private readonly string _insertFileSql =
             "INSERT INTO \"Files\" (" +
             "\"ID_LocalizationProject\", " +
@@ -48,17 +47,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Id_PreviousVersion" +
             ")";
 
-        private readonly string connectionString;
-
-        public FilesRepository()
+        public FilesRepository(string connectionStr) : base(connectionStr)
         {
-            //TODO потом нужно переделать. Не должно быть статика
-            connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
-        }
-
-        public FilesRepository(string connectionString)
-        {
-            this.connectionString = connectionString;
         }
 
         public async Task<IEnumerable<File>> GetAllAsync()
@@ -379,7 +369,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             }
                             output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
-                        
+
                         var fs = System.IO.File.Create(tempFileName);
                         using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
                         {

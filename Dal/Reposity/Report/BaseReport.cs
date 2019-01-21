@@ -11,7 +11,7 @@ namespace DAL.Reposity.Report
     /// </summary>
     public abstract class BaseReport<T> where T : BaseReportRow
     {
-        protected PostgreSqlNativeContext Context = PostgreSqlNativeContext.getInstance();
+        //protected PostgreSqlNativeContext Context = PostgreSqlNativeContext.getInstance();
 
         /// <summary>
         /// Начальная дата

@@ -12,17 +12,17 @@ namespace Models.Services
 
         private readonly GlossaryService _glossaryService;
 
+
         public GlossariesService(IGlossariesRepository glossariesRepository, GlossaryService glossaryService)
         {
             _glossariesRepository = glossariesRepository;
             _glossaryService = glossaryService;
         }
 
-
-        //public async Task<IEnumerable<Glossaries>> GetAllAsync()
-        //{
-        //    return await _glossariesRepository.GetAllAsync();
-        //}
+        public async Task<IEnumerable<Glossaries>> GetAllAsync()
+        {
+            return await _glossariesRepository.GetAllAsync();
+        }
 
         public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
         {
