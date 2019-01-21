@@ -435,5 +435,23 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query = new Query("Files")
+                    .Where("ID", fileId)
+                    .AsUpdate(new[] { "ID_FolderOwner" }, new object[] { newParentId });
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+            }
+        }
+
     }
 }

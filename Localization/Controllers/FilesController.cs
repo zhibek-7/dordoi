@@ -123,6 +123,15 @@ namespace Localization.WebApi
             return Ok();
         }
 
+        [HttpGet("{fileId}/changeParentFolder/{newParentId}")]
+        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        {
+            await this._filesService.ChangeParentFolderAsync(
+                fileId: fileId,
+                newParentId: newParentId
+                );
+        }
+
     }
 
 }

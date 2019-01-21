@@ -333,5 +333,33 @@ namespace Models.Services
             return null;
         }
 
+        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        {
+            var foundedFile = await this._filesRepository.GetByIDAsync(fileId);
+            if (foundedFile == null)
+            {
+                throw new Exception($"Не найдено файла/папки с id \"{fileId}\".");
+            }
+
+            if (newParentId.HasValue)
+            {
+                var newParent = await this._filesRepository.GetByIDAsync(id: newParentId.Value);
+                if (newParent == null)
+                {
+                    throw new Exception("Указанной родительской папки не существует.");
+                }
+
+                if (!newParent.IsFolder)
+                {
+                    throw new Exception("Указанный родитель не является папкой.");
+                }
+            }
+
+            await this._filesRepository.ChangeParentFolderAsync(
+                fileId: fileId,
+                newParentId: newParentId
+                );
+        }
+
     }
 }

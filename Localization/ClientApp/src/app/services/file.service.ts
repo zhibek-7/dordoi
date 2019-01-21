@@ -113,6 +113,12 @@ export class FileService {
       .pipe(catchError(this.handleError('Delete node')));
   }
 
+  changeParentFolder(fileData: FileData, newParentId?: number): Observable<Object> {
+    const url = `${this._url}/${fileData.id}/changeParentFolder/${newParentId}`;
+
+    return this.http.get<TreeNode>(url);
+  }
+
   handleError<T>(operation = 'Operation', result?: T) {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error.message}`);
