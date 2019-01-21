@@ -6,10 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReportsRoutingModule } from './Reports-routing.module';
 import { ReportsComponent } from './Reports.component';
 import { TranslatedWordsComponent } from './TranslatedWords/TranslatedWords.component';
-import { StatusReportComponent } from './status-report/status-report.component';
-import { CostsReportComponent } from './costs-report/costs-report.component';
-import { TranslationsCostComponent } from './translations-cost/translations-cost.component';
-import { FoulsTranslationComponent } from './fouls-translation/fouls-translation.component';
 import { ReportService } from '../services/reports.service';
 import { LanguageService } from '../services/languages.service';
 import { UserService } from '../services/user.service';
@@ -34,11 +30,7 @@ import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
   providers: [ReportService, LanguageService, UserService],
   declarations: [
     ReportsComponent,
-    TranslatedWordsComponent,
-    StatusReportComponent,
-    CostsReportComponent,
-    TranslationsCostComponent,
-    FoulsTranslationComponent
+    TranslatedWordsComponent
   ]
 })
 export class ReportsModule { }

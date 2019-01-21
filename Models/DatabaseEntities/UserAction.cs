@@ -81,10 +81,12 @@ namespace Models.DatabaseEntities
 
         public UserAction() { }
 
-        public UserAction(int userId, string descript, int actionTypeID)
+        public UserAction(int userId, string userName, string descript, int actionTypeID, string actionName)
         {
             ID_User = userId;
+            User = userName;
             ID_worktype = actionTypeID;
+            Worktype = actionName;
             Description = descript;
             Datetime = DateTime.Now;
         }
