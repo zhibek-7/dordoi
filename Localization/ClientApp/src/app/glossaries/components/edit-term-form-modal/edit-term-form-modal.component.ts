@@ -49,6 +49,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
     if (!this.glossary)
       return;
 
+    this._term.substringToTranslate = this._term.value;
     let updateTermObservable = this.glossariesService.updateTerm(this.glossary.id, this._term, this._term.partOfSpeechId);
     updateTermObservable.subscribe();
 
