@@ -31,5 +31,7 @@ namespace Models.Services
         {
             return await _translationTroubleRepository.RemoveAsync(id);
         }
+
+
     }
 }
