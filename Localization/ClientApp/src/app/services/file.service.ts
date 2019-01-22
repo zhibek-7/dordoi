@@ -56,7 +56,8 @@ export class FileService {
       formData.append('parentId', '');
     }
 
-    return this.http.post<TreeNode>(url, formData);
+    return this.http.post<TreeNode>(url, formData)
+      .pipe(catchError(this.handleError('addFile')));
   }
 
   updateFileVersion(file: File, fileName: string, projectId: number, parentId?: number): Observable<TreeNode> {
@@ -72,13 +73,15 @@ export class FileService {
       formData.append('parentId', '');
     }
 
-    return this.http.post<TreeNode>(url, formData);
+    return this.http.post<TreeNode>(url, formData)
+      .pipe(catchError(this.handleError('updateFileVersion')));
   }
 
   addFolder(name: string, projectId: number, parentId?: number): Observable<TreeNode> {
     const url = `${this._url}/add/folderByProjectId/${projectId}`;
 
-    return this.http.post<TreeNode>(url, { name, parentId });
+    return this.http.post<TreeNode>(url, { name, parentId })
+      .pipe(catchError(this.handleError('addFolder')));
   }
 
   uploadFolder(files, projectId: number, parentId?: number): Observable<any> {
@@ -117,19 +120,22 @@ export class FileService {
   changeParentFolder(fileData: FileData, newParentId?: number): Observable<Object> {
     const url = `${this._url}/${fileData.id}/changeParentFolder/${newParentId}`;
 
-    return this.http.get<TreeNode>(url);
+    return this.http.get<TreeNode>(url)
+      .pipe(catchError(this.handleError('changeParentFolder')));
   }
 
   getTranslationLocalesForFileAsync(fileData: FileData): Observable<Locale[]> {
     const url = `${this._url}/${fileData.id}/locales/list`;
 
-    return this.http.get<Locale[]>(url);
+    return this.http.get<Locale[]>(url)
+      .pipe(catchError(this.handleError('getTranslationLocalesForFileAsync', [])));
   }
 
   updateTranslationLocalesForFileAsync(fileData: FileData, localesIds: number[]): Observable<Locale[]> {
     const url = `${this._url}/${fileData.id}/locales`;
 
-    return this.http.put<Locale[]>(url, localesIds);
+    return this.http.put<Locale[]>(url, localesIds)
+      .pipe(catchError(this.handleError('updateTranslationLocalesForFileAsync', [])));
   }
 
   handleError<T>(operation = 'Operation', result?: T) {
