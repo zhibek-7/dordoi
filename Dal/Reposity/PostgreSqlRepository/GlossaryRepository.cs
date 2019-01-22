@@ -2,7 +2,7 @@
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
-using Models.DatabaseEntities.PartialEntities.Glossary;
+using Models.DatabaseEntities.PartialEntities.Glossaries;
 using SqlKata;
 using System;
 using System.Collections.Generic;
@@ -327,10 +327,16 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             string query = "SELECT " +
                             "DISTINCT ON (TS.\"ID\") TS.\"ID\" AS \"ID\"," +
-                            "TS.\"SubstringToTranslate\" AS \"TermText\", " +
-                            "TS.\"Description\" AS \"TermDesciption\"," +
+                            "TS.\"SubstringToTranslate\" AS \"SubstringToTranslate\", " +
+                            "TS.\"Description\" AS \"Description\", " +
+                            "TS.\"Context\" AS \"Context\", " +
+                            "TS.\"TranslationMaxLength\" AS \"TranslationMaxLength\", " +
+                            "TS.\"ID_FileOwner\" AS \"ID_FileOwner\", " +
+                            "TS.\"Value\" AS \"Value\", " +
+                            "TS.\"PositionInText\" AS \"PositionInText\", " +
                             "G.\"ID\" AS \"GlossaryId\", " +
-                            "G.\"Name\" AS \"GlossaryName\" " +
+                            "G.\"Name\" AS \"GlossaryName\", " +
+                            "G.\"Description\" AS \"GlossaryDescription\" " +
                             "FROM \"LocalizationProjects\" AS LP " +
                             "INNER JOIN \"LocalizationProjectsGlossaries\" AS LPG ON LP.\"ID\" = LPG.\"ID_LocalizationProject\" " +
                             "INNER JOIN \"Glossaries\" AS G ON G.\"ID\" = LPG.\"ID_Glossary\" " +

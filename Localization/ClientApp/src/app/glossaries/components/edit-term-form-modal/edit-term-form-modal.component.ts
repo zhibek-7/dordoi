@@ -85,7 +85,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
   tempUserId: number = 300;
 
-  loadTranslations() {
+  loadTranslations() {   
     this.translationService.getAllTranslationsInStringById(this._term.id)
       .then(translations =>
         this.glossariesService.getTranslationLocalesForTerm(this.glossary.id, this._term.id)

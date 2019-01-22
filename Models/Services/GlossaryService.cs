@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
-using Models.DatabaseEntities.PartialEntities.Glossary;
+using Models.DatabaseEntities.PartialEntities.Glossaries;
 
 namespace Models.Services
 {

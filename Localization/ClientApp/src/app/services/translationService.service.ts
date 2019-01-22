@@ -22,6 +22,7 @@ export class TranslationService {
     }
 
     async getAllTranslationsInStringById(idString: number){
+        console.log(idString);
         let translations: Translation[] = await this.http.get<Translation[]>(this.url + '/InString/' + idString).toPromise();
         return translations;
     }

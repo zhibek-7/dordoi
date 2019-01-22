@@ -1,19 +1,9 @@
 ﻿using Models.DatabaseEntities;
 
-namespace Models.DatabaseEntities.PartialEntities.Glossary
+namespace Models.DatabaseEntities.PartialEntities.Glossaries
 {
-    public class TermWithGlossary : BaseEntity
-    {
-        /// <summary>
-        /// Текст термина
-        /// </summary>
-        public string TermText { get; set; }
-
-        /// <summary>
-        /// Описание термина
-        /// </summary>
-        public string TermDesciption { get; set; }
-
+    public class TermWithGlossary : Term
+    {        
         /// <summary>
         /// Глоссарий в котором содержится термин
         /// </summary>
@@ -23,5 +13,10 @@ namespace Models.DatabaseEntities.PartialEntities.Glossary
         /// Глоссарий в котором содержится термин
         /// </summary>
         public string GlossaryName { get; set; }
+
+        /// <summary>
+        /// Описание глоссария
+        /// </summary>
+        public string GlossaryDescription { get; set; }
     }
 }
