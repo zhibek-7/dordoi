@@ -47,6 +47,7 @@
       </td>
       <td class="col-xs-2">
         <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event, rowNode.node)"></app-add-folder-modal>
+        <app-rename-file-modal #renameModal [file]="rowData" (nameChangeSubmitted)="renameNode(rowNode.node, $event)"></app-rename-file-modal>
         <app-set-languages-modal #setFileLanguagesModal [file]="rowData"></app-set-languages-modal>
         <div class="dropdown">
           <button id="contextMenu" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,7 +71,7 @@
               <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
             </button>
             <div class="dropdown-divider" *ngIf="!rowData.isFolder"></div>
-            <button class="dropdown-item" (click)="renameNode(rowNode.node)" disabled>
+            <button class="dropdown-item" (click)="renameModal.show()">
               Переименовать
             </button>
             <button class="dropdown-item" (click)="setFileLanguagesModal.show()" [disabled]="rowData.isFolder">

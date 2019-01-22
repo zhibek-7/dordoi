@@ -211,4 +211,12 @@ export class FilesComponent implements OnInit {
     this.files = [...this.files];
   }
 
+  renameNode(node: TreeNode, updatedFile: FileData) {
+    node.data.name = updatedFile.name;
+    this.fileService.updateNode(node.data)
+      .subscribe(() => {
+        this.reloadView();
+      });
+  }
+
 }

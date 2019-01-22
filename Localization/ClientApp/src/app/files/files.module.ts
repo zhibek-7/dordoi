@@ -13,6 +13,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { FilesComponent } from 'src/app/files/components/files/files.component';
 import { AddFolderModalComponent } from 'src/app/files/components/add-folder-modal/add-folder-modal.component';
 import { SetLanguagesModalComponent } from 'src/app/files/components/set-languages-modal/set-languages-modal.component';
+import { RenameFileModalComponent } from 'src/app/files/components/rename-file-modal/rename-file-modal.component';
 
 import { FileService } from 'src/app/services/file.service';
 import { LanguageService } from 'src/app/services/languages.service';
@@ -22,6 +23,7 @@ import { LanguageService } from 'src/app/services/languages.service';
     FilesComponent,
     AddFolderModalComponent,
     SetLanguagesModalComponent,
+    RenameFileModalComponent,
   ],
   imports: [
     FormsModule,
