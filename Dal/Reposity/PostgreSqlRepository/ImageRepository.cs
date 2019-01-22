@@ -6,11 +6,14 @@ using Dapper;
 using Models.DatabaseEntities;
 using DAL.Context;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class ImageRepository : IRepository<Image>
-    {
+    public class ImageRepository : BaseRepository, IRepository<Image>
+    { /// <summary>
+/// ///нужно ли здесь ставить  this.LogQuery(sqlString); не поняла, так как в filerepository в примерно таких запросах  this.LogQuery(sqlString); нет
+/// </summary>
         private PostgreSqlNativeContext context;
 
         public ImageRepository()
@@ -30,13 +33,35 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<Image> GetAll()
         {
-            using (IDbConnection dbConnection = context.Connection)
+            try
             {
-                dbConnection.Open();
-                IEnumerable<Image> images = dbConnection.Query<Image>("SELECT * FROM \"Images\"").ToList();
-                dbConnection.Close();
-                return images;
+                var sqlString = "SELECT * FROM \"Images\"";
+                using (IDbConnection dbConnection = context.Connection)
+                {
+                    dbConnection.Open();
+                    this.LogQuery(sqlString);
+
+                    IEnumerable<Image> images = dbConnection.Query<Image>("SELECT * FROM \"Images\"").ToList();
+                  
+                    dbConnection.Close();
+                    return images;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.GetAll)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.GetAll)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
         }
 
         public bool Remove(int Id)

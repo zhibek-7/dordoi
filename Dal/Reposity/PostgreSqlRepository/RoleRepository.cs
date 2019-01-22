@@ -6,6 +6,7 @@ using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
+using Npgsql;
 using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
@@ -22,17 +23,35 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Role>> GetAllAsync()
         {
-            using (var dbConnection = _context.Connection)
+            try {
+
+                using (var dbConnection = _context.Connection)
+                {
+                    dbConnection.Open();
+                    var query = new Query("Roles");
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var roles = await dbConnection.QueryAsync<Role>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    dbConnection.Close();
+                    return roles;
+                }
+            }
+
+           catch (NpgsqlException exception)
             {
-                dbConnection.Open();
-                var query = new Query("Roles");
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                var roles = await dbConnection.QueryAsync<Role>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
-                dbConnection.Close();
-                return roles;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(RoleRepository)}.{nameof(RoleRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(RoleRepository)}.{nameof(RoleRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 

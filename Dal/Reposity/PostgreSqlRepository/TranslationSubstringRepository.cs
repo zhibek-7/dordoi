@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SqlKata;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -44,16 +45,24 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
+                    this.LogQuery(query);
                     IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.TranslationSubstring>(query);
                     dbConnection.Close();
                     return strings;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
 
@@ -75,16 +84,25 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.TranslationSubstring>(query, new { Id = id });
+                    var param = new { Id = id };
+                    this.LogQuery(query, param);
+                    var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.TranslationSubstring>(query, param);
                     dbConnection.Close();
                     return foundedString;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -105,16 +123,25 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
+                  
+                    this.LogQuery(query);
                     IEnumerable<TranslationSubstring> filtredStrings = await dbConnection.QueryAsync<TranslationSubstring>(query);
                     dbConnection.Close();
                     return filtredStrings;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.FilterByString)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.FilterByString)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -139,16 +166,25 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<TranslationSubstring>(query, new { Id = projectId });
+                    var param = new { Id = projectId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<TranslationSubstring>(query, param);
                     dbConnection.Close();
                     return strings;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -174,62 +210,106 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbConnection dbConnection = context.Connection)
                 {
                     dbConnection.Open();
-                    IEnumerable<TranslationSubstring> stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(query, new { Id = fileId });
+                    var param = new { Id = fileId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationSubstring> stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(query, param);
                     dbConnection.Close();
                     return stringsInFile;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsByFileIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsByFileIdAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
 
         public async Task<bool> RemoveAsync(int id)
         {
-            using (var dbConnection = this.context.Connection)
+            try {
+                using (var dbConnection = this.context.Connection)
+                {
+                    var query = new Query("TranslationSubstrings")
+                        .Where("ID", id)
+                        .AsDelete();
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+
+                    dbConnection.Open();
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                        );
+                    dbConnection.Close();
+
+                    return true;
+                }
+            }
+          
+
+            catch (NpgsqlException exception)
             {
-                var query = new Query("TranslationSubstrings")
-                    .Where("ID", id)
-                    .AsDelete();
-
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-
-                dbConnection.Open();
-                await dbConnection.ExecuteAsync(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
-
-                return true;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
+                return false;
             }
         }
 
         public async Task<bool> UpdateAsync(Models.DatabaseEntities.TranslationSubstring item)
         {
-            using (var dbConnection = this.context.Connection)
-            {
-                var query = new Query("TranslationSubstrings")
-                    .Where("ID", item.ID)
-                    .AsUpdate(item);
+            try {
+                using (var dbConnection = this.context.Connection)
+                {
+                    var query = new Query("TranslationSubstrings")
+                        .Where("ID", item.ID)
+                        .AsUpdate(item);
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
-                await dbConnection.ExecuteAsync(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
+                    dbConnection.Open();
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                        );
+                    dbConnection.Close();
 
-                return true;
+                    return true;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
+                return false;
+            }
+
         }
 
         public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
@@ -259,35 +339,51 @@ namespace DAL.Reposity.PostgreSqlRepository
                 sortBy = new[] { "id" };
             }
 
-            using (var dbConnection = this.context.Connection)
+            try {
+                     using (var dbConnection = this.context.Connection)
+                        {
+                            var query = this.GetByProjectIdQuery(
+                                projectId: projectId,
+                                fileId: fileId,
+                                searchString: searchString);
+
+                            query = this.ApplyPagination(
+                                query: query,
+                                offset: offset,
+                                limit: limit);
+
+                            query = this.ApplySorting(
+                                query: query,
+                                columnNamesMappings: TranslationSubstringRepository.SortColumnNamesMapping,
+                                sortBy: sortBy,
+                                sortAscending: sortAscending);
+
+                            var compiledQuery = this._compiler.Compile(query);
+                            this.LogQuery(compiledQuery);
+
+                            dbConnection.Open();
+                            var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstring>(
+                                sql: compiledQuery.Sql,
+                                param: compiledQuery.NamedBindings
+                                );
+                            dbConnection.Close();
+
+                            return translationSubstrings;
+                        }
+            }
+           catch (NpgsqlException exception)
             {
-                var query = this.GetByProjectIdQuery(
-                    projectId: projectId,
-                    fileId: fileId,
-                    searchString: searchString);
-
-                query = this.ApplyPagination(
-                    query: query,
-                    offset: offset,
-                    limit: limit);
-
-                query = this.ApplySorting(
-                    query: query,
-                    columnNamesMappings: TranslationSubstringRepository.SortColumnNamesMapping,
-                    sortBy: sortBy,
-                    sortAscending: sortAscending);
-
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-
-                dbConnection.Open();
-                var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstring>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
-
-                return translationSubstrings;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null ;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
@@ -296,28 +392,53 @@ namespace DAL.Reposity.PostgreSqlRepository
             int? fileId = null,
             string searchString = null)
         {
-            using (var dbConnection = this.context.Connection)
-            {
-                var query = this.GetByProjectIdQuery(
-                    projectId: projectId,
-                    fileId: fileId,
-                    searchString: searchString);
-                query = query.AsCount();
+            try {
+                using (var dbConnection = this.context.Connection)
+                {
+                    var query = this.GetByProjectIdQuery(
+                        projectId: projectId,
+                        fileId: fileId,
+                        searchString: searchString);
+                    query = query.AsCount();
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
 
-                dbConnection.Open();
-                var count = await dbConnection.ExecuteScalarAsync<int>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
+                    dbConnection.Open();
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                        );
+                    dbConnection.Close();
 
-                return count;
+                    return count;
+                }
             }
-        }
+          catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdCountAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdCountAsync)} {nameof(Exception)} ",
+                    exception);
+                return 0;
+            }
 
+
+
+        }
+        /// <summary>
+        /// ????????????????
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="searchString"></param>
+        /// <returns></returns>
         private Query GetByProjectIdQuery(
             int projectId,
             int? fileId = null,
@@ -360,71 +481,121 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Locale>> GetLocalesForStringAsync(int translationSubstringId)
         {
-            using (var dbConnection = this.context.Connection)
+            try {
+                using (var dbConnection = this.context.Connection)
+                {
+                    var query =
+                        new Query("Locales")
+                        .WhereIn("ID",
+                            new Query("TranslationsubStringsLocales")
+                            .Select("Id_Locales")
+                            .Where("Id_TranslationSubStrings", translationSubstringId));
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+
+                    dbConnection.Open();
+                    var locales = await dbConnection.QueryAsync<Locale>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                        );
+                    dbConnection.Close();
+
+                    return locales;
+                }
+
+            }
+          catch (NpgsqlException exception)
             {
-                var query =
-                    new Query("Locales")
-                    .WhereIn("ID",
-                        new Query("TranslationsubStringsLocales")
-                        .Select("Id_Locales")
-                        .Where("Id_TranslationSubStrings", translationSubstringId));
-
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-
-                dbConnection.Open();
-                var locales = await dbConnection.QueryAsync<Locale>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings
-                    );
-                dbConnection.Close();
-
-                return locales;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetLocalesForStringAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetLocalesForStringAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
         public async Task DeleteTranslationLocalesAsync(int translationSubstringId)
         {
-            using (var dbConnection = this.context.Connection)
-            {
-                dbConnection.Open();
-                var query =
-                    new Query("TranslationsubStringsLocales")
-                    .Where("Id_TranslationSubStrings", translationSubstringId)
-                    .AsDelete();
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                await dbConnection.ExecuteAsync(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
-                dbConnection.Close();
+            try {
+                using (var dbConnection = this.context.Connection)
+                {
+                    dbConnection.Open();
+                    var query =
+                        new Query("TranslationsubStringsLocales")
+                        .Where("Id_TranslationSubStrings", translationSubstringId)
+                        .AsDelete();
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    dbConnection.Close();
+                }
             }
+           catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.DeleteTranslationLocalesAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+              
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.DeleteTranslationLocalesAsync)} {nameof(Exception)} ",
+                    exception);
+              
+            }
+
         }
 
         public async Task AddTranslationLocalesAsync(int translationSubstringId, IEnumerable<int> localesIds)
         {
-            using (var dbConnection = this.context.Connection)
-            {
-                dbConnection.Open();
-                foreach (var localeId in localesIds)
+            try {
+                using (var dbConnection = this.context.Connection)
                 {
-                    var sql =
-                        "INSERT INTO \"TranslationsubStringsLocales\" " +
-                        "(" +
-                        "\"Id_TranslationSubStrings\", " +
-                        "\"Id_Locales\"" +
-                        ") VALUES " +
-                        "(" +
-                        "@Id_TranslationSubStrings, " +
-                        "@Id_Locales" +
-                        ")";
-                    var param = new { Id_TranslationSubStrings = translationSubstringId, Id_Locales = localeId };
-                    this.LogQuery(sql, param);
-                    await dbConnection.ExecuteAsync(
-                        sql: sql,
-                        param: param);
+                    dbConnection.Open();
+                    foreach (var localeId in localesIds)
+                    {
+                        var sql =
+                            "INSERT INTO \"TranslationsubStringsLocales\" " +
+                            "(" +
+                            "\"Id_TranslationSubStrings\", " +
+                            "\"Id_Locales\"" +
+                            ") VALUES " +
+                            "(" +
+                            "@Id_TranslationSubStrings, " +
+                            "@Id_Locales" +
+                            ")";
+                        var param = new { Id_TranslationSubStrings = translationSubstringId, Id_Locales = localeId };
+                        this.LogQuery(sql, param);
+                        await dbConnection.ExecuteAsync(
+                            sql: sql,
+                            param: param);
+                    }
+                    dbConnection.Close();
                 }
-                dbConnection.Close();
+            }
+           catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.AddTranslationLocalesAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.AddTranslationLocalesAsync)} {nameof(Exception)} ",
+                    exception);
+
             }
         }
 
