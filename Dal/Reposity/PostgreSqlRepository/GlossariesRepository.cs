@@ -39,22 +39,16 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "LocalizationProjects.ID as LocalizationProjectID",
                     "LocalizationProjects.Name as LocalizationProjectName"
                 );
-
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var glossaries = await dbConnection.QueryAsync<Glossaries>(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings);
-
-
                     return glossaries;
-
-
 
                 }
             }
@@ -169,7 +163,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     /*
                     при удалени глосария нужно удалить файл, строки, термины и переводы
-                      
+
                     все из TranslationSubstrings и Files удалю по Glossaries.ID_File                    
                     еще Translations (ID_String), на них CommentsImages(ID_Comment),Comments(ID_TranslationSubstrings)
 

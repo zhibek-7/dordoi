@@ -10,8 +10,12 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
+    /// <summary>
+    /// ///нужно ли здесь ставить  this.LogQuery(sqlString); не поняла, так как в filerepository в примерно таких запросах  this.LogQuery(sqlString); нет
+    /// </summary>
     public class ImageRepository : BaseRepository, IRepository<Image>
     {
+        private PostgreSqlNativeContext context;
         public ImageRepository(string connectionStr) : base(connectionStr)
         {
         }
@@ -28,11 +32,31 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<Image> GetAll()
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                IEnumerable<Image> images = dbConnection.Query<Image>("SELECT * FROM \"Images\"").ToList();
-                return images;
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var sqlString = "SELECT * FROM \"Images\"";
+                    this.LogQuery(sqlString);
+                    IEnumerable<Image> images = dbConnection.Query<Image>(sqlString).ToList();
+                    return images;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.GetAll)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.GetAll)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
         }
 
         public bool Remove(int Id)

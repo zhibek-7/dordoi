@@ -25,15 +25,25 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<Role>> GetAllAsync()
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                var query = new Query("Roles");
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                var roles = await dbConnection.QueryAsync<Role>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
-                return roles;
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("Roles");
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var roles = await dbConnection.QueryAsync<Role>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return roles;
+                }
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(RoleRepository)}.{nameof(RoleRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
