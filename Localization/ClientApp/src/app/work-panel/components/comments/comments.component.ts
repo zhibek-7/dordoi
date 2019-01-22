@@ -10,6 +10,8 @@ import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
 
 import * as $ from 'jquery';
+import { Term } from 'src/app/models/Glossaries/term.type';
+import { Glossary } from 'src/app/models/database-entities/glossary.type';
 
 @Component({
     selector: 'comments-component',
@@ -86,7 +88,7 @@ export class CommentsComponent implements OnInit {
         });
     };
 
-    // Добавление комментарие
+    // Добавление комментария
     public async addComment(){
         let comment: Comment = new Comment(301, this.stringId, this.addCommentText);        //TODO поменять на id реального пользователя, когда появится
         let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
@@ -163,18 +165,23 @@ export class CommentsComponent implements OnInit {
         }
     }
 
-    // Поление всех терминов из всех глоссариев присоедененных к проекту локализации
+    // Поиск всех терминов из всех глоссариев присоедененных к проекту локализации
     getTerms(){
         this.glossariesService.getAllTermsFromAllGlossarisInProject(0)      //TODO поменять на id реального проекта, когда появится
             .subscribe(allTermsInProject => {
                 this.termsList = allTermsInProject;
+                this.termsList.forEach(element => {
+                    element.term = new Term(element.id, element.substringToTranslate, element.description, element.context, element.iD_FileOwner,
+                                            element.translationMaxLength, element.value, element.positionInText, element.partOfSpeechId, true);
+                    element.glossary = new Glossary(element.glossaryId, element.glossaryName, element.glossaryDescription);                    
+                });
             });
     }
 
     // Функция проверки кол-ва вариантов перевода по поиску по памяти
     checkNumberOfTermsInProject(){
-        //if(this.termsList.length == 0){
-        if(this.termsList==null){
+        if(this.termsList.length == 0){
+        // if(this.termsList==null){
             return false;
         }
         else {
@@ -199,6 +206,10 @@ export class CommentsComponent implements OnInit {
                 break;
             }
         }
+    }
+
+    changeTermClick(termWithGlossary: TermWithGlossary){
+        console.log(termWithGlossary);        
     }
 
     updateTermClick(){
