@@ -12,13 +12,16 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 import { FilesComponent } from 'src/app/files/components/files/files.component';
 import { AddFolderModalComponent } from 'src/app/files/components/add-folder-modal/add-folder-modal.component';
+import { SetLanguagesModalComponent } from 'src/app/files/components/set-languages-modal/set-languages-modal.component';
 
 import { FileService } from 'src/app/services/file.service';
+import { LanguageService } from 'src/app/services/languages.service';
 
 @NgModule({
   declarations: [
     FilesComponent,
     AddFolderModalComponent,
+    SetLanguagesModalComponent,
   ],
   imports: [
     FormsModule,
@@ -32,6 +35,7 @@ import { FileService } from 'src/app/services/file.service';
   ],
   providers: [
     FileService,
+    LanguageService,
   ]
 })
 export class FilesModule { }

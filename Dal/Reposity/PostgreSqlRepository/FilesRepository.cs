@@ -455,5 +455,74 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task AddTranslationLocalesAsync(int fileId, IEnumerable<int> localesIds)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                foreach (var localeId in localesIds)
+                {
+                    var sql =
+                        "INSERT INTO \"FilesLocales\" " +
+                        "(" +
+                        "\"ID_File\", " +
+                        "\"ID_Locale\", " +
+                        "\"PercentOfConfirmed\", " +
+                        "\"PercentOfTranslation\"" +
+                        ") VALUES " +
+                        "(" +
+                        "@ID_File, " +
+                        "@ID_Locale, " +
+                        "0, " +
+                        "0" +
+                        ")";
+                    var param = new { ID_File = fileId, ID_Locale = localeId };
+                    this.LogQuery(sql, param);
+
+                    await dbConnection.ExecuteAsync(
+                        sql: sql,
+                        param: param);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Locale>> GetLocalesForFileAsync(int fileId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("Locales")
+                    .WhereIn("ID",
+                        new Query("FilesLocales")
+                        .Select("ID_Locale")
+                        .Where("ID_File", fileId));
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                return await dbConnection.QueryAsync<Locale>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+            }
+        }
+
+        public async Task DeleteTranslationLocalesAsync(int fileId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("FilesLocales")
+                    .Where("ID_File", fileId)
+                    .AsDelete();
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+            }
+        }
+
     }
 }

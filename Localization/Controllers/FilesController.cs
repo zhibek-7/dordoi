@@ -132,6 +132,20 @@ namespace Localization.WebApi
                 );
         }
 
+        [HttpGet("{fileId}/locales/list")]
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForFileAsync(int fileId)
+        {
+            return await this._filesService.GetTranslationLocalesForFileAsync(fileId: fileId);
+        }
+
+        [HttpPut("{fileId}/locales")]
+        public async Task SetTranslationLocalesForTermAsync(int fileId, [FromBody] IEnumerable<int> localesIds)
+        {
+            await this._filesService.UpdateTranslationLocalesForTermAsync(
+                fileId: fileId,
+                localesIds: localesIds);
+        }
+
     }
 
 }

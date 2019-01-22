@@ -5,6 +5,7 @@ import { catchError } from "rxjs/operators";
 
 import { TreeNode } from "primeng/api";
 import { File as FileData } from '../models/database-entities/file.type';
+import { Locale } from '../models/database-entities/locale.type';
 
 @Injectable({
   providedIn: 'root'
@@ -117,6 +118,18 @@ export class FileService {
     const url = `${this._url}/${fileData.id}/changeParentFolder/${newParentId}`;
 
     return this.http.get<TreeNode>(url);
+  }
+
+  getTranslationLocalesForFileAsync(fileData: FileData): Observable<Locale[]> {
+    const url = `${this._url}/${fileData.id}/locales/list`;
+
+    return this.http.get<Locale[]>(url);
+  }
+
+  updateTranslationLocalesForFileAsync(fileData: FileData, localesIds: number[]): Observable<Locale[]> {
+    const url = `${this._url}/${fileData.id}/locales`;
+
+    return this.http.put<Locale[]>(url, localesIds);
   }
 
   handleError<T>(operation = 'Operation', result?: T) {
