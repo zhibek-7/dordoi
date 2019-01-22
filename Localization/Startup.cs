@@ -14,7 +14,6 @@ using Models.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Utilities.Logs;
 using System.Net;
-using Utilities.Extensions;
 
 namespace Localization
 {
@@ -100,7 +99,11 @@ namespace Localization
                     var unhandledException = errorFeature?.Error;
                     this._exceptionLog.WriteLn("Localization web app unhandled exception.", unhandledException);
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    await context.Response.Body.WriteAsync(unhandledException?.Message ?? string.Empty);
+
+                    using (var streamWriter = new System.IO.StreamWriter(context.Response.Body))
+                    {
+                        await streamWriter.WriteLineAsync(unhandledException?.Message ?? string.Empty);
+                    }
                 }));
 
             if (!env.IsDevelopment())
