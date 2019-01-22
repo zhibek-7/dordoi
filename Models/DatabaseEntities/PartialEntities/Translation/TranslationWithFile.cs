@@ -1,4 +1,4 @@
-﻿namespace Models.DatabaseEntities.Translations
+﻿namespace Models.DatabaseEntities.PartialEntities.Translations
 {
     public class TranslationWithFile
     {

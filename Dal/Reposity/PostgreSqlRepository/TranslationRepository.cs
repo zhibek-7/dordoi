@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Models.Interfaces.Repository;
-using Models.DatabaseEntities.Translations;
+using Models.DatabaseEntities.PartialEntities.Translations;
 using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository

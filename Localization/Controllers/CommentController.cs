@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
-using Models.DatabaseEntities.Comment;
+using Models.DatabaseEntities.PartialEntities.Comment;
 using System.Net.Http;
 using System.IO;
 

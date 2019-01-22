@@ -7,7 +7,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Npgsql;
-using Models.DatabaseEntities.Comment;
+using Models.DatabaseEntities.PartialEntities.Comment;
 using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository

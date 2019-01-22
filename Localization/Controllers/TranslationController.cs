@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
-using Models.DatabaseEntities.Translations;
+using Models.DatabaseEntities.PartialEntities.Translations;
 
 namespace Localization.WebApi
 {

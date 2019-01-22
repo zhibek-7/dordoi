@@ -5,7 +5,7 @@ export class TranslationSubstring {
   // }
 
   get id_fileOwner(): number {
-    return this.id_FileOwner;
+    return this.iD_FileOwner;
   }
 
   constructor(
@@ -13,7 +13,7 @@ export class TranslationSubstring {
     public substringToTranslate?: string,
     public description?: string,
     public context?: string,
-    public id_FileOwner?: number,
+    public iD_FileOwner?: number,
     public translationMaxLength?: number,
     public value?: string,
     public positionInText?: number,

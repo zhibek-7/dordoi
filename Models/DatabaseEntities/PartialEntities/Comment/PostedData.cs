@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Models.DatabaseEntities.Comment;
 
-namespace Models.DatabaseEntities.Comment
+namespace Models.DatabaseEntities.PartialEntities.Comment
 {
     public class PostedData
     {
