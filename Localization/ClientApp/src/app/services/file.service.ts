@@ -59,11 +59,11 @@ export class FileService {
     return this.http.post<TreeNode>(url, formData);
   }
 
-  updateFileVersion(file: File, projectId: number, parentId?: number): Observable<TreeNode> {
+  updateFileVersion(file: File, fileName: string, projectId: number, parentId?: number): Observable<TreeNode> {
     const url = `${this._url}/updateFileVersion/byProjectId/${projectId}`;
 
     const formData = new FormData();
-    formData.append('file', file, file.name);
+    formData.append('file', file, fileName);
     if (parentId) {
       formData.append('parentId', parentId.toString());
     }

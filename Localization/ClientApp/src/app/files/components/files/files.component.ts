@@ -131,7 +131,7 @@ export class FilesComponent implements OnInit {
     if (file) {
       const parentNode = oldNode.parent;
       const parentId = parentNode ? parentNode.data.id : null;
-      this.fileService.updateFileVersion(file, this.projectsService.currentProjectId, parentId)
+      this.fileService.updateFileVersion(file, oldNode.data.name, this.projectsService.currentProjectId, parentId)
         .subscribe(newNode => {
           this.deleteNode(oldNode);
           this.addNode(newNode, parentNode);
