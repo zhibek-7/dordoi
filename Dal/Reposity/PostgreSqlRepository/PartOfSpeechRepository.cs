@@ -43,23 +43,42 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<PartOfSpeech> GetByGlossaryId(int glossaryId)
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                var getByGlossaryIdSql = "SELECT * FROM \"PartsOfSpeech\" WHERE \"LocaleID\" IN " +
-                    "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
-                    "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" " +
-                        "WHERE \"ID_Glossary\"=@GlossaryId))";
-                var getByGlossaryIdParam = new
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    GlossaryId = glossaryId
-                };
-                this.LogQuery(sql: getByGlossaryIdSql, param: getByGlossaryIdParam);
-                var partsOfSpeechForLocale = dbConnection
-                    .Query<PartOfSpeech>(
-                        sql: getByGlossaryIdSql,
-                        param: getByGlossaryIdParam);
-                return partsOfSpeechForLocale;
+                    var getByGlossaryIdSql = "SELECT * FROM \"PartsOfSpeech\" WHERE \"LocaleID\" IN " +
+                        "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
+                        "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" " +
+                            "WHERE \"ID_Glossary\"=@GlossaryId))";
+                    var getByGlossaryIdParam = new
+
+                    {
+                        GlossaryId = glossaryId
+                    };
+                    this.LogQuery(sql: getByGlossaryIdSql, param: getByGlossaryIdParam);
+                    var partsOfSpeechForLocale = dbConnection
+                        .Query<PartOfSpeech>(
+                            sql: getByGlossaryIdSql,
+                            param: getByGlossaryIdParam);
+                    return partsOfSpeechForLocale;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(PartOfSpeechRepository)}.{nameof(PartOfSpeechRepository.GetByGlossaryId)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(PartOfSpeechRepository)}.{nameof(PartOfSpeechRepository.GetByGlossaryId)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
         }
 
     }

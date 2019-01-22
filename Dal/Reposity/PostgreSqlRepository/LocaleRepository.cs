@@ -13,53 +13,109 @@ using Npgsql;
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class LocaleRepository : BaseRepository, ILocaleRepository
-    {
+    { /// <summary>
+      /// ///нужно ли здесь ставить  this.LogQuery(sqlString); не поняла, так как в filerepository в примерно таких запросах  this.LogQuery(sqlString); нет
+      /// </summary>
+
         public LocaleRepository(string connectionStr) : base(connectionStr)
         {
         }
 
         public async Task<IEnumerable<Locale>> GetAllAsync()
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>("SELECT * FROM \"Locales\"");
-                return users;
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>("SELECT * FROM \"Locales\"");
+                    return users;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                            $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                            exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
         }
 
         public async Task<IEnumerable<Locale>> GetAllForProject(int projectId)
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(
-                    "SELECT l.* FROM \"Locales\" l " +
-                    " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
-                    " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
-                    " where lp.\"ID\" = @Id", new { Id = projectId });
-                return users;
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(
+                        "SELECT l.* FROM \"Locales\" l " +
+                        " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
+                        " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
+                        " where lp.\"ID\" = @Id", new { Id = projectId });
+                    return users;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetAllForProject)} {nameof(NpgsqlException)} ",
+                        exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetAllForProject)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
 
         public async Task<IEnumerable<Locale>> GetByUserIdAsync(int userId)
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                var query =
-                    new Query("Locales")
-                    .WhereIn("ID",
-                        new Query("UsersLocales")
-                        .Select("ID_Locale")
-                        .Where("ID_User", userId));
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                var userLocales = await dbConnection.QueryAsync<Locale>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
-                return userLocales;
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+
+
+                    var query =
+                        new Query("Locales")
+                        .WhereIn("ID",
+                            new Query("UsersLocales")
+                            .Select("ID_Locale")
+                            .Where("ID_User", userId));
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var userLocales = await dbConnection.QueryAsync<Locale>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return userLocales;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByUserIdAsync)} {nameof(NpgsqlException)} ",
+                        exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByUserIdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
-
     }
 }
 
