@@ -49,6 +49,7 @@ namespace Localization
             services.AddScoped<IGlossariesRepository>(provider => new GlossariesRepository(connectionString));
             services.AddScoped<ITranslationSubstringRepository>(provider => new TranslationSubstringRepository(connectionString));
             services.AddScoped<ITranslationTroubleRepository>(provider => new TranslationTroubleRepository(connectionString));
+            services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
 
 
 

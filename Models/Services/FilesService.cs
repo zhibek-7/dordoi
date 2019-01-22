@@ -15,14 +15,17 @@ namespace Models.Services
         private readonly int _initialFileVersion = 1;
         private readonly IFilesRepository _filesRepository;
         private readonly IGlossaryRepository _glossaryRepository;
+        private readonly ILocaleRepository _localeRepository;
 
         public FilesService(
             IFilesRepository filesRepository,
-            IGlossaryRepository glossaryRepository
+            IGlossaryRepository glossaryRepository,
+            ILocaleRepository localeRepository
             )
         {
             this._filesRepository = filesRepository;
             this._glossaryRepository = glossaryRepository;
+            this._localeRepository = localeRepository;
         }
 
         public async Task<IEnumerable<Node<File>>> GetAll()
@@ -121,7 +124,15 @@ namespace Models.Services
             newVersionFile.Version = version;
             newVersionFile.Id_PreviousVersion = lastVersionDbFile?.ID;
 
-            return await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
+            var newNode = await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
+
+            if (lastVersionDbFile != null)
+            {
+                var localesIds = (await this._filesRepository.GetLocalesForFileAsync(fileId: lastVersionDbFile.ID))
+                                 .Select(x => x.ID);
+                await this.UpdateTranslationLocalesForTermAsync(fileId: newNode.Data.ID, localesIds: localesIds);
+            }
+            return newNode;
         }
 
         private File GetNewFileModel()
@@ -294,6 +305,12 @@ namespace Models.Services
             {
                 throw new Exception($"Не удалось добавить файл \"{file.Name}\" в базу данных.");
             }
+
+            var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentId(file.Name, file.ID_FolderOwner)).ID;
+            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.ID_LocalizationProject);
+            await this._filesRepository.AddTranslationLocalesAsync(
+                fileId: addedFileId,
+                localesIds: projectLocales.Select(locale => locale.ID));
         }
 
         private async Task InsertFolderToDbAsync(File file)
@@ -361,6 +378,17 @@ namespace Models.Services
                 fileId: fileId,
                 newParentId: newParentId
                 );
+        }
+
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForFileAsync(int fileId)
+        {
+            return await this._filesRepository.GetLocalesForFileAsync(fileId: fileId);
+        }
+
+        public async Task UpdateTranslationLocalesForTermAsync(int fileId, IEnumerable<int> localesIds)
+        {
+            await this._filesRepository.DeleteTranslationLocalesAsync(fileId: fileId);
+            await this._filesRepository.AddTranslationLocalesAsync(fileId: fileId, localesIds: localesIds);
         }
 
     }
