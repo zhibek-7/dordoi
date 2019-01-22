@@ -22,31 +22,48 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<int> AddAsync(Participant newParticipant)
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
 
-                var query = new Query("Participants")
-                    .AsInsert(new[] {
+                    var query = new Query("Participants")
+                        .AsInsert(new[] {
                         "ID_LocalizationProject",
                         "ID_Role",
                         "ID_User",
                         "Active",
-                    },
-                    new object[]
-                    {
+                        },
+                        new object[]
+                        {
                         newParticipant.ID_LocalizationProject,
                         newParticipant.ID_Role,
                         newParticipant.ID_User,
                         newParticipant.Active
-                    });
+                        });
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                await dbConnection.ExecuteAsync(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
 
-                return newParticipant.ID;
+                    return newParticipant.ID;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
+                return 0;
             }
         }
 
@@ -67,32 +84,49 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> UpdateAsync(Models.DatabaseEntities.Participant updatedParticipant)
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                var query = new Query("Participants")
-                    .Where("ID_LocalizationProject", updatedParticipant.ID_LocalizationProject)
-                    .Where("ID_User", updatedParticipant.ID_User)
-                    .AsUpdate(new[] {
-                        "ID_LocalizationProject",
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("Participants")
+                        .Where("ID_LocalizationProject", updatedParticipant.ID_LocalizationProject)
+                        .Where("ID_User", updatedParticipant.ID_User)
+                        .AsUpdate(new[] {
+                    "ID_LocalizationProject",
                         "ID_Role",
                         "ID_User",
                         "Active",
-                    },
-                    new object[]
-                    {
+                            },
+                            new object[]
+                            {
                         updatedParticipant.ID_LocalizationProject,
                         updatedParticipant.ID_Role,
                         updatedParticipant.ID_User,
                         updatedParticipant.Active
-                    });
+                            });
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                await dbConnection.ExecuteAsync(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
 
-                return true;
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
+                return false;
             }
         }
 
@@ -120,32 +154,49 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 sortBy = new[] { "user_id" };
             }
-
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                var query = this.GetByProjectIdQuery(
-                    projectId: projectId,
-                    search: search,
-                    roleIds: roleIds,
-                    localeIds: localeIds);
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = this.GetByProjectIdQuery(
+                        projectId: projectId,
+                        search: search,
+                        roleIds: roleIds,
+                        localeIds: localeIds);
 
-                query = this.ApplyPagination(
-                    query: query,
-                    offset: offset,
-                    limit: limit);
 
-                query = this.ApplySorting(
-                    query: query,
-                    columnNamesMappings: ParticipantRepository.ParticipantsSortColumnNamesMapping,
-                    sortBy: sortBy,
-                    sortAscending: sortAscending);
+                    query = this.ApplyPagination(
+                        query: query,
+                        offset: offset,
+                        limit: limit);
 
-                var getParticipantsByProjectIdCompiledQuery = this._compiler.Compile(query);
-                this.LogQuery(getParticipantsByProjectIdCompiledQuery);
-                var participants = await dbConnection.QueryAsync<ParticipantDTO>(
-                    sql: getParticipantsByProjectIdCompiledQuery.Sql,
-                    param: getParticipantsByProjectIdCompiledQuery.NamedBindings);
-                return participants;
+                    query = this.ApplySorting(
+                        query: query,
+                        columnNamesMappings: ParticipantRepository.ParticipantsSortColumnNamesMapping,
+                        sortBy: sortBy,
+                        sortAscending: sortAscending);
+
+                    var getParticipantsByProjectIdCompiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(getParticipantsByProjectIdCompiledQuery);
+                    var participants = await dbConnection.QueryAsync<ParticipantDTO>(
+                        sql: getParticipantsByProjectIdCompiledQuery.Sql,
+                        param: getParticipantsByProjectIdCompiledQuery.NamedBindings);
+                    return participants;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetByProjectIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetByProjectIdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 
@@ -157,13 +208,30 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Where("Participants.ID_LocalizationProject", projectId)
                     .Where("Participants.ID_User", userId)
                     .Where("Participants.Active", false);
+                try
+                {
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                var participants = await dbConnection.QueryAsync<Models.DatabaseEntities.Participant>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
-                return participants.Any();
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var participants = await dbConnection.QueryAsync<Models.DatabaseEntities.Participant>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return participants.Any();
+                }
+                catch (NpgsqlException exception)
+                {
+                    this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.InactiveParticipantsContainsAsync)} {nameof(NpgsqlException)} ",
+                        exception);
+                    return false;
+                }
+                catch (Exception exception)
+                {
+                    this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.InactiveParticipantsContainsAsync)} {nameof(Exception)} ",
+                        exception);
+                    return false;
+                }
             }
         }
 
@@ -189,20 +257,39 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task SetInactiveAsync(int projectId, int userId)
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                var query = new Query("Participants")
-                    .Where("ID_LocalizationProject", projectId)
-                    .Where("ID_User", userId)
-                    .AsUpdate(new[] { "Active" }, new object[] { false });
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("Participants")
+                        .Where("ID_LocalizationProject", projectId)
+                        .Where("ID_User", userId)
+                        .AsUpdate(new[] { "Active" }, new object[] { false });
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                await dbConnection.ExecuteAsync(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.SetInactiveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.SetInactiveAsync)} {nameof(Exception)} ",
+                    exception);
+
+            }
+
         }
+
 
         public async Task<int> GetAllByProjectIdCountAsync(
             int projectId,
@@ -211,25 +298,50 @@ namespace DAL.Reposity.PostgreSqlRepository
             int[] localeIds
             )
         {
-            using (var dbConnection = new NpgsqlConnection(connectionString))
+            try
             {
-                var query = this.GetByProjectIdQuery(
-                    projectId: projectId,
-                    search: search,
-                    roleIds: roleIds,
-                    localeIds: localeIds)
-                    .AsCount();
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = this.GetByProjectIdQuery(
+                        projectId: projectId,
+                        search: search,
+                        roleIds: roleIds,
+                        localeIds: localeIds)
+                        .AsCount();
 
-                var getParticipantsCountCompiledQuery = this._compiler.Compile(query);
-                this.LogQuery(getParticipantsCountCompiledQuery);
-                var participantsCount = await dbConnection.ExecuteScalarAsync<int>(
-                    sql: getParticipantsCountCompiledQuery.Sql,
-                    param: getParticipantsCountCompiledQuery.NamedBindings);
+                    var getParticipantsCountCompiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(getParticipantsCountCompiledQuery);
+                    var participantsCount = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: getParticipantsCountCompiledQuery.Sql,
+                        param: getParticipantsCountCompiledQuery.NamedBindings);
 
-                return participantsCount;
+
+                    return participantsCount;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetAllByProjectIdCountAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetAllByProjectIdCountAsync)} {nameof(Exception)} ",
+                    exception);
+                return 0;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="search"></param>
+        /// <param name="roleIds"></param>
+        /// <param name="localeIds"></param>
+        /// <returns></returns>
         private Query GetByProjectIdQuery(int projectId, string search, int[] roleIds, int[] localeIds)
         {
             var query = new Query("Participants")
@@ -246,28 +358,47 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "Roles.Name as RoleName"
                 );
 
-            if (!string.IsNullOrEmpty(search))
+            try
             {
-                var searchPattern = $"%{search}%";
-                query = query.WhereLike("Users.Name", searchPattern);
+                if (!string.IsNullOrEmpty(search))
+                {
+                    var searchPattern = $"%{search}%";
+                    query = query.WhereLike("Users.Name", searchPattern);
+                }
+
+                if (roleIds != null && roleIds.Length > 0)
+                {
+                    query = query.WhereIn("Participants.ID_Role", roleIds);
+                }
+
+                if (localeIds != null && localeIds.Length > 0)
+                {
+                    query = query
+                        .WhereExists(
+                            new Query("UsersLocales")
+                            .HavingRaw("COUNT(*)=?", localeIds.Length)
+                            .WhereRaw("\"UsersLocales\".\"ID_User\"=\"Participants\".\"ID_User\"")
+                            .WhereIn("UsersLocales.ID_Locale", localeIds));
+                }
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                return query;
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetByProjectIdQuery)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetByProjectIdQuery)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
 
-            if (roleIds != null && roleIds.Length > 0)
-            {
-                query = query.WhereIn("Participants.ID_Role", roleIds);
-            }
-
-            if (localeIds != null && localeIds.Length > 0)
-            {
-                query = query
-                    .WhereExists(
-                        new Query("UsersLocales")
-                        .HavingRaw("COUNT(*)=?", localeIds.Length)
-                        .WhereRaw("\"UsersLocales\".\"ID_User\"=\"Participants\".\"ID_User\"")
-                        .WhereIn("UsersLocales.ID_Locale", localeIds));
-            }
-
-            return query;
         }
 
     }
