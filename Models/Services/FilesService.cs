@@ -121,7 +121,15 @@ namespace Models.Services
 
         private File GetNewFileModel(System.IO.Stream fileContentStream)
         {
-            var newFile = this.GetNewFileModel();
+            var newFile = new File()
+            {
+                DateOfChange = DateTime.Now,
+                StringsCount = 0,
+                Version = this._initialFileVersion,
+                Priority = 0,
+                IsFolder = false,
+                IsLastVersion = true,
+            };
 
             string fileContent = string.Empty;
             string fileEncoding = string.Empty;
@@ -135,19 +143,6 @@ namespace Models.Services
             newFile.Encoding = fileEncoding;
 
             return newFile;
-        }
-
-        private File GetNewFileModel()
-        {
-            return new File()
-            {
-                DateOfChange = DateTime.Now,
-                StringsCount = 0,
-                Version = this._initialFileVersion,
-                Priority = 0,
-                IsFolder = false,
-                IsLastVersion = true,
-            };
         }
 
         private File GetNewFolderModel()
