@@ -11,16 +11,11 @@ using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class RoleRepository : BaseRepository, IRepositoryAsync<Role>
+    public class RoleRepository : BaseRepository, IBaseRepositoryAsync<Role>
     {
 
         public RoleRepository(string connectionStr) : base(connectionStr)
         {
-        }
-
-        public Task<int> AddAsync(Role item)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Role>> GetAllAsync()
@@ -45,21 +40,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
                 return null;
             }
-        }
-
-        public Task<Role> GetByIDAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> RemoveAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(Role item)
-        {
-            throw new NotImplementedException();
         }
 
     }

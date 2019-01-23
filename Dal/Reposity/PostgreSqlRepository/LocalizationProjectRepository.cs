@@ -95,9 +95,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
 
+
+                    var sqlString = "SELECT \"ID\", \"Name\" FROM \"LocalizationProjects\"";
+                    this.LogQuery(sqlString);
+
                     IEnumerable<LocalizationProjectForSelectDTO> result =
                         await dbConnection.QueryAsync<LocalizationProjectForSelectDTO>
-                        ("SELECT \"ID\", \"Name\" FROM \"LocalizationProjects\"");
+                        (sqlString);
                     return result;
                 }
             }
@@ -162,13 +166,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.InsertProject)} {nameof(Exception)} ",
-                    exception);
+                    exception)
 
             }
-
-
-
-
         }
 
         /// <summary>

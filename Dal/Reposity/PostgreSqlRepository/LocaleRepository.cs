@@ -13,10 +13,7 @@ using Npgsql;
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class LocaleRepository : BaseRepository, ILocaleRepository
-    { /// <summary>
-      /// ///нужно ли здесь ставить  this.LogQuery(sqlString); не поняла, так как в filerepository в примерно таких запросах  this.LogQuery(sqlString); нет
-      /// </summary>
-
+    {
         public LocaleRepository(string connectionStr) : base(connectionStr)
         {
         }
@@ -27,7 +24,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>("SELECT * FROM \"Locales\"");
+                    var sqlString = "SELECT * FROM \"Locales\"";
+                    this.LogQuery(sqlString);
+                    IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(sqlString);
                     return users;
                 }
             }
@@ -54,11 +53,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(
-                        "SELECT l.* FROM \"Locales\" l " +
-                        " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
-                        " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
-                        " where lp.\"ID\" = @Id", new { Id = projectId });
+                    var query = "SELECT l.* FROM \"Locales\" l " +
+       " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
+       " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
+       " where lp.\"ID\" = @Id";
+
+                    var param = new { Id = projectId };
+                    this.LogQuery(query, param);
+
+                    IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(query, param);
                     return users;
                 }
             }

@@ -22,7 +22,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public void Add(User user)
         {
-            try {
+            try
+            {
 
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
@@ -48,18 +49,19 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public User GetByID(int Id)
         {
-            try {
+            try
+            {
                 User user = null;
                 string SQLQuery = "SELECT * FROM \"Users\" WHERE Id = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var param = new { Id };
                     this.LogQuery(SQLQuery, param);
-                    user = dbConnection.Query<User>("SELECT * FROM \"Users\" WHERE Id = @Id", param).FirstOrDefault();
+                    user = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
                 }
                 return user;
             }
-           catch (NpgsqlException exception)
+            catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetByID)} {nameof(NpgsqlException)} ",
@@ -77,7 +79,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<User> GetByProjectID(int Id)
         {
-            try {
+            try
+            {
                 string SQLQuery = "SELECT u.* FROM \"Users\" u " +
                         " join \"Participants\" p on u.\"ID\" = p.\"ID_User\" " +
                         " join \"LocalizationProjects\" lp on p.\"ID_LocalizationProject\" = lp.\"ID\" " +
@@ -92,14 +95,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return users;
                 }
             }
-           catch (NpgsqlException exception)
+            catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetByProjectID)} {nameof(NpgsqlException)} ",
                     exception);
                 return null;
             }
-           catch (Exception exception)
+            catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetByProjectID)} {nameof(Exception)} ",
@@ -111,7 +114,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public bool CheckExistUser(User user)
         {
             string SQLQuery = "SELECT * FROM \"Users\" WHERE Name = @Name AND Password = @Password";
-            try {
+            try
+            {
                 User existUser = null;
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
@@ -122,7 +126,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         return true;
                     return false;
                 }
-            }           
+            }
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
@@ -144,7 +148,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public IEnumerable<User> GetAll()
         {
             string SQLQuery = "SELECT * FROM \"Users\"";
-            try {
+            try
+            {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(SQLQuery);
@@ -152,7 +157,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return users;
                 }
             }
-           catch (NpgsqlException exception)
+            catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetAll)} {nameof(NpgsqlException)} ",
@@ -171,24 +176,25 @@ namespace DAL.Reposity.PostgreSqlRepository
         public bool Remove(int Id)
         {
             string SQLQuery = "DELETE FROM Users WHERE Id = @Id";
-            try {
+            try
+            {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                   
+
                     var param = new { Id };
                     this.LogQuery(SQLQuery, param);
                     dbConnection.Execute(SQLQuery, param);
                 }
                 throw new NotImplementedException();
             }
-           catch (NpgsqlException exception)
+            catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Remove)} {nameof(NpgsqlException)} ",
                     exception);
                 return false;
             }
-           catch (Exception exception)
+            catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Remove)} {nameof(Exception)} ",
@@ -202,21 +208,22 @@ namespace DAL.Reposity.PostgreSqlRepository
         public void Update(User user)
         {
             string SQLQuery = "UPDATE Users SET Name = @Name, Password = @Password, Photo = @Photo, Email = @Email";
-            try {
+            try
+            {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(SQLQuery, param:user);
+                    this.LogQuery(SQLQuery, param: user);
                     dbConnection.Execute(SQLQuery, user);
                 }
                 throw new NotImplementedException();
             }
-           catch (NpgsqlException exception)
+            catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Update)} {nameof(NpgsqlException)} ",
                     exception);
             }
-           catch (Exception exception)
+            catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Update)} {nameof(Exception)} ",
@@ -228,7 +235,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<byte[]> GetPhotoByIdAsync(int id)
         {
-            try {
+            try
+            {
 
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
@@ -244,7 +252,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return userAvatar;
                 }
             }
-           catch (NpgsqlException exception)
+            catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetPhotoByIdAsync)} {nameof(NpgsqlException)} ",

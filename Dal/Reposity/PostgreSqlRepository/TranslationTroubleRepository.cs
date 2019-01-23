@@ -135,7 +135,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param = new { id };
                     this.LogQuery(sqlQery, param);
-                    trouble = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE Id = @Id", param).FirstOrDefault();
+                    trouble = dbConnection.Query<TranslationTrouble>(sqlQery, param).FirstOrDefault();
                 }
                 return trouble;
             }
@@ -163,7 +163,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(sqlQery);
-                    IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\"").ToList();
+                    IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>(sqlQery).ToList();
                     return troubles;
                 }
             }
@@ -192,7 +192,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param = new { translationId };
                     this.LogQuery(sqlQery, param);
-                    IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE \"ID_Translation\" = @Id", param).ToList();
+                    IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>(sqlQery, param).ToList();
                     return troubles;
                 }
             }
