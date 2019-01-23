@@ -14,22 +14,59 @@ namespace Models.Services
 
         public TranslationsTroublesService(ITranslationTroubleRepository translationTroubleRepository)
         {
-            _translationTroubleRepository = translationTroubleRepository;
+           
+
+            try
+            {
+                _translationTroubleRepository = translationTroubleRepository;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
         public async Task<IEnumerable<TranslationTrouble>> GetAllByTranslationIdAsync(int traslationId)
         {
-            return await _translationTroubleRepository.GetByTranslationIdAsync(traslationId);
+           
+
+            try
+            {
+                return await _translationTroubleRepository.GetByTranslationIdAsync(traslationId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
+
         }
 
         public async Task<int> AddNewGlossaryAsync(TranslationTrouble trouble)
         {
-            return await _translationTroubleRepository.AddAsync(trouble);
+          
+
+            try
+            {
+                return await _translationTroubleRepository.AddAsync(trouble);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
         public async Task<bool> DeleteTranslationTroubleAsync(int id)
         {
-            return await _translationTroubleRepository.RemoveAsync(id);
+           
+
+            try
+            {
+                return await _translationTroubleRepository.RemoveAsync(id);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
 

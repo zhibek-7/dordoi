@@ -4,6 +4,7 @@ using Models.Interfaces.Repository;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using System.Linq;
+using System;
 
 namespace Models.Services
 {
@@ -43,22 +44,56 @@ namespace Models.Services
 
         public async Task AddNewGlossaryAsync(GlossariesForEditing glossary)
         {
-            await _glossariesRepository.AddNewGlossaryAsync(glossary);
+           
+            try
+            {
+                await _glossariesRepository.AddNewGlossaryAsync(glossary);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
+
         }
 
         public async Task<GlossariesForEditing> GetGlossaryForEditAsync(int glossaryId)
         {
-            return await _glossariesRepository.GetGlossaryForEditAsync(glossaryId);
+           
+            try
+            {
+                return await _glossariesRepository.GetGlossaryForEditAsync(glossaryId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
         public async Task EditGlossaryAsync(GlossariesForEditing glossary)
         {
-            await _glossariesRepository.EditGlossaryAsync(glossary);
+ 
+            try
+            {
+                await _glossariesRepository.EditGlossaryAsync(glossary);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
         public async Task DeleteGlossaryAsync(int id)
         {
-            await _glossariesRepository.DeleteGlossaryAsync(id);
+           
+
+            try
+            {
+                await _glossariesRepository.DeleteGlossaryAsync(id);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
         /// <summary>
@@ -68,7 +103,14 @@ namespace Models.Services
         /// <returns></returns>
         public async Task ClearGlossaryAsync(int id)
         {
-            await _glossaryService.DeleteTermsByGlossaryAsync(id);
+            try
+            {
+                await _glossaryService.DeleteTermsByGlossaryAsync(id);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
     }
