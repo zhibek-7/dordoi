@@ -8,11 +8,6 @@ const routes: Routes = [
     path: '',
     component: ListGlossariesComponent
   }
-  //,
-  //{
-  //  path: ':id',
-  //  component: GlossariesDetailsComponent
-  //}
 ];
 
 @NgModule({

@@ -16,10 +16,11 @@ import {
   MatExpansionModule,
   MatNativeDateModule,
   MatSortModule,
+  MatPaginatorModule,
   MatMenuModule
 } from '@angular/material';
 
-import { ListGlossariesRoutingModule } from '../list-glossaries/list-glossaries-routing.module';
+import { ListGlossariesRoutingModule } from './list-glossaries-routing.module';
 
 import { ListGlossariesComponent } from '../components/list-glossaries/list-glossaries.component';
 import { GlossaryEditableDetailsComponent } from '../components/glossary-editable-details/glossary-editable-details.component';
@@ -38,47 +39,48 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
 
 @NgModule({
   declarations:
-  [
-    ListGlossariesComponent,
-    GlossaryEditableDetailsComponent,
-    AddGlossaryFormModalComponent,
-    EditGlossaryFormModalComponent,
-    ConfirmDeleteGlossaryComponent,
-    ConfirmClearGlossaryOfTermsComponent
-  ],
+    [
+      ListGlossariesComponent,
+      GlossaryEditableDetailsComponent,
+      AddGlossaryFormModalComponent,
+      EditGlossaryFormModalComponent,
+      ConfirmDeleteGlossaryComponent,
+      ConfirmClearGlossaryOfTermsComponent
+    ],
   imports:
-  [
-    FormsModule,
+    [
+      FormsModule,
       CommonModule,
 
-    //Убрать не нужные
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatRadioModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatTableModule,
-    MatDividerModule,
-    MatExpansionModule,
-    //
+      //Убрать не нужные
+      MatIconModule,
+      MatInputModule,
+      MatButtonModule,
+      MatButtonToggleModule,
+      MatRadioModule,
+      MatOptionModule,
+      MatSelectModule,
+      MatCheckboxModule,
+      MatTableModule,
+      MatDividerModule,
+      MatExpansionModule,
+      MatPaginatorModule,
+      //
 
-    MatNativeDateModule,
-    MatSortModule,
-    MatMenuModule,
+      MatNativeDateModule,
+      MatSortModule,
+      MatMenuModule,
 
-    ListGlossariesRoutingModule,
+      ListGlossariesRoutingModule,
 
-    SharedModule
-  ],
+      SharedModule
+    ],
   providers:
-  [
-    GlossaryService,
-    LanguageService,
-    ProjectsService,
-    RequestDataReloadService
-  ]
+    [
+      GlossaryService,
+      LanguageService,
+      ProjectsService,
+      RequestDataReloadService
+    ]
 })
 export class ListGlossariesModule { }

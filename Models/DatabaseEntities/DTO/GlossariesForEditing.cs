@@ -1,5 +1,4 @@
-﻿using Models.DatabaseEntities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Models.DatabaseEntities.DTO
 {
@@ -8,10 +7,10 @@ namespace Models.DatabaseEntities.DTO
         // public int ID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int ID_File { get; set; }
+        public int? ID_File { get; set; }
 
-        public IEnumerable<Locale> Locales { get; set; }
+        public IEnumerable<int?> LocalesIds { get; set; }
 
-        public IEnumerable<LocalizationProjectForSelectDTO> LocalizationProjects { get; set; }
+        public IEnumerable<int?> LocalizationProjectsIds { get; set; }
     }
 }

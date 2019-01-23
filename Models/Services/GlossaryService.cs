@@ -104,5 +104,14 @@ namespace Models.Services
             return await _glossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
         }
 
+        /// <summary>
+        /// Удаление всех терминов глоссария
+        /// </summary>
+        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <returns></returns>
+        public async Task DeleteTermsByGlossaryAsync(int glossaryId)
+        {
+            await this._glossaryRepository.DeleteTermsByGlossaryAsync(glossaryId);
+        }
     }
 }

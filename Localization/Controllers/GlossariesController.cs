@@ -14,24 +14,18 @@ namespace Localization.Controllers
     public class GlossariesController : ControllerBase
     {
         private readonly GlossariesService _glossariesService;
-        private readonly ILocaleRepository _localeRepository;//= new LocaleRepository();
-        private readonly ILocalizationProjectRepository _localizationProjectRepository;// = new LocalizationProjectRepository();
+        private readonly ILocaleRepository _localeRepository;
+        private readonly ILocalizationProjectRepository _localizationProjectRepository;
 
 
         public GlossariesController(GlossariesService glossariesService)
         {
             _glossariesService = glossariesService;
 
-            this._localeRepository = new LocaleRepository(Settings.GetStringDB());
-            this._localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
+            _localeRepository = new LocaleRepository(Settings.GetStringDB());
+            _localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
         }
-
-        //[HttpPost]
-        //public async Task<IEnumerable<Glossaries>> GetAllAsync()
-        //{
-        //    return await _glossariesService.GetAllAsync();
-        //}
-
+        
         [HttpGet]
         public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync() //Переименовать в GetAllDTOAsync
         {
@@ -56,12 +50,29 @@ namespace Localization.Controllers
             await _glossariesService.AddNewGlossaryAsync(glossary);
         }
 
+        [HttpPost("edit")]
+        public async Task<GlossariesForEditing> GetGlossaryForEditAsync([FromBody] int glossaryId)
+        {
+            return await _glossariesService.GetGlossaryForEditAsync(glossaryId);
+        }
+
+        [HttpPost("editSaveGlossary")]
+        public async Task EditGlossaryAsync(GlossariesForEditing glossary)
+        {
+            await _glossariesService.EditGlossaryAsync(glossary);
+        }
+
         [HttpDelete("deleteGlossary/{glossaryId}")]
         public async Task DeleteGlossaryAsync(int glossaryId)
         {
             await _glossariesService.DeleteGlossaryAsync(glossaryId);
         }
 
+        /// <summary>
+        /// Удаление всех терминов глоссария
+        /// </summary>
+        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <returns></returns>
         [HttpDelete("clearGlossary/{glossaryId}")]
         public async Task ClearGlossaryAsync(int glossaryId)
         {

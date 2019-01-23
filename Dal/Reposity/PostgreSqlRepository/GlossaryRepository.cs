@@ -567,6 +567,47 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
+        /// <summary>
+        /// Удаление всех терминов глоссария
+        /// </summary>
+        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <returns></returns>
+        public async Task DeleteTermsByGlossaryAsync(int glossaryId)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var queryGetTranslationSubstringsID = new Query("GlossariesStrings").Where("ID_Glossary", glossaryId).Select("GlossariesStrings.ID_String");
+                    var compiledQueryGetTranslationSubstringsID = this._compiler.Compile(queryGetTranslationSubstringsID);
+                    this.LogQuery(compiledQueryGetTranslationSubstringsID);
+                    var idsTranslationSubstrings = await dbConnection.QueryAsync<int>(
+                        sql: compiledQueryGetTranslationSubstringsID.Sql,
+                        param: compiledQueryGetTranslationSubstringsID.NamedBindings);
 
+                    var queryTranslationSubstrings = new Query("TranslationSubstrings").WhereIn("ID", idsTranslationSubstrings).AsDelete();
+                    var compiledQueryTranslationSubstrings = this._compiler.Compile(queryTranslationSubstrings);
+                    this.LogQuery(compiledQueryTranslationSubstrings);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQueryTranslationSubstrings.Sql,
+                        param: compiledQueryTranslationSubstrings.NamedBindings);
+
+                    var queryGlossariesStrings = new Query("GlossariesStrings").Where("ID_Glossary", glossaryId).AsDelete();
+                    var compiledQueryGlossariesStrings = this._compiler.Compile(queryGlossariesStrings);
+                    this.LogQuery(compiledQueryGlossariesStrings);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQueryGlossariesStrings.Sql,
+                        param: compiledQueryGlossariesStrings.NamedBindings);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermsByGlossaryAsync)} {nameof(NpgsqlException)} ", exception);
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermsByGlossaryAsync)} {nameof(Exception)} ", exception);
+            }
+        }
     }
 }

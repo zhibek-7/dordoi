@@ -41,7 +41,7 @@ const routes: Routes = [
   },
   {
     path: 'list-glossaries',
-    loadChildren: '../glossary-list/list-glossaries/list-glossaries.module#ListGlossariesModule'
+    loadChildren: '../glossary-list/module/list-glossaries.module#ListGlossariesModule'
   },
   {
     path: 'example',
