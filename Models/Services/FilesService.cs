@@ -67,16 +67,8 @@ namespace Models.Services
                 throw new Exception($"Файл \"{fileName}\" уже есть.");
             }
 
-            string fileContent = string.Empty;
-            using (fileContentStream)
-            using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
-            {
-                fileContent = fileContentStreamReader.ReadToEnd();
-            }
-
-            var newFile = this.GetNewFileModel();
+            var newFile = this.GetNewFileModel(fileContentStream);
             newFile.Name = fileName;
-            newFile.OriginalFullText = fileContent;
             newFile.ID_FolderOwner = parentId;
             newFile.ID_LocalizationProject = projectId;
 
@@ -109,16 +101,8 @@ namespace Models.Services
                 }
             }
 
-            string fileContent = string.Empty;
-            using (fileContentStream)
-            using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
-            {
-                fileContent = fileContentStreamReader.ReadToEnd();
-            }
-
-            var newVersionFile = this.GetNewFileModel();
+            var newVersionFile = this.GetNewFileModel(fileContentStream);
             newVersionFile.Name = fileName;
-            newVersionFile.OriginalFullText = fileContent;
             newVersionFile.ID_FolderOwner = parentId;
             newVersionFile.ID_LocalizationProject = projectId;
             newVersionFile.Version = version;
@@ -135,6 +119,24 @@ namespace Models.Services
             return newNode;
         }
 
+        private File GetNewFileModel(System.IO.Stream fileContentStream)
+        {
+            var newFile = this.GetNewFileModel();
+
+            string fileContent = string.Empty;
+            string fileEncoding = string.Empty;
+            using (fileContentStream)
+            using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
+            {
+                fileContent = fileContentStreamReader.ReadToEnd();
+                fileEncoding = fileContentStreamReader.CurrentEncoding.WebName;
+            }
+            newFile.OriginalFullText = fileContent;
+            newFile.Encoding = fileEncoding;
+
+            return newFile;
+        }
+
         private File GetNewFileModel()
         {
             return new File()
@@ -144,8 +146,6 @@ namespace Models.Services
                 Version = this._initialFileVersion,
                 Priority = 0,
                 IsFolder = false,
-                //TODO: file encoding
-                Encoding = "",
                 IsLastVersion = true,
             };
         }
@@ -214,16 +214,12 @@ namespace Models.Services
 
                 var fileName = System.IO.Path.GetFileName(relativePathToFile);
 
-                string fileContent = string.Empty;
+                File newFile = null;
                 using (var fileContentStream = file.OpenReadStream())
-                using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
                 {
-                    fileContent = fileContentStreamReader.ReadToEnd();
+                    newFile = this.GetNewFileModel(fileContentStream);
                 }
-
-                var newFile = this.GetNewFileModel();
                 newFile.Name = fileName;
-                newFile.OriginalFullText = fileContent;
                 newFile.ID_FolderOwner = lastParentId;
                 newFile.ID_LocalizationProject = projectId;
                 await this.InsertFileToDbAsync(newFile);
