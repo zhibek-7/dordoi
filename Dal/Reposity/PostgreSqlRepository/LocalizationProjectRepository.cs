@@ -166,7 +166,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.InsertProject)} {nameof(Exception)} ",
-                    exception)
+                    exception);
 
             }
         }
