@@ -46,9 +46,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return insertedId;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.AddAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
         }
@@ -66,9 +75,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return workType;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.GetByIDAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -86,9 +104,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return types;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.GetAllAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -107,9 +134,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.RemoveAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -127,9 +163,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.UpdateAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
