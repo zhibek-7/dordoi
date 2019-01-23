@@ -42,9 +42,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return insertedId;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TranslationTroubleRepository.AddAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
         }
@@ -56,14 +65,25 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     string SQLQuery = "DELETE FROM \"TranslationsTroubles\" WHERE \"ID\" = @Id";
-                    dbConnection.Execute(SQLQuery, new { id });
+                    var param = new { id };
+                    this.LogQuery(SQLQuery, param);
+                    dbConnection.Execute(SQLQuery, param);
                 }
 
                 return true;
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TranslationTroubleRepository.RemoveAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -89,9 +109,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TranslationTroubleRepository.UpdateAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -100,16 +129,28 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
+                string sqlQery = "SELECT * FROM \"TranslationsTroubles\" WHERE Id = @Id";
                 TranslationTrouble trouble = null;
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    trouble = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE Id = @Id", new { id }).FirstOrDefault();
+                    var param = new { id };
+                    this.LogQuery(sqlQery, param);
+                    trouble = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE Id = @Id", param).FirstOrDefault();
                 }
                 return trouble;
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TranslationTroubleRepository.GetByIDAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -118,15 +159,26 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
+                string sqlQery = "SELECT * FROM \"TranslationsTroubles\"";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+                    this.LogQuery(sqlQery);
                     IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\"").ToList();
                     return troubles;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TranslationTroubleRepository.GetAllAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -135,15 +187,27 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
+                string sqlQery = "SELECT * FROM \"TranslationsTroubles\" WHERE \"ID_Translation\" = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE \"ID_Translation\" = @Id", new { translationId }).ToList();
+                    var param = new { translationId };
+                    this.LogQuery(sqlQery, param);
+                    IEnumerable<TranslationTrouble> troubles = dbConnection.Query<TranslationTrouble>("SELECT * FROM \"TranslationsTroubles\" WHERE \"ID_Translation\" = @Id", param).ToList();
                     return troubles;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.GetByTranslationIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TranslationTroubleRepository.GetByTranslationIdAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.GetByTranslationIdAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
