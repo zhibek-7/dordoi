@@ -46,9 +46,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return insertedId;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в UserActionRepository.AddAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
         }
@@ -71,9 +80,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return action;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в UserActionRepository.GetByIDAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -111,9 +129,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return actions;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в UserActionRepository.GetAllAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -136,9 +163,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return actions;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetAllByProjectIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в UserActionRepository.GetAllAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetAllByProjectIdAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -161,9 +197,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в UserActionRepository.RemoveAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
