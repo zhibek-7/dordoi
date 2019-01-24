@@ -37,25 +37,25 @@ namespace Localization.Controllers
             return await _glossariesService.GetAllToDTOAsync();
         }
 
-        /// <summary>
-        /// Возвращает список языков переводов
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("locales/list")]
-        public async Task<IEnumerable<Locale>> GetLocalesAsync()
-        {
-            return await _localeRepository.GetAllAsync();
-        }
+        ///// <summary>
+        ///// Возвращает список языков переводов
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost("locales/list")]
+        //public async Task<IEnumerable<Locale>> GetLocalesAsync()
+        //{
+        //    return await _localeRepository.GetAllAsync();
+        //}
 
-        /// <summary>
-        /// Возвращает список проектов локализации
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost("localizationProjects/list")]
-        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
-        {
-            return await _localizationProjectRepository.GetAllForSelectDTOAsync();
-        }
+        ///// <summary>
+        ///// Возвращает список проектов локализации
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost("localizationProjects/list")]
+        //public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
+        //{
+        //    return await _localizationProjectRepository.GetAllForSelectDTOAsync();
+        //}
 
         /// <summary>
         /// Добавление нового глоссария

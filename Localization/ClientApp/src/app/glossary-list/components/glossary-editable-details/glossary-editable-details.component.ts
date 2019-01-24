@@ -48,7 +48,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
 
   //---------------- Locales
   loadAvailableLanguages() {
-    this.glossariesService.getLocales()
+    this.languageService.getLanguageList()
       .subscribe(locale => {
         this.availableLocales = locale
           .map(local =>
@@ -66,7 +66,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
 
   //---------------- LocalizationProjects
   loadAvailableLocalizationProjects() {
-    this.glossariesService.getLocalizationProjectForSelectDTO()
+    this.projectsService.getLocalizationProjectForSelectDTO()
       .subscribe(localizationProject => {
         this.availableLocalizationProjects = localizationProject
           .map(localProject =>

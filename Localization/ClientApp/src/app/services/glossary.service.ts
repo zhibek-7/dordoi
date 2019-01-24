@@ -18,15 +18,15 @@ export class GlossaryService {
     return this.httpClient.post<GlossariesTableViewDTO[]>(GlossaryService.connectionUrl, null);
   }
 
-  //Возвращает список языков переводов
-  getLocales(): Observable<Locale[]> {
-    return this.httpClient.post<Locale[]>(GlossaryService.connectionUrl + "locales/list", null);
-  }
+  ////Возвращает список языков переводов
+  //getLocales(): Observable<Locale[]> {
+  //  return this.httpClient.post<Locale[]>(GlossaryService.connectionUrl + "locales/list", null);
+  //}
 
-  //Возвращает список проектов локализации
-  getLocalizationProjectForSelectDTO(): Observable<LocalizationProjectForSelectDTO[]> {
-    return this.httpClient.post<LocalizationProjectForSelectDTO[]>(GlossaryService.connectionUrl + "localizationProjects/list", null);
-  }
+  ////Возвращает список проектов локализации
+  //getLocalizationProjectForSelectDTO(): Observable<LocalizationProjectForSelectDTO[]> {
+  //  return this.httpClient.post<LocalizationProjectForSelectDTO[]>(GlossaryService.connectionUrl + "localizationProjects/list", null);
+  //}
 
   //Добавление нового глоссария
   addNewGlossary(glossary: GlossariesForEditing): Observable<Object> {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { Observable, of } from 'rxjs';
+import { LocalizationProjectForSelectDTO } from '../models/DTO/localizationProjectForSelectDTO.type';
 
 @Injectable()
 export class ProjectsService {
@@ -65,5 +66,11 @@ export class ProjectsService {
   deleteProject(Id: number) {
     console.log("deleteProject-->" + Id);
     return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id );
+  }
+
+
+  //Возвращает список проектов локализации содержащий только ID, Name
+  getLocalizationProjectForSelectDTO(): Observable<LocalizationProjectForSelectDTO[]> {
+    return this.httpClient.post<LocalizationProjectForSelectDTO[]>(this.controllerUrl + "forSelect", null);
   }
 }

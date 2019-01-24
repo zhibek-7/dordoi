@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
+using Models.DatabaseEntities.DTO;
 
 namespace Localization.Controllers
 {
@@ -73,5 +75,14 @@ namespace Localization.Controllers
             return project;
         }
 
+        /// <summary>
+        /// Возвращает список проектов локализации 
+        /// </summary>
+        /// <returns>LocalizationProjectForSelectDTO{ID, Name}</returns>
+        [HttpPost("forSelect")]
+        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectAsync()
+        {
+            return await _localizationProjectRepository.GetAllForSelectDTOAsync();
+        }
     }
 }
