@@ -340,7 +340,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 try
                 {
                     connection.Open();
-                    var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
+                    var param = new { id };
+                    this.LogQuery(sqlFileQuery, param);
+                    var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
                     var tempFileName = string.Format("{0}_{1}", System.IO.Path.GetTempPath() + Guid.NewGuid().ToString(), file.Name);
                     if (id_locale != -1)
                     {
