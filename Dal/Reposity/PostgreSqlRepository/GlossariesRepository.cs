@@ -322,73 +322,55 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    //при удалени глосария удаляются файл, строки, термины и переводы,
-                    //все из TranslationSubstrings и Files удаляется по Glossaries.ID_File,                   
-                    //еще Translations (ID_String), на них CommentsImages(ID_Comment),Comments(ID_TranslationSubstrings)                    
+                    //правилом каскадного удаления
+                    //при удалени глосария удаляются файл, строки, термины и переводы.                
+                    //еще Translations (ID_String), на них CommentsImages(ID_Comment),Comments(ID_TranslationSubstrings).
+                    //Таблицы с прямой ссылкой на "Comments" (Glossaries.ID_File -> TranslationSubstrings.ID_FileOwner -> TranslationSubstrings.ID -> Comments.Id_TranslationSubStrings => Comments.ID_Comment) - "CommentsImages".
+                    //Таблицы с прямой ссылкой на "Glossaries" - "GlossariesStrings", "GlossariesLocales", "LocalizationProjectsGlossaries".
+                    
+                    //все из TranslationSubstrings и Files удаляется по Glossaries.ID_File
 
                     //Удаление зависимостей
                     #region Get Glossaries.ID_File
 
                     var queryGetGlossariesID_File = new Query("Glossaries").Where("ID", id).Select("Glossaries.ID_File");
-                    var compiledQueryGetGlossariesID_File = this._compiler.Compile(queryGetGlossariesID_File);
-                    this.LogQuery(compiledQueryGetGlossariesID_File);
-                    var idsFile = await dbConnection.QueryAsync<int?>( //QueryFirstOrDefaultAsync
+                    var compiledQueryGetGlossariesID_File = _compiler.Compile(queryGetGlossariesID_File);
+                    LogQuery(compiledQueryGetGlossariesID_File);
+                    var idFile = await dbConnection.QueryFirstOrDefaultAsync<int?>(
                         sql: compiledQueryGetGlossariesID_File.Sql,
-                        param: compiledQueryGetGlossariesID_File.NamedBindings
-                    );
-
-                    var idFile = idsFile.FirstOrDefault();
+                        param: compiledQueryGetGlossariesID_File.NamedBindings);
 
                     #endregion
 
                     if (idFile != null)
                     {
-                        #region Таблицы с прямой ссылкой на "Files" (Glossaries.ID_File)
+                        #region Таблицы с прямой ссылкой на "Files" (Glossaries.ID_File) - "Tasks", "FilesLocales".
 
-                        //var queryUserActions = new Query("UserActions").Where("ID_File", idFile).AsDelete();
-                        //var compiledQueryUserActions = this._compiler.Compile(queryUserActions);
-                        //this.LogQuery(compiledQueryUserActions);
-                        //await dbConnection.ExecuteAsync(
-                        //    sql: compiledQueryUserActions.Sql,
-                        //    param: compiledQueryUserActions.NamedBindings);
                         var queryUserActions = new Query("UserActions").Where("ID_File", idFile)
-                            .AsUpdate(new[] { "ID_File" },
-                            new object[] { null });
-                        var compiledQueryUserActions = this._compiler.Compile(queryUserActions);
-                        this.LogQuery(compiledQueryUserActions);
+                            .AsUpdate(
+                                new[] { "ID_File" },
+                                new object[] { null }
+                                );
+                        var compiledQueryUserActions = _compiler.Compile(queryUserActions);
+                        LogQuery(compiledQueryUserActions);
                         await dbConnection.ExecuteAsync(
                             sql: compiledQueryUserActions.Sql,
                             param: compiledQueryUserActions.NamedBindings);
 
-
-                        var queryTasks = new Query("Tasks").Where("ID_File", idFile).AsDelete();
-                        var compiledQueryTasks = this._compiler.Compile(queryTasks);
-                        this.LogQuery(compiledQueryTasks);
-                        await dbConnection.ExecuteAsync(
-                            sql: compiledQueryTasks.Sql,
-                            param: compiledQueryTasks.NamedBindings);
-
-                        var queryFilesLocales = new Query("FilesLocales").Where("ID_File", idFile).AsDelete();
-                        var compiledQueryFilesLocales = this._compiler.Compile(queryFilesLocales);
-                        this.LogQuery(compiledQueryFilesLocales);
-                        await dbConnection.ExecuteAsync(
-                            sql: compiledQueryFilesLocales.Sql,
-                            param: compiledQueryFilesLocales.NamedBindings);
-
-                        #region Таблицы с прямой ссылкой на "TranslationSubstrings" (Glossaries.ID_File -> TranslationSubstrings.ID_FileOwner => TranslationSubstrings.ID)
+                        #region Таблицы с прямой ссылкой на "TranslationSubstrings" (Glossaries.ID_File -> TranslationSubstrings.ID_FileOwner => TranslationSubstrings.ID) - "StringsContextImages", "TranslationsubStringsLocales", "Translations", "Comments".
 
                         #region Get TranslationSubstrings.ID
 
                         var queryGetTranslationSubstringsID1 = new Query("TranslationSubstrings").Where("ID_FileOwner", idFile).Select("TranslationSubstrings.ID");
-                        var compiledQueryGetTranslationSubstringsID1 = this._compiler.Compile(queryGetTranslationSubstringsID1);
-                        this.LogQuery(compiledQueryGetTranslationSubstringsID1);
+                        var compiledQueryGetTranslationSubstringsID1 = _compiler.Compile(queryGetTranslationSubstringsID1);
+                        LogQuery(compiledQueryGetTranslationSubstringsID1);
                         var idsTranslationSubstrings1 = await dbConnection.QueryAsync<int>(
                             sql: compiledQueryGetTranslationSubstringsID1.Sql,
                             param: compiledQueryGetTranslationSubstringsID1.NamedBindings);
 
                         var queryGetTranslationSubstringsID2 = new Query("GlossariesStrings").Where("ID_Glossary", id).Select("GlossariesStrings.ID_String");
-                        var compiledQueryGetTranslationSubstringsID2 = this._compiler.Compile(queryGetTranslationSubstringsID2);
-                        this.LogQuery(compiledQueryGetTranslationSubstringsID2);
+                        var compiledQueryGetTranslationSubstringsID2 = _compiler.Compile(queryGetTranslationSubstringsID2);
+                        LogQuery(compiledQueryGetTranslationSubstringsID2);
                         var idsTranslationSubstrings2 = await dbConnection.QueryAsync<int>(
                             sql: compiledQueryGetTranslationSubstringsID2.Sql,
                             param: compiledQueryGetTranslationSubstringsID2.NamedBindings);
@@ -401,115 +383,47 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                         if (idsTranslationSubstrings != null && idsTranslationSubstrings.Count() > 0)
                         {
-
-                            var queryUserActions2 = new Query("UserActions")
-                                .WhereIn("ID_String", idsTranslationSubstrings)
-                                .AsUpdate(new[] { "ID_String" },
-                                    new object[] { null });
-                            var compiledQueryUserActions2 = this._compiler.Compile(queryUserActions2);
-                            this.LogQuery(compiledQueryUserActions2);
+                            var queryUserActions2 = new Query("UserActions").WhereIn("ID_String", idsTranslationSubstrings)
+                                .AsUpdate(
+                                    new[] { "ID_String" },
+                                    new object[] { null }
+                                    );
+                            var compiledQueryUserActions2 = _compiler.Compile(queryUserActions2);
+                            LogQuery(compiledQueryUserActions2);
                             await dbConnection.ExecuteAsync(
                                 sql: compiledQueryUserActions2.Sql,
                                 param: compiledQueryUserActions2.NamedBindings);
 
-                            var queryStringsContextImages = new Query("StringsContextImages")
-                                .WhereIn("ID_String", idsTranslationSubstrings).AsDelete();
-                            var compiledQueryStringsContextImages = this._compiler.Compile(queryStringsContextImages);
-                            this.LogQuery(compiledQueryStringsContextImages);
-                            await dbConnection.ExecuteAsync(
-                                sql: compiledQueryStringsContextImages.Sql,
-                                param: compiledQueryStringsContextImages.NamedBindings);
-
-                            var queryTranslationsubStringsLocales = new Query("TranslationsubStringsLocales")
-                                .WhereIn("Id_TranslationSubStrings", idsTranslationSubstrings).AsDelete();
-                            var compiledQueryTranslationsubStringsLocales =
-                                this._compiler.Compile(queryTranslationsubStringsLocales);
-                            this.LogQuery(compiledQueryTranslationsubStringsLocales);
-                            await dbConnection.ExecuteAsync(
-                                sql: compiledQueryTranslationsubStringsLocales.Sql,
-                                param: compiledQueryTranslationsubStringsLocales.NamedBindings);
-
                             #region Translations
 
-                            var queryGetTranslationsID = new Query("Translations")
-                                .WhereIn("ID_String", idsTranslationSubstrings).Select("Translations.ID");
-                            var compiledQueryGetTranslationsID = this._compiler.Compile(queryGetTranslationsID);
-                            this.LogQuery(compiledQueryGetTranslationsID);
+                            var queryGetTranslationsID = new Query("Translations").WhereIn("ID_String", idsTranslationSubstrings).Select("Translations.ID");
+                            var compiledQueryGetTranslationsID = _compiler.Compile(queryGetTranslationsID);
+                            LogQuery(compiledQueryGetTranslationsID);
                             var idsTranslations = await dbConnection.QueryAsync<int>(
                                 sql: compiledQueryGetTranslationsID.Sql,
                                 param: compiledQueryGetTranslationsID.NamedBindings);
 
                             var queryUserActions3 = new Query("UserActions").WhereIn("ID_Translation", idsTranslations)
-                                .AsUpdate(new[] { "ID_Translation" },
-                                    new object[] { null });
-                            var compiledQueryUserActions3 = this._compiler.Compile(queryUserActions3);
-                            this.LogQuery(compiledQueryUserActions3);
+                                .AsUpdate(
+                                    new[] { "ID_Translation" },
+                                    new object[] { null }
+                                    );
+                            var compiledQueryUserActions3 = _compiler.Compile(queryUserActions3);
+                            LogQuery(compiledQueryUserActions3);
                             await dbConnection.ExecuteAsync(
                                 sql: compiledQueryUserActions3.Sql,
                                 param: compiledQueryUserActions3.NamedBindings);
 
                             #endregion
-
-                            var queryTranslations = new Query("Translations")
-                                .WhereIn("ID_String", idsTranslationSubstrings).AsDelete();
-                            var compiledQueryTranslations = this._compiler.Compile(queryTranslations);
-                            this.LogQuery(compiledQueryTranslations);
-                            await dbConnection.ExecuteAsync(
-                                sql: compiledQueryTranslations.Sql,
-                                param: compiledQueryTranslations.NamedBindings);
-
-                            #region Таблицы с прямой ссылкой на "Comments" (Glossaries.ID_File -> TranslationSubstrings.ID_FileOwner -> TranslationSubstrings.ID -> Comments.Id_TranslationSubStrings => Comments.ID_Comment)
-
-                            #region Get Comments.ID
-
-                            var queryGetCommentsID = new Query("Comments")
-                                .WhereIn("ID_TranslationSubstrings", idsTranslationSubstrings).Select("Comments.ID");
-                            var compiledQueryGetCommentsID = this._compiler.Compile(queryGetCommentsID);
-                            this.LogQuery(compiledQueryGetCommentsID);
-                            var idsComments = await dbConnection.QueryAsync<int>(
-                                sql: compiledQueryGetCommentsID.Sql,
-                                param: compiledQueryGetCommentsID.NamedBindings);
-
-                            #endregion
-
-                            var queryCommentsImages = new Query("CommentsImages").WhereIn("ID_Comment", idsComments)
-                                .AsDelete();
-                            var compiledQueryCommentsImages = this._compiler.Compile(queryCommentsImages);
-                            this.LogQuery(compiledQueryCommentsImages);
-                            await dbConnection.ExecuteAsync(
-                                sql: compiledQueryCommentsImages.Sql,
-                                param: compiledQueryCommentsImages.NamedBindings);
-
-                            #region "Comments" (Glossaries.ID_File -> TranslationSubstrings)
-
-                            var queryComments = new Query("Comments")
-                                .WhereIn("ID_TranslationSubstrings", idsTranslationSubstrings).AsDelete();
-                            var compiledQueryComments = this._compiler.Compile(queryComments);
-                            this.LogQuery(compiledQueryComments);
-                            await dbConnection.ExecuteAsync(
-                                sql: compiledQueryComments.Sql,
-                                param: compiledQueryComments.NamedBindings);
-
-                            #endregion
-
-                            #endregion
-
+                            
                             #region "TranslationSubstrings" (Glossaries.ID_File)
 
-                            var queryTranslationSubstrings = new Query("TranslationSubstrings")
-                                .WhereIn("ID", idsTranslationSubstrings).AsDelete();
-                            var compiledQueryTranslationSubstrings = this._compiler.Compile(queryTranslationSubstrings);
-                            this.LogQuery(compiledQueryTranslationSubstrings);
+                            var queryTranslationSubstrings = new Query("TranslationSubstrings").WhereIn("ID", idsTranslationSubstrings).AsDelete();
+                            var compiledQueryTranslationSubstrings = _compiler.Compile(queryTranslationSubstrings);
+                            LogQuery(compiledQueryTranslationSubstrings);
                             await dbConnection.ExecuteAsync(
                                 sql: compiledQueryTranslationSubstrings.Sql,
                                 param: compiledQueryTranslationSubstrings.NamedBindings);
-
-                            //var queryTranslationSubstringsID_FileOwner = new Query("TranslationSubstrings").Where("ID_FileOwner", idFile).AsDelete();
-                            //var compiledQueryTranslationSubstringsID_FileOwner = this._compiler.Compile(queryTranslationSubstringsID_FileOwner);
-                            //this.LogQuery(compiledQueryTranslationSubstringsID_FileOwner);
-                            //await dbConnection.ExecuteAsync(
-                            //    sql: compiledQueryTranslationSubstringsID_FileOwner.Sql,
-                            //    param: compiledQueryTranslationSubstringsID_FileOwner.NamedBindings);
 
                             #endregion
 
@@ -520,50 +434,21 @@ namespace DAL.Reposity.PostgreSqlRepository
                         #endregion
                     }
 
-
-                    #region Таблицы с прямой ссылкой на "Glossaries"
-
-                    var queryGlossariesStrings = new Query("GlossariesStrings").Where("ID_Glossary", id).AsDelete();
-                    var compiledQueryGlossariesStrings = this._compiler.Compile(queryGlossariesStrings);
-                    this.LogQuery(compiledQueryGlossariesStrings);
-                    await dbConnection.ExecuteAsync(
-                        sql: compiledQueryGlossariesStrings.Sql,
-                        param: compiledQueryGlossariesStrings.NamedBindings);
-
-                    var queryGlossariesLocales = new Query("GlossariesLocales").Where("ID_Glossary", id).AsDelete();
-                    var compiledQueryGlossariesLocales = this._compiler.Compile(queryGlossariesLocales);
-                    this.LogQuery(compiledQueryGlossariesLocales);
-                    await dbConnection.ExecuteAsync(
-                        sql: compiledQueryGlossariesLocales.Sql,
-                        param: compiledQueryGlossariesLocales.NamedBindings);
-
-                    var queryLocalizationProjectsGlossaries = new Query("LocalizationProjectsGlossaries").Where("ID_Glossary", id).AsDelete();
-                    var compiledQueryLocalizationProjectsGlossaries = this._compiler.Compile(queryLocalizationProjectsGlossaries);
-                    this.LogQuery(compiledQueryLocalizationProjectsGlossaries);
-                    await dbConnection.ExecuteAsync(
-                        sql: compiledQueryLocalizationProjectsGlossaries.Sql,
-                        param: compiledQueryLocalizationProjectsGlossaries.NamedBindings);
-
-                    #endregion
-
                     //Удаление глоссария
-                    #region "Glossaries"
-
                     var query = new Query("Glossaries").Where("ID", id).AsDelete();
-                    var compiledQuery = this._compiler.Compile(query);
-                    this.LogQuery(compiledQuery);
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings);
 
-                    #endregion
 
                     //Удаление зависимостей
                     #region "Files" (Glossaries.ID_File)
 
                     var queryFiles = new Query("Files").Where("ID", idFile).AsDelete();
-                    var compiledQueryFiles = this._compiler.Compile(queryFiles);
-                    this.LogQuery(compiledQueryFiles);
+                    var compiledQueryFiles = _compiler.Compile(queryFiles);
+                    LogQuery(compiledQueryFiles);
                     await dbConnection.ExecuteAsync(
                         sql: compiledQueryFiles.Sql,
                         param: compiledQueryFiles.NamedBindings);
