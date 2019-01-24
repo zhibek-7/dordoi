@@ -426,39 +426,57 @@ namespace DAL.Reposity.PostgreSqlRepository
             int? fileId = null,
             string searchString = null)
         {
-            var query = new Query("TranslationSubstrings")
-                .Select(
-                    "ID",
-                    "SubstringToTranslate",
-                    "Description",
-                    "Context",
-                    "TranslationMaxLength",
-                    "ID_FileOwner",
-                    "Value",
-                    "PositionInText",
-                    "Outdated"
-                );
+            try {
 
-            if (fileId != null)
-            {
-                query = query.Where("ID_FileOwner", fileId);
-            }
-            else
-            {
-                query = query
-                    .WhereIn("ID_FileOwner",
-                        new Query("Files")
-                            .Select("ID")
-                            .Where("ID_LocalizationProject", projectId));
-            }
+                var query = new Query("TranslationSubstrings")
+               .Select(
+                   "ID",
+                   "SubstringToTranslate",
+                   "Description",
+                   "Context",
+                   "TranslationMaxLength",
+                   "ID_FileOwner",
+                   "Value",
+                   "PositionInText",
+                   "Outdated"
+               );
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                if (fileId != null)
+                {
+                    query = query.Where("ID_FileOwner", fileId);
+                }
+                else
+                {
+                    query = query
+                        .WhereIn("ID_FileOwner",
+                            new Query("Files")
+                                .Select("ID")
+                                .Where("ID_LocalizationProject", projectId));
+                }
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                var searchPattern = $"%{searchString}%";
-                query = query.WhereLike("Value", searchPattern);
-            }
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    var searchPattern = $"%{searchString}%";
+                    query = query.WhereLike("Value", searchPattern);
+                }
 
-            return query;
+                return query;
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdQuery)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdQuery)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
         }
 
         public async Task<IEnumerable<Locale>> GetLocalesForStringAsync(int translationSubstringId)
