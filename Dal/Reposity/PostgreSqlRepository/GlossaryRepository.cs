@@ -413,7 +413,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private Query GetAssotiatedTermsQuery(int glossaryId, string termPart)
         {
-            var query =
+            try {
+                var query =
                 new Query("GlossariesStrings")
                     .LeftJoin("TranslationSubstrings", "TranslationSubstrings.ID", "GlossariesStrings.ID_String")
                     .Where("GlossariesStrings.ID_Glossary", glossaryId)
@@ -436,12 +437,36 @@ namespace DAL.Reposity.PostgreSqlRepository
                             .Where("Translations.Translated", "<>", "''")
                             .WhereRaw("\"TranslationsubStringsLocales\".\"Id_TranslationSubStrings\"=\"TranslationSubstrings\".\"ID\""),
                         "IsEditable");
-            if (!string.IsNullOrEmpty(termPart))
-            {
-                var patternString = $"%{termPart}%";
-                query = query.WhereLike("TranslationSubstrings.Value", patternString);
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                if (!string.IsNullOrEmpty(termPart))
+                {
+                    var patternString = $"%{termPart}%";
+                    query = query.WhereLike("TranslationSubstrings.Value", patternString);
+                }
+                return query;
+
             }
-            return query;
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsQuery)} {nameof(NpgsqlException)} ", exception);
+                return null ;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsQuery)} {nameof(Exception)} ", exception);
+                return null;
+            }
+
+
+
+
+
+
+
+
+
+
         }
 
         public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
