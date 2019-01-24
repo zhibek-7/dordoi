@@ -7,7 +7,7 @@ import { GlossaryService } from 'src/app/services/glossary.service';
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { LanguageService } from 'src/app/services/languages.service';
 
-import { localizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
+import { LocalizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
 import { ProjectsService } from 'src/app/services/projects.service';
 
 import { Selectable } from 'src/app/shared/models/selectable.model';
@@ -25,7 +25,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
 
   availableLocales: Selectable<Locale>[] = [];
 
-  availableLocalizationProjects: Selectable<localizationProjectForSelectDTO>[] = [];
+  availableLocalizationProjects: Selectable<LocalizationProjectForSelectDTO>[] = [];
 
 
   constructor(
@@ -66,11 +66,11 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
 
   //---------------- LocalizationProjects
   loadAvailableLocalizationProjects() {
-    this.glossariesService.getlocalizationProjectForSelectDTO()
+    this.glossariesService.getLocalizationProjectForSelectDTO()
       .subscribe(localizationProject => {
         this.availableLocalizationProjects = localizationProject
           .map(localProject =>
-            new Selectable<localizationProjectForSelectDTO>(
+            new Selectable<LocalizationProjectForSelectDTO>(
               localProject,
               this.glossary.localizationProjectsIds.some(selectedLocalizationProjectId => selectedLocalizationProjectId == localProject.id)
             ));
@@ -78,7 +78,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
         error => console.error(error));
   }
 
-  toggleSelection(localizationProject: Selectable<localizationProjectForSelectDTO>) {
+  toggleSelection(localizationProject: Selectable<LocalizationProjectForSelectDTO>) {
     localizationProject.isSelected = !localizationProject.isSelected;
     this.raiseSelectionChanged();
   }

@@ -18,10 +18,6 @@
       <button class="btn nav-element" (click)="getEditingGlossary()" [disabled]="!isSelectedGlossary"> Редактировать глоссарий </button>
       <app-edit-glossary-form-modal #editGlossaryFormModal *ngIf="isVisibleEditGlossaryFormModal" [glossary]="glossary" (editedGlossarySubmitted)="editedGlossary($event)"></app-edit-glossary-form-modal>
     </li>
-    <!--<li class="nav-item">
-      <button class="btn nav-element" (click)="editGlossaryFormModal.show()" [disabled]="!isSelectedGlossary"> Редактировать глоссарий </button>
-      <app-edit-glossary-form-modal #editGlossaryFormModal *ngIf="isSelectedGlossary" [glossary]="glossary" (editedGlossarySubmitted)="editedGlossary($event)"></app-edit-glossary-form-modal>
-    </li>-->
 
     <li class="nav-item">
       <button type="button" class="btn nav-element" (click)="getConfirmClear()" [disabled]="!isSelectedGlossary"> Очистить </button>
@@ -60,7 +56,7 @@
     </ng-container>
 
     <ng-container matColumnDef="additionalButtons">
-      <mat-header-cell *matHeaderCellDef> </mat-header-cell><!--mat-sort-header-->
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let row">
 
         <button mat-button [matMenuTriggerFor]="menu">
@@ -71,14 +67,9 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <!--<mat-row *matRowDef="let row; columns: displayedColumns;">-->
     <mat-row *matRowDef="let row; columns: displayedColumns;"
              [ngClass]="{selected: row.isSelected}"
              (click)="selected(row)">
-      <!--[ngClass]="{hovered: row.hovered, highlighted: row.highlighted}"-->
-      <!--(click)="row.highlighted = !row.highlighted"-->
-      <!--(mouseover)="row.hovered = true"
-          (mouseout)="row.hovered = false"-->
     </mat-row>
 
   </mat-table>

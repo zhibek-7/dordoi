@@ -22,46 +22,70 @@ namespace Models.Services
         }
 
 
-        //public async Task<IEnumerable<Glossaries>> GetAllAsync()
-        //{
-        //    return await _glossariesRepository.GetAllAsync();
-        //}
-
+        /// <summary>
+        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
         {
-            var temp = await _glossariesRepository.GetAllAsync();
-            var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesTableViewDTO
+            try
             {
-                ID = t.Key,
-                Name = t.FirstOrDefault().Name,
-                //ID_File = t.FirstOrDefault().ID_File,
+                var temp = await _glossariesRepository.GetAllAsync();
+                var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesTableViewDTO
+                {
+                    ID = t.Key,
+                    Name = t.FirstOrDefault().Name,
 
-                LocalesName = string.Join(", ", t.Select(x => x.LocaleName).Distinct().OrderBy(n => n)),
-                LocalizationProjectsName = string.Join(", ", t.Select(x => x.LocalizationProjectName).Distinct().OrderBy(n => n))
-            }).OrderBy(t => t.Name);
-            return resultDTO;
+                    LocalesName = string.Join(", ", t.Select(x => x.LocaleName).Distinct().OrderBy(n => n)),
+                    LocalizationProjectsName = string.Join(", ",
+                        t.Select(x => x.LocalizationProjectName).Distinct().OrderBy(n => n))
+                }).OrderBy(t => t.Name);
+                return resultDTO;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Error", exception);
+            }
         }
 
-        public async Task AddNewGlossaryAsync(GlossariesForEditing glossary)
+        /// <summary>
+        /// Добавление нового глоссария
+        /// </summary>
+        /// <param name="glossary">новый глоссарий</param>
+        /// <returns></returns>
+        public async Task AddNewGlossaryAsync(GlossariesForEditingDTO glossary)
         {
-           
             try
             {
                 await _glossariesRepository.AddNewGlossaryAsync(glossary);
+
             }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
             }
-
         }
 
-        public async Task<GlossariesForEditing> GetGlossaryForEditAsync(int glossaryId)
+        /// <summary>
+        /// Возвращает глоссарий для редактирования (со связанными объектами)
+        /// </summary>
+        /// <param name="glossaryId">идентификатор глоссария</param>
+        /// <returns></returns>
+        public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync(int glossaryId)
         {
-           
             try
             {
-                return await _glossariesRepository.GetGlossaryForEditAsync(glossaryId);
+                var temp = await _glossariesRepository.GetGlossaryForEditAsync(glossaryId);
+                var resultDTO = new GlossariesForEditingDTO
+                {
+                    ID = temp.FirstOrDefault().ID,
+                    Name = temp.FirstOrDefault().Name,
+                    Description = temp.FirstOrDefault().Description,
+                    ID_File = temp.FirstOrDefault().ID_File,
+                    LocalesIds = temp.Select(t => t.LocaleID).Distinct(),
+                    LocalizationProjectsIds = temp.Select(t => t.LocalizationProjectID).Distinct()
+                };
+                return resultDTO;
             }
             catch (Exception exception)
             {
@@ -69,12 +93,17 @@ namespace Models.Services
             }
         }
 
-        public async Task EditGlossaryAsync(GlossariesForEditing glossary)
+        /// <summary>
+        /// Сохранение изменений в глоссарии
+        /// </summary>
+        /// <param name="glossary">отредактированный глоссарий</param>
+        /// <returns></returns>
+        public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
         {
- 
             try
             {
                 await _glossariesRepository.EditGlossaryAsync(glossary);
+
             }
             catch (Exception exception)
             {
@@ -82,10 +111,13 @@ namespace Models.Services
             }
         }
 
+        /// <summary>
+        /// Удаление глоссария
+        /// </summary>
+        /// <param name="id">идентификатор глоссария</param>
+        /// <returns></returns>
         public async Task DeleteGlossaryAsync(int id)
         {
-           
-
             try
             {
                 await _glossariesRepository.DeleteGlossaryAsync(id);

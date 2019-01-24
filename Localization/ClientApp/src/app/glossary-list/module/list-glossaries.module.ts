@@ -2,18 +2,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
-  //Убрать не нужные
   MatIconModule,
-  MatInputModule,
   MatButtonModule,
-  MatButtonToggleModule,
-  MatRadioModule,
-  MatSelectModule,
-  MatOptionModule,
-  MatCheckboxModule,
   MatTableModule,
-  MatDividerModule,
-  MatExpansionModule,
   MatNativeDateModule,
   MatSortModule,
   MatPaginatorModule,
@@ -51,29 +42,18 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
     [
       FormsModule,
       CommonModule,
-
-      //Убрать не нужные
-      MatIconModule,
-      MatInputModule,
-      MatButtonModule,
-      MatButtonToggleModule,
-      MatRadioModule,
-      MatOptionModule,
-      MatSelectModule,
-      MatCheckboxModule,
+      
       MatTableModule,
-      MatDividerModule,
-      MatExpansionModule,
-      MatPaginatorModule,
-      //
-
+      MatIconModule,
+      MatButtonModule,
       MatNativeDateModule,
       MatSortModule,
       MatMenuModule,
+      MatPaginatorModule,
 
-      ListGlossariesRoutingModule,
+      SharedModule,
 
-      SharedModule
+      ListGlossariesRoutingModule
     ],
   providers:
     [
@@ -82,5 +62,5 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
       ProjectsService,
       RequestDataReloadService
     ]
-})
+}) //Модуль для глоссария
 export class ListGlossariesModule { }

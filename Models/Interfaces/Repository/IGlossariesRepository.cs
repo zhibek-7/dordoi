@@ -10,25 +10,25 @@ namespace Models.Interfaces.Repository
         /// <summary>
         /// Добавление нового глоссария
         /// </summary>
-        /// <param name="glossary">новый глоссарий</param>
+        /// <param name="glossary">Новый глоссарий</param>
         /// <returns></returns>
-        Task AddNewGlossaryAsync(GlossariesForEditing glossary);
+        Task AddNewGlossaryAsync(GlossariesForEditingDTO glossary);
         /// <summary>
-        /// Возвращает глоссарий для редактирования (без группировки по объектам) //(со связанными объектами)
+        /// Возвращает глоссарий для редактирования (без группировки по объектам)
         /// </summary>
-        /// <param name="glossaryId">идентификатор глоссария</param>
+        /// <param name="glossaryId">Идентификатор глоссария</param>
         /// <returns></returns>
-        Task<GlossariesForEditing> GetGlossaryForEditAsync(int glossaryId);
+        Task<IEnumerable<Glossaries>> GetGlossaryForEditAsync(int glossaryId);
         /// <summary>
         /// Сохранение изменений в глоссарии
         /// </summary>
-        /// <param name="glossary">отредактированный глоссарий</param>
+        /// <param name="glossary">Отредактированный глоссарий</param>
         /// <returns></returns>
-        Task EditGlossaryAsync(GlossariesForEditing glossary);
+        Task EditGlossaryAsync(GlossariesForEditingDTO glossary);
         /// <summary>
         /// Удаление глоссария
         /// </summary>
-        /// <param name="id">идентификатор глоссария</param>
+        /// <param name="id">Идентификатор глоссария</param>
         /// <returns></returns>
         Task DeleteGlossaryAsync(int id);
     }

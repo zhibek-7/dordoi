@@ -27,13 +27,13 @@ namespace Models.Services
 
             try
             {
-                return await this._stringsRepository.GetLocalesForStringAsync(translationSubstringId: termId);
-            }
+            return await this._stringsRepository.GetLocalesForStringAsync(translationSubstringId: termId);
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{termId}\" ", exception);
             }
-         
+
         }
 
         public async Task<bool> UpdateAsync(Glossary updatedGlossary)
@@ -42,8 +42,8 @@ namespace Models.Services
 
             try
             {
-                return await this._glossaryRepository.UpdateAsync(item: updatedGlossary);
-            }
+            return await this._glossaryRepository.UpdateAsync(item: updatedGlossary);
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{updatedGlossary}\" ", exception);
@@ -56,8 +56,8 @@ namespace Models.Services
 
             try
             {
-                return await this._glossaryRepository.GetByIDAsync(id: glossaryId);
-            }
+            return await this._glossaryRepository.GetByIDAsync(id: glossaryId);
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\" ", exception);
@@ -70,8 +70,8 @@ namespace Models.Services
 
             try
             {
-                return await this._glossaryRepository.GetAllAsync();
-            }
+            return await this._glossaryRepository.GetAllAsync();
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -84,8 +84,8 @@ namespace Models.Services
            
             try
             {
-                return await this._glossaryRepository.GetLocaleByIdAsync(glossaryId: glossaryId);
-            }
+            return await this._glossaryRepository.GetLocaleByIdAsync(glossaryId: glossaryId);
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\" ", exception);
@@ -99,9 +99,9 @@ namespace Models.Services
 
             try
             {
-                await this._stringsRepository.DeleteTranslationLocalesAsync(translationSubstringId: termId);
-                await this._stringsRepository.AddTranslationLocalesAsync(translationSubstringId: termId, localesIds: localesIds);
-            }
+            await this._stringsRepository.DeleteTranslationLocalesAsync(translationSubstringId: termId);
+            await this._stringsRepository.AddTranslationLocalesAsync(translationSubstringId: termId, localesIds: localesIds);
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\"    \"{termId}\"   \"{localesIds}\" ", exception);
@@ -122,7 +122,7 @@ namespace Models.Services
 
             try
             {
-                return await this._glossaryRepository.GetAssotiatedTermsByGlossaryIdAsync(
+            return await this._glossaryRepository.GetAssotiatedTermsByGlossaryIdAsync(
                 glossaryId: glossaryId,
                 termPart: termPart,
                 limit: limit ?? 25,
@@ -130,7 +130,7 @@ namespace Models.Services
                 sortBy: sortBy,
                 sortAscending: sortAscending ?? true
                 );
-            }
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\" ", exception);
@@ -150,10 +150,10 @@ namespace Models.Services
 
             try
             {
-                await this._stringsRepository.AddTranslationLocalesAsync(
+            await this._stringsRepository.AddTranslationLocalesAsync(
                 translationSubstringId: newTermId,
                 localesIds: glossaryLocales.Select(locale => locale.ID));
-            }
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -167,8 +167,8 @@ namespace Models.Services
 
             try
             {
-                await this._glossaryRepository.DeleteTermAsync(glossaryId: glossaryId, termId: termId);
-            }
+            await this._glossaryRepository.DeleteTermAsync(glossaryId: glossaryId, termId: termId);
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -182,9 +182,9 @@ namespace Models.Services
 
             try
             {
-                return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
+            return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
 
-            }
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -198,12 +198,12 @@ namespace Models.Services
 
             try
             {
-                await this._glossaryRepository.UpdateTermAsync(
-               glossaryId: glossaryId,
-               updatedTerm: updatedTerm,
-               partOfSpeechId: partOfSpeechId);
+            await this._glossaryRepository.UpdateTermAsync(
+                glossaryId: glossaryId,
+                updatedTerm: updatedTerm,
+                partOfSpeechId: partOfSpeechId);
 
-            }
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -215,8 +215,8 @@ namespace Models.Services
            
             try
             {
-                return await _glossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
-            }
+            return await _glossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
+        }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);

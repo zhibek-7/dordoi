@@ -58,32 +58,28 @@ export class ListGlossariesComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  //----Get all
+  //#region Получение списка глоссарий для отображения в таблице
+
   getGlossariesDTO() {
     this.glossariesService.getGlossariesDTO()
-      .subscribe(glossaries => this.dataSource.data = //glossaries,
-        glossaries.map(glossary => new Selectable<GlossariesTableViewDTO>(glossary, false)),
+      .subscribe(glossaries => this.dataSource.data = glossaries.map(glossary => new Selectable<GlossariesTableViewDTO>(glossary, false)),
         error => {
           this.isDataSourceLoaded = false;
           console.error(error);
         });
   }
 
-  //----Selected
+  //#endregion
+
+  //#region Выбранный глоссарий. Его отметка и возврат.
+
   selected(element: Selectable<GlossariesTableViewDTO>) {
     if (this.dataSource.data.filter(t => t.isSelected).length > 0) {
       this.dataSource.data[this.indexSelected].isSelected = false;
     }
     element.isSelected = !element.isSelected;
     this.indexSelected = this.dataSource.data.findIndex(t => t.isSelected);
-
-    //element.isSelected = !element.isSelected;
-    //if (this.indexSelected != undefined && this.indexSelected != null && this.indexSelected >= 0)
-    //{
-    //  this.dataSource.data[this.indexSelected].isSelected = false;
-    //}
-    //this.indexSelected = this.dataSource.data.findIndex(t => t.isSelected);
-
+    
     this.isSelectedGlossary = this.indexSelected != undefined && this.indexSelected != null && this.indexSelected >= 0;
   }
 
@@ -94,20 +90,25 @@ export class ListGlossariesComponent implements OnInit {
     this.glossary.name = selectedElement.name;
   }
 
-  //----Add
+  //#endregion
+
+  //#region Добавление нового глоссария
+
   addNewGlossary(newGlossary: GlossariesForEditing) {
     this.glossariesService.addNewGlossary(newGlossary)
       .subscribe(() => this.requestDataReloadService.requestUpdate());
   }
 
-  //----Edit
+  //#endregion
+
+  //#region Редактирование глоссария
+
   getEditingGlossary() {
     this.getSelectedGlossary();
     this.isVisibleEditGlossaryFormModal = true;
     setTimeout(() => {
       this.editGlossaryFormModal.show();
     })
-    //this.editGlossaryFormModal.show();
   }
 
   editedGlossary(editedGlossary: GlossariesForEditing) {
@@ -115,7 +116,10 @@ export class ListGlossariesComponent implements OnInit {
       .subscribe(() => this.requestDataReloadService.requestUpdate());
   }
 
-  //----Delete
+  //#endregion
+
+  //#region Удаление глоссария
+
   getConfirmDelete() {
     this.getSelectedGlossary();
     this.confirmDeleteGlossaryFormModal.show();
@@ -129,7 +133,10 @@ export class ListGlossariesComponent implements OnInit {
     this.isSelectedGlossary = false;
   }
 
-  //----Clear
+  //#endregion
+
+  //#region Удаление всех терминов глоссария
+
   getConfirmClear() {
     this.getSelectedGlossary();
     this.confirmClearGlossaryFormModal.show();
@@ -143,4 +150,5 @@ export class ListGlossariesComponent implements OnInit {
     this.isSelectedGlossary = false;
   }
 
+  //#endregion
 }

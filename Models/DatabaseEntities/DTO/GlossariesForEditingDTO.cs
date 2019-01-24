@@ -2,9 +2,9 @@
 
 namespace Models.DatabaseEntities.DTO
 {
-    public class GlossariesForEditing : BaseEntity
+    //Glossaries with Ids Locales and LocalizationProjects
+    public class GlossariesForEditingDTO : BaseEntity
     {
-        // public int ID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int? ID_File { get; set; }

@@ -595,6 +595,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
+
         /// <summary>
         /// Удаление всех терминов глоссария
         /// </summary>
@@ -607,22 +608,22 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var queryGetTranslationSubstringsID = new Query("GlossariesStrings").Where("ID_Glossary", glossaryId).Select("GlossariesStrings.ID_String");
-                    var compiledQueryGetTranslationSubstringsID = this._compiler.Compile(queryGetTranslationSubstringsID);
-                    this.LogQuery(compiledQueryGetTranslationSubstringsID);
+                    var compiledQueryGetTranslationSubstringsID = _compiler.Compile(queryGetTranslationSubstringsID);
+                    LogQuery(compiledQueryGetTranslationSubstringsID);
                     var idsTranslationSubstrings = await dbConnection.QueryAsync<int>(
                         sql: compiledQueryGetTranslationSubstringsID.Sql,
                         param: compiledQueryGetTranslationSubstringsID.NamedBindings);
 
                     var queryTranslationSubstrings = new Query("TranslationSubstrings").WhereIn("ID", idsTranslationSubstrings).AsDelete();
-                    var compiledQueryTranslationSubstrings = this._compiler.Compile(queryTranslationSubstrings);
-                    this.LogQuery(compiledQueryTranslationSubstrings);
+                    var compiledQueryTranslationSubstrings = _compiler.Compile(queryTranslationSubstrings);
+                    LogQuery(compiledQueryTranslationSubstrings);
                     await dbConnection.ExecuteAsync(
                         sql: compiledQueryTranslationSubstrings.Sql,
                         param: compiledQueryTranslationSubstrings.NamedBindings);
 
                     var queryGlossariesStrings = new Query("GlossariesStrings").Where("ID_Glossary", glossaryId).AsDelete();
-                    var compiledQueryGlossariesStrings = this._compiler.Compile(queryGlossariesStrings);
-                    this.LogQuery(compiledQueryGlossariesStrings);
+                    var compiledQueryGlossariesStrings = _compiler.Compile(queryGlossariesStrings);
+                    LogQuery(compiledQueryGlossariesStrings);
                     await dbConnection.ExecuteAsync(
                         sql: compiledQueryGlossariesStrings.Sql,
                         param: compiledQueryGlossariesStrings.NamedBindings);
@@ -630,11 +631,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                this._loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermsByGlossaryAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermsByGlossaryAsync)} {nameof(NpgsqlException)} ", exception);
             }
             catch (Exception exception)
             {
-                this._loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermsByGlossaryAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.DeleteTermsByGlossaryAsync)} {nameof(Exception)} ", exception);
             }
         }
     }
