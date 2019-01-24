@@ -475,15 +475,17 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var getGlossaryLocaleSql = "SELECT * FROM \"Locales\" WHERE \"ID\" IN " +
-                        "(SELECT \"ID_SourceLocale\" FROM \"LocalizationProjects\" WHERE \"ID\" IN " +
-                        "(SELECT \"ID_LocalizationProject\" FROM \"LocalizationProjectsGlossaries\" WHERE \"ID_Glossary\"=@GlossaryId))";
-                    var getGlossaryLocaleParam = new { GlossaryId = glossaryId };
-                    this.LogQuery(getGlossaryLocaleSql, getGlossaryLocaleParam);
+                    var query = new Query("LocalizationProjectsGlossaries as lpg")
+                        .Where("ID_Glossary", glossaryId)
+                        .RightJoin("LocalizationProjects as lp", "lpg.ID_LocalizationProject", "lp.ID")
+                        .RightJoin("Locales as l", "lp.ID_SourceLocale", "l.ID")
+                        .Select("l.*");
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
                     var locale = await dbConnection
                         .QueryFirstAsync<Locale>(
-                            sql: getGlossaryLocaleSql,
-                            param: getGlossaryLocaleParam);
+                            sql: compiledQuery.Sql,
+                            param: compiledQuery.NamedBindings);
                     return locale;
                 }
             }
