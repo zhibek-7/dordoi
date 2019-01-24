@@ -27,6 +27,7 @@ export class AllSettingsComponent implements OnInit {
   currentProjectlogo = "";
   currentProjectid = 1;
   currentProjecturl = "";
+  isChecked = true;
   public project: LocalizationProject;
 
   settings_proj = new FormGroup({
@@ -35,11 +36,6 @@ export class AllSettingsComponent implements OnInit {
     pjExportTrue: new FormControl(),
     pjSkipUntranslStrTrue: new FormControl(),
     pjNotificationTrue: new FormControl()
-
-    /*   pjName: new FormControl(),
-    pjDescription: new FormControl(),
-    pjPrivate: new FormControl(),
-*/
   });
 
   searchText = "";
@@ -84,6 +80,8 @@ export class AllSettingsComponent implements OnInit {
       },
       error => console.error(error)
     );
+
+    this.isChecked = true;
   }
 
   AddSelected(event, lang) {

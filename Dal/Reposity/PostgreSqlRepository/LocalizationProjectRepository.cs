@@ -181,7 +181,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlQuery = "DELETE * FROM  LocalizationProjects  WHERE ID = '" + id + "'";
+                    var sqlQuery = "DELETE FROM  "LocalizationProjects"  WHERE "ID"= " + id + "";
                     connection.Execute(sqlQuery, new { id });
 
                     this.LogQuery(sqlQuery);

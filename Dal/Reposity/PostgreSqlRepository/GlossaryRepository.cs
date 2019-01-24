@@ -413,7 +413,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private Query GetAssotiatedTermsQuery(int glossaryId, string termPart)
         {
-            try {
+            try
+            {
                 var query =
                 new Query("GlossariesStrings")
                     .LeftJoin("TranslationSubstrings", "TranslationSubstrings.ID", "GlossariesStrings.ID_String")
@@ -450,7 +451,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsQuery)} {nameof(NpgsqlException)} ", exception);
-                return null ;
+                return null;
             }
             catch (Exception exception)
             {

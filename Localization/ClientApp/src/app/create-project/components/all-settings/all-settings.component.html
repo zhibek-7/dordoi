@@ -52,7 +52,8 @@
   </div>
 
   <div class="form-check">
-    <mat-checkbox class="example-margin" formControlName="pjFileTrue" name="FileName" value='{{currentProjectFileTrue}}'>
+    <mat-checkbox class="example-margin" formControlName="pjFileTrue" name="FileName" value='{{currentProjectFileTrue}}'
+      [checked]="isChecked">
       <label class="form-check-label" for="">Переводчики могут загружать файлы для перевода из проекта</label>
     </mat-checkbox>
 
@@ -109,7 +110,8 @@
         <div class="input-group">
 
           <div class="custom-file">
-            <input type="text" name="itemName" class="form-control" [(ngModel)]="searchText" id="idFilter" placeholder="Фильтровать языки">
+            <input type="text" name="itemName" class="form-control" [(ngModel)]="searchText" id="idFilter" placeholder="Фильтровать языки"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="input-group-append">
             <button style="height: 38px;" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top"
