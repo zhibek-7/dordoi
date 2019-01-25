@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Npgsql;
 using Models.DatabaseEntities.PartialEntities.Comment;
-using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -150,6 +149,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { idString };
                     this.LogQuery(query, param);
                     var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, new { Id = idString });
+                    foreach(var comment in comments)
+                    {
+                        comment.Images = await GetImagesOfCommentAsync(comment.CommentId);
+                    }
                     return comments;
                 }
             }
@@ -325,23 +328,29 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
         /// <summary>
-        /// Добавить файл в комментарий
+        /// Добавить изображение к комментарию
         /// </summary>
-        /// <param name="comment">комментарий</param>
+        /// <param name="img">Изображение</param>
+        /// <param name="commentId">Id комментария</param>
         /// <returns></returns>
-        public async Task<int> AddFileAsync(Image img)
+        public async Task<int> UploadImageAsync(Image img, int commentId)
         {
-            var query = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
+            var query1 = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
                         "VALUES (@Name,  @ID_User, @Data, @url) " +
                         "RETURNING  \"Images\".\"ID\"";
+
+            var query2 = "INSERT INTO \"CommentsImages\" (\"ID_Comment\", \"ID_Image\")" +
+                        "VALUES (@CommentId,  @ImageId) ";
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, img);
-                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, img);
-                    return idOfInsertedRow;
+                    this.LogQuery(query1, img);
+                    var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
+                    this.LogQuery(query2, commentId);
+                    await dbConnection.ExecuteScalarAsync(query2, new { CommentId = commentId, ImageId = idOfInsertedImage });
+                    return idOfInsertedImage;
                 }
             }
             catch (NpgsqlException exception)
@@ -358,39 +367,43 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
                 return 0;
             }
-        }
+        }        
+
         /// <summary>
-        /// Загрузить картинку в базу данных
+        /// Получить все изображения прикрепленные к конкретному комментарию
         /// </summary>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        public async Task<int> UploadImageAsync(Byte[] image)
+        /// <param name="commentId">id комментария</param>
+        /// <returns>Список изображений</returns>
+        public async Task<IEnumerable<Image>> GetImagesOfCommentAsync(int commentId)
         {
-            //ЗАПРОС ЕЩЕ НЕ НАПИСАН
-            var query = "";
+            var query = "SELECT Im.\"ID\", Im.\"url\", Im.\"Name\", Im.\"DateTimeAdded\", Im.\"Data\", Im.\"ID_User\" " +
+                        "FROM \"Images\" AS Im " +
+                        "INNER JOIN \"CommentsImages\" AS CI ON CI.\"ID_Image\" = Im.\"ID\" " +
+                        "INNER JOIN \"Comments\" AS C ON C.\"ID\" = CI.\"ID_Comment\" " +
+                        "WHERE C.\"ID\" = @CommentId ";
 
             try
             {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
+                using(var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, image);
-                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, image);
-                    return idOfInsertedRow;
+                    this.LogQuery(query, commentId);
+                    IEnumerable<Image> images = await dbConnection.QueryAsync<Image>(query, new { CommentId = commentId });
+                    return images;
                 }
             }
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
