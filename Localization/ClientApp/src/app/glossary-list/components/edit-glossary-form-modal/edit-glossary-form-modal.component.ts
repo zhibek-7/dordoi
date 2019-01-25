@@ -32,7 +32,7 @@ export class EditGlossaryFormModalComponent extends ModalComponent implements On
     await this.loadGlossaryForEditing();
     super.show();
   }
-
+  
   async loadGlossaryForEditing() {
     this.glossaryEditable = await this.glossariesService.getGlossaryForEditing(this.glossary.id);
   }

@@ -1,12 +1,12 @@
 <div>
   <label class="m-1"> Название глоссария </label>
-  <input class="form-control m-1" [(ngModel)]="glossary.name" type="text" /><!--name="name" #name="ngModel" required-->
-  <!--<div class="alert alert-danger" *ngIf="name.errors.required && name.value == null">
-    Введите название глоссария.
+  <input id="name" name="name" class="form-control m-1" type="text" required [(ngModel)]="glossary.name" #name="ngModel">
+  <div *ngIf="name.invalid && (name.dirty || name.touched)"
+       class="alert alert-danger">
+    <div *ngIf="name.errors.required">
+      Введите название глоссария.
+    </div>
   </div>
-  <div class="alert alert-danger" *ngIf="name.invalid && name.touched">
-    Заполните поле.
-  </div>-->
 </div>
 
 <div>
@@ -30,11 +30,7 @@
 <div>
   <label class="m-1"> Целевые языки: </label>
   <app-set-languages [availableLocales]="availableLocales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
-
-  <!--<div class="alert alert-danger" *ngIf="glossary.locales == null">
+  <div *ngIf="errorsRequiredLocales" class="alert alert-danger">
     Выберите целевой(ые) язык(и).
   </div>
-  <div class="alert alert-danger" *ngIf="!glossary.locales">
-    Заполните поле.
-  </div>-->
 </div>

@@ -27,17 +27,18 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
 
   availableLocalizationProjects: Selectable<LocalizationProjectForSelectDTO>[] = [];
 
+  errorsRequiredLocales: boolean = false;
 
   constructor(
-    private glossariesService: GlossaryService,
-
     private projectsService: ProjectsService,
     private languageService: LanguageService,
-  ) {
+  )
+  {
     super();
   }
 
-  ngOnInit() {
+  ngOnInit()
+  {
   }
 
   load() {
@@ -46,7 +47,8 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
     this.loadAvailableLocalizationProjects();
   }
 
-  //---------------- Locales
+  //#region Работа с Locales
+  
   loadAvailableLanguages() {
     this.languageService.getLanguageList()
       .subscribe(locale => {
@@ -59,12 +61,17 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
       },
         error => console.error(error));
   }
-
+  
   setSelectedLocales(newSelection: Locale[]) {
     this.glossary.localesIds = newSelection.map(t => t.id);
+    //Валидация. Обязательно должно быть выбрано хотя бы одно значение.
+    this.errorsRequiredLocales = this.glossary.localesIds.length == 0;
   }
 
-  //---------------- LocalizationProjects
+  //#endregion
+
+  //#region Работа с LocalizationProjects
+
   loadAvailableLocalizationProjects() {
     this.projectsService.getLocalizationProjectForSelectDTO()
       .subscribe(localizationProject => {
@@ -86,4 +93,6 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
   raiseSelectionChanged() {
     this.glossary.localizationProjectsIds = this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model.id);
   }
+
+  //#endregion
 }

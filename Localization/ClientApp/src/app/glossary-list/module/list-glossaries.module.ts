@@ -20,6 +20,7 @@ import { EditGlossaryFormModalComponent } from '../components/edit-glossary-form
 import { ConfirmDeleteGlossaryComponent } from '../components/confirm-delete-glossary/confirm-delete-glossary.component';
 import { ConfirmClearGlossaryOfTermsComponent } from '../components/confirm-clear-glossary-of-terms/confirm-clear-glossary-of-terms.component';
 
+
 import { GlossaryService } from 'src/app/services/glossary.service';
 import { LanguageService } from 'src/app/services/languages.service';
 import { ProjectsService } from 'src/app/services/projects.service';
@@ -42,7 +43,7 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
     [
       FormsModule,
       CommonModule,
-      
+
       MatTableModule,
       MatIconModule,
       MatButtonModule,
