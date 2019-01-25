@@ -14,7 +14,7 @@ import { Selectable } from 'src/app/shared/models/selectable.model';
 })
 export class SetLanguagesModalComponent extends ModalComponent implements OnInit {
 
-  @Input() file: File;
+  file: File;
 
   availableLocales: Selectable<Locale>[] = [];
 
@@ -44,9 +44,10 @@ export class SetLanguagesModalComponent extends ModalComponent implements OnInit
     this.selectedLocales = newSelection;
   }
 
-  show() {
+  showFile(file: File) {
+    this.file = file;
     this.loadAvailableLanguages();
-    super.show();
+    this.show();
   }
 
   applyChanges() {

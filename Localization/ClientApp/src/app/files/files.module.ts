@@ -4,8 +4,11 @@ import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
 
 import { TreeTableModule } from 'primeng/treetable';
-import { ContextMenuModule } from 'primeng/contextmenu';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import {
+  MatMenuModule,
+  MatListModule,
+} from '@angular/material';
 
 import { FilesRoutingModule } from 'src/app/files/files-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -17,6 +20,7 @@ import { RenameFileModalComponent } from 'src/app/files/components/rename-file-m
 
 import { FileService } from 'src/app/services/file.service';
 import { LanguageService } from 'src/app/services/languages.service';
+import { FileInputWrapper } from './components/file-input-wrapper/file-input-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -24,16 +28,18 @@ import { LanguageService } from 'src/app/services/languages.service';
     AddFolderModalComponent,
     SetLanguagesModalComponent,
     RenameFileModalComponent,
+    FileInputWrapper,
   ],
   imports: [
     FormsModule,
     CommonModule,
     HttpClientModule,
     TreeTableModule,
-    ContextMenuModule,
     FilesRoutingModule,
     SharedModule,
     NgxSpinnerModule,
+    MatMenuModule,
+    MatListModule,
   ],
   providers: [
     FileService,

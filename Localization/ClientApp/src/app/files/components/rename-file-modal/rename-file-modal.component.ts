@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { TreeNode } from 'primeng/api';
 
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 import { File } from 'src/app/models/database-entities/file.type';
@@ -10,9 +11,11 @@ import { File } from 'src/app/models/database-entities/file.type';
 })
 export class RenameFileModalComponent extends ModalComponent implements OnInit {
 
-  @Input() file: File;
+  node: TreeNode;
 
-  @Output() nameChangeSubmitted = new EventEmitter<File>();
+  file: File;
+
+  @Output() nameChangeSubmitted = new EventEmitter<[TreeNode, File]>();
 
   constructor() {
     super();
@@ -21,13 +24,15 @@ export class RenameFileModalComponent extends ModalComponent implements OnInit {
   ngOnInit() {
   }
 
-  show() {
-    super.show();
+  showNodeFile(node: TreeNode, file: File) {
+    this.node = node;
+    this.file = file;
+    this.show();
   }
 
   submitNameChange() {
     this.hide();
-    this.nameChangeSubmitted.emit(this.file);
+    this.nameChangeSubmitted.emit([this.node, this.file]);
   }
 
 }
