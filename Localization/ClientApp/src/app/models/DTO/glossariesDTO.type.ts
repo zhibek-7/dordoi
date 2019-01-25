@@ -1,4 +1,6 @@
-//Для создания нового и редактирования глоссария
+/**
+ * Для создания нового и редактирования глоссария
+ */
 export class GlossariesForEditing {
   id: number;
   name: string;
@@ -9,7 +11,9 @@ export class GlossariesForEditing {
   localizationProjectsIds: number[];
 }
 
-//Для отображения в таблице списка глоссарий
+/**
+ * Для отображения в таблице списка глоссарий
+ */
 export class GlossariesTableViewDTO {
   id: number;
   name: string;
