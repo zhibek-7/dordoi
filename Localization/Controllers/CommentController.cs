@@ -92,21 +92,21 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpDelete]
         [Route("DeleteComment/{idComment}")]
-        public async Task<IActionResult> DeleteComment(int idComment)
+        public async Task<IActionResult> DeleteComment(int commentId)
         {
             // Check if string by id exists in database
-            var foundedComment = await commentRepository.GetByIDAsync(idComment);
+            var foundedComment = await commentRepository.GetByIDAsync(commentId);
 
             if (foundedComment == null)
             {
-                return NotFound($"Comment by id \"{ idComment }\" not found");
+                return NotFound($"Comment by id \"{ commentId }\" not found");
             }
 
-            var deleteResult = await commentRepository.RemoveAsync(idComment);
+            var deleteResult = await commentRepository.RemoveAsync(commentId);
 
             if (!deleteResult)
             {
-                return BadRequest($"Failed to remove comment with id \"{ idComment }\" from database");
+                return BadRequest($"Failed to remove comment with id \"{ commentId }\" from database");
             }
 
             return Ok();
@@ -147,10 +147,10 @@ namespace Localization.WebApi
         /// <param name="idComment">id комментария к которому приложена картинка</param>
         /// <returns></returns>
         [HttpPost("UploadImage")]
-        public async Task<ActionResult> UploadImage()
-        {
-
+        public async Task<IActionResult> UploadImage()
+        {            
             var content = Request.Form.Files["Image"];
+            var commentId = Request.Form["CommentId"];
             string fileName = content.FileName;
             long fileLength = content.Length;
             //Stream file = content.OpenReadStream;
@@ -171,13 +171,33 @@ namespace Localization.WebApi
                         img.DateTimeAdded = DateTime.Now;
                         img.Data = imageData;
 
-                        int insertedCommentId = await commentRepository.AddFileAsync(img);
+                        int insertedCommentId = await commentRepository.UploadImageAsync(img, Convert.ToInt32(commentId));
                     }
                 }
 
 
             }
             return Ok();
+        }
+
+        /// <summary>
+        /// Получить изображения комментария
+        /// </summary>
+        /// <param name="commentId">id Комментария</param>
+        /// <returns>Список изображений</returns>
+        public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfComment(int commentId)
+        {
+            // Check if comment by id exists in database
+            var foundedComment = await commentRepository.GetByIDAsync(commentId);
+
+            if (foundedComment == null)
+            {
+                return NotFound($"Comment by id \"{ commentId }\" not found");
+            }
+
+            IEnumerable<Image> images = await commentRepository.GetImagesOfCommentAsync(commentId);
+
+            return Ok(images);        
         }
 
     }

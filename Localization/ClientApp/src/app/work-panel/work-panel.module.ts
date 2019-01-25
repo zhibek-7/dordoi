@@ -19,6 +19,8 @@ import { SelectedWordModalComponent } from './components/selected-word-modal/sel
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
 import { FilterTermsPipe } from './pipes/filter-terms.pipe';
 import { SortArrayPipe } from './pipes/sort-array.pipe';
+import { SafeHtmlPipe } from './pipes/safeHtml.pipe';
+
 import { SharePhraseService } from './localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from './localServices/share-translated-phrase.service';
 import { ShareWordFromModalService } from './localServices/share-word-from-modal.service';
@@ -47,7 +49,8 @@ import {
         TermDetailsEditableComponent,
         FilterPhrasesPipe,
         FilterTermsPipe,
-        SortArrayPipe,        
+        SortArrayPipe, 
+        SafeHtmlPipe       
     ],
     imports: [
         CommonModule,

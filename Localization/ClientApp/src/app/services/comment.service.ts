@@ -21,11 +21,14 @@ export class CommentService {
         return asyncResult;
     }
 
-    uploadImage(fileToUpload: File) {
+    uploadImage(fileToUpload: File[], commentId: number) {
         const formData: FormData = new FormData();
-        formData.append('Image', fileToUpload);
-        
-        return this.http.post(this.url + "UploadImage", formData).toPromise();
+
+        fileToUpload.forEach(element => {
+            formData.set('Image', element); 
+            formData.append('CommentId', commentId.toString());
+            return this.http.post(this.url + "UploadImage", formData).toPromise();
+        });        
     }
 
     getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{    

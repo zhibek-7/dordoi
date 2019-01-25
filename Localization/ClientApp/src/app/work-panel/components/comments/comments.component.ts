@@ -12,6 +12,8 @@ import { CommentWithUser } from '../../localEntites/comments/commentWithUser.typ
 import * as $ from 'jquery';
 import { Term } from 'src/app/models/Glossaries/term.type';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
+import { Image } from 'src/app/models/database-entities/image.type';
+import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
 
 @Component({
     selector: 'comments-component',
@@ -25,10 +27,10 @@ export class CommentsComponent implements OnInit {
 
     stringId: number;
     commentEdited = false;
-    changedComment = "";
+    changedComment: CommentWithUser;
 
-    fileToUpload: File = null;
-    imageUrl: string = undefined;
+    filesToUpload: File[];
+    // imageUrl: string = undefined;
 
     addCommentText: string = "";
 
@@ -43,6 +45,7 @@ export class CommentsComponent implements OnInit {
 
         this.commentsList = [];
         this.termsList = [];
+        this.filesToUpload = [];
 
         this.getTerms();
 
@@ -84,7 +87,8 @@ export class CommentsComponent implements OnInit {
     getComments(idString: number){
         this.commentService.getAllCommentsInStringById(idString)
             .subscribe( comments => {
-                this.commentsList = comments;
+                this.commentsList = comments;            
+                console.log(this.commentsList);    
         });
     };
 
@@ -107,8 +111,9 @@ export class CommentsComponent implements OnInit {
     // Изменение комментария
     async changeCommentClick(comment: CommentWithUser){
         this.commentsList = await [];
-        this.changedComment = comment.comment;
-        this.commentEdited = true
+        this.changedComment = comment;
+        this.commentEdited = true;
+        this.filesToUpload = [];
         this.commentsList.push(comment);
     }
 
@@ -120,10 +125,10 @@ export class CommentsComponent implements OnInit {
     // Сохранение измененного комментария
     async saveChangedComment(comment: CommentWithUser) {
       // comment.id_User = userId           // когда появится id реального пользователя, нужно будет использовать его (а пока костыль)
-      let updatedComment: Comment = new Comment(301, this.stringId, this.changedComment, new Date(Date.now()), comment.commentId);
+      let updatedComment: Comment = new Comment(301, this.stringId, this.changedComment.comment, new Date(Date.now()), comment.commentId);
 
       await this.commentService.updateComment(updatedComment);
-      if (this.fileToUpload != null) {
+      if (this.filesToUpload != null) {
         this.loadScrinshot();
       }
       this.endEditingMode();
@@ -132,26 +137,32 @@ export class CommentsComponent implements OnInit {
     // Функция завершения редактирования комментария
     endEditingMode() {
       this.commentEdited = false;
-      this.changedComment = "";
-      this.fileToUpload = null;
-      this.imageUrl = undefined;
+      this.changedComment.comment = "";
+      this.filesToUpload = null;
       this.getComments(this.stringId);
     }
 
     // Функция загрузки скриншота
     loadScrinshot() {
-      this.commentService.uploadImage(this.fileToUpload);
+      this.commentService.uploadImage(this.filesToUpload, this.changedComment.commentId);
     }
 
     // Функция, срабатываемая при загрузке скриншота
     handleFileInput(file: FileList) {
-      this.fileToUpload = file.item(0);
+      this.filesToUpload.push(file.item(0));
+      if(this.changedComment.images == undefined){
+        this.changedComment.images = [];
+      }
 
       var reader = new FileReader();
       reader.onload = (event: any) => {
-        this.imageUrl = event.target.result;
+
+        var insertedImage = new Image();
+        insertedImage.data = event.target.result;
+
+        this.changedComment.images.push(insertedImage)        
       }
-      reader.readAsDataURL(this.fileToUpload);
+      reader.readAsDataURL(this.filesToUpload[this.filesToUpload.length - 1]);
     }
 
     // Удаление комментария
