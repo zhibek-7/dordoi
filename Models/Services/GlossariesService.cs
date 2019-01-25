@@ -23,7 +23,7 @@ namespace Models.Services
 
 
         /// <summary>
-        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов
+        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов.
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
@@ -31,6 +31,7 @@ namespace Models.Services
             try
             {
                 var temp = await _glossariesRepository.GetAllAsync();
+                //Создание списка глоссариев со строками перечислений имен связанных объектов.
                 var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesTableViewDTO
                 {
                     ID = t.Key,
@@ -49,16 +50,15 @@ namespace Models.Services
         }
 
         /// <summary>
-        /// Добавление нового глоссария
+        /// Добавление нового глоссария.
         /// </summary>
-        /// <param name="glossary">новый глоссарий</param>
+        /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
         public async Task AddNewGlossaryAsync(GlossariesForEditingDTO glossary)
         {
             try
             {
                 await _glossariesRepository.AddNewGlossaryAsync(glossary);
-
             }
             catch (Exception exception)
             {
@@ -67,15 +67,16 @@ namespace Models.Services
         }
 
         /// <summary>
-        /// Возвращает глоссарий для редактирования (со связанными объектами)
+        /// Возвращает глоссарий для редактирования (со связанными объектами).
         /// </summary>
-        /// <param name="glossaryId">идентификатор глоссария</param>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync(int glossaryId)
         {
             try
             {
                 var temp = await _glossariesRepository.GetGlossaryForEditAsync(glossaryId);
+                //Создание глоссария с вложенными списками идентификаторов связанных данных.
                 var resultDTO = new GlossariesForEditingDTO
                 {
                     ID = temp.FirstOrDefault().ID,
@@ -94,16 +95,15 @@ namespace Models.Services
         }
 
         /// <summary>
-        /// Сохранение изменений в глоссарии
+        /// Сохранение изменений в глоссарии.
         /// </summary>
-        /// <param name="glossary">отредактированный глоссарий</param>
+        /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
         public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
         {
             try
             {
                 await _glossariesRepository.EditGlossaryAsync(glossary);
-
             }
             catch (Exception exception)
             {
@@ -112,9 +112,9 @@ namespace Models.Services
         }
 
         /// <summary>
-        /// Удаление глоссария
+        /// Удаление глоссария.
         /// </summary>
-        /// <param name="id">идентификатор глоссария</param>
+        /// <param name="id">Идентификатор глоссария.</param>
         /// <returns></returns>
         public async Task DeleteGlossaryAsync(int id)
         {
@@ -129,9 +129,9 @@ namespace Models.Services
         }
 
         /// <summary>
-        /// Удаление всех терминов глоссария
+        /// Удаление всех терминов глоссария.
         /// </summary>
-        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         public async Task ClearGlossaryAsync(int id)
         {
