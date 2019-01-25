@@ -2,7 +2,10 @@
 
 namespace Models.DatabaseEntities.DTO
 {
-    //Glossaries with Ids Locales and LocalizationProjects
+    /// <summary>
+    /// Глоссарий со списками идентификатор связанных данных (Locales, LocalizationProjects).
+    /// Для модификации, например создание, редактирование.
+    /// </summary>
     public class GlossariesForEditingDTO : BaseEntity
     {
         public string Name { get; set; }

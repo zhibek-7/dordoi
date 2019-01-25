@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 
 import { GlossaryService } from 'src/app/services/glossary.service';
@@ -21,12 +21,14 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
   providers: [GlossaryService]
 })
 export class ListGlossariesComponent implements OnInit {
+  //#region для настройки таблицы (mat-table)
   displayedColumns: string[] = ['name', 'localesName', 'localizationProjectsName', 'additionalButtons'];
   private dataSource = new MatTableDataSource<Selectable<GlossariesTableViewDTO>>();
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  //#endregion
 
-  //
+  //#region Для обращения к модальным окнам
   @ViewChild('confirmDeleteGlossaryFormModal')
   public confirmDeleteGlossaryFormModal: ConfirmDeleteGlossaryComponent;
 
@@ -35,11 +37,13 @@ export class ListGlossariesComponent implements OnInit {
 
   @ViewChild('editGlossaryFormModal')
   public editGlossaryFormModal: EditGlossaryFormModalComponent;
-  //
+  //#endregion
+
+  isVisibleEditGlossaryFormModal: boolean = false;
+
+  isSelectedGlossary: boolean = false;
 
   isDataSourceLoaded: boolean = true;
-  isSelectedGlossary: boolean = false;
-  isVisibleEditGlossaryFormModal: boolean = false;
 
   glossary: Glossary = new Glossary();
 
@@ -57,9 +61,10 @@ export class ListGlossariesComponent implements OnInit {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
   }
-
-  //#region Получение списка глоссарий для отображения в таблице
-
+  
+  /**
+   * Получение списка глоссарий для отображения в таблице.
+   */
   getGlossariesDTO() {
     this.glossariesService.getGlossariesDTO()
       .subscribe(glossaries => this.dataSource.data = glossaries.map(glossary => new Selectable<GlossariesTableViewDTO>(glossary, false)),
@@ -69,10 +74,12 @@ export class ListGlossariesComponent implements OnInit {
         });
   }
 
-  //#endregion
-
   //#region Выбранный глоссарий. Его отметка и возврат.
 
+  /**
+   * Фиксация индекса выбранного элемента.
+   * @param element Выбранный элемент пользователем.
+   */
   selected(element: Selectable<GlossariesTableViewDTO>) {
     if (this.dataSource.data.filter(t => t.isSelected).length > 0) {
       this.dataSource.data[this.indexSelected].isSelected = false;
@@ -83,6 +90,9 @@ export class ListGlossariesComponent implements OnInit {
     this.isSelectedGlossary = this.indexSelected != undefined && this.indexSelected != null && this.indexSelected >= 0;
   }
 
+  /**
+   * Возвращает выбранный элемент пользователем.
+   */
   getSelectedGlossary() {
     var selectedElement = this.dataSource.data[this.indexSelected].model;
     this.glossary = new Glossary();
@@ -91,18 +101,24 @@ export class ListGlossariesComponent implements OnInit {
   }
 
   //#endregion
-
-  //#region Добавление нового глоссария
-
+  
+  /**
+   * Добавление нового глоссария.
+   * @param newGlossary Новый глоссарий.
+   */
   addNewGlossary(newGlossary: GlossariesForEditing) {
     this.glossariesService.addNewGlossary(newGlossary)
       .subscribe(() => this.requestDataReloadService.requestUpdate());
+    //Сброс выбранного элемента.
+    this.indexSelected = undefined;
+    this.isSelectedGlossary = false;
   }
-
-  //#endregion
-
+  
   //#region Редактирование глоссария
 
+  /**
+   * Отображает диалог для редактирования.
+   */
   getEditingGlossary() {
     this.getSelectedGlossary();
     this.isVisibleEditGlossaryFormModal = true;
@@ -110,42 +126,63 @@ export class ListGlossariesComponent implements OnInit {
       this.editGlossaryFormModal.show();
     })
   }
-
+  
+  /**
+   * Сохранение изменений.
+   * @param editedGlossary
+   */
   editedGlossary(editedGlossary: GlossariesForEditing) {
     this.glossariesService.editSaveGlossary(editedGlossary)
       .subscribe(() => this.requestDataReloadService.requestUpdate());
-  }
-
-  //#endregion
-
-  //#region Удаление глоссария
-
-  getConfirmDelete() {
-    this.getSelectedGlossary();
-    this.confirmDeleteGlossaryFormModal.show();
-  }
-
-  deleteGlossary(glossary: Glossary) {
-    this.glossariesService.deleteGlossary(glossary.id)
-      .subscribe(() => this.requestDataReloadService.requestUpdate());
-
+    //Сброс выбранного элемента.
     this.indexSelected = undefined;
     this.isSelectedGlossary = false;
   }
 
   //#endregion
 
-  //#region Удаление всех терминов глоссария
+  //#region Удаление глоссария.
 
+  /**
+   * Отображает диалог для получения подтверждения.
+   */
+  getConfirmDelete() {
+    this.getSelectedGlossary();
+    this.confirmDeleteGlossaryFormModal.show();
+  }
+
+  /**
+   * Удаление глоссария.
+   * @param glossary Выбранный глоссарий.
+   */
+  deleteGlossary(glossary: Glossary) {
+    this.glossariesService.deleteGlossary(glossary.id)
+      .subscribe(() => this.requestDataReloadService.requestUpdate());
+    //Сброс выбранного элемента.
+    this.indexSelected = undefined;
+    this.isSelectedGlossary = false;
+  }
+
+  //#endregion
+
+  //#region Удаление всех терминов глоссария.
+
+  /**
+   * Отображает диалог для получения подтверждения.
+   */
   getConfirmClear() {
     this.getSelectedGlossary();
     this.confirmClearGlossaryFormModal.show();
   }
 
+  /**
+   * Удаление всех терминов глоссария
+   * @param glossary Выбранный глоссарий.
+   */
   clearGlossary(glossary: Glossary) {
     this.glossariesService.clearGlossary(glossary.id)
       .subscribe(() => this.requestDataReloadService.requestUpdate());
-
+    //Сброс выбранного элемента.
     this.indexSelected = undefined;
     this.isSelectedGlossary = false;
   }

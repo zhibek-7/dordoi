@@ -21,7 +21,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Возвращает все строки запроса (без группировки по объектам)
+        /// Возвращает все строки запроса (без группировки по объектам).
         /// </summary>
         /// <returns></returns>
         public async Task<IEnumerable<Glossaries>> GetAllAsync()
@@ -62,9 +62,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Добавление нового глоссария
+        /// Добавление нового глоссария.
         /// </summary>
-        /// <param name="glossary">Новый глоссарий</param>
+        /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
         public async Task AddNewGlossaryAsync(GlossariesForEditingDTO glossary)
         {
@@ -90,36 +90,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                             param: compiledQuery.NamedBindings);
 
                     //Добавление в таблицу "GlossariesLocales" записей связи глоссария с языками перевода (Glossaries с Locales)
-                    var GlossariesLocales = glossary.LocalesIds.Select(t => new
-                    {
-                        ID_Glossary = idOfNewGlossary,
-                        ID_Locale = t
-                    }).ToList();
-                    foreach (var element in GlossariesLocales)
-                    {
-                        var queryGlossariesLocales = new Query("GlossariesLocales").AsInsert(element);
-                        var compiledQueryGlossariesLocales = _compiler.Compile(queryGlossariesLocales);
-                        LogQuery(compiledQueryGlossariesLocales);
-                        await dbConnection.ExecuteAsync(
-                                sql: compiledQueryGlossariesLocales.Sql,
-                                param: compiledQueryGlossariesLocales.NamedBindings);
-                    }
+                    await EditGlossariesLocalesAsync(idOfNewGlossary, glossary.LocalesIds, false);
 
                     //Добавление в таблицу "LocalizationProjectsGlossaries" записей связи глоссария с проектами локализации (Glossaries с LocalizationProjects)
-                    var LocalizationProjectsGlossaries = glossary.LocalizationProjectsIds.Select(t => new
-                    {
-                        ID_Glossary = idOfNewGlossary,
-                        ID_LocalizationProject = t
-                    }).ToList();
-                    foreach (var element in LocalizationProjectsGlossaries)
-                    {
-                        var queryLocalizationProjectsGlossaries = new Query("LocalizationProjectsGlossaries").AsInsert(element);
-                        var compiledQueryLocalizationProjectsGlossaries = _compiler.Compile(queryLocalizationProjectsGlossaries);
-                        LogQuery(compiledQueryLocalizationProjectsGlossaries);
-                        await dbConnection.ExecuteAsync(
-                                sql: compiledQueryLocalizationProjectsGlossaries.Sql,
-                                param: compiledQueryLocalizationProjectsGlossaries.NamedBindings);
-                    }
+                    await EditGlossariesLocalizationProjectsAsync(idOfNewGlossary, glossary.LocalizationProjectsIds, false);
                 }
             }
             catch (NpgsqlException exception)
@@ -133,9 +107,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Возвращает глоссарий для редактирования (без группировки по объектам)
+        /// Возвращает глоссарий для редактирования (без группировки по объектам).
         /// </summary>
-        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         public async Task<IEnumerable<Glossaries>> GetGlossaryForEditAsync(int glossaryId)
         {
@@ -178,9 +152,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Сохранение изменений в глоссарии
+        /// Сохранение изменений в глоссарии.
         /// </summary>
-        /// <param name="glossary">Отредактированный глоссарий</param>
+        /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
         public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
         {
@@ -204,12 +178,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                     
 
                     //Пересоздание связей глоссария с языками перевода (Glossaries с Locales)
-                    if(glossary.LocalesIds != null && glossary.LocalesIds.Count() > 0)
-                        await EditGlossariesLocalesAsync(glossary.ID, glossary.LocalesIds);
+                    await EditGlossariesLocalesAsync(glossary.ID, glossary.LocalesIds);
                     
                     //Пересоздание связей глоссария с проектами локализации (Glossaries с LocalizationProjects)
-                    if(glossary.LocalizationProjectsIds != null && glossary.LocalizationProjectsIds.Count() > 0)
-                        await EditGlossariesLocalizationProjectsAsync(glossary.ID, glossary.LocalizationProjectsIds);
+                    await EditGlossariesLocalizationProjectsAsync(glossary.ID, glossary.LocalizationProjectsIds);
                 }
             }
             catch (NpgsqlException exception)
@@ -223,28 +195,34 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Пересоздание связей глоссария с языками перевода (Glossaries с Locales)
+        /// Пересоздание связей глоссария с языками перевода (Glossaries с Locales).
         /// </summary>
-        /// <param name="glossaryId">Идентификатор глоссария</param>
-        /// <param name="localesIds">Выбранные языки перевода</param>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
+        /// <param name="localesIds">Выбранные языки перевода.</param>
+        /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task EditGlossariesLocalesAsync(int glossaryId, IEnumerable<int?> localesIds)
+        public async Task EditGlossariesLocalesAsync(int glossaryId, IEnumerable<int?> localesIds, bool isDeleteOldRecords = true)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var queryGlossariesLocalesDelete = new Query("GlossariesLocales").Where("ID_Glossary", glossaryId).AsDelete();
-                    var compiledQueryGlossariesLocalesDelete = _compiler.Compile(queryGlossariesLocalesDelete);
-                    LogQuery(compiledQueryGlossariesLocalesDelete);
-                    await dbConnection.ExecuteAsync(
-                        sql: compiledQueryGlossariesLocalesDelete.Sql,
-                        param: compiledQueryGlossariesLocalesDelete.NamedBindings);
+                    if (isDeleteOldRecords)
+                    {
+                        var queryGlossariesLocalesDelete = new Query("GlossariesLocales").Where("ID_Glossary", glossaryId).AsDelete();
+                        var compiledQueryGlossariesLocalesDelete = _compiler.Compile(queryGlossariesLocalesDelete);
+                        LogQuery(compiledQueryGlossariesLocalesDelete);
+                        await dbConnection.ExecuteAsync(
+                            sql: compiledQueryGlossariesLocalesDelete.Sql,
+                            param: compiledQueryGlossariesLocalesDelete.NamedBindings);
+                    }
+
                     var GlossariesLocales = localesIds.Select(t => new
                     {
                         ID_Glossary = glossaryId,
                         ID_Locale = t
                     }).ToList();
+
                     foreach (var element in GlossariesLocales)
                     {
                         var queryGlossariesLocalesInsert = new Query("GlossariesLocales").AsInsert(element);
@@ -268,28 +246,34 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Пересоздание связей глоссария с проектами локализации (Glossaries с LocalizationProjects)
+        /// Пересоздание связей глоссария с проектами локализации (Glossaries с LocalizationProjects).
         /// </summary>
-        /// <param name="glossaryId">Идентификатор глоссария</param>
-        /// <param name="localizationProjectsIds">Выбранные проекты локализации</param>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
+        /// <param name="localizationProjectsIds">Выбранные проекты локализации.</param>
+        /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task EditGlossariesLocalizationProjectsAsync(int glossaryId, IEnumerable<int?> localizationProjectsIds)
+        public async Task EditGlossariesLocalizationProjectsAsync(int glossaryId, IEnumerable<int?> localizationProjectsIds, bool isDeleteOldRecords = true)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var queryLocalizationProjectsGlossariesDelete = new Query("LocalizationProjectsGlossaries").Where("ID_Glossary", glossaryId).AsDelete();
-                    var compiledQueryLocalizationProjectsGlossariesDelete = _compiler.Compile(queryLocalizationProjectsGlossariesDelete);
-                    LogQuery(compiledQueryLocalizationProjectsGlossariesDelete);
-                    await dbConnection.ExecuteAsync(
-                        sql: compiledQueryLocalizationProjectsGlossariesDelete.Sql,
-                        param: compiledQueryLocalizationProjectsGlossariesDelete.NamedBindings);
+                    if (isDeleteOldRecords)
+                    {
+                        var queryLocalizationProjectsGlossariesDelete = new Query("LocalizationProjectsGlossaries").Where("ID_Glossary", glossaryId).AsDelete();
+                        var compiledQueryLocalizationProjectsGlossariesDelete = _compiler.Compile(queryLocalizationProjectsGlossariesDelete);
+                        LogQuery(compiledQueryLocalizationProjectsGlossariesDelete);
+                        await dbConnection.ExecuteAsync(
+                            sql: compiledQueryLocalizationProjectsGlossariesDelete.Sql,
+                            param: compiledQueryLocalizationProjectsGlossariesDelete.NamedBindings);
+                    }
+
                     var LocalizationProjectsGlossaries = localizationProjectsIds.Select(t => new
                     {
                         ID_Glossary = glossaryId,
                         ID_LocalizationProject = t
                     }).ToList();
+
                     foreach (var element in LocalizationProjectsGlossaries)
                     {
                         var queryLocalizationProjectsGlossariesInsert = new Query("LocalizationProjectsGlossaries").AsInsert(element);
@@ -312,9 +296,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Удаление глоссария
+        /// Удаление глоссария.
         /// </summary>
-        /// <param name="id">Идентификатор глоссария</param>
+        /// <param name="id">Идентификатор глоссария.</param>
         /// <returns></returns>
         public async Task DeleteGlossaryAsync(int id)
         {

@@ -28,7 +28,7 @@ namespace Localization.Controllers
 
 
         /// <summary>
-        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов
+        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов.
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -37,30 +37,10 @@ namespace Localization.Controllers
             return await _glossariesService.GetAllToDTOAsync();
         }
 
-        ///// <summary>
-        ///// Возвращает список языков переводов
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost("locales/list")]
-        //public async Task<IEnumerable<Locale>> GetLocalesAsync()
-        //{
-        //    return await _localeRepository.GetAllAsync();
-        //}
-
-        ///// <summary>
-        ///// Возвращает список проектов локализации
-        ///// </summary>
-        ///// <returns></returns>
-        //[HttpPost("localizationProjects/list")]
-        //public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetLocalizationProjectsAsync()
-        //{
-        //    return await _localizationProjectRepository.GetAllForSelectDTOAsync();
-        //}
-
         /// <summary>
-        /// Добавление нового глоссария
+        /// Добавление нового глоссария.
         /// </summary>
-        /// <param name="glossary">Новый глоссарий</param>
+        /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
         [HttpPost("newGlossary")]
         public async Task AddGlossaryAsync(GlossariesForEditingDTO glossary)
@@ -69,9 +49,9 @@ namespace Localization.Controllers
         }
 
         /// <summary>
-        /// Возвращает глоссарий для редактирования (со связанными объектами)
+        /// Возвращает глоссарий для редактирования (со связанными объектами).
         /// </summary>
-        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         [HttpPost("edit")]
         public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync([FromBody] int glossaryId)
@@ -80,9 +60,9 @@ namespace Localization.Controllers
         }
 
         /// <summary>
-        /// Сохранение изменений в глоссарии
+        /// Сохранение изменений в глоссарии.
         /// </summary>
-        /// <param name="glossary">Отредактированный глоссарий</param>
+        /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
         [HttpPost("editSaveGlossary")]
         public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
@@ -91,9 +71,9 @@ namespace Localization.Controllers
         }
 
         /// <summary>
-        /// Удаление глоссария
+        /// Удаление глоссария.
         /// </summary>
-        /// <param name="id">Идентификатор глоссария</param>
+        /// <param name="id">Идентификатор глоссария.</param>
         /// <returns></returns>
         [HttpDelete("deleteGlossary/{glossaryId}")]
         public async Task DeleteGlossaryAsync(int glossaryId)
@@ -102,9 +82,9 @@ namespace Localization.Controllers
         }
 
         /// <summary>
-        /// Удаление всех терминов глоссария
+        /// Удаление всех терминов глоссария.
         /// </summary>
-        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         [HttpDelete("clearGlossary/{glossaryId}")]
         public async Task ClearGlossaryAsync(int glossaryId)

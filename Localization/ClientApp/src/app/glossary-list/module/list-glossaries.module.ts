@@ -62,5 +62,5 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
       ProjectsService,
       RequestDataReloadService
     ]
-}) //Модуль для глоссария
+}) //Модуль для глоссария (Glossaries)
 export class ListGlossariesModule { }

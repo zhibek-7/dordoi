@@ -1,7 +1,8 @@
 ﻿namespace Models.DatabaseEntities.DTO
 {
     /// <summary>
-    /// LocalizationProject {Id, Name} for example, for a drop-down list
+    /// Проект локализации, содержащий только идентификатор и наименование.
+    /// Для выборки, например checkbox.
     /// </summary>
     public class LocalizationProjectForSelectDTO : BaseEntity
     {
