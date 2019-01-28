@@ -10,6 +10,7 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId);
         Task<IEnumerable<TranslationSubstring>> FilterByString(
             string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings);
+        Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId);
 
         Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
             int projectId,

@@ -146,7 +146,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idComment">id комментария к которому приложена картинка</param>
         /// <returns></returns>
-        [HttpPost("UploadImage")]
+        [HttpPost("UploadImageToComment")]
         public async Task<IActionResult> UploadImage()
         {            
             var content = Request.Form.Files["Image"];
@@ -180,25 +180,25 @@ namespace Localization.WebApi
             return Ok();
         }
 
-        /// <summary>
-        /// Получить изображения комментария
-        /// </summary>
-        /// <param name="commentId">id Комментария</param>
-        /// <returns>Список изображений</returns>
-        public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfComment(int commentId)
-        {
-            // Check if comment by id exists in database
-            var foundedComment = await commentRepository.GetByIDAsync(commentId);
+        ///// <summary>
+        ///// Получить изображения комментария
+        ///// </summary>
+        ///// <param name="commentId">id Комментария</param>
+        ///// <returns>Список изображений</returns>
+        //public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfComment(int commentId)
+        //{
+        //    // Check if comment by id exists in database
+        //    var foundedComment = await commentRepository.GetByIDAsync(commentId);
 
-            if (foundedComment == null)
-            {
-                return NotFound($"Comment by id \"{ commentId }\" not found");
-            }
+        //    if (foundedComment == null)
+        //    {
+        //        return NotFound($"Comment by id \"{ commentId }\" not found");
+        //    }
 
-            IEnumerable<Image> images = await commentRepository.GetImagesOfCommentAsync(commentId);
+        //    IEnumerable<Image> images = await commentRepository.GetImagesOfCommentAsync(commentId);
 
-            return Ok(images);        
-        }
+        //    return Ok(images);        
+        //}
 
     }
 }

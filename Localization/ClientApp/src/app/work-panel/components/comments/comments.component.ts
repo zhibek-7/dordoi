@@ -12,10 +12,11 @@ import { TermWithGlossary } from '../../localEntites/terms/termWithGlossary.type
 import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
 
-import * as $ from 'jquery';
 import { Term } from 'src/app/models/Glossaries/term.type';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { Image } from 'src/app/models/database-entities/image.type';
+
+import * as $ from 'jquery';
 
 @Component({
     selector: 'comments-component',
@@ -32,7 +33,6 @@ export class CommentsComponent implements OnInit {
     changedComment: CommentWithUser;
 
     filesToUpload: File[];
-    // imageUrl: string = undefined;
 
     addCommentText: string = "";
 
@@ -149,7 +149,7 @@ export class CommentsComponent implements OnInit {
 
     // Функция загрузки скриншота
     loadScrinshot() {
-      this.commentService.uploadImage(this.filesToUpload, this.changedComment.commentId);
+      this.commentService.uploadImageToComment(this.filesToUpload, this.changedComment.commentId);
     }
 
     // Функция отображения скриншота в модальном окне в увеличенном размере
@@ -177,6 +177,9 @@ export class CommentsComponent implements OnInit {
         var insertedImage = new Image();
         insertedImage.data = event.target.result;
 
+        //обрезаем дополнительную информацию о изображении и оставляем только byte[]
+        insertedImage.data = insertedImage.data.match(".*base64,(.*)")[1];
+    
         this.changedComment.images.push(insertedImage)        
       }
       reader.readAsDataURL(this.filesToUpload[this.filesToUpload.length - 1]);
@@ -236,12 +239,12 @@ export class CommentsComponent implements OnInit {
         }
     }
 
-    changeTermClick(termWithGlossary: TermWithGlossary){
-        console.log(termWithGlossary);        
-    }
+    // changeTermClick(termWithGlossary: TermWithGlossary){
+    //     console.log(termWithGlossary);        
+    // }
 
-    updateTermClick(){
+    // updateTermClick(){
 
-    }
+    // }
 
 }

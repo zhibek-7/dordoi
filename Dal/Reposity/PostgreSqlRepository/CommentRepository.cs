@@ -364,6 +364,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     this.LogQuery(query1, img);
                     var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
+
                     this.LogQuery(query2, commentId);
                     await dbConnection.ExecuteScalarAsync(query2, new { CommentId = commentId, ImageId = idOfInsertedImage });
                     return idOfInsertedImage;

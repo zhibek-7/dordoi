@@ -222,6 +222,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Получить изображения строки для перевода
+        /// </summary>
+        /// <param name="translationSubstringId">id Строки для перевода</param>
+        /// <returns>Список изображений</returns>
+        public async Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> RemoveAsync(int id)
         {
             try
