@@ -21,13 +21,13 @@ export class CommentService {
         return asyncResult;
     }
 
-    uploadImage(fileToUpload: File[], commentId: number) {
+    uploadImageToComment(fileToUpload: File[], commentId: number) {
         const formData: FormData = new FormData();
 
         fileToUpload.forEach(element => {
             formData.set('Image', element); 
             formData.append('CommentId', commentId.toString());
-            return this.http.post(this.url + "UploadImage", formData).toPromise();
+            return this.http.post(this.url + "UploadImageToComment", formData).toPromise();
         });        
     }
 

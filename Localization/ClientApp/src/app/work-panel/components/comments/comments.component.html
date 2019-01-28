@@ -26,17 +26,15 @@
                                             <div class="col-12">{{comment.comment}} </div>
                                         </div>
                                         <ul class="row">
-                                            <li class="list-group-item col-3" *ngFor="let image of comment.images">
-                                                <div class="imageBlock">                                                    
-                                                    <!-- Из-за явной вставки массива байтов выскакивает предупреждение и ошибка в консоли клиента. На работу никак не влияет.
-                                                         Избавиться пока не получается, нужно искать решение -->
+                                            <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">
+                                                <div>                                                                                                        
                                                     <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}" />
                                                 </div>
                                             </li>   
                                         </ul>
                                         <div class="row">                                           
                                             <button class="btn btn-link" (click)="changeCommentClick(comment)">Изменить</button>
-                                            <button class="btn btn-link" (click)="deleteCommentClick(comment.commentId)">Удалить</button>
+                                            <button class="btn btn-link" (click)="deleteCommentClick(comment)">Удалить</button>
                                         </div>
                                     </div>
                                     <div *ngIf="commentEdited">
@@ -52,11 +50,9 @@
                                       <div class="fileBlock mb-2">
                                         <div class=""><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>                                        
                                         <ul class="row">
-                                            <li class="list-group-item col-3" *ngFor="let image of comment.images">
-                                                <div class="imageBlock">
-                                                    <!-- <div *ngIf="imageUrl" class="blockWithImages m-1"> -->
-                                                        <img src={{image.data}} class="appendedImage" />
-                                                      <!-- </div> -->
+                                            <li class="list-group-item col-3 imageBlock" *ngFor="let image of comment.images">
+                                                <div>
+                                                    <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}"  />
                                                 </div>
                                             </li>   
                                         </ul>

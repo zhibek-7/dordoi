@@ -83,6 +83,15 @@
   /* height: 100%; */
 }
 
+.imageBlock {
+  cursor: pointer;
+  margin-right: 5%;
+  border-radius: 15%;
+  border-color: #A4BF82;
+  border-width: 2px;
+  border-style: dashed;
+}
+
 .addCommentBlock {
   padding-top: 0.3rem;
 }
@@ -99,4 +108,3 @@
 .mat-icon {
   color: grey;
 }
-

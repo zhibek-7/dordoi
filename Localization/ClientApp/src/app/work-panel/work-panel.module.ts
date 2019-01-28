@@ -15,6 +15,7 @@ import { EditTermFormComponent } from '../glossaries/components/edit-term-form-m
 import { TermDetailsEditableComponent } from '../glossaries/components/term-details-editable/term-details-editable.component';
 import { ContextEditModalComponent } from './components/context-edit-modal/context-edit-modal.component';
 import { SelectedWordModalComponent } from './components/selected-word-modal/selected-word-modal.component';
+import { ShowImageModalComponent } from './components/show-image-modal/show-image-modal';
 
 import { FilterPhrasesPipe } from './pipes/filter-phrases.pipe';
 import { FilterTermsPipe } from './pipes/filter-terms.pipe';
@@ -45,6 +46,7 @@ import {
         TranslationComponent,
         ContextEditModalComponent,
         SelectedWordModalComponent,
+        ShowImageModalComponent,
         EditTermFormComponent,
         TermDetailsEditableComponent,
         FilterPhrasesPipe,
@@ -65,7 +67,8 @@ import {
       
     ],
     entryComponents: [
-        SelectedWordModalComponent
+        SelectedWordModalComponent,
+        ShowImageModalComponent
     ],
     providers: [
         SharePhraseService,

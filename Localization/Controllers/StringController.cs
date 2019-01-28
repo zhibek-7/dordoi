@@ -75,6 +75,28 @@ namespace Localization.WebApi
             return Ok(foundedString);
         }
 
+        /// <summary>
+        /// Получить изображения строки для перевода
+        /// </summary>
+        /// <param name="translationSubstringId">id Строки для перевода</param>
+        /// <returns>Список изображений</returns>
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(int translationSubstringId)
+        {
+            // Check if comment by id exists in database
+            var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
+
+            if (foundedString == null)
+            {
+                return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            }
+
+            IEnumerable<Image> images = await stringRepository.GetImagesOfTranslationSubstringAsync(translationSubstringId);
+
+            return Ok(images);
+        }
+
+
 
         //[HttpPost("{ChangeContextOfTheTranslationSubstring}")]
         //public async Task ChangeContextOfTheTranslationSubstring([FromBody])

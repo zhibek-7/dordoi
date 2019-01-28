@@ -199,12 +199,12 @@ namespace Localization.WebApi
             return Ok(translations);
         }
 
-        [HttpPost]
-        [Route("littleTest/{currentProjectId}")]
-        public async Task LittleTest(int currentProjectId)
-        {
-            Ok();
-        }
+        //[HttpPost]
+        //[Route("littleTest/{currentProjectId}")]
+        //public async Task LittleTest(int currentProjectId)
+        //{
+        //    Ok();
+        //}
 
         /// <summary>
         /// Поиск схожих вариантов перевода в данном проекте

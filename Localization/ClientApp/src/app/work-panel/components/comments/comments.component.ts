@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+
+import { ShowImageModalComponent } from '../show-image-modal/show-image-modal';
 
 import { CommentService } from '../../../services/comment.service';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
@@ -9,11 +12,11 @@ import { TermWithGlossary } from '../../localEntites/terms/termWithGlossary.type
 import { Comment } from '../../../models/database-entities/comment.type';
 import { CommentWithUser } from '../../localEntites/comments/commentWithUser.type';
 
-import * as $ from 'jquery';
 import { Term } from 'src/app/models/Glossaries/term.type';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { Image } from 'src/app/models/database-entities/image.type';
-import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
+
+import * as $ from 'jquery';
 
 @Component({
     selector: 'comments-component',
@@ -30,7 +33,6 @@ export class CommentsComponent implements OnInit {
     changedComment: CommentWithUser;
 
     filesToUpload: File[];
-    // imageUrl: string = undefined;
 
     addCommentText: string = "";
 
@@ -40,13 +42,17 @@ export class CommentsComponent implements OnInit {
     searchTermText: string = '';
 
 
-    constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService,
-            private glossariesService: GlossariesService, private shareWordFromModalService: ShareWordFromModalService ) {
+    constructor(private commentService: CommentService,
+                private sharePhraseService: SharePhraseService,
+                private glossariesService: GlossariesService,
+                private shareWordFromModalService: ShareWordFromModalService,
+                private showImageDialog: MatDialog ) {
 
         this.commentsList = [];
         this.termsList = [];
         this.filesToUpload = [];
 
+        //Загрузка всех терминов при инициализации формы
         this.getTerms();
 
         // Событие, срабатываемое при выборе фразы для перевода
@@ -88,7 +94,6 @@ export class CommentsComponent implements OnInit {
         this.commentService.getAllCommentsInStringById(idString)
             .subscribe( comments => {
                 this.commentsList = comments;            
-                console.log(this.commentsList);    
         });
     };
 
@@ -144,7 +149,19 @@ export class CommentsComponent implements OnInit {
 
     // Функция загрузки скриншота
     loadScrinshot() {
-      this.commentService.uploadImage(this.filesToUpload, this.changedComment.commentId);
+      this.commentService.uploadImageToComment(this.filesToUpload, this.changedComment.commentId);
+    }
+
+    // Функция отображения скриншота в модальном окне в увеличенном размере
+    showImage(image: Image){
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.data = {
+            selectedImage: image
+        };
+
+
+        let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
     }
 
     // Функция, срабатываемая при загрузке скриншота
@@ -160,16 +177,19 @@ export class CommentsComponent implements OnInit {
         var insertedImage = new Image();
         insertedImage.data = event.target.result;
 
+        //обрезаем дополнительную информацию о изображении и оставляем только byte[]
+        insertedImage.data = insertedImage.data.match(".*base64,(.*)")[1];
+    
         this.changedComment.images.push(insertedImage)        
       }
       reader.readAsDataURL(this.filesToUpload[this.filesToUpload.length - 1]);
     }
 
     // Удаление комментария
-    deleteCommentClick(commentId: number){
-        this.commentService.deleteComment(commentId);
+    deleteCommentClick(comment: CommentWithUser){
+        this.commentService.deleteComment(comment.commentId);
         for(var i = 0; i < this.commentsList.length; i++) {
-            if(this.commentsList[i].commentId == commentId) {
+            if(this.commentsList[i].commentId == comment.commentId) {
                 this.commentsList.splice(i, 1);
                 break;
             }
@@ -219,12 +239,12 @@ export class CommentsComponent implements OnInit {
         }
     }
 
-    changeTermClick(termWithGlossary: TermWithGlossary){
-        console.log(termWithGlossary);        
-    }
+    // changeTermClick(termWithGlossary: TermWithGlossary){
+    //     console.log(termWithGlossary);        
+    // }
 
-    updateTermClick(){
+    // updateTermClick(){
 
-    }
+    // }
 
 }
