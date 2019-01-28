@@ -9,7 +9,7 @@ import {
   MatMenuModule,
   MatListModule,
 } from '@angular/material';
-import { DndModule } from 'ng2-dnd';
+import { DndModule } from '../ng2-dnd-src/dnd.module';
 
 import { FilesRoutingModule } from 'src/app/files/files-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
