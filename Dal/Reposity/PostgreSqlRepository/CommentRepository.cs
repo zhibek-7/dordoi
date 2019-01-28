@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Npgsql;
 using Models.DatabaseEntities.PartialEntities.Comment;
+using System.Linq;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -254,20 +255,35 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id комментарий который нужно удалить</param>
         /// <returns></returns>
-        public async Task<bool> RemoveAsync(int id)
-        {
-            var query = "DELETE " +
-                        "FROM \"Comments\" AS C " +
-                        "WHERE C.\"ID\" = @id";
+        public async Task<bool> RemoveAsync(int commentId)
+        {            
+            //"" +
+            //"DELETE " +
+            //"FROM \"CommentsImages\" AS CI " +
+            //"WHERE CI.\"ID_Comment\" = @id ";
+            var query1 = "SELECT CI.\"ID_Image\" " +
+                         "FROM \"CommentsImages\" AS CI " +
+                         "WHERE CI.\"ID_Comment\" = @CommentId;";
+
+            var query2 = "DELETE " +
+                         "FROM \"Comments\" AS C " +
+                         "WHERE C.\"ID\" = @CommentId; " +
+                         "" +
+                         "DELETE " +
+                         "FROM \"Images\" AS I " +
+                         "WHERE I.\"ID\" = @ImageId;";                                               
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+                    var param1 = new { CommentId = commentId };
+                    this.LogQuery(query1, param1);
+                    var deletedImageId = await dbConnection.QueryAsync<int>(query1, param1);
 
-                    var param = new { id };
-                    this.LogQuery(query, param);
-                    var deletedRows = await dbConnection.ExecuteAsync(query, param);
+                    var param2 = new { CommentId = commentId, ImageId = deletedImageId.ElementAt(0) };
+                    this.LogQuery(query2, param2);
+                    var deletedRows = await dbConnection.ExecuteAsync(query2, param2);
                     return deletedRows > 0;
                 }
             }
@@ -388,6 +404,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     this.LogQuery(query, commentId);
                     IEnumerable<Image> images = await dbConnection.QueryAsync<Image>(query, new { CommentId = commentId });
+                    foreach (var image in images)
+                    {
+                        image.URL = Convert.ToBase64String(image.Data);
+                    }
                     return images;
                 }
             }

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+
+import { ShowImageModalComponent } from '../show-image-modal/show-image-modal';
 
 import { CommentService } from '../../../services/comment.service';
 import { SharePhraseService } from '../../localServices/share-phrase.service';
@@ -13,7 +16,6 @@ import * as $ from 'jquery';
 import { Term } from 'src/app/models/Glossaries/term.type';
 import { Glossary } from 'src/app/models/database-entities/glossary.type';
 import { Image } from 'src/app/models/database-entities/image.type';
-import { ConvertActionBindingResult } from '@angular/compiler/src/compiler_util/expression_converter';
 
 @Component({
     selector: 'comments-component',
@@ -40,13 +42,17 @@ export class CommentsComponent implements OnInit {
     searchTermText: string = '';
 
 
-    constructor(private commentService: CommentService,  private sharePhraseService: SharePhraseService,
-            private glossariesService: GlossariesService, private shareWordFromModalService: ShareWordFromModalService ) {
+    constructor(private commentService: CommentService,
+                private sharePhraseService: SharePhraseService,
+                private glossariesService: GlossariesService,
+                private shareWordFromModalService: ShareWordFromModalService,
+                private showImageDialog: MatDialog ) {
 
         this.commentsList = [];
         this.termsList = [];
         this.filesToUpload = [];
 
+        //Загрузка всех терминов при инициализации формы
         this.getTerms();
 
         // Событие, срабатываемое при выборе фразы для перевода
@@ -88,7 +94,6 @@ export class CommentsComponent implements OnInit {
         this.commentService.getAllCommentsInStringById(idString)
             .subscribe( comments => {
                 this.commentsList = comments;            
-                console.log(this.commentsList);    
         });
     };
 
@@ -147,6 +152,18 @@ export class CommentsComponent implements OnInit {
       this.commentService.uploadImage(this.filesToUpload, this.changedComment.commentId);
     }
 
+    // Функция отображения скриншота в модальном окне в увеличенном размере
+    showImage(image: Image){
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.data = {
+            selectedImage: image
+        };
+
+
+        let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
+    }
+
     // Функция, срабатываемая при загрузке скриншота
     handleFileInput(file: FileList) {
       this.filesToUpload.push(file.item(0));
@@ -166,10 +183,10 @@ export class CommentsComponent implements OnInit {
     }
 
     // Удаление комментария
-    deleteCommentClick(commentId: number){
-        this.commentService.deleteComment(commentId);
+    deleteCommentClick(comment: CommentWithUser){
+        this.commentService.deleteComment(comment.commentId);
         for(var i = 0; i < this.commentsList.length; i++) {
-            if(this.commentsList[i].commentId == commentId) {
+            if(this.commentsList[i].commentId == comment.commentId) {
                 this.commentsList.splice(i, 1);
                 break;
             }

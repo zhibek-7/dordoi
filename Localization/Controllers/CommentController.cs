@@ -91,7 +91,7 @@ namespace Localization.WebApi
         /// <param name="idComment">id комментария, который необходимо удалить</param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("DeleteComment/{idComment}")]
+        [Route("DeleteComment/{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
             // Check if string by id exists in database
