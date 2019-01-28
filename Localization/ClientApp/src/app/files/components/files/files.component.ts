@@ -70,7 +70,7 @@ export class FilesComponent implements OnInit {
   moveNode(nodeToMove: any, newParent: any) {
     const parentId = newParent ? newParent.data ? newParent.data.id : null : null;
     this.fileService.changeParentFolder(nodeToMove.data, parentId)
-      .subscribe(() => {
+      .subscribe(unused => {
           this.deleteNode(nodeToMove);
           this.addNode(nodeToMove, newParent);
         },
