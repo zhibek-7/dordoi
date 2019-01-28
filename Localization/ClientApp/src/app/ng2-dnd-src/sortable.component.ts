@@ -135,11 +135,6 @@ export class SortableComponent extends AbstractComponent {
     }
 
     /**
-     * The data that has to be dragged. It can be any JS object
-     */
-    @Input() dragData: any;
-
-    /**
      * Drag allowed effect
      */
     @Input("effectAllowed") set effectallowed(value: string) {
@@ -182,7 +177,7 @@ export class SortableComponent extends AbstractComponent {
         this._sortableDataService.markSortable(this._elem);
         // Add dragData
         this._dragDropService.isDragged = true;
-        this._dragDropService.dragData = this.dragData;
+        super._onDragStartCallback(event);
         this._dragDropService.onDragSuccessCallback = this.onDragSuccessCallback;
         //
         this.onDragStartCallback.emit(this._dragDropService.dragData);

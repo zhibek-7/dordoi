@@ -2,7 +2,7 @@
 // This project is licensed under the terms of the MIT license.
 // https://github.com/akserg/ng2-dnd
 
-import {Injectable, ChangeDetectorRef, ViewRef} from '@angular/core';
+import {Injectable, ChangeDetectorRef, ViewRef, Input} from '@angular/core';
 import {ElementRef} from '@angular/core';
 
 import { DragDropConfig, DragImage } from './dnd.config';
@@ -90,6 +90,11 @@ export abstract class AbstractComponent {
     dragImage: string | DragImage | Function;
 
     cloneItem: boolean = false;
+
+    /**
+     * The data that has to be dragged. It can be any JS object
+     */
+    @Input() dragData: any;
 
     constructor(elemRef: ElementRef, public _dragDropService: DragDropService, public _config: DragDropConfig,
         private _cdr: ChangeDetectorRef) {
@@ -296,7 +301,9 @@ export abstract class AbstractComponent {
     _onDropCallback(event: Event) { }
 
     //**** Drag Callbacks ****//
-    _onDragStartCallback(event: Event) { }
+    _onDragStartCallback(event: Event) {
+        this._dragDropService.dragData = this.dragData;
+    }
     _onDragEndCallback(event: Event) { }
 }
 

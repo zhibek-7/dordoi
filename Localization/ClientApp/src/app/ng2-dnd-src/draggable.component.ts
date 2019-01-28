@@ -23,11 +23,6 @@ export class DraggableComponent extends AbstractComponent {
     @Output() onDragEnd: EventEmitter<DragDropData> = new EventEmitter<DragDropData>();
 
     /**
-     * The data that has to be dragged. It can be any JS object
-     */
-    @Input() dragData: any;
-
-    /**
      * Callback function called when the drag action ends with a valid drop action.
      * It is activated after the on-drop-success callback
      */
@@ -89,7 +84,7 @@ export class DraggableComponent extends AbstractComponent {
 
     _onDragStartCallback(event: MouseEvent) {
         this._dragDropService.isDragged = true;
-        this._dragDropService.dragData = this.dragData;
+        super._onDragStartCallback(event);
         this._dragDropService.onDragSuccessCallback = this.onDragSuccessCallback;
         this._elem.classList.add(this._config.onDragStartClass);
         //
