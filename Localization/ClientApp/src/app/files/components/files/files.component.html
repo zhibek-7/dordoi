@@ -63,7 +63,7 @@
         [matMenuTriggerFor]="fileRowContextMenu"
         [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
         dnd-droppable
-        [allowDrop]="canDrop"
+        [allowDrop]="canDrop(rowNode.node)"
         (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
         dnd-draggable
         [dragEnabled]="true"
