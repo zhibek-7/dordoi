@@ -61,20 +61,18 @@
   <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
     <tr [ttSelectableRow]="rowNode"
         [matMenuTriggerFor]="fileRowContextMenu"
-        [matMenuTriggerData]="{node: rowNode.node, data: rowData}">
-      <td [ttEditableColumn]="rowData" class="col-xs-6">
-        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-        <div
+        [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
         dnd-droppable
         [allowDrop]="canDrop"
         (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
         dnd-draggable
         [dragEnabled]="true"
         [dragData]="rowNode.node"
-             >
-          <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
-          {{rowData.name}}
-        </div>
+        >
+      <td [ttEditableColumn]="rowData" class="col-xs-6">
+        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+        <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
+        {{rowData.name}}
       </td>
       <td class="col-xs-2">
         {{rowData.dateOfChange | date: 'dd/MM/yyyy'}}
