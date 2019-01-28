@@ -67,6 +67,20 @@ export class FilesComponent implements OnInit {
       error => alert(error));
   }
 
+  moveNode(nodeToMove: any, newParent: any) {
+    const parentId = newParent ? newParent.data ? newParent.data.id : null : null;
+    this.fileService.changeParentFolder(nodeToMove.data, parentId)
+      .subscribe(() => {
+          this.deleteNode(nodeToMove);
+          this.addNode(nodeToMove, newParent);
+        },
+        error => alert(error));
+  }
+
+  canDrop(node: any) {
+    return node.data.isFolder;
+  }
+
   getFiles(): void {
     this.isLoading = true;
 

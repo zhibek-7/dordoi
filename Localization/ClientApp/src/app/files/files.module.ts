@@ -9,6 +9,7 @@ import {
   MatMenuModule,
   MatListModule,
 } from '@angular/material';
+import { DndModule } from 'ng2-dnd';
 
 import { FilesRoutingModule } from 'src/app/files/files-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -40,6 +41,7 @@ import { FileInputWrapper } from './components/file-input-wrapper/file-input-wra
     NgxSpinnerModule,
     MatMenuModule,
     MatListModule,
+    DndModule.forRoot(),
   ],
   providers: [
     FileService,
