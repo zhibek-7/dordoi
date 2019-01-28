@@ -24,7 +24,7 @@ export abstract class AbstractComponent {
     /**
      * Whether the object is draggable. Default is true.
      */
-    private _dragEnabled: boolean = false;
+    private _dragEnabled: boolean = true;
     set dragEnabled(enabled: boolean) {
         this._dragEnabled = !!enabled;
         this._elem.draggable = this._dragEnabled;
