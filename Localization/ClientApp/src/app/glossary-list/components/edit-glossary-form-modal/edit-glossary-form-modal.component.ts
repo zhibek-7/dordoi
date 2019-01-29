@@ -20,6 +20,9 @@ export class EditGlossaryFormModalComponent extends ModalComponent implements On
   @Output()
   editedGlossarySubmitted = new EventEmitter<GlossariesForEditing>();
 
+  @Output()
+  error = new EventEmitter();
+
   constructor(private glossariesService: GlossaryService) {
     super();
     this.glossaryEditable = new GlossariesForEditing();
@@ -30,7 +33,16 @@ export class EditGlossaryFormModalComponent extends ModalComponent implements On
 
   async show() {
     await this.loadGlossaryForEditing();
-    super.show();
+    if (this.glossaryEditable)
+      super.show();
+    else
+    {
+      this.hide();
+      alert("Не удалось открыть для редактирования глоссарий \"" + this.glossary.name + "\", ранее он был удален. \n" +
+        "Страница будет перезагружена для обновления данных.");
+      this.glossaryEditable = new GlossariesForEditing();
+      this.error.emit();
+    }
   }
   
   async loadGlossaryForEditing() {

@@ -3,10 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import { GlossariesForEditing, GlossariesTableViewDTO } from 'src/app/models/DTO/glossariesDTO.type';
+import { catchError } from 'rxjs/operators';
 
 
 @Injectable()
-export class GlossaryService {
+export class GlossaryService
+{
   static connectionUrl: string = 'api/glossaries/';
 
   constructor(private httpClient: HttpClient) { }
@@ -15,7 +17,8 @@ export class GlossaryService {
   /**
    * Возвращает список глоссариев, со строками перечислений имен связанных объектов.
    */
-  getGlossariesDTO(): Observable<GlossariesTableViewDTO[]> {
+  getGlossariesDTO(): Observable<GlossariesTableViewDTO[]>
+  {
     return this.httpClient.post<GlossariesTableViewDTO[]>(GlossaryService.connectionUrl, null);
   }  
   
@@ -23,7 +26,8 @@ export class GlossaryService {
    * Добавление нового глоссария.
    * @param glossary Новый глоссарий.
    */
-  addNewGlossary(glossary: GlossariesForEditing): Observable<Object> {
+  addNewGlossary(glossary: GlossariesForEditing): Observable<Object>
+  {
     return this.httpClient.post(GlossaryService.connectionUrl + "newGlossary", glossary);
   }
   
@@ -31,8 +35,10 @@ export class GlossaryService {
    * Возвращает глоссарий для редактирования (со связанными объектами).
    * @param glossaryId Идентификатор глоссария.
    */
-  async getGlossaryForEditing(glossaryId: number): Promise<GlossariesForEditing> {
-    let result = await this.httpClient.post<GlossariesForEditing>(GlossaryService.connectionUrl + "edit", glossaryId).toPromise();
+  async getGlossaryForEditing(glossaryId: number): Promise<GlossariesForEditing>
+  {
+    let result = await this.httpClient.post<GlossariesForEditing>(GlossaryService.connectionUrl + "edit", glossaryId)
+      .pipe(catchError(this.handleError('getGlossaryForEditing', null))).toPromise();
     return result;
   }
   
@@ -40,7 +46,8 @@ export class GlossaryService {
    * Сохранение изменений в глоссарии.
    * @param glossary Отредактированный глоссарий.
    */
-  editSaveGlossary(glossary: GlossariesForEditing): Observable<Object> {
+  editSaveGlossary(glossary: GlossariesForEditing): Observable<Object>
+  {
     return this.httpClient.post(GlossaryService.connectionUrl + "editSaveGlossary", glossary);
   }
   
@@ -48,7 +55,8 @@ export class GlossaryService {
    * Удаление глоссария.
    * @param glossaryId Идентификатор глоссария.
    */
-  deleteGlossary(glossaryId: number): Observable<Object> {
+  deleteGlossary(glossaryId: number): Observable<Object>
+  {
     return this.httpClient.delete(GlossaryService.connectionUrl + "deleteGlossary/" + glossaryId);
   }
 
@@ -57,7 +65,22 @@ export class GlossaryService {
    * Удаление всех терминов глоссария.
    * @param glossaryId Идентификатор глоссария.
    */
-  clearGlossary(glossaryId: number): Observable<Object> {
+  clearGlossary(glossaryId: number): Observable<Object>
+  {
     return this.httpClient.delete(GlossaryService.connectionUrl + "clearGlossary/" + glossaryId);
+  }
+
+
+  /**
+   * Обработка исключений (вывод на консоль).
+   * @param operation Наименование функции/метода, в которой(ом) перехвачено исключение.
+   * @param result Результат функции/метода.
+   */
+  handleError<T>(operation = 'Operation', result?: T)
+  {
+    return (error: any): Observable<T> => {
+      console.log(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    }
   }
 }
