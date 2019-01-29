@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
 
 import { TreeNode } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { saveAs } from 'file-saver';
 
 import { FileService } from 'src/app/services/file.service';
 import { ProjectsService } from 'src/app/services/projects.service';
@@ -211,6 +212,13 @@ export class FilesComponent implements OnInit {
       .subscribe(() => {
         this.reloadView();
       });
+  }
+
+  requestFileDownload(node: TreeNode) {
+    this.fileService.downloadFile(node.data)
+      .subscribe(
+        data => saveAs(data, node.data.name)
+      );
   }
 
 }

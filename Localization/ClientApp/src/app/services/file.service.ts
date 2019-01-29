@@ -138,6 +138,16 @@ export class FileService {
       .pipe(catchError(this.handleError('updateTranslationLocalesForFileAsync', [])));
   }
 
+  downloadFile(fileData: FileData, localeId?: number): Observable<Blob> {
+    const url = `${this._url}/${fileData.id}/download`;
+    if (!localeId) {
+      localeId = -1;
+    }
+
+    return this.http
+      .post(url, localeId, { responseType: 'blob' });
+  }
+
   handleError<T>(operation = 'Operation', result?: T) {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error.message}`);

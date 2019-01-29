@@ -49,6 +49,9 @@
     <button mat-menu-item *ngIf="!data.isFolder" (click)="setFileLanguagesModal.showFile(data)">
       Задать язык перевода
     </button>
+    <button mat-menu-item *ngIf="!data.isFolder" (click)="requestFileDownload(node)">
+      Скачать
+    </button>
   </ng-template>
 </mat-menu>
 
