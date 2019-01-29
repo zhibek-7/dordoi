@@ -372,21 +372,29 @@ namespace DAL.Reposity.PostgreSqlRepository
                             output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
 
-                        var fs = System.IO.File.Create(tempFileName);
-                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+                        var fileStream = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(
+                            stream: fileStream,
+                            encoding: Encoding.GetEncoding(file.Encoding),
+                            bufferSize: 4096,
+                            leaveOpen: true))
                         {
                             sw.Write(output);
                         }
-                        return fs;
+                        return fileStream;
                     }
                     else
                     {
-                        var fs = System.IO.File.Create(tempFileName);
-                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+                        var fileStream = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(
+                            stream: fileStream,
+                            encoding: Encoding.GetEncoding(file.Encoding),
+                            bufferSize: 4096,
+                            leaveOpen: true))
                         {
                             sw.Write(file.OriginalFullText);
                         }
-                        return fs;
+                        return fileStream;
                     }
                 }
                 catch (NpgsqlException exception)
