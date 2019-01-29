@@ -93,6 +93,9 @@
           Обновить
           <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
         </button>
+        <button *ngIf="!rowData.isFolder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
+          <mat-icon> arrow_downward </mat-icon>
+        </button>
         <button mat-icon-button
                 [matMenuTriggerFor]="fileRowContextMenu"
                 [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
