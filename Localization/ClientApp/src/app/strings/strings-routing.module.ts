@@ -5,6 +5,10 @@ import { StringsMainComponent } from 'src/app/strings/components/strings-main/st
 
 const routes: Routes = [
   {
+    path: ':fileId',
+    component: StringsMainComponent
+  },
+  {
     path: '',
     component: StringsMainComponent
   },

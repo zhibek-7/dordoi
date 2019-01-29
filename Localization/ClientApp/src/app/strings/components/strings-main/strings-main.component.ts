@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 import { TreeNode } from "primeng/api";
 
 import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
@@ -42,11 +44,20 @@ export class StringsMainComponent implements OnInit {
     private projectsService: ProjectsService,
     private fileService: FileService,
     private translationSubstringService: TranslationSubstringService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.loadStrings();
     this.loadFiles();
+    this.route.paramMap
+      .subscribe(
+        paramMap => {
+          const fileIdParamName = 'fileId';
+          if (paramMap.has(fileIdParamName)) {
+            this.selectedFileId = +paramMap.get(fileIdParamName);
+          }
+          this.loadStrings();
+        });
   }
 
   loadStrings(offset = 0) {
