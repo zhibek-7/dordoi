@@ -36,16 +36,35 @@ namespace Models.Services
 
         public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
         {
-            IEnumerable<File> files;
             if (string.IsNullOrEmpty(fileNamesSearch))
             {
-                files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId);
-                return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => this.GetIconByFile(file));
+                var files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId);
+                return files.ToTree((file, icon) => new Node<File>(file, icon), (file) => this.GetIconByFile(file));
             }
             else
             {
-                files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch);
-                return files?.Select(file => new Node<File>(file, this.GetIconByFile(file)));
+                var idsToFiles = (await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch))
+                    .ToDictionary(keySelector: value => value.ID);
+                var parentsIds = idsToFiles.Where(x => x.Value.ID_FolderOwner != null
+                                                    && !idsToFiles.ContainsKey(x.Value.ID_FolderOwner.Value))
+                                           .Select(x => (int)x.Value.ID_FolderOwner)
+                                           .ToList();
+                do
+                {
+                    var newParentsIds = new List<int>();
+                    foreach (var parentId in parentsIds)
+                    {
+                        var parentFile = await this._filesRepository.GetByIDAsync(parentId);
+                        idsToFiles[parentFile.ID] = parentFile;
+                        if (parentFile.ID_FolderOwner != null
+                            && !idsToFiles.ContainsKey(parentFile.ID_FolderOwner.Value))
+                        {
+                            newParentsIds.Add(parentFile.ID_FolderOwner.Value);
+                        }
+                    }
+                    parentsIds = newParentsIds;
+                } while(parentsIds.Any());
+                return idsToFiles.Values.ToTree((file, icon) => new Node<File>(file, icon), (file) => this.GetIconByFile(file));
             }
         }
 
