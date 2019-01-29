@@ -28,19 +28,20 @@ export class AllSettingsComponent implements OnInit {
   currentProjectid = 1;
   currentProjecturl = "";
   isChecked = true;
+  selectedLang = 1;
   public project: LocalizationProject;
 
 
   pjPublic: string;
-  pjFileTrue: false;
-  pjSkipUntranslStrTrue: false;
-  pjExportTrue: false;
-  pjNotificationTrue: false;
+  pjFileTrue= false;
+  pjSkipUntranslStrTrue= false;
+  pjExportTrue= false;
+  pjNotificationTrue= false;
   //public project: LocalizationProject;
 
   settings_proj = new FormGroup({
     pjPublic: new FormControl(),
-    pjFileTrue: new FormControl(),
+    //pjFileTrue: new FormControl(),
     pjExportTrue: new FormControl(),
     pjSkipUntranslStrTrue: new FormControl(),
     pjNotificationTrue: new FormControl()
@@ -53,23 +54,23 @@ export class AllSettingsComponent implements OnInit {
   dropdownSettings = {};
   ngOnInit() {
     this.dropdownList = [
-      { itemName: "Ido", checked: false, id: "gridIdo" },
-      { itemName: "Аварский", checked: false, id: "gridAvarski" },
-      { itemName: "Азербайджанский", checked: false, id: "gridAzerbaidjan" },
-      { itemName: "Авестийский", checked: false, id: "gridAvestiski" },
-      { itemName: "Аймара", checked: false, id: "gridAimara" },
-      { itemName: "Акан", checked: false, id: "gridAkan" },
-      { itemName: "Албанский", checked: false, id: "gridAlbanski" },
-      { itemName: "Амхарский", checked: false, id: "gridAmharskii" },
-      { itemName: "Английский", checked: false, id: "gridEnglisch" },
+      { itemName: "Ido", checked: false, id: "1" },
+      { itemName: "Аварский", checked: false, id: "2" },
+      { itemName: "Азербайджанский", checked: false, id: "3" },
+      { itemName: "Авестийский", checked: false, id: "4" },
+      { itemName: "Аймара", checked: false, id: "5" },
+      { itemName: "Акан", checked: false, id: "6" },
+      { itemName: "Албанский", checked: false, id: "7" },
+      { itemName: "Амхарский", checked: false, id: "8" },
+      { itemName: "Английский", checked: false, id: "9" },
       {
         itemName: "Английский (вверх ногами)",
         checked: false,
-        id: "gridEnglVverhNogami"
+        id: "10"
       },
-      { itemName: "Английский, Аравия", checked: false, id: "gridEnglAraviya" },
-      { itemName: "Ангийский, Белиз", checked: false, id: "gridEnglBeliz" },
-      { itemName: "Русский", checked: false, id: "gridRussia" }
+      { itemName: "Английский, Аравия", checked: false, id: "11" },
+      { itemName: "Ангийский, Белиз", checked: false, id: "12" },
+      { itemName: "Русский", checked: false, id: "13" }
     ];
 
     this.currentProjectName = this.projectsService.currentProjectName;
@@ -85,6 +86,18 @@ export class AllSettingsComponent implements OnInit {
         this.currentProjectDescription = this.project.description;
         this.currentProjecturl = this.project.url;
         this.currentProjectPublic = this.project.visibility;
+        this.pjFileTrue = this.project.ableToDownload;
+        this.pjSkipUntranslStrTrue = this.project.ableToLeftErrors;
+        this.pjExportTrue = this.project.export_only_approved_translations;
+        this.pjNotificationTrue = this.project.notifyNew;
+        if (this.currentProjectPublic == true) {
+          this.pjPublic == "public";
+        } else {
+          this.pjPublic == "nopublic";
+        }
+
+
+       
         console.log(this.currentProjectId);
       },
       error => console.error(error)
@@ -169,8 +182,9 @@ export class AllSettingsComponent implements OnInit {
       this.currentProjectDescription,
       this.currentProjecturl,
       this.currentProjectPublic, //visibility
-      //  this.settings_proj.get('pjDescription').value,//date dateOfCreation
+      Date.now,//date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
+      this.selectedLang,
       this.pjFileTrue, //ableToDownload
       this.pjSkipUntranslStrTrue, //ableToLeftErrors
       //this.pjExportTrue,
@@ -182,6 +196,7 @@ export class AllSettingsComponent implements OnInit {
       this.pjNotificationTrue,
       this.pjNotificationTrue
     ); // поменять на id реального пользователя, когда появится
+
     Id = this.currentProjectId;
     this.projectsService.updateProject(Id, project);
   }

@@ -44,9 +44,9 @@
   </label>
   <div class="form-check">
     <mat-radio-group  [(ngModel)]="pjPublic" [ngModelOptions]="{standalone: true}">
-      <mat-radio-button name="PublicName" value="pubic" checked>Виден всем пользователям</mat-radio-button>
+      <mat-radio-button name="PublicName" value="public" checked>Виден всем пользователям</mat-radio-button>
       <small id="nameHelp" class="form-text text-muted">Visible to anyone</small>
-      <mat-radio-button name="PrivateName" value="nopubic">Виден только участникам</mat-radio-button>
+      <mat-radio-button name="PrivateName" value="nopublic">Виден только участникам</mat-radio-button>
       <small id="nameHelp" class="form-text text-muted"> Visible only to the invited project members</small>
     </mat-radio-group>
   </div>
@@ -98,8 +98,8 @@
       <label for="">Исходный язык</label>
     </div>
     <div>
-      <select class="form-control">
-        <option id='{{lang.id}}' *ngFor="let lang of dropdownList"> {{lang.itemName}}</option>
+      <select class="form-control" [(ngModel)]="selectedLang" [ngModelOptions]="{standalone: true}">
+        <option ng-selected="selectedLang==lang.idz"  id='{{lang.id}}' *ngFor="let lang of dropdownList"> {{lang.itemName}}</option>
       </select>
     </div>
 
