@@ -146,6 +146,16 @@ namespace Localization.WebApi
                 localesIds: localesIds);
         }
 
+        [HttpPost("{fileId}/download")]
+        public async Task<FileResult> DownloadFileAsync(int fileId, [FromBody] int? localeId)
+        {
+            var fileStream = await this._filesService.GetFile(fileId, localeId);
+            return this.File(
+                fileStream: fileStream,
+                contentType: "application/octet-stream",
+                enableRangeProcessing: true);
+        }
+
     }
 
 }

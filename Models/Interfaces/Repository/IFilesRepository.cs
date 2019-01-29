@@ -15,6 +15,7 @@ namespace Models.Interfaces.Repository
         Task AddTranslationLocalesAsync(int fileId, IEnumerable<int> localesIds);
         Task<IEnumerable<Locale>> GetLocalesForFileAsync(int fileId);
         Task DeleteTranslationLocalesAsync(int fileId);
+        Task<System.IO.FileStream> Load(int id, int id_locale = -1);
     }
 
 

@@ -8,6 +8,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import {
   MatMenuModule,
   MatListModule,
+  MatIconModule,
+  MatButtonModule,
 } from '@angular/material';
 import { DndModule } from '../ng2-dnd-src/dnd.module';
 
@@ -42,6 +44,8 @@ import { FileInputWrapper } from './components/file-input-wrapper/file-input-wra
     MatMenuModule,
     MatListModule,
     DndModule.forRoot(),
+    MatIconModule,
+    MatButtonModule,
   ],
   providers: [
     FileService,

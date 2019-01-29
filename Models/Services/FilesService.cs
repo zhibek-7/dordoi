@@ -382,5 +382,14 @@ namespace Models.Services
             await this._filesRepository.AddTranslationLocalesAsync(fileId: fileId, localesIds: localesIds);
         }
 
+        public async Task<System.IO.FileStream> GetFile(int fileId, int? localeId)
+        {
+            var fileStream = await this._filesRepository.Load(
+                id: fileId,
+                id_locale: localeId.HasValue ? localeId.Value : -1);
+            fileStream.Position = 0;
+            return fileStream;
+        }
+
     }
 }

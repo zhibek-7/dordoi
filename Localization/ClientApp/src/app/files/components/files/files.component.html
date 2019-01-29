@@ -49,6 +49,9 @@
     <button mat-menu-item *ngIf="!data.isFolder" (click)="setFileLanguagesModal.showFile(data)">
       Задать язык перевода
     </button>
+    <button mat-menu-item *ngIf="!data.isFolder" (click)="requestFileDownload(node)">
+      Скачать
+    </button>
   </ng-template>
 </mat-menu>
 
@@ -60,8 +63,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
     <tr [ttSelectableRow]="rowNode"
-        [matMenuTriggerFor]="fileRowContextMenu"
-        [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
+        (dblclick)="fileRowMenuTrigger.openMenu()"
         dnd-droppable
         [allowDrop]="canDrop(rowNode.node)"
         (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
@@ -93,7 +95,18 @@
         <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button>
       </td>
       <td class="col-xs-2">
+        <button mat-icon-button
+                [matMenuTriggerFor]="fileRowContextMenu"
+                [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
+                >
+          <mat-icon> more_horiz </mat-icon>
+        </button>
       </td>
+    </tr>
+    <tr style="visibility: hidden;"
+        #fileRowMenuTrigger="matMenuTrigger"
+        [matMenuTriggerFor]="fileRowContextMenu"
+        [matMenuTriggerData]="{node: rowNode.node, data: rowData}">
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage" let-columns>
