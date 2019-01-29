@@ -93,6 +93,12 @@
         <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button>
       </td>
       <td class="col-xs-2">
+        <button mat-icon-button
+                [matMenuTriggerFor]="fileRowContextMenu"
+                [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
+                >
+          <mat-icon> more_horiz </mat-icon>
+        </button>
       </td>
     </tr>
   </ng-template>
