@@ -83,18 +83,16 @@
         {{rowData.stringsCount}}
       </td>
       <td class="col-xs-2">
-        <button class="btn btn-default" *ngIf="!rowData.isFolder" (click)="updateFileInput.click()">
-          Обновить
-          <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
-        </button>
-      </td>
-      <td class="col-xs-2">
         <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button>
       </td>
       <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
         <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button>
       </td>
       <td class="col-xs-2">
+        <button *ngIf="!rowData.isFolder" mat-raised-button (click)="updateFileInput.click()">
+          Обновить
+          <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
+        </button>
         <button mat-icon-button
                 [matMenuTriggerFor]="fileRowContextMenu"
                 [matMenuTriggerData]="{node: rowNode.node, data: rowData}"

@@ -45,7 +45,6 @@ export class FilesComponent implements OnInit {
       { field: 'name', header: 'Имя' },
       { field: 'dateOfChange', header: 'Дата изменения' },
       { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
-      { },
       { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
       { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
       { }
