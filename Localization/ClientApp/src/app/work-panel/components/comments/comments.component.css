@@ -108,3 +108,12 @@
 .mat-icon {
   color: grey;
 }
+
+.termName {
+  font-weight: bold;
+  color: #A4BF82;
+}
+
+.glossaryName {
+  font-weight: bold;
+}

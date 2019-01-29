@@ -229,7 +229,85 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список изображений</returns>
         public async Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId)
         {
-            throw new NotImplementedException();
+            var query = "SELECT " +
+                        "Im.\"ID\"," +
+                        "Im.\"url\"," +
+                        "Im.\"Name\"," +
+                        "Im.\"DateTimeAdded\"," +
+                        "Im.\"Data\"," +
+                        "Im.\"ID_User\" " +
+                        "FROM \"TranslationSubstrings\" AS TS " +
+                        "INNER JOIN \"StringsContextImages\" AS SCI ON SCI.\"ID_String\" = TS.\"ID\" " +
+                        "INNER JOIN \"Images\" AS Im ON Im.\"ID\" = SCI.\"ID_Image\" " +
+                        "WHERE TS.\"ID\" = @TranslationSubstringId";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { TranslationSubstringId = translationSubstringId };
+                    this.LogQuery(query, param);
+                    IEnumerable<Image> images = await dbConnection.QueryAsync<Image>(query, param);
+                    return images;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Добавить изображение к комментарию
+        /// </summary>
+        /// <param name="img">Изображение</param>
+        /// <param name="translationSubstringId">Id строки для перевода</param>
+        /// <returns></returns>
+        public async Task<int> UploadImageAsync(Image img, int translationSubstringId)
+        {
+            var query1 = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
+                        "VALUES (@Name,  @ID_User, @Data, @url) " +
+                        "RETURNING  \"Images\".\"ID\"";
+
+            var query2 = "INSERT INTO \"StringsContextImages\" (\"ID_String\", \"ID_Image\")" +
+                        "VALUES (@TranslationSubstringId,  @ImageId) ";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    this.LogQuery(query1, img);
+                    var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
+
+                    this.LogQuery(query2, translationSubstringId);
+                    await dbConnection.ExecuteScalarAsync(query2, new { TranslationSubstringId = translationSubstringId, ImageId = idOfInsertedImage });
+                    return idOfInsertedImage;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    exception);
+                return 0;
+            }
         }
 
         public async Task<bool> RemoveAsync(int id)

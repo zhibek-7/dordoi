@@ -1,9 +1,13 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
+import { ShowImageModalComponent } from '../show-image-modal/show-image-modal';
+
+import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
-// import { NullTemplateVisitor } from '@angular/compiler';
+import { Image } from 'src/app/models/database-entities/image.type';
 
 @Component({
     selector: 'context-edit-modal-component',
@@ -16,15 +20,20 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
     translationMaxLength: number = 0;
 
     filesToUpload: File[];
+    images: Image[];
 
     @Input() currentPhrase: TranslationSubstring;
 
     @Output() onEnterContext = new EventEmitter<TranslationSubstring>();
     
-    constructor() {    
+    constructor(
+        private translationSubstringService: TranslationSubstringService,
+        private showImageDialog: MatDialog) {    
+
         super();
 
         this.filesToUpload = [];
+        this.images = [];
      }
 
     ngOnInit(): void {
@@ -36,18 +45,27 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
         this.currentPhrase.context = this.enteredContext;
         this.currentPhrase.translationMaxLength = this.translationMaxLength;
 
+        if (this.filesToUpload != null) {
+            this.loadScrinshot();
+          }
+
         this.onEnterContext.emit(this.currentPhrase);
         super.hide();
+    }
+
+    // Функция загрузки скриншота
+    loadScrinshot() {
+        this.translationSubstringService.uploadImageToTranslationSubstring(this.filesToUpload, this.currentPhrase.id);
     }
 
     // Открытие модального окна
     show(){
         super.show();
-        
+                
         this.translationMaxLength = this.currentPhrase.translationMaxLength;
         this.enteredContext = this.currentPhrase.context;
 
-        console.log(this.currentPhrase);
+        this.loadImages(this.currentPhrase.id);
     }
 
     // Функция контролирующая кол-во введенных символов
@@ -57,22 +75,46 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
         }        
     }
 
-    // Функция, срабатываемая при загрузке скриншота
-    // handleFileInput(file: FileList) {
-    //     this.filesToUpload.push(file.item(0));
-    //     // if(this.changedComment.images == undefined){
-    //     //   this.changedComment.images = [];
-    //     // }
+    loadImages( translationSubstringId: number) {
+        this.translationSubstringService.getImagesByTranslationSubstringId(translationSubstringId)
+            .subscribe(
+                images => {
+                    this.images = images;
+                }
+            );
+    }
+
+    // Функция отображения скриншота в модальном окне в увеличенном размере
+    showImage(image: Image){
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.data = {
+            selectedImage: image
+        };
+
+        super.hide();
+        let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
+    }
+
+    //Функция, срабатываемая при загрузке скриншота
+    handleFileInput(file: FileList) {
+        this.filesToUpload.push(file.item(0));
+        if(this.images == undefined){
+          this.images = [];
+        }
   
-    //     var reader = new FileReader();
-    //     reader.onload = (event: any) => {
+        var reader = new FileReader();
+        reader.onload = (event: any) => {
   
-    //       var insertedImage = new Image();
-    //     //   insertedImage.data = event.target.result;
+          var insertedImage = new Image();
+          insertedImage.data = event.target.result;
   
-    //       this.changedComment.images.push(insertedImage)        
-    //     }
-    //     reader.readAsDataURL(this.filesToUpload[this.filesToUpload.length - 1]);
-    //   }
+          //обрезаем дополнительную информацию о изображении и оставляем только byte[]
+          insertedImage.data = insertedImage.data.match(".*base64,(.*)")[1];
+
+          this.images.push(insertedImage)        
+        }
+        reader.readAsDataURL(this.filesToUpload[this.filesToUpload.length - 1]);
+      }
 
 }
