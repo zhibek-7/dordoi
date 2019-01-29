@@ -67,7 +67,7 @@ namespace Localization.Controllers
         {
             _localizationProjectRepository.DeleteProject(Id);
         }
-        [HttpGet]
+        [HttpPost]
         [Route("edit/{Id}")]
         public LocalizationProject EditProject(LocalizationProject project, int Id)
         {
