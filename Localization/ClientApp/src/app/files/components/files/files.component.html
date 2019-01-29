@@ -52,6 +52,9 @@
     <button mat-menu-item *ngIf="!data.isFolder" (click)="requestFileDownload(node)">
       Скачать
     </button>
+    <button mat-menu-item *ngIf="!data.isFolder" routerLink="/Strings/{{data.id}}">
+      Просмотр исходных строк
+    </button>
   </ng-template>
 </mat-menu>
 
