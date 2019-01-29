@@ -209,13 +209,29 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void UpdateProject(LocalizationProject project)
         {
+            var sqlQuery = "UPDATE \"LocalizationProjects\" SET" +
+                           "\"Name\"=@Name, " +
+                           "\"Description\"=@Description," +
+                           "\"URL\"=@URL," +
+                           " \"Visibility\"=@Visibility," +
+                           " \"DateOfCreation\"=@DateOfCreation," +
+                           " \"LastActivity\"=@LastActivity," +
+                           " \"ID_SourceLocale\"=@ID_SourceLocale," +
+                           " \"AbleToDownload\"=@AbleToDownload," +
+                           " \"AbleToLeftErrors\"=@AbleToLeftErrors," +
+                           " \"DefaultString\"=@DefaultString," +
+                           " \"NotifyNew\"=@NotifyNew," +
+                           " \"NotifyFinish\"=@NotifyFinish," +
+                           " \"NotifyConfirm\"=@NotifyConfirm," +
+                           " \"notifynewcomment\"=@notifynewcomment," +
+                           " \"export_only_approved_translations\"=@export_only_approved_translations," +
+                           " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated  " +
+                           "WHERE \"ID\"=@ID";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlQuery = "UPDATE LocalizationProjects SET ID = '" + project.ID + "', Name = '" + project.Name + "', Description = '" + project.Description + "', URL = '" + project.URL + "', Visibility = '" + project.Visibility + "', DateOfCreation = '" + project.DateOfCreation + "', LastActivity = '" + project.LastActivity + "', ID_SourceLocale = '" + project.ID_SourceLocale + "', AbleToDownload = '" + project.AbleToDownload + "', AbleToLeftErrors = '" + project.AbleToLeftErrors + "', DefaultString = '" + project.DefaultString + "', NotifyNew = '" + project.NotifyNew + "', NotifyFinish = '" + project.NotifyFinish + "', NotifyConfirm = '" + project.NotifyConfirm
-                        + "', Logo = '" + project.Logo + "'";
-                    this.LogQuery(sqlQuery);
+                    this.LogQuery(sqlQuery, project);
                     dbConnection.Execute(sqlQuery, project);
                 }
             }

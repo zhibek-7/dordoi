@@ -25,13 +25,13 @@ export class LocalizationProject {
     id: number,
     name: string,
     description: string,
-   // url: string,
+   url: string,
     visibility: boolean,
    // dateOfCreation: "12.12.2018",
    // lastActivity: "12.12.2018",
     ableToDownload: boolean,
     ableToLeftErrors: boolean,
-    defaultString: string,
+    //defaultString: string,
     notifyNew: boolean,
     notifyFinish: boolean,
     notifyConfirm: boolean,
@@ -43,13 +43,13 @@ export class LocalizationProject {
             this.id = id;
             this.name = name;
             this.description = description;
-            //this.url = url;
+            this.url = url;
     this.visibility = visibility;
     this.dateOfCreation = "12.12.2018";// dateOfCreation;
     this.lastActivity = "12.12.2018";// lastActivity;//"12.12.2018";
     this.ableToDownload = ableToDownload;
     this.ableToLeftErrors = ableToLeftErrors;
-    this.defaultString = defaultString;// '123';
+   // this.defaultString = defaultString;// '123';
     this.notifyNew = notifyNew;
     this.notifyFinish = notifyFinish;
     this.notifyConfirm = notifyConfirm;

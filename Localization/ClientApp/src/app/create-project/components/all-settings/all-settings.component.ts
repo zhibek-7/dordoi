@@ -30,6 +30,14 @@ export class AllSettingsComponent implements OnInit {
   isChecked = true;
   public project: LocalizationProject;
 
+
+  pjPublic: string;
+  pjFileTrue: false;
+  pjSkipUntranslStrTrue: false;
+  pjExportTrue: false;
+  pjNotificationTrue: false;
+  //public project: LocalizationProject;
+
   settings_proj = new FormGroup({
     pjPublic: new FormControl(),
     pjFileTrue: new FormControl(),
@@ -37,6 +45,7 @@ export class AllSettingsComponent implements OnInit {
     pjSkipUntranslStrTrue: new FormControl(),
     pjNotificationTrue: new FormControl()
   });
+
 
   searchText = "";
   dropdownList = [];
@@ -143,41 +152,40 @@ export class AllSettingsComponent implements OnInit {
     //let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
     // this.projectsService.addProject(newProject);
   }
+
   editProject(Id: number): void {
-    let newProject: LocalizationProject = new LocalizationProject(
+
+    if (this.pjPublic == "public") {
+      this.currentProjectPublic = true;
+    } else {
+      this.currentProjectPublic = false;
+    }
+
+    console.log(this.currentProjectDescription);
+    this.currentProjectDescription;
+    let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,
-      this.settings_proj.get("pjName").value,
-      this.settings_proj.get("pjDescription").value,
-      // this.settings_proj.get('pjDescription').value,
-      this.settings_proj.get("pjPublic").value, //visibility
+      this.currentProjectName,
+      this.currentProjectDescription,
+      this.currentProjecturl,
+      this.currentProjectPublic, //visibility
       //  this.settings_proj.get('pjDescription').value,//date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
-      this.settings_proj.get("pjFileTrue").value, //ableToDownload
-      this.settings_proj.get("pjSkipUntranslStrTrue").value, //ableToLeftErrors
-      this.settings_proj.get("pjExportTrue").value,
-      this.settings_proj.get("pjPublic").value,
-      this.settings_proj.get("pjExportTrue").value,
-      this.settings_proj.get("pjExportTrue").value,
-      this.settings_proj.get("pjExportTrue").value,
-      this.settings_proj.get("pjExportTrue").value,
-      this.settings_proj.get("pjExportTrue").value
+      this.pjFileTrue, //ableToDownload
+      this.pjSkipUntranslStrTrue, //ableToLeftErrors
+      //this.pjExportTrue,
+      this.pjNotificationTrue,
+
+      this.pjFileTrue, //ableToDownload
+      this.pjSkipUntranslStrTrue, //ableToLeftErrors
+      this.pjExportTrue,
+      this.pjNotificationTrue,
+      this.pjNotificationTrue
     ); // поменять на id реального пользователя, когда появится
     Id = this.currentProjectId;
-    // this.projectsService.updateProject(Id, newProject);
+    this.projectsService.updateProject(Id, project);
   }
 
-  /*
-visibility: boolean,
-    dateOfCreation: Date,
-    lastActivity: Date,
-    ableToDownload: boolean,
-    ableToLeftErrors: boolean,
-    defaultString: boolean,
-    notifyNew: boolean,
-    notifyFinish: boolean,
-    notifyConfirm: boolean,
-    notifynewcomment: boolean,
-    export_only_approved_translations: boolean,
-    original_if_string_is_not_translated: boolean
-*/
+
+
 }
