@@ -60,8 +60,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
     <tr [ttSelectableRow]="rowNode"
-        [matMenuTriggerFor]="fileRowContextMenu"
-        [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
+        (dblclick)="fileRowMenuTrigger.openMenu()"
         dnd-droppable
         [allowDrop]="canDrop(rowNode.node)"
         (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
@@ -100,6 +99,11 @@
           <mat-icon> more_horiz </mat-icon>
         </button>
       </td>
+    </tr>
+    <tr style="visibility: hidden;"
+        #fileRowMenuTrigger="matMenuTrigger"
+        [matMenuTriggerFor]="fileRowContextMenu"
+        [matMenuTriggerData]="{node: rowNode.node, data: rowData}">
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage" let-columns>
