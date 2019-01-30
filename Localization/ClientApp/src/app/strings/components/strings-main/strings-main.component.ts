@@ -48,19 +48,25 @@ export class StringsMainComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadFiles();
-    this.route.paramMap
-      .subscribe(
-        paramMap => {
-          const fileIdParamName = 'fileId';
-          if (paramMap.has(fileIdParamName)) {
-            const fileIdParam = +paramMap.get(fileIdParamName);
-            if (this.filesViewModels.some(value => value.id === fileIdParam)) {
-              this.selectedFileId = fileIdParam;
+    this.loadData();
+  }
+
+  loadData() {
+    this.fileService.getFilesByProjectIdAsTree(this.projectId)
+      .subscribe(filesTree => {
+        this.filesViewModels = this.filesTreeToFilesList(filesTree);
+        this.route.paramMap
+          .subscribe(paramMap => {
+            const fileIdParamName = 'fileId';
+            if (paramMap.has(fileIdParamName)) {
+              const fileIdParam = +paramMap.get(fileIdParamName);
+              if (this.filesViewModels.some(value => value.id === fileIdParam)) {
+                this.selectedFileId = fileIdParam;
+              }
             }
-          }
-          this.loadStrings();
-        });
+            this.loadStrings();
+          }, error => console.log(error))
+      }, error => console.log(error));
   }
 
   loadStrings(offset = 0) {
@@ -77,13 +83,6 @@ export class StringsMainComponent implements OnInit {
           this.totalCount = totalCount;
           this.currentOffset = offset;
         },
-        error => console.log(error));
-  }
-
-  loadFiles() {
-    this.fileService.getFilesByProjectIdAsTree(this.projectId)
-      .subscribe(
-        filesTree => this.filesViewModels = this.filesTreeToFilesList(filesTree),
         error => console.log(error));
   }
 
