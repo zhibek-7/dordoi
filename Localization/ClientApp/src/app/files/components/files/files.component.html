@@ -52,7 +52,7 @@
     <button mat-menu-item *ngIf="!data.isFolder" (click)="requestFileDownload(node)">
       Скачать
     </button>
-    <button mat-menu-item *ngIf="!data.isFolder" routerLink="/Strings/{{data.id}}">
+    <button mat-menu-item *ngIf="!data.isFolder" routerLink="/Strings/byFileId/{{data.id}}">
       Просмотр исходных строк
     </button>
   </ng-template>
@@ -75,9 +75,11 @@
         [dragData]="rowNode.node"
         >
       <td [ttEditableColumn]="rowData" class="col-xs-6">
-        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-        <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
-        {{rowData.name}}
+        <div (click)="nodeExpandToggler.onClick($event)">
+          <p-treeTableToggler #nodeExpandToggler [rowNode]="rowNode"></p-treeTableToggler>
+          <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
+          {{rowData.name}}
+        </div>
       </td>
       <td class="col-xs-2">
         {{rowData.dateOfChange | date: 'dd/MM/yyyy'}}

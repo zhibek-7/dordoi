@@ -337,24 +337,13 @@ namespace Models.Services
 
         private string GetIconByFile(File file)
         {
-            // Icons section in JSON configuration
-            //var iconsSection = configuration.GetSection("icons");
+            var pathPrefix = "assets/fileIcons/";
+            if (file.IsFolder)
+            {
+                return $"{pathPrefix}folder.png";
+            }
 
-            //// If node is folder, return folder icon 
-            //if (file.IsFolder)
-            //{
-            //    // var iconBundle = iconsSection.GetSection("folder").Get<IconBundle>();
-
-            //    return iconsSection.GetValue<string>("folder");
-            //}
-
-            //// Get file extension by file name
-            //var extension = System.IO.Path.GetExtension(file.Name);
-
-            //// Get font-awesome icon class by file extension
-            //return iconsSection.GetValue(extension, "assets/icons/file.png");
-
-            return null;
+            return $"{pathPrefix}defaultFile.png";
         }
 
         public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
