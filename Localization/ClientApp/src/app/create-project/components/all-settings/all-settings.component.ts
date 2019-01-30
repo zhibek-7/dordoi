@@ -28,7 +28,7 @@ export class AllSettingsComponent implements OnInit {
   currentProjectid = 1;
   currentProjecturl = "";
   isChecked = true;
-  selectedLang = 1;
+  
   public project: LocalizationProject;
 
 
@@ -36,7 +36,8 @@ export class AllSettingsComponent implements OnInit {
   pjFileTrue= false;
   pjSkipUntranslStrTrue= false;
   pjExportTrue= false;
-  pjNotificationTrue= false;
+  pjNotificationTrue = false;
+  selectedLang: number;
   //public project: LocalizationProject;
 
   settings_proj = new FormGroup({
@@ -44,7 +45,8 @@ export class AllSettingsComponent implements OnInit {
     //pjFileTrue: new FormControl(),
     pjExportTrue: new FormControl(),
     pjSkipUntranslStrTrue: new FormControl(),
-    pjNotificationTrue: new FormControl()
+    pjNotificationTrue: new FormControl(),
+    selectedLang: new FormControl()
   });
 
 
@@ -90,6 +92,9 @@ export class AllSettingsComponent implements OnInit {
         this.pjSkipUntranslStrTrue = this.project.ableToLeftErrors;
         this.pjExportTrue = this.project.export_only_approved_translations;
         this.pjNotificationTrue = this.project.notifyNew;
+
+
+        this.selectedLang = this.project.ID_SourceLocale;
         if (this.currentProjectPublic == true) {
           this.pjPublic == "public";
         } else {

@@ -98,8 +98,8 @@
       <label for="">Исходный язык</label>
     </div>
     <div>
-      <select class="form-control" [(ngModel)]="selectedLang" [ngModelOptions]="{standalone: true}">
-        <option ng-selected="selectedLang==lang.idz"  id='{{lang.id}}' *ngFor="let lang of dropdownList"> {{lang.itemName}}</option>
+      <select class="form-control" [(ngModel)]="selectedLang" [(value)]="selected" [ngModelOptions]="{standalone: true}">
+        <option  id='{{lang.id}}' *ngFor="let lang of dropdownList" value='{{lang.id}}' [ngValue]="lang.id"> {{lang.itemName}}</option>
       </select>
     </div>
 
