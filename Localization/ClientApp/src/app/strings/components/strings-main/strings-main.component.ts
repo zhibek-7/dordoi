@@ -54,7 +54,10 @@ export class StringsMainComponent implements OnInit {
         paramMap => {
           const fileIdParamName = 'fileId';
           if (paramMap.has(fileIdParamName)) {
-            this.selectedFileId = +paramMap.get(fileIdParamName);
+            const fileIdParam = +paramMap.get(fileIdParamName);
+            if (this.filesViewModels.some(value => value.id === fileIdParam)) {
+              this.selectedFileId = fileIdParam;
+            }
           }
           this.loadStrings();
         });
