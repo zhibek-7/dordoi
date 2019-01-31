@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
-using Models.PartialEntities.Glossary;
+using Models.DatabaseEntities.PartialEntities.Glossaries;
 
 namespace Models.Interfaces.Repository
 {
@@ -19,5 +19,12 @@ namespace Models.Interfaces.Repository
         Task<Glossary> GetByFileIdAsync(int fileId);
 
         Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId);
+
+        /// <summary>
+        /// Удаление всех терминов глоссария
+        /// </summary>
+        /// <param name="glossaryId">Идентификатор глоссария</param>
+        /// <returns></returns>
+        Task DeleteTermsByGlossaryAsync(int glossaryId);
     }
 }

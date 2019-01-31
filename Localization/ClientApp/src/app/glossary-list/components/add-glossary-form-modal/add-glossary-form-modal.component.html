@@ -4,10 +4,10 @@
     <button type="button" class="close" (click)="hide()">&times;</button>
   </div>
   <div class="app-modal-body">
-    <app-glossary-editable-details [newGlossary]="newGlossary"></app-glossary-editable-details> <!--[triggerLoading]="visible"-->
+    <app-glossary-editable-details [glossary]="newGlossary" [triggerLoading]="visible"></app-glossary-editable-details>
   </div>
   <div class="app-modal-footer">
-    <button class="btn btn-primary m-1" (click)="submitNewGlossary()"> Создать </button>
+    <button class="btn btn-primary m-1" (click)="submit()" [disabled]="newGlossary.name == null || newGlossary.name.length == 0 || newGlossary.localesIds.length == 0"> Создать </button>
     <button class="btn btn-primary" (click)="hide()"> Отмена </button>
   </div>
 </app-modal>

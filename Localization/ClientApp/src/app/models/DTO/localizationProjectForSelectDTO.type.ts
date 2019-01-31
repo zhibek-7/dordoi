@@ -1,4 +1,4 @@
-export class localizationProjectForSelectDTO
+export class LocalizationProjectForSelectDTO
 {
   id: number;
   name: string;

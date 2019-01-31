@@ -5,6 +5,7 @@ using Dapper;
 using DAL.Context;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -27,31 +28,36 @@ namespace DAL.Reposity.PostgreSqlRepository
 
     public class WorkTypeRepository : BaseRepository, IRepositoryAsync<WorkType>
     {
-        private PostgreSqlNativeContext context;
-
-        public WorkTypeRepository()
+        public WorkTypeRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         public async Task<int> AddAsync(WorkType workType)
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var _sql = "INSERT INTO \"WorkTypes\" (\"Name\") VALUES (@Name)";
                     var _params = new { workType.Name };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
-                    dbConnection.Close();
+
                     return insertedId;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.AddAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
         }
@@ -60,20 +66,27 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var _sql = "SELECT * FROM \"WorkTypes\" WHERE \"ID\" = @WorkTypeId LIMIT 1";
                     var _params = new { WorkTypeId = id };
                     LogQuery(_sql, _params);
                     var workType = await dbConnection.QueryFirstAsync<WorkType>(_sql, _params);
-                    dbConnection.Close();
                     return workType;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.GetByIDAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -82,19 +95,27 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var _sql = "SELECT * FROM \"WorkTypes\"";
                     LogQuery(_sql);
                     var types = await dbConnection.QueryAsync<WorkType>(_sql);
-                    dbConnection.Close();
+
                     return types;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.GetAllAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -103,20 +124,28 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var _sql = "DELETE FROM \"WorkTypes\" WHERE \"ID\" = @WorkTypeId";
                     var _params = new { WorkTypeId = id };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);
-                    dbConnection.Close();
+
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.RemoveAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -125,20 +154,27 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var _sql = "UPDATE \"WorkTypes\" SET \"Name\"=@name WHERE \"ID\"=@WorkTypeId ";
                     var _params = new { name = workType.Name, WorkTypeId = workType.ID };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);
-                    dbConnection.Close();
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                _loggerError.WriteLn("Ошибка в TypeoOfWorkRepository.UpdateAsync ", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(WorkTypeRepository)}.{nameof(WorkTypeRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }

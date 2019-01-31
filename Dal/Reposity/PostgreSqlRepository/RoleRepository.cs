@@ -6,49 +6,40 @@ using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
+using Npgsql;
 using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class RoleRepository : BaseRepository, IRepositoryAsync<Role>
+    public class RoleRepository : BaseRepository, IBaseRepositoryAsync<Role>
     {
 
-        private readonly PostgreSqlNativeContext _context = PostgreSqlNativeContext.getInstance();
-
-        public Task<int> AddAsync(Role item)
+        public RoleRepository(string connectionStr) : base(connectionStr)
         {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Role>> GetAllAsync()
         {
-            using (var dbConnection = _context.Connection)
+            try
             {
-                dbConnection.Open();
-                var query = new Query("Roles");
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                var roles = await dbConnection.QueryAsync<Role>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
-                dbConnection.Close();
-                return roles;
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("Roles");
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var roles = await dbConnection.QueryAsync<Role>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return roles;
+                }
             }
-        }
-
-        public Task<Role> GetByIDAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> RemoveAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateAsync(Role item)
-        {
-            throw new NotImplementedException();
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(RoleRepository)}.{nameof(RoleRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
         }
 
     }

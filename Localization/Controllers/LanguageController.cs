@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
+using Models.DatabaseEntities.DTO;
 
 namespace Localization.WebApi
 {
@@ -16,7 +17,7 @@ namespace Localization.WebApi
 
         public LanguageController()
         {
-            _localeRepository = new LocaleRepository();
+            _localeRepository = new LocaleRepository(Settings.GetStringDB());
         }
 
         [HttpGet]
@@ -38,5 +39,15 @@ namespace Localization.WebApi
             return await _localeRepository.GetByUserIdAsync(userId);
         }
 
+        /// <summary>
+        /// Возвращает назначенные языки перевода на проект локализации с процентами переводов по ним.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        [HttpPost("localesWithPercentByProjectId")]
+        public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent([FromBody] int projectId)
+        {
+            return await _localeRepository.GetAllForProjectWithPercent(projectId);
+        }
     }
 }

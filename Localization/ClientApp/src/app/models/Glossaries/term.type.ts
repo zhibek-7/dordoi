@@ -1,6 +1,7 @@
 import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
 
-export class Term extends TranslationSubstring {
+export class Term extends TranslationSubstring {    
+
   constructor(
     id?: number,
     substringToTranslate?: string,

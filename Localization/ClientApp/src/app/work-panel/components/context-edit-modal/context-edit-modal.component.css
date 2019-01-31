@@ -12,3 +12,16 @@ input[type=number]::-webkit-outer-spin-button {
   padding: 0em;
   font-size: 0.8em
 }
+
+.appendedImage {
+  width: 100%;
+}
+
+.imageBlock {
+  cursor: pointer;
+  margin-right: 5%;
+  border-radius: 15%;
+  border-color: #A4BF82;
+  border-width: 2px;
+  border-style: dashed;
+}

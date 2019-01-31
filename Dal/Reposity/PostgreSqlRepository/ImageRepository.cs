@@ -6,47 +6,49 @@ using Dapper;
 using Models.DatabaseEntities;
 using DAL.Context;
 using Models.Interfaces.Repository;
+using Npgsql;
+using System.Threading.Tasks;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class ImageRepository : IRepository<Image>
+    /// <summary>
+    ///
+    /// </summary>
+    public class ImageRepository : BaseRepository, IBaseRepositoryAsync<Image>
     {
         private PostgreSqlNativeContext context;
-
-        public ImageRepository()
+        public ImageRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
-        public void Add(Image user)
+        public async Task<IEnumerable<Image>> GetAllAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public Image GetByID(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Image> GetAll()
-        {
-            using (IDbConnection dbConnection = context.Connection)
+            try
             {
-                dbConnection.Open();
-                IEnumerable<Image> images = dbConnection.Query<Image>("SELECT * FROM \"Images\"").ToList();
-                dbConnection.Close();
-                return images;
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var sqlString = "SELECT * FROM \"Images\"";
+                    this.LogQuery(sqlString);
+                    IEnumerable<Image> images = dbConnection.Query<Image>(sqlString).ToList();
+                    return images;
+                }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
         }
 
-        public bool Remove(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Image user)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

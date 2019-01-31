@@ -1,11 +1,3 @@
-/*mat-menu-content > .cdk-focused,
-mat-menu-content > .cdk-mouse-focused
-{
-  border: 0px solid #dee2e6;
-  border-radius: 0px;
-  background-color: white;
-}*/
-
 .nav-border
 {
   background-color: #f8f9fa;
@@ -41,16 +33,6 @@ mat-menu-content > .cdk-mouse-focused
   border-radius: 0px;
 }
 
-/*.btn-delete-icon
-{
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 2px;
-  padding: 0.4em 0.8em 0.4em 0.8em;
-  width: 3em;
-  height: 2em;
-}*/
-
 .table-border
 {
   margin-top: 1em;
@@ -70,7 +52,7 @@ mat-menu-content > .cdk-mouse-focused
 
 table td, table th
 {
-    padding: 2px;
+  padding: 2px;
 }
 
 table th
@@ -87,10 +69,6 @@ table th
 {
   width : 1vw;
 }
-
-/*.mat-row.hovered {
-  background: #eee;
-}*/
 
 .mat-row.selected {
   background: #999;

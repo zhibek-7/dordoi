@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 import { TreeNode } from "primeng/api";
 
 import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
@@ -42,11 +44,29 @@ export class StringsMainComponent implements OnInit {
     private projectsService: ProjectsService,
     private fileService: FileService,
     private translationSubstringService: TranslationSubstringService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
-    this.loadStrings();
-    this.loadFiles();
+    this.loadData();
+  }
+
+  loadData() {
+    this.fileService.getFilesByProjectIdAsTree(this.projectId)
+      .subscribe(filesTree => {
+        this.filesViewModels = this.filesTreeToFilesList(filesTree);
+        this.route.paramMap
+          .subscribe(paramMap => {
+            const fileIdParamName = 'fileId';
+            if (paramMap.has(fileIdParamName)) {
+              const fileIdParam = +paramMap.get(fileIdParamName);
+              if (this.filesViewModels.some(value => value.id === fileIdParam)) {
+                this.selectedFileId = fileIdParam;
+              }
+            }
+            this.loadStrings();
+          }, error => console.log(error))
+      }, error => console.log(error));
   }
 
   loadStrings(offset = 0) {
@@ -63,13 +83,6 @@ export class StringsMainComponent implements OnInit {
           this.totalCount = totalCount;
           this.currentOffset = offset;
         },
-        error => console.log(error));
-  }
-
-  loadFiles() {
-    this.fileService.getFilesByProjectIdAsTree(this.projectId)
-      .subscribe(
-        filesTree => this.filesViewModels = this.filesTreeToFilesList(filesTree),
         error => console.log(error));
   }
 

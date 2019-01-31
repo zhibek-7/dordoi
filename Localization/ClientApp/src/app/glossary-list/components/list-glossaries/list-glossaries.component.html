@@ -15,20 +15,20 @@
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="editTermFormModal.show()"> Редактировать глоссарий </button>
-      <app-edit-glossary-form-modal #editGlossaryFormModal [newGlossary]="newGlossary" ></app-edit-glossary-form-modal>
+      <button class="btn nav-element" (click)="getEditingGlossary()" [disabled]="!isSelectedGlossary"> Редактировать глоссарий </button>
+      <app-edit-glossary-form-modal #editGlossaryFormModal *ngIf="isVisibleEditGlossaryFormModal" [glossary]="glossary" (editedGlossarySubmitted)="editedGlossary($event)" (error)="getGlossariesDTO()"></app-edit-glossary-form-modal>
     </li>
 
     <li class="nav-item">
-      <button type="button" class="btn nav-element" (click)="confirmClearGlossary.show(); getConfirm()"> Очистить </button>
-      <app-confirm-clear-glossary-of-terms #confirmClearGlossary [glossary]="glossaryForConfirm" (confirmedClear)="clearGlossary($event)"></app-confirm-clear-glossary-of-terms>
+      <button type="button" class="btn nav-element" (click)="getConfirmClear()" [disabled]="!isSelectedGlossary"> Очистить </button>
+      <app-confirm-clear-glossary-of-terms #confirmClearGlossaryFormModal *ngIf="isSelectedGlossary" [glossary]="glossary" (confirmedClear)="clearGlossary($event)"></app-confirm-clear-glossary-of-terms>
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="confirmDeleteGlossary.show(); getConfirm()">
+      <button class="btn nav-element" (click)="getConfirmDelete()" [disabled]="!isSelectedGlossary">
         <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
       </button>
-      <app-confirm-delete-glossary #confirmDeleteGlossary [glossary]="glossaryForConfirm" (confirmedDelete)="deleteGlossary($event)"></app-confirm-delete-glossary>
+      <app-confirm-delete-glossary #confirmDeleteGlossaryFormModal *ngIf="isSelectedGlossary" [glossary]="glossary" (confirmedDelete)="deleteGlossary($event)"></app-confirm-delete-glossary>
     </li>
 
   </ul>
@@ -56,7 +56,7 @@
     </ng-container>
 
     <ng-container matColumnDef="additionalButtons">
-      <mat-header-cell *matHeaderCellDef> </mat-header-cell><!--mat-sort-header-->
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let row">
 
         <button mat-button [matMenuTriggerFor]="menu">
@@ -67,26 +67,21 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <!--<mat-row *matRowDef="let row; columns: displayedColumns;">-->
     <mat-row *matRowDef="let row; columns: displayedColumns;"
              [ngClass]="{selected: row.isSelected}"
              (click)="selected(row)">
-      <!--[ngClass]="{hovered: row.hovered, highlighted: row.highlighted}"-->
-      <!--(click)="row.highlighted = !row.highlighted"-->
-      <!--(mouseover)="row.hovered = true"
-          (mouseout)="row.hovered = false"-->
-    </mat-row> 
-
-
+    </mat-row>
 
   </mat-table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 
 </div>
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="editTermFormModal.show(row)"> Редактировать глоссарий </button>
-  <button mat-menu-item> Очистить от терминов </button>
-  <button mat-menu-item (click)="confirmDeleteGlossary.show(); getConfirmDeleteGlossary()"> Удалить глоссарий </button>
+  <button mat-menu-item (click)="getEditingGlossary()"> Редактировать глоссарий </button>
+  <button mat-menu-item (click)="getConfirmClear()"> Очистить от терминов </button>
+  <button mat-menu-item (click)="getConfirmDelete()"> Удалить глоссарий </button>
 </mat-menu>
 
 

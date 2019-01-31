@@ -49,25 +49,26 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
     if (!this.glossary)
       return;
 
-    let updateTermObservable = this.glossariesService.updateTerm(this.glossary.id, this._term, this._term.partOfSpeechId);
-    updateTermObservable.subscribe();
-
-    let updateRequests = [updateTermObservable];
-    for (let translation of this.translations) {
-      if (translation.translated) {
-        if (translation.id) {
-          let updateTermTranslationObservable = this.translationService.updateTranslation(translation);
-          updateTermTranslationObservable.subscribe(null, error => console.log(error));
-
-          updateRequests.push(updateTermTranslationObservable);
-        }
-        else {
-          this.translationService.createTranslate(translation);
+      this._term.substringToTranslate = this._term.value;
+      let updateTermObservable = this.glossariesService.updateTerm(this.glossary.id, this._term, this._term.partOfSpeechId);
+      updateTermObservable.subscribe();
+  
+      let updateRequests = [updateTermObservable];
+      for (let translation of this.translations) {
+        if (translation.translated) {
+          if (translation.id) {
+            let updateTermTranslationObservable = this.translationService.updateTranslation(translation);
+            updateTermTranslationObservable.subscribe(null, error => console.log(error));
+  
+            updateRequests.push(updateTermTranslationObservable);
+          }
+          else {
+            this.translationService.createTranslate(translation);
+          }
         }
       }
-    }
-    forkJoin(updateRequests)
-      .subscribe(() => this.requestDataReloadService.requestUpdate());
+      forkJoin(updateRequests)
+        .subscribe(() => this.requestDataReloadService.requestUpdate());
   }
 
   show() {
@@ -85,7 +86,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
   tempUserId: number = 300;
 
-  loadTranslations() {
+  loadTranslations() {   
     this.translationService.getAllTranslationsInStringById(this._term.id)
       .then(translations =>
         this.glossariesService.getTranslationLocalesForTerm(this.glossary.id, this._term.id)

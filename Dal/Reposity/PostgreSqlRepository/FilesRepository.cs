@@ -15,6 +15,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
     {
+        private readonly int _defaultFileStreamBufferSize = 4096;
 
         private readonly string _insertFileSql =
             "INSERT INTO \"Files\" (" +
@@ -48,17 +49,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Id_PreviousVersion" +
             ")";
 
-        private readonly string connectionString;
-
-        public FilesRepository()
+        public FilesRepository(string connectionStr) : base(connectionStr)
         {
-            //TODO потом нужно переделать. Не должно быть статика
-            connectionString = PostgreSqlNativeContext.getInstance().ConnectionString;
-        }
-
-        public FilesRepository(string connectionString)
-        {
-            this.connectionString = connectionString;
         }
 
         public async Task<IEnumerable<File>> GetAllAsync()
@@ -350,7 +342,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 try
                 {
                     connection.Open();
-                    var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, new { id });
+                    var param = new { id };
+                    this.LogQuery(sqlFileQuery, param);
+                    var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
                     var tempFileName = string.Format("{0}_{1}", System.IO.Path.GetTempPath() + Guid.NewGuid().ToString(), file.Name);
                     if (id_locale != -1)
                     {
@@ -364,25 +358,45 @@ namespace DAL.Reposity.PostgreSqlRepository
                         {
                             var sqlTranslationQuery = string.Format("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale{0} SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND \"Confirmed\" = true" : "");
                             var translation = await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery, new { translationSubstrings[i].ID, id_locale });
-                            if (translation == null && localizationProject.original_if_string_is_not_translated) continue;
+                            if (translation == null)
+                            {
+                                if (localizationProject.AbleToLeftErrors)
+                                {
+                                    int n = translationSubstrings[i].PositionInText;
+                                    while (n != 0 && (output[n - 1] != '\n' || output[n - 1] != '\r')) n--;
+                                    int m = output.IndexOfAny(new char[] { '\r', '\n' }, translationSubstrings[i].PositionInText);
+                                    while (m != output.Length - 1 && output[m + 1] != '\n') m++;
+                                    if (n > (i == 0 ? -1 : translationSubstrings[i - 1].PositionInText) && m < (i == translationSubstrings.Count - 1 ? output.Length : translationSubstrings[i + 1].PositionInText)) output = output.Remove(n, m - n + 1);
+                                    continue;
+                                }
+                                if (localizationProject.original_if_string_is_not_translated) continue;
+                            }
                             output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
-                        
-                        var fs = System.IO.File.Create(tempFileName);
-                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+
+                        var fileStream = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(
+                            stream: fileStream,
+                            encoding: Encoding.GetEncoding(file.Encoding),
+                            bufferSize: this._defaultFileStreamBufferSize,
+                            leaveOpen: true))
                         {
                             sw.Write(output);
                         }
-                        return fs;
+                        return fileStream;
                     }
                     else
                     {
-                        var fs = System.IO.File.Create(tempFileName);
-                        using (var sw = new System.IO.StreamWriter(fs, Encoding.GetEncoding(file.Encoding)))
+                        var fileStream = System.IO.File.Create(tempFileName);
+                        using (var sw = new System.IO.StreamWriter(
+                            stream: fileStream,
+                            encoding: Encoding.GetEncoding(file.Encoding),
+                            bufferSize: this._defaultFileStreamBufferSize,
+                            leaveOpen: true))
                         {
                             sw.Write(file.OriginalFullText);
                         }
-                        return fs;
+                        return fileStream;
                     }
                 }
                 catch (NpgsqlException exception)
@@ -432,6 +446,93 @@ namespace DAL.Reposity.PostgreSqlRepository
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings
                     );
+            }
+        }
+
+        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query = new Query("Files")
+                    .Where("ID", fileId)
+                    .AsUpdate(new[] { "ID_FolderOwner" }, new object[] { newParentId });
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+            }
+        }
+
+        public async Task AddTranslationLocalesAsync(int fileId, IEnumerable<int> localesIds)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                foreach (var localeId in localesIds)
+                {
+                    var sql =
+                        "INSERT INTO \"FilesLocales\" " +
+                        "(" +
+                        "\"ID_File\", " +
+                        "\"ID_Locale\", " +
+                        "\"PercentOfConfirmed\", " +
+                        "\"PercentOfTranslation\"" +
+                        ") VALUES " +
+                        "(" +
+                        "@ID_File, " +
+                        "@ID_Locale, " +
+                        "0, " +
+                        "0" +
+                        ")";
+                    var param = new { ID_File = fileId, ID_Locale = localeId };
+                    this.LogQuery(sql, param);
+
+                    await dbConnection.ExecuteAsync(
+                        sql: sql,
+                        param: param);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Locale>> GetLocalesForFileAsync(int fileId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("Locales")
+                    .WhereIn("ID",
+                        new Query("FilesLocales")
+                        .Select("ID_Locale")
+                        .Where("ID_File", fileId));
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                return await dbConnection.QueryAsync<Locale>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings
+                    );
+            }
+        }
+
+        public async Task DeleteTranslationLocalesAsync(int fileId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("FilesLocales")
+                    .Where("ID_File", fileId)
+                    .AsDelete();
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
             }
         }
 

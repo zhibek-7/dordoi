@@ -1,16 +1,19 @@
-import { Locale } from 'src/app/models/database-entities/locale.type';
-import { localizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
-
+/**
+ * Для создания нового и редактирования глоссария
+ */
 export class GlossariesForEditing {
   id: number;
   name: string;
   description: string;
 
-  locales: Locale[];
+  localesIds: number[];
 
-  localizationProjects: localizationProjectForSelectDTO[];
+  localizationProjectsIds: number[];
 }
 
+/**
+ * Для отображения в таблице списка глоссарий
+ */
 export class GlossariesTableViewDTO {
   id: number;
   name: string;

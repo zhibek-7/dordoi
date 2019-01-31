@@ -1,11 +1,17 @@
 <div>
   <label class="m-1"> Название глоссария </label>
-  <input class="form-control m-1" [(ngModel)]="newGlossary.name" type="text" />
+  <input id="name" name="name" class="form-control m-1" type="text" required [(ngModel)]="glossary.name" #name="ngModel">
+  <div *ngIf="name.invalid && (name.dirty || name.touched)"
+       class="alert alert-danger">
+    <div *ngIf="name.errors.required">
+      Введите название глоссария.
+    </div>
+  </div>
 </div>
 
 <div>
   <label class="m-1"> Описание </label>
-  <input class="form-control m-1" [(ngModel)]="newGlossary.description" type="text" />
+  <input class="form-control m-1" [(ngModel)]="glossary.description" type="text" />
 </div>
 
 <div>
@@ -24,4 +30,7 @@
 <div>
   <label class="m-1"> Целевые языки: </label>
   <app-set-languages [availableLocales]="availableLocales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
+  <div *ngIf="errorsRequiredLocales" class="alert alert-danger">
+    Выберите целевой(ые) язык(и).
+  </div>
 </div>

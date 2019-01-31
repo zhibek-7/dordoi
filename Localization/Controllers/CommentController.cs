@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
-using Models.Comments;
+using Models.DatabaseEntities.PartialEntities.Comment;
 using System.Net.Http;
 using System.IO;
 
@@ -23,8 +23,10 @@ namespace Localization.WebApi
 
         public CommentController()
         {
-            commentRepository = new CommentRepository();
-            stringRepository = new TranslationSubstringRepository();
+            //this.commentRepository = commentRepository;
+            //this.stringRepository = stringRepository;
+            commentRepository = new CommentRepository(Settings.GetStringDB());
+            stringRepository = new TranslationSubstringRepository(Settings.GetStringDB());
         }
 
         /// <summary>
@@ -89,22 +91,22 @@ namespace Localization.WebApi
         /// <param name="idComment">id комментария, который необходимо удалить</param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("DeleteComment/{idComment}")]
-        public async Task<IActionResult> DeleteComment(int idComment)
+        [Route("DeleteComment/{commentId}")]
+        public async Task<IActionResult> DeleteComment(int commentId)
         {
             // Check if string by id exists in database
-            var foundedComment = await commentRepository.GetByIDAsync(idComment);
+            var foundedComment = await commentRepository.GetByIDAsync(commentId);
 
             if (foundedComment == null)
             {
-                return NotFound($"Comment by id \"{ idComment }\" not found");
+                return NotFound($"Comment by id \"{ commentId }\" not found");
             }
 
-            var deleteResult = await commentRepository.RemoveAsync(idComment);
+            var deleteResult = await commentRepository.RemoveAsync(commentId);
 
             if (!deleteResult)
             {
-                return BadRequest($"Failed to remove comment with id \"{ idComment }\" from database");
+                return BadRequest($"Failed to remove comment with id \"{ commentId }\" from database");
             }
 
             return Ok();
@@ -144,11 +146,11 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idComment">id комментария к которому приложена картинка</param>
         /// <returns></returns>
-        [HttpPost("UploadImage")]
-        public async Task<ActionResult> UploadImage()
-        {
-
+        [HttpPost("UploadImageToComment")]
+        public async Task<IActionResult> UploadImage()
+        {            
             var content = Request.Form.Files["Image"];
+            var commentId = Request.Form["CommentId"];
             string fileName = content.FileName;
             long fileLength = content.Length;
             //Stream file = content.OpenReadStream;
@@ -169,7 +171,7 @@ namespace Localization.WebApi
                         img.DateTimeAdded = DateTime.Now;
                         img.Data = imageData;
 
-                        int insertedCommentId = await commentRepository.AddFileAsync(img);
+                        int insertedCommentId = await commentRepository.UploadImageAsync(img, Convert.ToInt32(commentId));
                     }
                 }
 
@@ -177,6 +179,26 @@ namespace Localization.WebApi
             }
             return Ok();
         }
+
+        ///// <summary>
+        ///// Получить изображения комментария
+        ///// </summary>
+        ///// <param name="commentId">id Комментария</param>
+        ///// <returns>Список изображений</returns>
+        //public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfComment(int commentId)
+        //{
+        //    // Check if comment by id exists in database
+        //    var foundedComment = await commentRepository.GetByIDAsync(commentId);
+
+        //    if (foundedComment == null)
+        //    {
+        //        return NotFound($"Comment by id \"{ commentId }\" not found");
+        //    }
+
+        //    IEnumerable<Image> images = await commentRepository.GetImagesOfCommentAsync(commentId);
+
+        //    return Ok(images);        
+        //}
 
     }
 }

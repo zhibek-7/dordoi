@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Microsoft.AspNetCore.Cors;
 using Models.Interfaces.Repository;
+using System.IO;
 
 namespace Localization.WebApi
 {
@@ -75,12 +76,65 @@ namespace Localization.WebApi
             return Ok(foundedString);
         }
 
+        /// <summary>
+        /// Получить изображения строки для перевода
+        /// </summary>
+        /// <param name="translationSubstringId">id Строки для перевода</param>
+        /// <returns>Список изображений</returns>
+        [HttpPost("GetImagesByStringId/{translationSubstringId}")]
+        public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(int translationSubstringId)
+        {
+            // Check if comment by id exists in database
+            var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
 
-        //[HttpPost("{ChangeContextOfTheTranslationSubstring}")]
-        //public async Task ChangeContextOfTheTranslationSubstring([FromBody])
-        //{
+            if (foundedString == null)
+            {
+                return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            }
 
-        //}
+            IEnumerable<Image> images = await stringRepository.GetImagesOfTranslationSubstringAsync(translationSubstringId);
+
+            return Ok(images);
+        }
+
+        /// <summary>
+        /// Загружает картинку прикрепленную к комментарию
+        /// </summary>
+        /// <param name="TranslationSubstringId">id строки для перевода к которому приложена картинка</param>
+        /// <returns></returns>
+        [HttpPost("UploadImageToTranslationSubstring")]
+        public async Task<IActionResult> UploadImage()
+        {
+            var content = Request.Form.Files["Image"];
+            var translationSubstringId = Request.Form["TranslationSubstringId"];
+            string fileName = content.FileName;
+            long fileLength = content.Length;
+            //Stream file = content.OpenReadStream;
+
+            if (content != null && fileLength > 0)
+            {
+                using (var readStream = content.OpenReadStream())
+                {
+                    byte[] imageData = null;
+                    // считываем переданный файл в массив байтов
+                    using (var binaryReader = new BinaryReader(content.OpenReadStream()))
+                    {
+                        imageData = binaryReader.ReadBytes((int)fileLength);
+
+                        Image img = new Image();
+                        img.ID_User = 301;
+                        img.Name = fileName;
+                        img.DateTimeAdded = DateTime.Now;
+                        img.Data = imageData;
+
+                        int insertedCommentId = await stringRepository.UploadImageAsync(img, Convert.ToInt32(translationSubstringId));
+                    }
+                }
+
+
+            }
+            return Ok();
+        }
 
         [HttpGet("ByProjectId/{projectId}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetByProjectId(

@@ -44,8 +44,8 @@ namespace Localization.WebApi
         [Route("TranslatedWords")]
         public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport([FromBody] reportParamsDTO _params)
         {
-            TranslatedWordsReport translatedWords = new TranslatedWordsReport();
-            return translatedWords.GetRows(_params.projectId, DateTime.Parse(_params.start), DateTime.Parse(_params.end), 
+            TranslatedWordsReport translatedWords = new TranslatedWordsReport(Settings.GetStringDB());
+            return translatedWords.GetRows(_params.projectId, DateTime.Parse(_params.start), DateTime.Parse(_params.end),
                 _params.userId, _params.localeId, _params.volumeCalcType, _params.calcBasisType);
         }
 
@@ -75,7 +75,7 @@ namespace Localization.WebApi
             string workType,
             int initialFolderId)
         {
-            TranslatedWordsReport translatedWords = new TranslatedWordsReport();
+            TranslatedWordsReport translatedWords = new TranslatedWordsReport(Settings.GetStringDB());
             List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType).ToList();
 
             FileResult res;

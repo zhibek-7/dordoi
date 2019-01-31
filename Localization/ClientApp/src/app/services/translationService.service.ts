@@ -39,7 +39,7 @@ export class TranslationService {
     }
 
     updateTranslation(updatedTranslation: Translation): Observable<Object> {
-        return this.http.put(this.url + updatedTranslation.id, updatedTranslation);
+        return this.http.put(this.url + "/" + updatedTranslation.id, updatedTranslation);
     }
 
     findTranslationByMemory(currentProjectId: number, translationText: string): Observable<TranslationWithFile[]>{        

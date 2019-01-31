@@ -9,7 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Models.Interfaces.Repository;
-using Models.DatabaseEntities.Translations;
+using Models.DatabaseEntities.PartialEntities.Translations;
+using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -18,11 +19,8 @@ namespace DAL.Reposity.PostgreSqlRepository
     /// </summary>
     public class TranslationRepository : BaseRepository, IRepositoryAsync<Translation>
     {
-        private PostgreSqlNativeContext context;
-
-        public TranslationRepository()
+        public TranslationRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         /// <summary>
@@ -37,19 +35,25 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
+                    this.LogQuery(query, item);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, item);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
         }
@@ -64,19 +68,25 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
+                    this.LogQuery(query);
                     IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query);
-                    dbConnection.Close();
                     return translations;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -93,20 +103,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var translation = await dbConnection.QuerySingleOrDefaultAsync<Translation>(query, new { id });
-                    dbConnection.Close();
-
+                    var param = new { id };
+                    this.LogQuery(query, param);
+                    var translation = await dbConnection.QuerySingleOrDefaultAsync<Translation>(query, param);
                     return translation;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
 
@@ -124,20 +140,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var deletedRows = await dbConnection.ExecuteAsync(query, new { id });
-                    dbConnection.Close();
-
+                    var param = new { id };
+                    this.LogQuery(query, param);
+                    var deletedRows = await dbConnection.ExecuteAsync(query, param);
                     return deletedRows > 0;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -150,9 +172,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                using (var dbConnection = this.context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
                     var updateTranslationSql =
                         "UPDATE \"Translations\" SET " +
                         "\"ID_String\"=@ID_String, " +
@@ -167,13 +188,21 @@ namespace DAL.Reposity.PostgreSqlRepository
                     await dbConnection.ExecuteAsync(
                         sql: updateTranslationSql,
                         param: updateTranslationParam);
-                    dbConnection.Close();
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.UpdateAsync)} {nameof(NpgsqlException)} " + "Exception on trying to update translation.",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                this._loggerError.WriteLn("Exception on trying to update translation.", exception);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.UpdateAsync)} {nameof(Exception)} " + "Exception on trying to update translation.",
+                    exception);
                 return false;
             }
         }
@@ -191,19 +220,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query, new { Id = idString });
-                    dbConnection.Close();
+                    var param = new { Id = idString };
+                    this.LogQuery(query, param);
+                    IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query, param);
                     return translations;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -221,20 +257,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var updatedRows = await dbConnection.ExecuteAsync(query, new { Id = idTranslation });
-                    dbConnection.Close();
-
+                    var param = new { Id = idTranslation };
+                    this.LogQuery(query, param);
+                    var updatedRows = await dbConnection.ExecuteAsync(query, param);
                     return updatedRows > 0;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.AcceptTranslation)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.AcceptTranslation)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -252,20 +294,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var updatedRows = await dbConnection.ExecuteAsync(query, new { Id = idTranslation });
-                    dbConnection.Close();
-
+                    var param = new { Id = idTranslation };
+                    this.LogQuery(query, param);
+                    var updatedRows = await dbConnection.ExecuteAsync(query, param);
                     return updatedRows > 0;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.RejectTranslation)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.RejectTranslation)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -287,19 +335,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    IEnumerable<TranslationWithFile> translations = await dbConnection.QueryAsync<TranslationWithFile>(query, new { TranslationText = "%" + translationText + "%" });
-                    dbConnection.Close();
+                    var param = new { TranslationText = "%" + translationText + "%" };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationWithFile> translations = await dbConnection.QueryAsync<TranslationWithFile>(query, param);
                     return translations;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsByMemory)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsByMemory)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -326,20 +381,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query,
-                        new { TranslationSubstringText = translationSubstring.SubstringToTranslate, TranslationSubstringId = translationSubstring.ID, ProjectId = currentProjectId });
-                    dbConnection.Close();
+                    var param = new { TranslationSubstringText = translationSubstring.SubstringToTranslate, TranslationSubstringId = translationSubstring.ID, ProjectId = currentProjectId };
+                    this.LogQuery(query, param);
+                    IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query, param);
                     return similarTranslations;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetSimilarTranslationsAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetSimilarTranslationsAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }

@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using Dapper;
 using Models.DatabaseEntities;
-using Models.Comments;
 using DAL.Context;
 using System.Data;
 using System.Threading.Tasks;
 using Models.Interfaces.Repository;
+using Npgsql;
+using Models.DatabaseEntities.PartialEntities.Comment;
+using System.Linq;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class CommentRepository : BaseRepository, IRepositoryAsync<Comments>
     {
-        private PostgreSqlNativeContext context;
-
-        public CommentRepository()
+        public CommentRepository(string connectionStr) : base(connectionStr)
         {
-            context = PostgreSqlNativeContext.getInstance();
         }
 
         /// <summary>
@@ -32,19 +31,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
+                    this.LogQuery(query, param: comment);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }
+
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
         }
@@ -66,21 +72,28 @@ namespace DAL.Reposity.PostgreSqlRepository
             */
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
+                    this.LogQuery(query, param: comment);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
-                    dbConnection.Close();
                     return idOfInsertedRow;
                 }
             }
-            catch (Exception exception)
+            catch (NpgsqlException exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    exception);
                 return 0;
             }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    exception);
+                return 0;
+            }
+
         }
 
         /// <summary>
@@ -93,19 +106,25 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
+                    this.LogQuery(query);
                     IEnumerable<Comments> comments = await dbConnection.QueryAsync<Comments>(query);
-                    dbConnection.Close();
                     return comments;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -126,19 +145,31 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
+                    var param = new { idString };
+                    this.LogQuery(query, param);
                     var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, new { Id = idString });
-                    dbConnection.Close();
+                    foreach(var comment in comments)
+                    {
+                        comment.Images = await GetImagesOfCommentAsync(comment.CommentId);
+                    }
                     return comments;
                 }
             }
+
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllCommentsInStringByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllCommentsInStringByID)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -154,21 +185,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var comment = await dbConnection.QuerySingleOrDefaultAsync<Comments>(query, new { id });
-                    dbConnection.Close();
-
+                    var param = new { id };
+                    this.LogQuery(query, param);
+                    var comment = await dbConnection.QuerySingleOrDefaultAsync<Comments>(query, param);
                     return comment;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -190,20 +226,26 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var comment = await dbConnection.QuerySingleOrDefaultAsync<CommentWithUserInfo>(query, new { id });
-                    dbConnection.Close();
-
+                    var param = new { id };
+                    this.LogQuery(query, param);
+                    var comment = await dbConnection.QuerySingleOrDefaultAsync<CommentWithUserInfo>(query, param);
                     return comment;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetByIDWithUserInfoAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetByIDWithUserInfoAsync)} {nameof(Exception)} ",
+                    exception);
                 return null;
             }
         }
@@ -213,27 +255,50 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id комментарий который нужно удалить</param>
         /// <returns></returns>
-        public async Task<bool> RemoveAsync(int id)
-        {
-            var query = "DELETE " +
-                        "FROM \"Comments\" AS C " +
-                        "WHERE C.\"ID\" = @id";
+        public async Task<bool> RemoveAsync(int commentId)
+        {            
+            //"" +
+            //"DELETE " +
+            //"FROM \"CommentsImages\" AS CI " +
+            //"WHERE CI.\"ID_Comment\" = @id ";
+            var query1 = "SELECT CI.\"ID_Image\" " +
+                         "FROM \"CommentsImages\" AS CI " +
+                         "WHERE CI.\"ID_Comment\" = @CommentId;";
+
+            var query2 = "DELETE " +
+                         "FROM \"Comments\" AS C " +
+                         "WHERE C.\"ID\" = @CommentId; " +
+                         "" +
+                         "DELETE " +
+                         "FROM \"Images\" AS I " +
+                         "WHERE I.\"ID\" = @ImageId;";                                               
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var deletedRows = await dbConnection.ExecuteAsync(query, new { id });
-                    dbConnection.Close();
+                    var param1 = new { CommentId = commentId };
+                    this.LogQuery(query1, param1);
+                    var deletedImageId = await dbConnection.QueryAsync<int>(query1, param1);
 
+                    var param2 = new { CommentId = commentId, ImageId = deletedImageId.ElementAt(0) };
+                    this.LogQuery(query2, param2);
+                    var deletedRows = await dbConnection.ExecuteAsync(query2, param2);
                     return deletedRows > 0;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.RemoveAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
@@ -254,79 +319,112 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-
+                    this.LogQuery(query, comment);
                     await dbConnection.ExecuteAsync(query, comment);
-
-                    dbConnection.Close();
                     return true;
                 }
             }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return false;
+            }
             catch (Exception exception)
             {
-                //Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
                 return false;
             }
         }
 
 
         /// <summary>
-        /// Добавить файл в комментарий
+        /// Добавить изображение к комментарию
         /// </summary>
-        /// <param name="comment">комментарий</param>
+        /// <param name="img">Изображение</param>
+        /// <param name="commentId">Id комментария</param>
         /// <returns></returns>
-        public async Task<int> AddFileAsync(Image img)
+        public async Task<int> UploadImageAsync(Image img, int commentId)
         {
-            var query = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
+            var query1 = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
                         "VALUES (@Name,  @ID_User, @Data, @url) " +
                         "RETURNING  \"Images\".\"ID\"";
 
+            var query2 = "INSERT INTO \"CommentsImages\" (\"ID_Comment\", \"ID_Image\")" +
+                        "VALUES (@CommentId,  @ImageId) ";
+
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, img);
-                    dbConnection.Close();
-                    return idOfInsertedRow;
+                    this.LogQuery(query1, img);
+                    var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
+
+                    this.LogQuery(query2, commentId);
+                    await dbConnection.ExecuteScalarAsync(query2, new { CommentId = commentId, ImageId = idOfInsertedImage });
+                    return idOfInsertedImage;
                 }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return 0;
             }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    exception);
                 return 0;
             }
-        }
+        }        
+
         /// <summary>
-        /// Загрузить картинку в базу данных
+        /// Получить все изображения прикрепленные к конкретному комментарию
         /// </summary>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        public async Task<int> UploadImageAsync(Byte[] image)
+        /// <param name="commentId">id комментария</param>
+        /// <returns>Список изображений</returns>
+        public async Task<IEnumerable<Image>> GetImagesOfCommentAsync(int commentId)
         {
-            //ЗАПРОС ЕЩЕ НЕ НАПИСАН
-            var query = "";
+            var query = "SELECT Im.\"ID\", Im.\"url\", Im.\"Name\", Im.\"DateTimeAdded\", Im.\"Data\", Im.\"ID_User\" " +
+                        "FROM \"Images\" AS Im " +
+                        "INNER JOIN \"CommentsImages\" AS CI ON CI.\"ID_Image\" = Im.\"ID\" " +
+                        "INNER JOIN \"Comments\" AS C ON C.\"ID\" = CI.\"ID_Comment\" " +
+                        "WHERE C.\"ID\" = @CommentId ";
 
             try
             {
-                using (IDbConnection dbConnection = context.Connection)
+                using(var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    dbConnection.Open();
-                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, image);
-                    dbConnection.Close();
-                    return idOfInsertedRow;
+                    this.LogQuery(query, commentId);
+                    IEnumerable<Image> images = await dbConnection.QueryAsync<Image>(query, new { CommentId = commentId });
+                    foreach (var image in images)
+                    {
+                        image.URL = Convert.ToBase64String(image.Data);
+                    }
+                    return images;
                 }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
             }
             catch (Exception exception)
             {
-                // Внесение записи в журнал логирования
-                Console.WriteLine(exception.Message);
-                return 0;
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
             }
         }
 

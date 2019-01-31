@@ -11,6 +11,11 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch);
         Task<File> GetLastVersionByNameAndParentId(string name, int? parentId);
         IEnumerable<File> GetInitialFolders(int projectId);
+        Task ChangeParentFolderAsync(int fileId, int? newParentId);
+        Task AddTranslationLocalesAsync(int fileId, IEnumerable<int> localesIds);
+        Task<IEnumerable<Locale>> GetLocalesForFileAsync(int fileId);
+        Task DeleteTranslationLocalesAsync(int fileId);
+        Task<System.IO.FileStream> Load(int id, int id_locale = -1);
     }
 
 

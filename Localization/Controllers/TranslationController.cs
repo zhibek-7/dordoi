@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
-using Models.DatabaseEntities.Translations;
+using Models.DatabaseEntities.PartialEntities.Translations;
 
 namespace Localization.WebApi
 {
@@ -21,7 +21,7 @@ namespace Localization.WebApi
 
         public TranslationController()
         {
-            translationRepository = new TranslationRepository();
+            translationRepository = new TranslationRepository(Settings.GetStringDB());
         }
 
         /// <summary>
@@ -199,12 +199,12 @@ namespace Localization.WebApi
             return Ok(translations);
         }
 
-        [HttpPost]
-        [Route("littleTest/{currentProjectId}")]
-        public async Task LittleTest(int currentProjectId)
-        {
-            Ok();
-        }
+        //[HttpPost]
+        //[Route("littleTest/{currentProjectId}")]
+        //public async Task LittleTest(int currentProjectId)
+        //{
+        //    Ok();
+        //}
 
         /// <summary>
         /// Поиск схожих вариантов перевода в данном проекте

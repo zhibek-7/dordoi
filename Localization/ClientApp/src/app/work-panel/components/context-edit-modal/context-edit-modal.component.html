@@ -20,7 +20,14 @@
         
     </div>
     <div class="app-modal-footer">                
-        <button class="btn mr-5">Скриншоты</button>               
+        <div class="mb-1"><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>             
+        <ul class="row">
+            <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of images">
+                <div>
+                    <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}"  />
+                </div>
+            </li>   
+        </ul>
         
         <button class="btn mr-2" (click)="confirmButtunClick()">Сохранить</button>
         <button class="btn" (click)="hide()">Отмена</button>            

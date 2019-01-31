@@ -132,8 +132,8 @@ FiterByName(){
     //this.projectService.addProject(newProject)subscribe(response => console.log(response));
   }
 
-  editProject(Id: number): void {
-    this.projectService.updateProject(Id).subscribe(response => console.log(response));
+  editProject(Id: number, newProject: LocalizationProject): void {
+    this.projectService.updateProject(Id, newProject);
   }
 
   deleteProject(Id: number): void{

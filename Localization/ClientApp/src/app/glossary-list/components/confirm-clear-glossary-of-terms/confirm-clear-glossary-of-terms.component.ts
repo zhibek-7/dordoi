@@ -9,8 +9,7 @@ import { Glossary } from 'src/app/models/database-entities/glossary.type';
   templateUrl: './confirm-clear-glossary-of-terms.component.html',
   styleUrls: ['./confirm-clear-glossary-of-terms.component.css']
 })
-export class ConfirmClearGlossaryOfTermsComponent extends ModalComponent implements OnInit
-{
+export class ConfirmClearGlossaryOfTermsComponent extends ModalComponent implements OnInit {
   @Input()
   glossary: Glossary;
 

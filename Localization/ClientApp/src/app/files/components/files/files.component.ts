@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
 
 import { TreeNode } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { saveAs } from 'file-saver';
 
 import { FileService } from 'src/app/services/file.service';
 import { ProjectsService } from 'src/app/services/projects.service';
@@ -24,6 +25,8 @@ export class FilesComponent implements OnInit {
 
   selectedNode: TreeNode;
 
+  cuttedNode: TreeNode;
+
   isLoading: boolean;
 
   constructor(
@@ -42,13 +45,41 @@ export class FilesComponent implements OnInit {
       { field: 'name', header: 'Имя' },
       { field: 'dateOfChange', header: 'Дата изменения' },
       { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
-      { width: '50px' },
       { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
-      { field: 'priority', header: 'Приоритет', width: '80px', textalign: 'center' },
-      { width: '50px' }
+      { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
+      { }
     ];
 
     this.getFiles();
+  }
+
+  pseudoCut(selectedNode: TreeNode): void {
+    this.cuttedNode = selectedNode;
+  }
+
+  moveCurrentlyCutted(selectedNode: TreeNode): void {
+    this.fileService.changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
+      .subscribe(() => {
+        this.deleteNode(this.cuttedNode);
+        this.addNode(this.cuttedNode, selectedNode);
+        this.cuttedNode = null;
+      },
+      error => alert(error));
+  }
+
+  moveNode(nodeToMove: any, newParent: any) {
+    const parentId = newParent ? newParent.data ? newParent.data.id : null : null;
+    this.fileService.changeParentFolder(nodeToMove.data, parentId)
+      .subscribe(() => {
+          this.deleteNode(nodeToMove);
+          this.addNode(nodeToMove, newParent);
+        },
+        error => alert(error));
+  }
+
+  canDrop(node: any) {
+    const nodeIsFolder: boolean = node.data.isFolder;
+    return (unused => { return nodeIsFolder; });
   }
 
   getFiles(): void {
@@ -94,7 +125,7 @@ export class FilesComponent implements OnInit {
     if (file) {
       const parentNode = oldNode.parent;
       const parentId = parentNode ? parentNode.data.id : null;
-      this.fileService.updateFileVersion(file, this.projectsService.currentProjectId, parentId)
+      this.fileService.updateFileVersion(file, oldNode.data.name, this.projectsService.currentProjectId, parentId)
         .subscribe(newNode => {
           this.deleteNode(oldNode);
           this.addNode(newNode, parentNode);
@@ -167,6 +198,26 @@ export class FilesComponent implements OnInit {
 
     // Return nodes length minus founded index
     return reversedIndex < 0 ? 0 : nodes.length - reversedIndex;
+  }
+
+  toggleFile(node) {
+    node.expanded = !node.expanded;
+    this.files = [...this.files];
+  }
+
+  renameNode(node: TreeNode, updatedFile: FileData) {
+    node.data.name = updatedFile.name;
+    this.fileService.updateNode(node.data)
+      .subscribe(() => {
+        this.reloadView();
+      });
+  }
+
+  requestFileDownload(node: TreeNode) {
+    this.fileService.downloadFile(node.data)
+      .subscribe(
+        data => saveAs(data, node.data.name)
+      );
   }
 
 }

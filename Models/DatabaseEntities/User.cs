@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel.DataAnnotations;
 
 namespace Models.DatabaseEntities
 {
-    public class User: BaseEntity
+    public class User : BaseEntity
     {
         //[Required]
         public string Name { get; set; }

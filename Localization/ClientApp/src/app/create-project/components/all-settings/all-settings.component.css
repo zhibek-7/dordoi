@@ -1,4 +1,4 @@
-.settings_proj {
+/*.settings_proj {
   margin-left: 20%;
   margin-right: 20%;
 }
@@ -6,4 +6,29 @@
 .settings {
   margin-left: 4%;
   margin-right: 4%;
+}
+*/
+
+
+.mat-checkbox-label {
+  margin-right: 5rem;
+}
+
+/*
+label {
+  color: #93969b;
+}
+*/
+
+.txt-form-field {
+  width: 23rem;
+}
+
+.select-form-field {
+  width: 22rem;
+}
+
+.mail-input {
+  width: 22rem;
+  padding-left: 1rem;
 }

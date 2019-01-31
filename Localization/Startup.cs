@@ -14,7 +14,6 @@ using Models.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Utilities.Logs;
 using System.Net;
-using Utilities.Extensions;
 
 namespace Localization
 {
@@ -37,23 +36,34 @@ namespace Localization
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            ///TODO Уберу, сделаю как у всех. Такой метод выделяет память на класс, который может быть и не будет использоваться.
             ///Как идея использовать класс, который видно во всех методах.
-            //var connectionString = Configuration.GetConnectionString("MyWebApiConnection");
+            var connectionString = Configuration.GetConnectionString("db_connection");
 
-            // 
-            //services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
+            services.AddScoped<ISetttings>(provider => new Settings(connectionString));
+            //var connectionString = Settings.GetStringDB();
+
+            // TODO нужно будет переделать все классы под этот вариант
+            services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
+            services.AddScoped<IGlossaryRepository>(provider => new GlossaryRepository(connectionString));
+            services.AddScoped<IGlossariesRepository>(provider => new GlossariesRepository(connectionString));
+            services.AddScoped<ITranslationSubstringRepository>(provider => new TranslationSubstringRepository(connectionString));
+            services.AddScoped<ITranslationTroubleRepository>(provider => new TranslationTroubleRepository(connectionString));
+            services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
+
+
+
+            services.AddScoped<FilesService>();
+            services.AddScoped<GlossaryService>();
+            services.AddScoped<GlossariesService>();
+            /*
             services.AddScoped<IFilesRepository, FilesRepository>();
             services.AddScoped<FilesService>();
             services.AddScoped<IGlossaryRepository, GlossaryRepository>();
             services.AddScoped<GlossaryService>();
-
-            //
             services.AddScoped<IGlossariesRepository, GlossariesRepository>();
             services.AddScoped<GlossariesService>();
-            //
             services.AddScoped<ITranslationSubstringRepository, TranslationSubstringRepository>();
-
+            */
             ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////
             var corsBuilder = new CorsPolicyBuilder();
             corsBuilder.AllowAnyHeader();
@@ -89,7 +99,11 @@ namespace Localization
                     var unhandledException = errorFeature?.Error;
                     this._exceptionLog.WriteLn("Localization web app unhandled exception.", unhandledException);
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    await context.Response.Body.WriteAsync(unhandledException?.Message ?? string.Empty);
+
+                    using (var streamWriter = new System.IO.StreamWriter(context.Response.Body))
+                    {
+                        await streamWriter.WriteLineAsync(unhandledException?.Message ?? string.Empty);
+                    }
                 }));
 
             if (!env.IsDevelopment())

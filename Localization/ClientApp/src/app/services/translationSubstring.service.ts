@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
 import { Locale } from 'src/app/models/database-entities/locale.type';
+import { Image } from '../models/database-entities/image.type';
 
 @Injectable()
 export class TranslationSubstringService {
@@ -24,8 +25,22 @@ export class TranslationSubstringService {
         return strings;
     }
 
-  getStringsInFile(idFile: number): Observable<TranslationSubstring[]>{
-    return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile);
+    getImagesByTranslationSubstringId(translationSubstringId: number): Observable<Image[]>{
+      return this.http.post<Image[]>(this.url + "GetImagesByStringId/" + translationSubstringId, null);
+    }
+
+    uploadImageToTranslationSubstring(fileToUpload: File[], translationSubstringId: number) {
+        const formData: FormData = new FormData();
+
+        fileToUpload.forEach(element => {
+            formData.set('Image', element); 
+            formData.append('TranslationSubstringId', translationSubstringId.toString());
+            return this.http.post(this.url + "UploadImageToTranslationSubstring", formData).toPromise();
+        });        
+    }
+
+    getStringsInFile(idFile: number): Observable<TranslationSubstring[]>{
+      return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile);
     }
 
   getStringsByProjectId(

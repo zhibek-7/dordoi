@@ -79,8 +79,17 @@
 }
 
 .appendedImage {
-  width: 50%;
-  height: 40%;
+  width: 100%;
+  /* height: 100%; */
+}
+
+.imageBlock {
+  cursor: pointer;
+  margin-right: 5%;
+  border-radius: 15%;
+  border-color: #A4BF82;
+  border-width: 2px;
+  border-style: dashed;
 }
 
 .addCommentBlock {
@@ -100,3 +109,11 @@
   color: grey;
 }
 
+.termName {
+  font-weight: bold;
+  color: #A4BF82;
+}
+
+.glossaryName {
+  font-weight: bold;
+}

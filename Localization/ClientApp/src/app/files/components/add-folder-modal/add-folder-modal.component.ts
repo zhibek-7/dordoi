@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { TreeNode } from 'primeng/api';
 
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 import { File } from 'src/app/models/database-entities/file.type';
@@ -12,7 +13,9 @@ export class AddFolderModalComponent extends ModalComponent implements OnInit {
 
   newFolder: File;
 
-  @Output() newFolderSubmitted = new EventEmitter<File>();
+  node: TreeNode;
+
+  @Output() newFolderSubmitted = new EventEmitter<[File, TreeNode]>();
 
   constructor() {
     super();
@@ -22,14 +25,15 @@ export class AddFolderModalComponent extends ModalComponent implements OnInit {
   ngOnInit() {
   }
 
-  show() {
+  showForNode(node: TreeNode) {
+    this.node = node;
     this.resetNewFileModel();
     super.show();
   }
 
   submitNewFolder() {
     this.hide();
-    this.newFolderSubmitted.emit(this.newFolder);
+    this.newFolderSubmitted.emit([this.newFolder, this.node]);
   }
 
   resetNewFileModel() {

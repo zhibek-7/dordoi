@@ -116,11 +116,44 @@ namespace Localization.WebApi
         }
 
         // DELETE api/files/delete/5
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteNode(int id)
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteNode([FromBody] File fileToDelete)
         {
-            await this._filesService.DeleteNode(id);
+            await this._filesService.DeleteNode(fileToDelete);
             return Ok();
+        }
+
+        [HttpGet("{fileId}/changeParentFolder/{newParentId}")]
+        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        {
+            await this._filesService.ChangeParentFolderAsync(
+                fileId: fileId,
+                newParentId: newParentId
+                );
+        }
+
+        [HttpGet("{fileId}/locales/list")]
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForFileAsync(int fileId)
+        {
+            return await this._filesService.GetTranslationLocalesForFileAsync(fileId: fileId);
+        }
+
+        [HttpPut("{fileId}/locales")]
+        public async Task SetTranslationLocalesForTermAsync(int fileId, [FromBody] IEnumerable<int> localesIds)
+        {
+            await this._filesService.UpdateTranslationLocalesForTermAsync(
+                fileId: fileId,
+                localesIds: localesIds);
+        }
+
+        [HttpPost("{fileId}/download")]
+        public async Task<FileResult> DownloadFileAsync(int fileId, [FromBody] int? localeId)
+        {
+            var fileStream = await this._filesService.GetFile(fileId, localeId);
+            return this.File(
+                fileStream: fileStream,
+                contentType: "application/octet-stream",
+                enableRangeProcessing: true);
         }
 
     }
