@@ -30,7 +30,16 @@ export class ProjectsService {
       console.log("getProject="+id);
       console.log("getProject==="+this.controllerUrl + id);
     return this.httpClient.get<LocalizationProject>(this.controllerUrl + id);
-    }
+  }
+
+  /**
+   * Возвращает проект локализации с подробной иформацией из связанных данных.
+   * @param id Идентификатор проекта локализации.
+   */
+  getProjectWithDetails(id: number): Observable<LocalizationProject>
+  {
+    return this.httpClient.post<LocalizationProject>(this.controllerUrl + "details", id);
+  }
 
   async addProject(project: LocalizationProject) {
     console.log("addProject-->");

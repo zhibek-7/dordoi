@@ -39,6 +39,16 @@ namespace Localization.Controllers
             return project;
         }
 
+        /// <summary>
+        /// Возвращает проект локализации с подробной иформацией из связанных данных.
+        /// </summary>
+        /// <param name="id">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        [HttpPost("details")]
+        public async Task<LocalizationProject> GetWithDetailsById([FromBody] int id)
+        {
+            return await _localizationProjectRepository.GetWithDetailsById(id);
+        }
 
         //[HttpPost]
         //[Route("add/{project}")]

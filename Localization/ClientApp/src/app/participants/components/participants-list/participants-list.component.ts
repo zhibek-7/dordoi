@@ -68,7 +68,8 @@ export class ParticipantsListComponent implements OnInit {
       this.pageSize,
       this.currentOffset,
       this.sortBy,
-      this.isSortingAscending
+      this.isSortingAscending,
+      null
     )
       .subscribe(response => {
         this.totalParticipantsCount = +response.headers.get('totalCount');

@@ -15,6 +15,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
     {
+        private readonly int _defaultFileStreamBufferSize = 4096;
+
         private readonly string _insertFileSql =
             "INSERT INTO \"Files\" (" +
             "\"ID_LocalizationProject\", " +
@@ -376,7 +378,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var sw = new System.IO.StreamWriter(
                             stream: fileStream,
                             encoding: Encoding.GetEncoding(file.Encoding),
-                            bufferSize: 4096,
+                            bufferSize: this._defaultFileStreamBufferSize,
                             leaveOpen: true))
                         {
                             sw.Write(output);
@@ -390,7 +392,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var sw = new System.IO.StreamWriter(
                             stream: fileStream,
                             encoding: Encoding.GetEncoding(file.Encoding),
-                            bufferSize: 4096,
+                            bufferSize: this._defaultFileStreamBufferSize,
                             leaveOpen: true))
                         {
                             sw.Write(file.OriginalFullText);

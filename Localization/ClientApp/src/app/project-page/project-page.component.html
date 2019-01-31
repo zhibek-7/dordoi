@@ -44,48 +44,99 @@
     <div class="container-fluide">
       <div class="row mr-2 ml-2 mt-3">
         <div class="col-9" style="display: flex; padding-left: 0px; flex-wrap: wrap;">
-          <div *ngFor="let item of langList; let i=index" class="lang mr-4">
-            <img src="{{item.icon}}" alt="">
-            <p>{{item.name}}</p>
+
+          <div class="table-border">
+
+            <mat-table [dataSource]="dataSourceForMainTab" matSort>
+
+              <ng-container matColumnDef="flag">
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let row"><img src='{{row.localeUrl}}' alt="Изображение флага"> </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="localeName">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Целевой язык </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.localeName}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="percentOfTranslation">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент завершения перевода </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percentOfTranslation}}% </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="percentOfConfirmed">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент утверждение переводов </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percentOfConfirmed}}% </mat-cell>
+              </ng-container>
+
+
+              <mat-header-row *matHeaderRowDef="displayedColumnsForMainTab"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumnsForMainTab;"
+                       routerLink='/'>
+              </mat-row>
+
+            </mat-table>
+
           </div>
+
         </div>
         <div class="col-3 right-content">
           <span style="font-weight:600">Детали</span>
           <table class="table" *ngIf="currentProject">
             <tr>
               <td>Исходный язык</td>
-              <td> Русский </td>
-              <!-- <td> {{currentProject.??}} </td> тут пока хардкод, т.к. нет такого свойства-->
+              <td> {{currentProject.sourceLocaleName}} </td>
             </tr>
             <tr>
               <td>Пользователей</td>
-              <!-- <td> {{currentProject.??}} </td> тоже хардкод -->
-              <td> 9 </td>
+               <td> {{currentProject.countUsersActive}} </td>
             </tr>
             <tr>
               <td>Words to translate</td>
-              <!-- <td> {{currentProject.??}} </td> тоже хардкод -->
-              <td> 85 </td>
+               <td> <!--{ {currentProject.??}}--> </td>
             </tr>
             <tr>
               <td>Создан</td>
-              <td> {{currentProject.dateOfCreation}} </td>
+              <td> {{currentProject.dateOfCreation.toLocaleString()}} </td>
             </tr>
             <tr>
               <td>Последняя активность</td>
-              <td> {{currentProject.lastActivity}} </td>
+              <td> {{currentProject.lastActivity.toLocaleString()}} </td>
             </tr>
           </table>
           <hr>
-          <span style="font-weight:600">Менеджеры</span><br>
-          <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
-            <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-            <span class="ml-2" style="color:grey;">{{currentUserName}}</span>
-          </a>
-          <div class="mt-2">
-            <span class="mr-2 br-b blue">Владелец</span>
-            <span class="mr-2 br-b green">Связаться</span>
+
+          <div>
+            <span style="font-weight:600">Менеджеры</span>
+            <br>
+
+            <div *ngFor="let participant of participantsOwner">
+
+              <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
+                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
+                <span class="ml-2" style="color: grey;">{{participant.userName}}</span>
+              </a>
+              <div class="mt-2">
+                <span class="mr-2 br-b blue">Владелец</span>
+                <span class="mr-2 br-b green">Связаться</span>
+              </div>
+
+              </div>
+
+            <div *ngFor="let participant of participantsManager">
+
+              <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
+                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
+                <span class="ml-2" style="color: grey;">{{participant.userName}}</span>
+              </a>
+              <div class="mt-2">
+                <span class="mr-2 br-b green">Связаться</span>
+              </div>
+
+            </div>
+
           </div>
+
         </div>
       </div>
     </div>

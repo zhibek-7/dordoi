@@ -30,6 +30,7 @@ namespace Localization.Controllers
             public int? limit { get; set; }
             public string[] sortBy { get; set; }
             public bool? sortAscending { get; set; }
+            public string[] roleShort { get; set; }
         }
         [HttpPost("byProjectId/{projectId}/list")]
         public async Task<IEnumerable<ParticipantDTO>> GetParticipantsByProjectIdAsync(
@@ -54,7 +55,8 @@ namespace Localization.Controllers
                 limit: param.limit ?? 25,
                 offset: param.offset ?? 0,
                 sortBy: param.sortBy,
-                sortAscending: param.sortAscending ?? true
+                sortAscending: param.sortAscending ?? true,
+                roleShort: param.roleShort
                 );
         }
 
