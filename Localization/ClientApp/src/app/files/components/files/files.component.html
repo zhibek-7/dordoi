@@ -102,17 +102,13 @@
           <mat-icon> arrow_downward </mat-icon>
         </button>
         <button mat-icon-button
+                #fileRowMenuTrigger="matMenuTrigger"
                 [matMenuTriggerFor]="fileRowContextMenu"
                 [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
                 >
           <mat-icon> more_horiz </mat-icon>
         </button>
       </td>
-    </tr>
-    <tr style="visibility: hidden;"
-        #fileRowMenuTrigger="matMenuTrigger"
-        [matMenuTriggerFor]="fileRowContextMenu"
-        [matMenuTriggerData]="{node: rowNode.node, data: rowData}">
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage" let-columns>
