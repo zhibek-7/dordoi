@@ -1,4 +1,4 @@
-// Модель проектов
+/** Модель проектов */
 export class LocalizationProject {
   id?: number;
   name: string;
@@ -8,6 +8,10 @@ export class LocalizationProject {
   dateOfCreation?: any;
   lastActivity?: any;
   ID_SourceLocale?: number;
+  //Исходный язык
+  sourceLocaleName: string;
+  // Количество активных пользователей
+  countUsersActive: number;
   ableToDownload: boolean;
   ableToLeftErrors: boolean;
   defaultString: string;
@@ -18,8 +22,8 @@ export class LocalizationProject {
   notifynewcomment: boolean;
   export_only_approved_translations: boolean;
   original_if_string_is_not_translated: boolean;
- //public dateTime: Date = new Date(Date.now()),
- //public id?: number
+      //public dateTime: Date = new Date(Date.now()),
+      //public id?: number
   public constructor(
     id: number,
     name: string,
@@ -58,5 +62,5 @@ export class LocalizationProject {
     this.notifynewcomment = notifynewcomment;
     this.export_only_approved_translations = export_only_approved_translations;
     this.original_if_string_is_not_translated = original_if_string_is_not_translated;
-   }
+         }
 }

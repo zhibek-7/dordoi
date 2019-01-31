@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using DAL.Context;
 using System.Threading.Tasks;
+using Models.DatabaseEntities.DTO;
 using SqlKata;
 using Models.Interfaces.Repository;
 using Npgsql;
@@ -76,6 +77,53 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetAllForProject)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Возвращает назначенные языки перевода на проект локализации с процентами переводов по ним.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent(int projectId)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("LocalizationProjectsLocales")
+                        .Where("ID_LocalizationProject", projectId)
+                        .LeftJoin("Locales", "Locales.ID", "LocalizationProjectsLocales.ID_Locale")
+                        .Select(
+                            "Locales.Name as LocaleName",
+                            "Locales.url as LocaleUrl",
+
+                            "LocalizationProjectsLocales.PercentOfTranslation",
+                            "LocalizationProjectsLocales.PercentOfConfirmed"
+                            )
+                        .OrderBy("LocaleName");
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var result = await dbConnection.QueryAsync<LocalizationProjectsLocalesDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    return result;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetAllForProjectWithPercent)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetAllForProjectWithPercent)} {nameof(Exception)} ",
                     exception);
                 return null;
             }

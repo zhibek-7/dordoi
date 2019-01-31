@@ -15,5 +15,7 @@ namespace Models.DatabaseEntities
 
         [Required]
         public string Flag { get; set; }
+
+        public string url { get; set; }
     }
 }

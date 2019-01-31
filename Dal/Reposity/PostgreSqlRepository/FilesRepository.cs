@@ -15,6 +15,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
     {
+        private readonly int _defaultFileStreamBufferSize = 4096;
+
         private readonly string _insertFileSql =
             "INSERT INTO \"Files\" (" +
             "\"ID_LocalizationProject\", " +
@@ -343,7 +345,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { id };
                     this.LogQuery(sqlFileQuery, param);
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
-                    var tempFileName = string.Format("{0}_{1}", System.IO.Path.GetTempPath() + Guid.NewGuid().ToString(), file.Name);
+                    var tempFileName = System.IO.Path.GetTempFileName();
                     if (id_locale != -1)
                     {
                         var sqlLocalizationProjectQuery = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @ID_LocalizationProject";
@@ -376,11 +378,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var sw = new System.IO.StreamWriter(
                             stream: fileStream,
                             encoding: Encoding.GetEncoding(file.Encoding),
-                            bufferSize: 4096,
+                            bufferSize: this._defaultFileStreamBufferSize,
                             leaveOpen: true))
                         {
                             sw.Write(output);
                         }
+                        fileStream.Seek(0, System.IO.SeekOrigin.Begin);
                         return fileStream;
                     }
                     else
@@ -389,11 +392,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                         using (var sw = new System.IO.StreamWriter(
                             stream: fileStream,
                             encoding: Encoding.GetEncoding(file.Encoding),
-                            bufferSize: 4096,
+                            bufferSize: this._defaultFileStreamBufferSize,
                             leaveOpen: true))
                         {
                             sw.Write(file.OriginalFullText);
                         }
+                        fileStream.Seek(0, System.IO.SeekOrigin.Begin);
                         return fileStream;
                     }
                 }

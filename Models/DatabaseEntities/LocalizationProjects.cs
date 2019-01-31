@@ -23,6 +23,16 @@ namespace Models.DatabaseEntities
         [Required]
         public int ID_SourceLocale { get; set; }
 
+        /// <summary>
+        /// Исходный язык
+        /// </summary>
+        public string SourceLocaleName { get; set; }
+        /// <summary>
+        /// Количество активных пользователей
+        /// </summary>
+        public int? CountUsersActive { get; set; }
+
+
         public bool AbleToDownload { get; set; }
 
         public bool AbleToLeftErrors { get; set; }
