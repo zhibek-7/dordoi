@@ -37,7 +37,11 @@ export class SetLanguagesModalComponent extends ModalComponent implements OnInit
                     locale,
                     this.selectedLocales.some(currentTermLocale => currentTermLocale.id == locale.id)));
             },
-            error => console.log(error)));
+            error => {
+              console.log(error);
+              alert(error);
+            }),
+        error => alert(error));
   }
 
   setSelectedLocales(newSelection: Locale[]) {
@@ -53,7 +57,7 @@ export class SetLanguagesModalComponent extends ModalComponent implements OnInit
   applyChanges() {
     this.fileService
       .updateTranslationLocalesForFileAsync(this.file, this.selectedLocales.map(locale => locale.id))
-      .subscribe();
+      .subscribe(null, error => alert(error));
     this.hide();
   }
 
