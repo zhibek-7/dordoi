@@ -9,7 +9,7 @@ namespace Models.DatabaseEntities
     {
         public int ID_Locale { get; set; }
 
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
     }
 }

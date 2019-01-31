@@ -10,27 +10,27 @@ namespace Models.DatabaseEntities.PartialEntities.Comment
         /// <summary>
         /// Идентификатор комментария
         /// </summary>
-        public int CommentId { get; set; }
+        public int Comment_Id { get; set; }
 
         /// <summary>
         /// Текст комментария
         /// </summary>
-        public string Comment { get; set; }
+        public string Comment_text { get; set; }
 
         /// <summary>
         /// Время и дата комментария
         /// </summary>
-        public DateTime DateTime { get; set; }
+        public DateTime Date_Time { get; set; }
 
         /// <summary>
         /// Идентификатор пользователя
         /// </summary>
-        public int UserId { get; set; }
+        public int User_Id { get; set; }
 
         /// <summary>
         /// Имя пользователя
         /// </summary>
-        public string UserName { get; set; }
+        public string User_Name { get; set; }
 
         /// <summary>
         /// Скриншоты прикрепленные к данному комментарию

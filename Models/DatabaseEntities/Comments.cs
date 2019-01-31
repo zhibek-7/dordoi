@@ -12,6 +12,6 @@ namespace Models.DatabaseEntities
         public int ID_User { get; set; }
 
         [Required]
-        public string Comment { get; set; }
+        public string Comment_text { get; set; }
     }
 }

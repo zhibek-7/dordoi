@@ -25,9 +25,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<int> AddAsync(Comments comment)
         {
-            var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
+            var query = "INSERT INTO comments_text (id_translation_substrings, datetime, id_user, comment_text)" +
                         "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
-                        "RETURNING  \"Comments\".\"ID\"";
+                        "RETURNING  comments_text.id";
 
             try
             {
@@ -64,7 +64,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddFileAsync(Comments comment)
         {
 
-            var query = "INSERT INTO \"Images\" (\"Name\",  \"ID_User\", \"Data\", url) VALUES('test',  @ID_User,  '‰PNG','')";
+            var query = "INSERT INTO images (name_text,  id_user, data, url) VALUES('test',  comment.ID_User,  '‰PNG','')";
             /*
                     var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
                                     "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
@@ -102,7 +102,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<Comments>> GetAllAsync()
         {
-            var query = "SELECT * FROM \"Comments\"";
+            var query = "SELECT * FROM comments_text";
 
             try
             {
@@ -150,9 +150,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { idString };
                     this.LogQuery(query, param);
                     var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, new { Id = idString });
-                    foreach(var comment in comments)
+                    foreach (var comment in comments)
                     {
-                        comment.Images = await GetImagesOfCommentAsync(comment.CommentId);
+                        comment.Images = await GetImagesOfCommentAsync(comment.Comment_Id);
                     }
                     return comments;
                 }
@@ -256,7 +256,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="id">id комментарий который нужно удалить</param>
         /// <returns></returns>
         public async Task<bool> RemoveAsync(int commentId)
-        {            
+        {
             //"" +
             //"DELETE " +
             //"FROM \"CommentsImages\" AS CI " +
@@ -271,7 +271,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                          "" +
                          "DELETE " +
                          "FROM \"Images\" AS I " +
-                         "WHERE I.\"ID\" = @ImageId;";                                               
+                         "WHERE I.\"ID\" = @ImageId;";
 
             try
             {
@@ -384,7 +384,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
                 return 0;
             }
-        }        
+        }
 
         /// <summary>
         /// Получить все изображения прикрепленные к конкретному комментарию
@@ -401,13 +401,13 @@ namespace DAL.Reposity.PostgreSqlRepository
 
             try
             {
-                using(var dbConnection = new NpgsqlConnection(connectionString))
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(query, commentId);
                     IEnumerable<Image> images = await dbConnection.QueryAsync<Image>(query, new { CommentId = commentId });
                     foreach (var image in images)
                     {
-                        image.URL = Convert.ToBase64String(image.Data);
+                        image.URL = Convert.ToBase64String(image.body);
                     }
                     return images;
                 }

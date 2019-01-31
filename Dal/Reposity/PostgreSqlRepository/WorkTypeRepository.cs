@@ -39,7 +39,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var _sql = "INSERT INTO \"WorkTypes\" (\"Name\") VALUES (@Name)";
-                    var _params = new { workType.Name };
+                    var _params = new { workType.Name_text };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
 
@@ -157,7 +157,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var _sql = "UPDATE \"WorkTypes\" SET \"Name\"=@name WHERE \"ID\"=@WorkTypeId ";
-                    var _params = new { name = workType.Name, WorkTypeId = workType.ID };
+                    var _params = new { name = workType.Name_text, WorkTypeId = workType.ID };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);
                     return true;

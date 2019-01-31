@@ -3,18 +3,18 @@
     public class ParticipantDTO : DatabaseEntities.BaseEntity
     {
 
-        public int LocalizationProjectId { get; set; }
+        public int Localization_Project_Id { get; set; }
 
-        public int UserId { get; set; }
+        public int User_Id { get; set; }
 
-        public int RoleId { get; set; }
-        
+        public int Role_Id { get; set; }
+
         public bool Active { get; set; }
 
-        public string UserName { get; set; }
+        public string User_Name { get; set; }
 
-        public string RoleName { get; set; }
+        public string Role_Name { get; set; }
 
-        public string RoleShort { get; set; }
+        public string Role_Short { get; set; }
     }
 }

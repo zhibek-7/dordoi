@@ -5,6 +5,6 @@ namespace Models.DatabaseEntities
     public class WorkType : BaseEntity
     {
         [Required]
-        public string Name { get; set; }
+        public string Name_text { get; set; }
     }
 }

@@ -148,7 +148,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPost("UploadImageToComment")]
         public async Task<IActionResult> UploadImage()
-        {            
+        {
             var content = Request.Form.Files["Image"];
             var commentId = Request.Form["CommentId"];
             string fileName = content.FileName;
@@ -167,9 +167,9 @@ namespace Localization.WebApi
 
                         Image img = new Image();
                         img.ID_User = 301;
-                        img.Name = fileName;
-                        img.DateTimeAdded = DateTime.Now;
-                        img.Data = imageData;
+                        img.Name_text = fileName;
+                        img.Date_Time_Added = DateTime.Now;
+                        img.body = imageData;
 
                         int insertedCommentId = await commentRepository.UploadImageAsync(img, Convert.ToInt32(commentId));
                     }

@@ -21,8 +21,8 @@ namespace Models.Extensions
             var nodes = new List<TNode>();
 
             // Get child nodes by parent node id 
-            var childFiles = files.Where(file => file.ID_FolderOwner == parentId)
-                .OrderByDescending(file => file.IsFolder)
+            var childFiles = files.Where(file => file.ID_Folder_Owner == parentId)
+                .OrderByDescending(file => file.Is_Folder)
                 .ThenBy(file => file.ID);
 
             foreach (var file in childFiles)

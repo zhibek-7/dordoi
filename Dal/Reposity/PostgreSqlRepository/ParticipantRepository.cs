@@ -36,7 +36,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         },
                         new object[]
                         {
-                        newParticipant.ID_LocalizationProject,
+                        newParticipant.ID_Localization_Project,
                         newParticipant.ID_Role,
                         newParticipant.ID_User,
                         newParticipant.Active
@@ -89,7 +89,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("Participants")
-                        .Where("ID_LocalizationProject", updatedParticipant.ID_LocalizationProject)
+                        .Where("ID_LocalizationProject", updatedParticipant.ID_Localization_Project)
                         .Where("ID_User", updatedParticipant.ID_User)
                         .AsUpdate(new[] {
                     "ID_LocalizationProject",
@@ -99,7 +99,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             },
                             new object[]
                             {
-                        updatedParticipant.ID_LocalizationProject,
+                        updatedParticipant.ID_Localization_Project,
                         updatedParticipant.ID_Role,
                         updatedParticipant.ID_User,
                         updatedParticipant.Active
@@ -241,7 +241,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var participant = new Models.DatabaseEntities.Participant()
             {
-                ID_LocalizationProject = projectId,
+                ID_Localization_Project = projectId,
                 ID_User = userId,
                 ID_Role = roleId,
                 Active = true

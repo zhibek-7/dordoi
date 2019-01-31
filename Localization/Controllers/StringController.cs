@@ -123,9 +123,9 @@ namespace Localization.WebApi
 
                         Image img = new Image();
                         img.ID_User = 301;
-                        img.Name = fileName;
-                        img.DateTimeAdded = DateTime.Now;
-                        img.Data = imageData;
+                        img.Name_text = fileName;
+                        img.Date_Time_Added = DateTime.Now;
+                        img.body = imageData;
 
                         int insertedCommentId = await stringRepository.UploadImageAsync(img, Convert.ToInt32(translationSubstringId));
                     }

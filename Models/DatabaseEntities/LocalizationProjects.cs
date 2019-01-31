@@ -9,7 +9,7 @@ namespace Models.DatabaseEntities
     public class LocalizationProject : BaseEntity
     {
         [Required]
-        public string Name { get; set; }
+        public string Name_text { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]
@@ -17,11 +17,11 @@ namespace Models.DatabaseEntities
 
         public bool Visibility { get; set; }
         [Required]
-        public DateTime DateOfCreation { get; set; }
+        public DateTime Date_Of_Creation { get; set; }
         [Required]
-        public DateTime LastActivity { get; set; }
+        public DateTime Last_Activity { get; set; }
         [Required]
-        public int ID_SourceLocale { get; set; }
+        public int ID_Source_Locale { get; set; }
 
         /// <summary>
         /// Исходный язык

@@ -75,7 +75,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Добавление нового глоссария
                     var newGlossaries = new
                     {
-                        Name = glossary.Name,
+                        Name = glossary.Name_text,
                         Description = glossary.Description,
                         ID_File = (int?)null
                     };
@@ -90,10 +90,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                             param: compiledQuery.NamedBindings);
 
                     //Добавление в таблицу "GlossariesLocales" записей связи глоссария с языками перевода (Glossaries с Locales)
-                    await EditGlossariesLocalesAsync(idOfNewGlossary, glossary.LocalesIds, false);
+                    await EditGlossariesLocalesAsync(idOfNewGlossary, glossary.Locales_Ids, false);
 
                     //Добавление в таблицу "LocalizationProjectsGlossaries" записей связи глоссария с проектами локализации (Glossaries с LocalizationProjects)
-                    await EditGlossariesLocalizationProjectsAsync(idOfNewGlossary, glossary.LocalizationProjectsIds, false);
+                    await EditGlossariesLocalizationProjectsAsync(idOfNewGlossary, glossary.Localization_Projects_Ids, false);
                 }
             }
             catch (NpgsqlException exception)
@@ -135,7 +135,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var glossaries = await dbConnection.QueryAsync<Glossaries>(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings);
-                    
+
                     return glossaries;
                 }
             }
@@ -165,7 +165,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Обновление глоссария
                     var editedGlossaries = new
                     {
-                        Name = glossary.Name,
+                        Name = glossary.Name_text,
                         Description = glossary.Description,
                         ID_File = glossary.ID_File
                     };
@@ -175,13 +175,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                     await dbConnection.ExecuteAsync(
                             sql: compiledQuery.Sql,
                             param: compiledQuery.NamedBindings);
-                    
+
 
                     //Пересоздание связей глоссария с языками перевода (Glossaries с Locales)
-                    await EditGlossariesLocalesAsync(glossary.ID, glossary.LocalesIds);
-                    
+                    await EditGlossariesLocalesAsync(glossary.ID, glossary.Locales_Ids);
+
                     //Пересоздание связей глоссария с проектами локализации (Glossaries с LocalizationProjects)
-                    await EditGlossariesLocalizationProjectsAsync(glossary.ID, glossary.LocalizationProjectsIds);
+                    await EditGlossariesLocalizationProjectsAsync(glossary.ID, glossary.Localization_Projects_Ids);
                 }
             }
             catch (NpgsqlException exception)
@@ -311,7 +311,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //еще Translations (ID_String), на них CommentsImages(ID_Comment),Comments(ID_TranslationSubstrings).
                     //Таблицы с прямой ссылкой на "Comments" (Glossaries.ID_File -> TranslationSubstrings.ID_FileOwner -> TranslationSubstrings.ID -> Comments.Id_TranslationSubStrings => Comments.ID_Comment) - "CommentsImages".
                     //Таблицы с прямой ссылкой на "Glossaries" - "GlossariesStrings", "GlossariesLocales", "LocalizationProjectsGlossaries".
-                    
+
                     //все из TranslationSubstrings и Files удаляется по Glossaries.ID_File
 
                     //Удаление зависимостей
@@ -399,7 +399,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                                 param: compiledQueryUserActions3.NamedBindings);
 
                             #endregion
-                            
+
                             #region "TranslationSubstrings" (Glossaries.ID_File)
 
                             var queryTranslationSubstrings = new Query("TranslationSubstrings").WhereIn("ID", idsTranslationSubstrings).AsDelete();

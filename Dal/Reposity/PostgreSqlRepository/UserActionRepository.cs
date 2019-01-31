@@ -33,7 +33,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var _params = new
                     {
                         action.ID_User,
-                        action.ID_worktype,
+                        action.Work_type,
                         action.Description,
                         action.ID_Locale,
                         action.ID_File,

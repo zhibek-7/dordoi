@@ -2,8 +2,8 @@
 {
     public class FolderModel
     {
-        public string Name { get; set; }
-        public int? ParentId { get; set; }
-        public int ProjectId { get; set; }
+        public string Name_text { get; set; }
+        public int? Parent_Id { get; set; }
+        public int Project_Id { get; set; }
     }
 }

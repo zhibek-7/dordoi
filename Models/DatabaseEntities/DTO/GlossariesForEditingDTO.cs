@@ -8,12 +8,12 @@ namespace Models.DatabaseEntities.DTO
     /// </summary>
     public class GlossariesForEditingDTO : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name_text { get; set; }
         public string Description { get; set; }
         public int? ID_File { get; set; }
 
-        public IEnumerable<int?> LocalesIds { get; set; }
+        public IEnumerable<int?> Locales_Ids { get; set; }
 
-        public IEnumerable<int?> LocalizationProjectsIds { get; set; }
+        public IEnumerable<int?> Localization_Projects_Ids { get; set; }
     }
 }

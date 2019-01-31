@@ -6,6 +6,6 @@
     /// </summary>
     public class LocalizationProjectForSelectDTO : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name_text { get; set; }
     }
 }

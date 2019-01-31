@@ -11,8 +11,8 @@ namespace Models.DatabaseEntities.PartialEntities.Comment
 
         }
 
-        public string Name { get; private set; }
-        public string Filename { get; private set; }
+        public string Name_text { get; private set; }
+        public string File_name { get; private set; }
         public byte[] File { private set; get; }
     }
 }

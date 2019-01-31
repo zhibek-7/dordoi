@@ -3,9 +3,9 @@
     public class Term : DatabaseEntities.TranslationSubstring
     {
 
-        public int? PartOfSpeechId { get; set; }
+        public int? Part_Of_Speech_Id { get; set; }
 
-        public bool IsEditable { get; set; }
+        public bool Is_Editable { get; set; }
 
     }
 }

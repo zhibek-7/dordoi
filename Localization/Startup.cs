@@ -37,10 +37,10 @@ namespace Localization
         public void ConfigureServices(IServiceCollection services)
         {
             ///Как идея использовать класс, который видно во всех методах.
-            var connectionString = Configuration.GetConnectionString("db_connection");
-
+            //var connectionString = Configuration.GetConnectionString("db_connection");
+            var connectionString = Settings.GetStringDB();
             services.AddScoped<ISetttings>(provider => new Settings(connectionString));
-            //var connectionString = Settings.GetStringDB();
+
 
             // TODO нужно будет переделать все классы под этот вариант
             services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));

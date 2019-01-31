@@ -267,7 +267,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         }
                         file.ID = insertedId.Value;
 
-                        if (file.IsFolder)
+                        if (file.Is_Folder)
                         {
                             transaction.Commit();
                             return true;
@@ -298,7 +298,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         }
                         if (n == 0)
                         {
-                            file.StringsCount = translationSubstringsCount;
+                            file.Strings_Count = translationSubstringsCount;
                             sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
                             this.LogQuery(sqlString, param: file);
                             await connection.ExecuteAsync(sqlString, file, transaction);
@@ -352,8 +352,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { file.ID });
                         var sqlTranslationSubstringsQuery = "SELECT * FROM \"TranslationSubstring\" WHERE \"ID_FileOwner\" = @id";
                         var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
-                        translationSubstrings.Sort((x, y) => x.PositionInText.CompareTo(y.PositionInText));
-                        var output = file.OriginalFullText;
+                        translationSubstrings.Sort((x, y) => x.Position_In_Text.CompareTo(y.Position_In_Text));
+                        var output = file.Original_Full_Text;
                         for (int i = translationSubstrings.Count - 1; i >= 0; i--)
                         {
                             var sqlTranslationQuery = string.Format("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale{0} SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND \"Confirmed\" = true" : "");
@@ -362,22 +362,22 @@ namespace DAL.Reposity.PostgreSqlRepository
                             {
                                 if (localizationProject.AbleToLeftErrors)
                                 {
-                                    int n = translationSubstrings[i].PositionInText;
+                                    int n = translationSubstrings[i].Position_In_Text;
                                     while (n != 0 && (output[n - 1] != '\n' || output[n - 1] != '\r')) n--;
-                                    int m = output.IndexOfAny(new char[] { '\r', '\n' }, translationSubstrings[i].PositionInText);
+                                    int m = output.IndexOfAny(new char[] { '\r', '\n' }, translationSubstrings[i].Position_In_Text);
                                     while (m != output.Length - 1 && output[m + 1] != '\n') m++;
-                                    if (n > (i == 0 ? -1 : translationSubstrings[i - 1].PositionInText) && m < (i == translationSubstrings.Count - 1 ? output.Length : translationSubstrings[i + 1].PositionInText)) output = output.Remove(n, m - n + 1);
+                                    if (n > (i == 0 ? -1 : translationSubstrings[i - 1].Position_In_Text) && m < (i == translationSubstrings.Count - 1 ? output.Length : translationSubstrings[i + 1].Position_In_Text)) output = output.Remove(n, m - n + 1);
                                     continue;
                                 }
                                 if (localizationProject.original_if_string_is_not_translated) continue;
                             }
-                            output = output.Remove(translationSubstrings[i].PositionInText, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].PositionInText, translation == null ? localizationProject.DefaultString : translation.Translated);
+                            output = output.Remove(translationSubstrings[i].Position_In_Text, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].Position_In_Text, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
 
                         var fileStream = System.IO.File.Create(tempFileName);
                         using (var sw = new System.IO.StreamWriter(
                             stream: fileStream,
-                            encoding: Encoding.GetEncoding(file.Encoding),
+                            encoding: Encoding.GetEncoding(file.Encod),
                             bufferSize: this._defaultFileStreamBufferSize,
                             leaveOpen: true))
                         {
@@ -391,11 +391,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                         var fileStream = System.IO.File.Create(tempFileName);
                         using (var sw = new System.IO.StreamWriter(
                             stream: fileStream,
-                            encoding: Encoding.GetEncoding(file.Encoding),
+                            encoding: Encoding.GetEncoding(file.Encod),
                             bufferSize: this._defaultFileStreamBufferSize,
                             leaveOpen: true))
                         {
-                            sw.Write(file.OriginalFullText);
+                            sw.Write(file.Original_Full_Text);
                         }
                         fileStream.Seek(0, System.IO.SeekOrigin.Begin);
                         return fileStream;

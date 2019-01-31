@@ -201,7 +201,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
-            newTerm.ID_FileOwner = glossary.ID_File;
+            newTerm.ID_File_Owner = glossary.ID_File;
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))

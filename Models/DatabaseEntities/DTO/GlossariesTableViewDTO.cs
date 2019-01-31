@@ -6,11 +6,11 @@
     /// </summary>
     public class GlossariesTableViewDTO : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
-        public string LocalesName { get; set; }
+        public string Locales_Name { get; set; }
 
-        public string LocalizationProjectsName { get; set; }
+        public string Localization_Projects_Name { get; set; }
 
     }
 }

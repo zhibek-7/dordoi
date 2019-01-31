@@ -185,8 +185,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var sqlQuery = "INSERT INTO \"LocalizationProjects\" (\"Name\", \"Description\", \"URL\", \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
-                  + project.Name + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.DateOfCreation + "','"
-                  + project.LastActivity + "','" + project.ID_SourceLocale + "','" + project.AbleToDownload + "','" + project.AbleToLeftErrors + "','"
+                  + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
+                  + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.AbleToDownload + "','" + project.AbleToLeftErrors + "','"
                   + project.DefaultString + "','" + project.NotifyNew + "','" + project.NotifyFinish + "','" + project.NotifyConfirm + "','" + project.Logo + "')";
 
                     this.LogQuery(sqlQuery);
@@ -268,7 +268,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                            "WHERE \"ID\"=@ID";
 
 
-         
+
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -306,7 +306,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                   
+
                     this.LogQuery(sqlQuery, projectLocales);
                     dbConnection.Execute(sqlQuery, projectLocales);
                 }

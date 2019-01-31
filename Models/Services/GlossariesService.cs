@@ -35,12 +35,12 @@ namespace Models.Services
                 var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesTableViewDTO
                 {
                     ID = t.Key,
-                    Name = t.FirstOrDefault().Name,
+                    Name_text = t.FirstOrDefault().Name_text,
 
-                    LocalesName = string.Join(", ", t.Select(x => x.LocaleName).Distinct().OrderBy(n => n)),
-                    LocalizationProjectsName = string.Join(", ",
-                        t.Select(x => x.LocalizationProjectName).Distinct().OrderBy(n => n))
-                }).OrderBy(t => t.Name);
+                    Locales_Name = string.Join(", ", t.Select(x => x.Locale_Name).Distinct().OrderBy(n => n)),
+                    Localization_Projects_Name = string.Join(", ",
+                        t.Select(x => x.Localization_Project_Name).Distinct().OrderBy(n => n))
+                }).OrderBy(t => t.Name_text);
                 return resultDTO;
             }
             catch (Exception exception)
@@ -80,11 +80,11 @@ namespace Models.Services
                 var resultDTO = new GlossariesForEditingDTO
                 {
                     ID = temp.FirstOrDefault().ID,
-                    Name = temp.FirstOrDefault().Name,
+                    Name_text = temp.FirstOrDefault().Name_text,
                     Description = temp.FirstOrDefault().Description,
                     ID_File = temp.FirstOrDefault().ID_File,
-                    LocalesIds = temp.Select(t => t.LocaleID).Distinct(),
-                    LocalizationProjectsIds = temp.Select(t => t.LocalizationProjectID).Distinct()
+                    Locales_Ids = temp.Select(t => t.Locale_ID).Distinct(),
+                    Localization_Projects_Ids = temp.Select(t => t.Localization_Project_ID).Distinct()
                 };
                 return resultDTO;
             }

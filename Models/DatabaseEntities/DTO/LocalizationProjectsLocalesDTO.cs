@@ -12,19 +12,19 @@ namespace Models.DatabaseEntities.DTO
         /// <summary>
         /// Наименование языка
         /// </summary>
-        public string LocaleName { get; set; }
+        public string Locale_Name { get; set; }
         /// <summary>
         /// Путь к изображению флага
         /// </summary>
-        public string LocaleUrl { get; set; }
+        public string Locale_Url { get; set; }
 
         /// <summary>
         /// Процент переведенных слов
         /// </summary>
-        public string PercentOfTranslation { get; set; }
+        public string Percent_Of_Translation { get; set; }
         /// <summary>
         /// Процент подтвержденных переводов
         /// </summary>
-        public string PercentOfConfirmed { get; set; }
+        public string Percent_Of_Confirmed { get; set; }
     }
 }

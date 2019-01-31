@@ -4,22 +4,22 @@ namespace Models.DatabaseEntities
 {
     public class File : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name_text { get; set; }
         public string Description { get; set; }
-        public DateTime? DateOfChange { get; set; }
+        public DateTime? Date_Of_Change { get; set; }
 
-        public int? StringsCount { get; set; }
+        public int? Strings_Count { get; set; }
         public int? Version { get; set; }
-        public bool? IsLastVersion { get; set; }
+        public bool? Is_Last_Version { get; set; }
         public int? Priority { get; set; }
 
-        public string Encoding { get; set; }
-        public string OriginalFullText { get; set; }
+        public string Encod { get; set; }
+        public string Original_Full_Text { get; set; }
 
-        public bool IsFolder { get; set; }
+        public bool Is_Folder { get; set; }
 
-        public int ID_LocalizationProject { get; set; }
-        public int? ID_FolderOwner { get; set; }
-        public int? Id_PreviousVersion { get; set; }
+        public int ID_Localization_Project { get; set; }
+        public int? ID_Folder_Owner { get; set; }
+        public int? Id_Previous_Version { get; set; }
     }
 }
