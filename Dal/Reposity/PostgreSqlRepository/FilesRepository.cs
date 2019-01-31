@@ -343,7 +343,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { id };
                     this.LogQuery(sqlFileQuery, param);
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
-                    var tempFileName = string.Format("{0}_{1}", System.IO.Path.GetTempPath() + Guid.NewGuid().ToString(), file.Name);
+                    var tempFileName = System.IO.Path.GetTempFileName();
                     if (id_locale != -1)
                     {
                         var sqlLocalizationProjectQuery = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @ID_LocalizationProject";
@@ -381,6 +381,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         {
                             sw.Write(output);
                         }
+                        fileStream.Seek(0, System.IO.SeekOrigin.Begin);
                         return fileStream;
                     }
                     else
@@ -394,6 +395,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         {
                             sw.Write(file.OriginalFullText);
                         }
+                        fileStream.Seek(0, System.IO.SeekOrigin.Begin);
                         return fileStream;
                     }
                 }
