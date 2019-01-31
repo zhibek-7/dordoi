@@ -16,6 +16,7 @@ namespace Localization.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly LocalizationProjectRepository _localizationProjectRepository;
+        private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
         private readonly UserActionRepository _userActionRepository;
 
         public ProjectController()
@@ -83,6 +84,17 @@ namespace Localization.Controllers
         public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectAsync()
         {
             return await _localizationProjectRepository.GetAllForSelectDTOAsync();
+        }
+
+        [HttpPost]
+        [Route("AddProjectLocale")]
+        public LocalizationProjectsLocales[] EditProject(LocalizationProjectsLocales[] projectLocales, int Id)
+        {
+            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
+            {
+                _localizationProjectsLocalesRepository.AddProjectsLocales(projectLocale);
+            }
+            return projectLocales;
         }
     }
 }

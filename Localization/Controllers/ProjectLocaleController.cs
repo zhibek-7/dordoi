@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
+using Models.Interfaces.Repository;
 
 namespace Localization.Controllers
 {
@@ -16,16 +17,23 @@ namespace Localization.Controllers
     public class ProjectLocaleController : ControllerBase
     {
 
-        //private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
-        //private readonly UserActionRepository _userActionRepository;
+        private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
+        private readonly UserActionRepository _userActionRepository;
 
-        //public ProjectLocaleController()
-        //{
-        //    _localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
-        //    _userActionRepository = new UserActionRepository(Settings.GetStringDB());
-        //}
+        public ProjectLocaleController()
+        {
+            _localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(Settings.GetStringDB());
+            _userActionRepository = new UserActionRepository(Settings.GetStringDB());
+        }
 
-
-
+        [HttpPost]
+        [Route("edit/{Id}")]
+        public LocalizationProjectsLocales[] EditProject(LocalizationProjectsLocales[] projectLocales, int Id)
+        {
+            foreach (LocalizationProjectsLocales projectLocale in projectLocales) {
+                _localizationProjectsLocalesRepository.UpdateProjectsLocales(projectLocale);
+            }
+            return projectLocales;
+        }
     }
 }
