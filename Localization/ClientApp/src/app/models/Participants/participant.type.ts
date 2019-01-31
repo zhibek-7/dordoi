@@ -6,5 +6,6 @@ export class Participant {
     public active?: boolean,
     public userName?: string,
     public roleName?: string,
+    public roleShort?: string
   ) { }
 }

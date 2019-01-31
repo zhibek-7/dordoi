@@ -15,5 +15,12 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectDTOAsync();
         bool Remove(int Id);
         void Update(LocalizationProject user);
+
+        /// <summary>
+        /// Возвращает проект локализации с подробной иформацией из связанных данных.
+        /// </summary>
+        /// <param name="id">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        Task<LocalizationProject> GetWithDetailsById(int id);
     }
 }

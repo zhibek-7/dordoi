@@ -147,7 +147,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             int limit,
             int offset,
             string[] sortBy = null,
-            bool sortAscending = true
+            bool sortAscending = true,
+            string[] roleShort = null
             )
         {
             if (sortBy == null)
@@ -162,7 +163,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         projectId: projectId,
                         search: search,
                         roleIds: roleIds,
-                        localeIds: localeIds);
+                        localeIds: localeIds,
+                        roleShort: roleShort);
 
 
                     query = this.ApplyPagination(
@@ -342,7 +344,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="roleIds"></param>
         /// <param name="localeIds"></param>
         /// <returns></returns>
-        private Query GetByProjectIdQuery(int projectId, string search, int[] roleIds, int[] localeIds)
+        private Query GetByProjectIdQuery(int projectId, string search, int[] roleIds, int[] localeIds, string[] roleShort = null)
         {
             var query = new Query("Participants")
                 .Where("Participants.ID_LocalizationProject", projectId)
@@ -355,7 +357,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     "Participants.ID_Role as RoleId",
                     "Participants.Active",
                     "Users.Name as UserName",
-                    "Roles.Name as RoleName"
+                    "Roles.Name as RoleName",
+                    "Roles.short as RoleShort"
                 );
 
             try
@@ -380,6 +383,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                             .WhereRaw("\"UsersLocales\".\"ID_User\"=\"Participants\".\"ID_User\"")
                             .WhereIn("UsersLocales.ID_Locale", localeIds));
                 }
+
+                if (roleShort != null && roleShort.Length > 0)
+                {
+                    query = query.WhereIn("Roles.short", roleShort);
+                }
+
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
                 return query;

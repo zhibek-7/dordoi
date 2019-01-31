@@ -1,25 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { ProjectsService } from '../services/projects.service';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatSort } from '@angular/material';
 
 import { LanguageService } from '../services/languages.service';
 import { UserService } from '../services/user.service';
 import { WorkTypeService } from '../services/workType.service';
 import { UserActionsService } from '../services/userActions.service';
+import { ParticipantsService } from '../services/participants.service';
 
 
 import { Locale } from '../models/database-entities/locale.type';
 import { User } from '../models/database-entities/user.type';
 import { WorkType } from "../models/database-entities/workType.type";
 import { UserAction } from '../models/database-entities/userAction.type';
+import { LocalizationProjectsLocalesDTO } from "../models/DTO/localizationProjectsLocalesDTO";
+import { Participant } from '../models/Participants/participant.type';
 
 @Component({
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
   styleUrls: ['./project-page.component.css'],
-  providers: [LanguageService, UserService, WorkTypeService, UserActionsService ]
+  providers: [LanguageService, UserService, WorkTypeService, UserActionsService, ParticipantsService ]
 })
 
 export class ProjectPageComponent implements OnInit {
@@ -43,6 +46,18 @@ export class ProjectPageComponent implements OnInit {
 
   currentUserName = '';
 
+  //Для блока "Детали" на главной вкладке
+  /** Менеджеры */
+  participantsManager: Participant[];
+  /** Владельцы */
+  participantsOwner: Participant[];
+
+  //#region для настройки таблицы (mat-table) отображаемой на вкладке "Главная"
+  displayedColumnsForMainTab: string[] = ['flag', 'localeName', 'percentOfTranslation', 'percentOfConfirmed'];
+  private dataSourceForMainTab = new MatTableDataSource<LocalizationProjectsLocalesDTO>();
+  @ViewChild(MatSort) sortForMainTab: MatSort;
+  //#endregion
+
   constructor(
     private route: ActivatedRoute,
     private projectService: ProjectsService,
@@ -50,6 +65,7 @@ export class ProjectPageComponent implements OnInit {
     private userService: UserService,
     private workTypeService: WorkTypeService, 
     private userActionsService: UserActionsService,
+    private participantsService: ParticipantsService
   ) { }
 
   ngOnInit() {
@@ -63,11 +79,28 @@ export class ProjectPageComponent implements OnInit {
 
     this.languagesService.getByProjectId(projectId)
       .subscribe(Languages => { this.langList = Languages; },
+      error => console.error(error));
+
+    this.languagesService.getLocalesWithPercentByProjectId(projectId)
+      .subscribe(localesWithPercent => { this.dataSourceForMainTab.data = localesWithPercent; },
         error => console.error(error));
 
-    this.projectService.getProject(projectId)
+    this.participantsService.getParticipantsByProjectId(projectId, null, null, null, null, null, ["userName"], true, [ "owner", "manager" ])
+      .subscribe(response =>
+      {
+        this.participantsManager = response.body.filter(t => t.roleShort.toString() == "manager");
+        this.participantsOwner = response.body.filter(t => t.roleShort == "owner");
+      },
+      error => console.error(error));
+
+    this.projectService.getProjectWithDetails(projectId)
       .subscribe(
-        project => { this.currentProject = project; },
+      project =>
+      {
+        this.currentProject = project;
+        this.currentProject.dateOfCreation = new Date(this.currentProject.dateOfCreation);
+        this.currentProject.lastActivity = new Date(this.currentProject.lastActivity);
+      },
         error => console.error(error));
 
     this.userService.getProjectParticipantList(projectId)
@@ -83,6 +116,10 @@ export class ProjectPageComponent implements OnInit {
         error => console.error(error));
 
     this.filtredUsers = this.userList;
+  }
+
+  ngAfterViewInit() {
+    this.dataSourceForMainTab.sort = this.sortForMainTab;
   }
 
   applyFilterUsers(filterValue: string) {

@@ -10,6 +10,7 @@ using Utilities.Logs;
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.DTO;
 using System.Threading.Tasks;
+using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -54,6 +55,44 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(Exception)} ",
                     exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Возвращает проект локализации с подробной иформацией из связанных данных.
+        /// </summary>
+        /// <param name="id">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        public async Task<LocalizationProject> GetWithDetailsById(int id)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("LocalizationProjects").Where("LocalizationProjects.ID", id)
+                        .LeftJoin("Locales", "Locales.ID", "LocalizationProjects.ID_SourceLocale")
+                        .Select(new Query("LocalizationProjects").Where("LocalizationProjects.ID", id)
+                                .LeftJoin("Participants", "Participants.ID_LocalizationProject", "LocalizationProjects.ID").Where("Active", true)
+                                .AsCount("Participants.ID_User"), "CountUsersActive")
+                        .Select("LocalizationProjects.*", "Locales.Name as SourceLocaleName")
+                        .Distinct();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var project = await dbConnection.QueryFirstOrDefaultAsync<LocalizationProject>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return project;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetWithDetailsById)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetWithDetailsById)} {nameof(Exception)} ", exception);
                 return null;
             }
         }
