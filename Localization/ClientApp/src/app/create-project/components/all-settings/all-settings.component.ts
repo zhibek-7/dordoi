@@ -1,7 +1,10 @@
 import { LocalizationProject } from "./../../../models/database-entities/localizationProject.type";
 import { Component, OnInit } from "@angular/core";
 import { ProjectsService } from "../../../services/projects.service";
+//import { ProjectsLocalesService } from "../../../services/projectsLocales.service";
 import { FormControl, FormGroup } from "@angular/forms";
+import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
+import { forEach } from "@angular/router/src/utils/collection";
 
 @Component({
   selector: "app-all-settings",
@@ -30,7 +33,7 @@ export class AllSettingsComponent implements OnInit {
   isChecked = true;
   
   public project: LocalizationProject;
-
+  //public projectLocale: LocalizationProjectsLocales;
 
   pjPublic: string;
   pjFileTrue= false;
@@ -77,6 +80,7 @@ export class AllSettingsComponent implements OnInit {
 
     this.currentProjectName = this.projectsService.currentProjectName;
     this.currentProjectId = this.projectsService.currentProjectId;
+   // this.searchText = this.projectsLcalesService.currentProjectName;
 
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
@@ -178,9 +182,23 @@ export class AllSettingsComponent implements OnInit {
     } else {
       this.currentProjectPublic = false;
     }
-
     console.log(this.currentProjectDescription);
-    this.currentProjectDescription;
+
+
+    let projectLocales: LocalizationProjectsLocales[]; 
+    this.selectedItems.forEach((lang) => {
+      projectLocales.push({
+        id_LocalizationProject: this.currentProjectId,
+        id_Locale: lang.id,
+        percentOfTranslation: 1,
+        PercentOfConfirmed:1
+      });     
+    })  
+
+
+    //
+    this.projectsService.addProjectLocales(projectLocales);
+
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,
       this.currentProjectName,

@@ -266,6 +266,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                            " \"export_only_approved_translations\"=@export_only_approved_translations," +
                            " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated  " +
                            "WHERE \"ID\"=@ID";
+
+
+         
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -289,5 +292,68 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
+        /// <summary>
+        /// Обновить языки в проекте
+        /// </summary>
+        /// <param name="project"></param>
+        public void AddProjectLocales(LocalizationProjectsLocales projectLocales)
+        {
+            var sqlQuery = "UPDATE \"LocalizationProjectsLocales\" SET" +
+                        "\"PercentOfTranslation\"=@PercentOfTranslation," +
+                        "\"PercentOfConfirmed\"=@PercentOfConfirmed," +
+                        "WHERE \"ID_LocalizationProject\"=@ID_LocalizationProject AND \"ID_Locale\" = @ID_Locale";
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                   
+                    this.LogQuery(sqlQuery, projectLocales);
+                    dbConnection.Execute(sqlQuery, projectLocales);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddProjectLocales)} {nameof(NpgsqlException)} ",
+                        exception);
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddProjectLocales)} {nameof(Exception)} ",
+                    exception);
+            }
+        }
+
+        /// <summary>
+        /// Обновить языки в проекте
+        /// </summary>
+        /// <param name="project"></param>
+        public void DeleteProjectLocales(LocalizationProjectsLocales projectLocales)
+        {
+            var sqlQuery = "DELETE FROM \"LocalizationProjectsLocales\" " +
+                           "WHERE \"ID_LocalizationProject\"=@ID_LocalizationProject AND \"ID_Locale\" = @ID_Locale";
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+
+                    this.LogQuery(sqlQuery, projectLocales);
+                    dbConnection.Execute(sqlQuery, projectLocales);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.DeleteProjectLocales)} {nameof(NpgsqlException)} ",
+                        exception);
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.DeleteProjectLocales)} {nameof(Exception)} ",
+                    exception);
+            }
+        }
     }
 }
