@@ -57,7 +57,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE \"ID\" = @GlossaryId LIMIT 1";
+                    var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE id = @GlossaryId LIMIT 1";
                     var getGlossaryByIdParam = new { GlossaryId = id };
                     this.LogQuery(getGlossaryByIdSql, getGlossaryByIdParam);
                     var glossary = await dbConnection.QueryFirstAsync<Glossary>(
@@ -91,7 +91,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sql = "SELECT * FROM \"Glossaries\" WHERE \"ID_File\" = @FileId LIMIT 1";
+                    var sql = "SELECT * FROM \"Glossaries\" WHERE id_file = @FileId LIMIT 1";
                     var param = new { FileId = fileId };
                     this.LogQuery(sql, param);
                     var glossary = await dbConnection.QueryFirstOrDefaultAsync<Glossary>(
@@ -128,8 +128,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var updateGlossarySql =
-                        "UPDATE \"Glossaries\" SET \"Name\"=@Name, \"Description\"=@Description, \"ID_File\"=@ID_File " +
-                        "WHERE \"ID\"=@ID";
+                        "UPDATE \"Glossaries\" SET name=@Name, description=@Description, id_file=@ID_File " +
+                        "WHERE id=@ID";
                     var updateGlossaryParam = item;
                     this.LogQuery(updateGlossarySql, updateGlossaryParam);
                     await dbConnection.ExecuteAsync(
@@ -163,7 +163,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var deleteGlossaryStingAssotiationSql =
                         "DELETE FROM \"GlossariesStrings\" " +
-                        "WHERE \"ID_Glossary\" = @GlossaryId AND \"ID_String\" = @TermId";
+                        "WHERE \"ID_Glossary\" = @GlossaryId AND id_string = @TermId";
                     var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
                     this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
                     await dbConnection
@@ -171,7 +171,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             sql: deleteGlossaryStingAssotiationSql,
                             param: deleteGlossaryStingAssotiationParam);
 
-                    var deleteStingSql = "DELETE FROM \"TranslationSubstrings\" WHERE \"ID\" = @TermId";
+                    var deleteStingSql = "DELETE FROM translation_substrings WHERE id = @TermId";
                     var deleteStingParam = new { TermId = termId };
                     this.LogQuery(deleteStingSql, deleteStingParam);
                     await dbConnection
@@ -207,15 +207,15 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var insertNewStingSql =
-                        "INSERT INTO \"TranslationSubstrings\" " +
+                        "INSERT INTO translation_substrings " +
                         "(" +
-                        "\"SubstringToTranslate\", " +
-                        "\"Description\", " +
-                        "\"Context\", " +
-                        "\"TranslationMaxLength\", " +
-                        "\"ID_FileOwner\", " +
-                        "\"Value\", " +
-                        "\"PositionInText\"" +
+                        "substring_to_translate, " +
+                        "description, " +
+                        "context, " +
+                        "translation_max_length, " +
+                        "id_file_owner, " +
+                        "value, " +
+                        "position_in_text" +
                         ") VALUES " +
                         "(" +
                         "@SubstringToTranslate, " +
@@ -226,7 +226,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "@Value, " +
                         "@PositionInText" +
                         ") " +
-                        "RETURNING \"ID\"";
+                        "RETURNING id";
                     var insertNewStingParam = newTerm;
                     this.LogQuery(insertNewStingSql, insertNewStingParam);
                     var idOfNewTerm = await dbConnection
@@ -235,7 +235,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             param: insertNewStingParam);
 
                     var instertGlossaryStringAssotiationSql =
-                        "INSERT INTO \"GlossariesStrings\" (\"ID_Glossary\", \"ID_String\",\"ID_PartOfSpeech\") VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
+                        "INSERT INTO glossaries_strings (id_glossary, id_string,id_par_of_speech) VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
                     var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm, PartsOfSpeechId = partOfSpeechId };
                     this.LogQuery(instertGlossaryStringAssotiationSql, instertGlossaryStringAssotiationParam);
                     await dbConnection
@@ -269,15 +269,15 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var updateTermSql =
-                        "UPDATE \"TranslationSubstrings\" SET " +
-                        "\"SubstringToTranslate\"=@SubstringToTranslate, " +
-                        "\"Description\"=@Description, " +
-                        "\"Context\"=@Context, " +
-                        "\"TranslationMaxLength\"=@TranslationMaxLength, " +
-                        "\"ID_FileOwner\"=@ID_FileOwner, " +
-                        "\"Value\"=@Value, " +
-                        "\"PositionInText\"=@PositionInText " +
-                        "WHERE \"ID\"=@ID";
+                        "UPDATE translation_substrings SET " +
+                        "substring_to_translate=@SubstringToTranslate, " +
+                        "description=@Description, " +
+                        "context=@Context, " +
+                        "translation_max_length=@TranslationMaxLength, " +
+                        "id_file_owner=@ID_FileOwner, " +
+                        "value=@Value, " +
+                        "position_in_text=@PositionInText " +
+                        "WHERE id=@ID";
                     var updateTermParam = updatedTerm;
                     this.LogQuery(updateTermSql, updateTermParam);
                     await dbConnection.ExecuteAsync(
@@ -285,10 +285,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                         param: updateTermParam);
 
                     var updateTermPartOfSpeechIdSql =
-                        "UPDATE \"GlossariesStrings\" SET " +
-                        "\"ID_PartOfSpeech\"=@PartOfSpeechId " +
-                        "WHERE \"ID_String\"=@StringId " +
-                        "AND \"ID_Glossary\"=@GlossaryId";
+                        "UPDATE glossaries_strings SET " +
+                        "id_part_of_speech=@PartOfSpeechId " +
+                        "WHERE id_string=@StringId " +
+                        "AND id_glossary=@GlossaryId";
                     var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartOfSpeechId = partOfSpeechId };
                     this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
                     await dbConnection.ExecuteAsync(
@@ -315,14 +315,14 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private static readonly Dictionary<string, string> TermsSortColumnNamesMapping = new Dictionary<string, string>()
         {
-            { "id", "TranslationSubstrings.ID" },
-            { "substringtotranslate", "TranslationSubstrings.SubstringToTranslate" },
-            { "description", "TranslationSubstrings.Description" },
-            { "context", "TranslationSubstrings.Context" },
-            { "translationmaxlength", "TranslationSubstrings.TranslationMaxLength" },
-            { "id_fileowner", "TranslationSubstrings.ID_FileOwner" },
-            { "value", "TranslationSubstrings.Value" },
-            { "positionintext", "TranslationSubstrings.PositionInText" },
+            { "id", "translation_substrings.id" },
+            { "substring_totranslate", "translation_substrings.substring_to_translate" },
+            { "description", "translation_substrings.description" },
+            { "context", "translation_substrings.context" },
+            { "translation_max_length", "translation_substrings.translation_max_length" },
+            { "id_fileowner", "translation_substrings.id_file_owner" },
+            { "value", "translation_substrings.balue" },
+            { "positionin_text", "translation_substrings.position_in_text" },
         };
 
         public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
@@ -416,28 +416,28 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
                 var query =
-                new Query("GlossariesStrings")
-                    .LeftJoin("TranslationSubstrings", "TranslationSubstrings.ID", "GlossariesStrings.ID_String")
-                    .Where("GlossariesStrings.ID_Glossary", glossaryId)
+                new Query("glossaries_strings")
+                    .LeftJoin("translation_substrings", "translation_substrings.id", "glossaries_strings.id_string")
+                    .Where("glossaries_strings.id_glossary", glossaryId)
                     .Select(
-                        "TranslationSubstrings.ID",
-                        "TranslationSubstrings.SubstringToTranslate",
-                        "TranslationSubstrings.Description",
-                        "TranslationSubstrings.Context",
-                        "TranslationSubstrings.TranslationMaxLength",
-                        "TranslationSubstrings.ID_FileOwner",
-                        "TranslationSubstrings.Value",
-                        "TranslationSubstrings.PositionInText",
-                        "GlossariesStrings.ID_PartOfSpeech as PartOfSpeechId")
+                        "translation_substrings.id",
+                        "translation_substrings.substring_to_translate",
+                        "translation_substrings.description",
+                        "translation_substrings.context",
+                        "translation_substrings.translation_max_length",
+                        "translation_substrings.id_file_owner",
+                        "translation_substrings.value",
+                        "translation_substrings.position_in_text",
+                        "glossaries_strings.id_part_of_speech as part_of_speech_id")
                     .Select(
-                        new Query("TranslationsubStringsLocales")
-                            .LeftJoin("Translations", join =>
-                                join.On("Translations.ID_String", "TranslationsubStringsLocales.Id_TranslationSubStrings")
-                                    .On("Translations.ID_Locale", "TranslationsubStringsLocales.Id_Locales"))
-                            .SelectRaw("COUNT(\"Translations\".\"Translated\") = 0")
-                            .Where("Translations.Translated", "<>", "''")
-                            .WhereRaw("\"TranslationsubStringsLocales\".\"Id_TranslationSubStrings\"=\"TranslationSubstrings\".\"ID\""),
-                        "IsEditable");
+                        new Query("translation_substrings_Locales")
+                            .LeftJoin("translations", join =>
+                                join.On("translations.id_string", "TranslationsubStringsLocales.id_translation_substrings")
+                                    .On("translations.id_locale", "TranslationsubStringsLocales.id_locales"))
+                            .SelectRaw("COUNT(translations.translated) = 0")
+                            .Where("translations.translated", "<>", "''")
+                            .WhereRaw("translation_sub_stringsLocales.id_translation_subStrings=translation_substrings.id"),
+                        "is_editable");
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
                 if (!string.IsNullOrEmpty(termPart))
@@ -460,14 +460,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
 
 
-
-
-
-
-
-
-
-
         }
 
         public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
@@ -476,10 +468,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("LocalizationProjectsGlossaries as lpg")
-                        .Where("ID_Glossary", glossaryId)
-                        .RightJoin("LocalizationProjects as lp", "lpg.ID_LocalizationProject", "lp.ID")
-                        .RightJoin("Locales as l", "lp.ID_SourceLocale", "l.ID")
+                    var query = new Query("localization_projects_glossaries as lpg")
+                        .Where("id_glossary", glossaryId)
+                        .RightJoin("localization_projects as lp", "lpg.id_localization_project", "lp.id")
+                        .RightJoin("locales as l", "lp.id_source_locale", "l.id")
                         .Select("l.*");
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
@@ -513,11 +505,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var getTranslationLocalesQuery =
-                        new Query("Locales")
-                        .WhereIn("ID",
-                            new Query("GlossariesLocales")
-                            .Select("ID_Locale")
-                            .Where("ID_Glossary", glossaryId));
+                        new Query("locales")
+                        .WhereIn("id",
+                            new Query("glossaries_locales")
+                            .Select("id_locale")
+                            .Where("id_glossary", glossaryId));
                     var getTranslationLocalesCompiledQuery = this._compiler.Compile(getTranslationLocalesQuery);
                     this.LogQuery(getTranslationLocalesCompiledQuery);
                     var translationLocalesForTerm = await dbConnection.QueryAsync<Locale>(
@@ -551,23 +543,23 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
         {
             string query = "SELECT " +
-                            "DISTINCT ON (TS.\"ID\") TS.\"ID\" AS \"ID\"," +
-                            "TS.\"SubstringToTranslate\" AS \"SubstringToTranslate\", " +
-                            "TS.\"Description\" AS \"Description\", " +
-                            "TS.\"Context\" AS \"Context\", " +
-                            "TS.\"TranslationMaxLength\" AS \"TranslationMaxLength\", " +
-                            "TS.\"ID_FileOwner\" AS \"ID_FileOwner\", " +
-                            "TS.\"Value\" AS \"Value\", " +
-                            "TS.\"PositionInText\" AS \"PositionInText\", " +
-                            "G.\"ID\" AS \"GlossaryId\", " +
-                            "G.\"Name\" AS \"GlossaryName\", " +
-                            "G.\"Description\" AS \"GlossaryDescription\" " +
-                            "FROM \"LocalizationProjects\" AS LP " +
-                            "INNER JOIN \"LocalizationProjectsGlossaries\" AS LPG ON LP.\"ID\" = LPG.\"ID_LocalizationProject\" " +
-                            "INNER JOIN \"Glossaries\" AS G ON G.\"ID\" = LPG.\"ID_Glossary\" " +
-                            "INNER JOIN \"Files\" AS F ON F.\"ID\" = G.\"ID_File\" " +
-                            "INNER JOIN \"TranslationSubstrings\" AS TS ON TS.\"ID_FileOwner\" = F.\"ID\" " +
-                            "WHERE LP.\"ID\" = @ProjectId";
+                            "DISTINCT ON (TS.id) TS.id AS id," +
+                            "TS.substring_to_translate AS substring_to_translate, " +
+                            "TS.description AS description, " +
+                            "TS.context AS context, " +
+                            "TS.translation_max_length AS translation_max_length, " +
+                            "TS.id_file_owner AS id_file_owner, " +
+                            "TS.value AS value, " +
+                            "TS.position_in_text AS position_in_text, " +
+                            "G.id As glossaryid, " +
+                            "G.name_text AS glossaryname, " +
+                            "G.description AS glossarydescription " +
+                            "FROM id_user AS LP " +
+                            "INNER JOIN localization_projects_glossaries AS LPG ON LP.id = LPG.id_localization_project " +
+                            "INNER JOIN glossaries AS G ON G.id = LPG.id_glossary " +
+                            "INNER JOIN files AS F ON F.id = G.id_file " +
+                            "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +
+                            "WHERE LP.id = @ProjectId";
 
             try
             {
@@ -607,21 +599,21 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var queryGetTranslationSubstringsID = new Query("GlossariesStrings").Where("ID_Glossary", glossaryId).Select("GlossariesStrings.ID_String");
+                    var queryGetTranslationSubstringsID = new Query("glossaries_strings").Where("id_glossary", glossaryId).Select("glossaries_strings.id_string");
                     var compiledQueryGetTranslationSubstringsID = _compiler.Compile(queryGetTranslationSubstringsID);
                     LogQuery(compiledQueryGetTranslationSubstringsID);
                     var idsTranslationSubstrings = await dbConnection.QueryAsync<int>(
                         sql: compiledQueryGetTranslationSubstringsID.Sql,
                         param: compiledQueryGetTranslationSubstringsID.NamedBindings);
 
-                    var queryTranslationSubstrings = new Query("TranslationSubstrings").WhereIn("ID", idsTranslationSubstrings).AsDelete();
+                    var queryTranslationSubstrings = new Query("translation_substrings").WhereIn("id", idsTranslationSubstrings).AsDelete();
                     var compiledQueryTranslationSubstrings = _compiler.Compile(queryTranslationSubstrings);
                     LogQuery(compiledQueryTranslationSubstrings);
                     await dbConnection.ExecuteAsync(
                         sql: compiledQueryTranslationSubstrings.Sql,
                         param: compiledQueryTranslationSubstrings.NamedBindings);
 
-                    var queryGlossariesStrings = new Query("GlossariesStrings").Where("ID_Glossary", glossaryId).AsDelete();
+                    var queryGlossariesStrings = new Query("glossaries_strings").Where("id_glossary", glossaryId).AsDelete();
                     var compiledQueryGlossariesStrings = _compiler.Compile(queryGlossariesStrings);
                     LogQuery(compiledQueryGlossariesStrings);
                     await dbConnection.ExecuteAsync(

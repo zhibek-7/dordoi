@@ -42,7 +42,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-     
+
 
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void AddProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
-            var sqlQuery = "INSERT INTO \"LocalizationProjectsLocales\" (\"ID_LocalizationProject\", \"ID_Locale\", \"PercentOfTranslation\", \"PercentOfConfirmed\")" +
+            var sqlQuery = "INSERT INTO localization_projects_ocales (id_localization_project, id_locale, percent_of_translation, percent_of_confirmed)" +
                         "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) ";
             try
             {
@@ -75,7 +75,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        
+
 
         /// <summary>
         /// Обновление
@@ -83,13 +83,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void UpdateProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
-          
-            var sqlQuery = "UPDATE \"LocalizationProjectsLocales\" SET" +
-                         
-                           "\"ID_Locale\"=@ID_Locale," +
-                           "\"PercentOfConfirmed\"=@PercentOfConfirmed," +
 
-                           "WHERE \"ID_LocalizationProject\"=@ID_LocalizationProject";
+            var sqlQuery = "UPDATE localization_projects_ocales SET" +
+
+                           "id_locale=@ID_Locale," +
+                           "percent_of_confirmed=@PercentOfConfirmed," +
+
+                           "WHERE id_localization_project=@ID_LocalizationProject";
 
 
 

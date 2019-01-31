@@ -27,12 +27,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
 
-                    var query = new Query("Participants")
+                    var query = new Query("participants")
                         .AsInsert(new[] {
-                        "ID_LocalizationProject",
-                        "ID_Role",
-                        "ID_User",
-                        "Active",
+                        "id_localization_project",
+                        "id_role",
+                        "id_user",
+                        "active",
                         },
                         new object[]
                         {
@@ -88,14 +88,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Participants")
-                        .Where("ID_LocalizationProject", updatedParticipant.ID_Localization_Project)
-                        .Where("ID_User", updatedParticipant.ID_User)
+                    var query = new Query("participants")
+                        .Where("id_localization_project", updatedParticipant.ID_Localization_Project)
+                        .Where("id_user", updatedParticipant.ID_User)
                         .AsUpdate(new[] {
-                    "ID_LocalizationProject",
-                        "ID_Role",
-                        "ID_User",
-                        "Active",
+                    "id_localization_project",
+                        "id_role",
+                        "id_user",
+                        "active",
                             },
                             new object[]
                             {
@@ -132,11 +132,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private static readonly Dictionary<string, string> ParticipantsSortColumnNamesMapping = new Dictionary<string, string>()
         {
-            { "id_user", "Participants.ID_User" },
-            { "id_role", "Participants.ID_Role" },
-            { "active", "Participants.Active" },
-            { "username", "Users.Name" },
-            { "rolename", "Roles.Name" },
+            { "id_user", "participants.id_user" },
+            { "id_role", "participants.id_role" },
+            { "active", "participants.active" },
+            { "username", "users.name_text" },
+            { "rolename", "Roles.name_text" },
         };
 
         public async Task<IEnumerable<ParticipantDTO>> GetByProjectIdAsync(
@@ -206,10 +206,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                var query = new Query("Participants")
-                    .Where("Participants.ID_LocalizationProject", projectId)
-                    .Where("Participants.ID_User", userId)
-                    .Where("Participants.Active", false);
+                var query = new Query("participants")
+                    .Where("participants.id_localization_project", projectId)
+                    .Where("participants.id_user", userId)
+                    .Where("participants.active", false);
                 try
                 {
 
@@ -263,10 +263,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Participants")
-                        .Where("ID_LocalizationProject", projectId)
-                        .Where("ID_User", userId)
-                        .AsUpdate(new[] { "Active" }, new object[] { false });
+                    var query = new Query("participants")
+                        .Where("id_localization_project", projectId)
+                        .Where("id_user", userId)
+                        .AsUpdate(new[] { "active" }, new object[] { false });
 
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
@@ -346,19 +346,19 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         private Query GetByProjectIdQuery(int projectId, string search, int[] roleIds, int[] localeIds, string[] roleShort = null)
         {
-            var query = new Query("Participants")
-                .Where("Participants.ID_LocalizationProject", projectId)
-                .Where("Participants.Active", true)
-                .LeftJoin("Users", "Participants.ID_User", "Users.ID")
-                .LeftJoin("Roles", "Participants.ID_Role", "Roles.ID")
+            var query = new Query("participants")
+                .Where("participants.id_localization_project", projectId)
+                .Where("participants.active", true)
+                .LeftJoin("users", "participants.id_user", "users.id")
+                .LeftJoin("roles", "participants.id_role", "roles.id")
                 .Select(
-                    "Participants.ID_LocalizationProject as LocalizationProjectId",
-                    "Participants.ID_User as UserId",
-                    "Participants.ID_Role as RoleId",
-                    "Participants.Active",
-                    "Users.Name as UserName",
-                    "Roles.Name as RoleName",
-                    "Roles.short as RoleShort"
+                    "participants.id_localization_project as localizationprojectid",
+                    "participants.id_user as userid",
+                    "participants.id_role as roleid",
+                    "participants.active",
+                    "users.name_text as username",
+                    "roles.name_text as rolename",
+                    "roles.short as roleshort"
                 );
 
             try
@@ -366,27 +366,27 @@ namespace DAL.Reposity.PostgreSqlRepository
                 if (!string.IsNullOrEmpty(search))
                 {
                     var searchPattern = $"%{search}%";
-                    query = query.WhereLike("Users.Name", searchPattern);
+                    query = query.WhereLike("users.name_text", searchPattern);
                 }
 
                 if (roleIds != null && roleIds.Length > 0)
                 {
-                    query = query.WhereIn("Participants.ID_Role", roleIds);
+                    query = query.WhereIn("participants.id_role", roleIds);
                 }
 
                 if (localeIds != null && localeIds.Length > 0)
                 {
                     query = query
                         .WhereExists(
-                            new Query("UsersLocales")
+                            new Query("userslocales")
                             .HavingRaw("COUNT(*)=?", localeIds.Length)
-                            .WhereRaw("\"UsersLocales\".\"ID_User\"=\"Participants\".\"ID_User\"")
-                            .WhereIn("UsersLocales.ID_Locale", localeIds));
+                            .WhereRaw("users_locales.id_user=participants.id_user")
+                            .WhereIn("users_locales.id_locale", localeIds));
                 }
 
                 if (roleShort != null && roleShort.Length > 0)
                 {
-                    query = query.WhereIn("Roles.short", roleShort);
+                    query = query.WhereIn("roles.short", roleShort);
                 }
 
                 var compiledQuery = this._compiler.Compile(query);

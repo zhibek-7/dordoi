@@ -38,7 +38,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список фраз</returns>
         public async Task<IEnumerable<TranslationSubstring>> GetAllAsync()
         {
-            var query = "SELECT * FROM \"TranslationSubstrings\"";
+            var query = "SELECT * FROM translation_substrings";
 
             try
             {
@@ -75,8 +75,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<TranslationSubstring> GetByIDAsync(int id)
         {
             var query = "SELECT * " +
-                        "FROM \"TranslationSubstrings\" " +
-                        "WHERE \"ID\" = @Id";
+                        "FROM translation_substrings " +
+                        "WHERE id = @Id";
 
             try
             {
@@ -148,11 +148,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId)
         {
             var query = "SELECT * " +
-                        "FROM \"TranslationSubstrings\" AS TS " +
-                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
-                        "INNER JOIN \"LocalizationProjects\" AS LP " +
-                        "WHERE LP.\"ID\" = @Id " +
-                        "OR LP.\"Visibility\" = true ";
+                        "FROM translation_substrings AS TS " +
+                        "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
+                        "INNER JOIN id_user AS LP " +
+                        "WHERE LP.id = @Id " +
+                        "OR LP.visibility = true ";
 
             try
             {
@@ -188,13 +188,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId)
         {
-            var query = "SELECT TS.\"SubstringToTranslate\" AS \"SubstringToTranslate\", TS.\"Description\" AS \"Description\", " +
-                        "TS.\"Context\" AS \"Context\", TS.\"TranslationMaxLength\" AS \"TranslationMaxLength\"," +
-                        "TS.\"ID_FileOwner\" AS \"ID_FileOwner\", TS.\"Value\" AS \"Value\"," +
-                        "TS.\"PositionInText\" AS \"PositionInText\", TS.\"ID\" AS \"ID\" " +
-                        "FROM \"TranslationSubstrings\" AS TS " +
-                        "INNER JOIN \"Files\" AS F ON TS.\"ID_FileOwner\" = F.\"ID\" " +
-                        "WHERE F.\"ID\" = @Id";
+            var query = "SELECT TS.substring_to_translate AS substring_to_translate, TS.description AS description, " +
+                        "TS.context AS context, TS.translation_max_length AS translation_max_length," +
+                        "TS.id_file_owner AS id_file_owner, TS.value AS value," +
+                        "TS.position_in_text AS position_in_text, TS.id AS id " +
+                        "FROM translation_substrings AS TS " +
+                        "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
+                        "WHERE F.id = @Id";
 
             try
             {
@@ -230,16 +230,16 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId)
         {
             var query = "SELECT " +
-                        "Im.\"ID\"," +
-                        "Im.\"url\"," +
-                        "Im.\"Name\"," +
-                        "Im.\"DateTimeAdded\"," +
-                        "Im.\"Data\"," +
-                        "Im.\"ID_User\" " +
-                        "FROM \"TranslationSubstrings\" AS TS " +
-                        "INNER JOIN \"StringsContextImages\" AS SCI ON SCI.\"ID_String\" = TS.\"ID\" " +
-                        "INNER JOIN \"Images\" AS Im ON Im.\"ID\" = SCI.\"ID_Image\" " +
-                        "WHERE TS.\"ID\" = @TranslationSubstringId";
+                        "Im.id," +
+                        "Im.url," +
+                        "Im.name_text," +
+                        "Im.date_time_added," +
+                        "Im.body," +
+                        "Im.id_user " +
+                        "FROM translation_substrings AS TS " +
+                        "INNER JOIN strings_context_images AS SCI ON SCI.id_string = TS.id " +
+                        "INNER JOIN images AS Im ON Im.id = SCI.id_image " +
+                        "WHERE TS.id = @TranslationSubstringId";
 
             try
             {
@@ -275,11 +275,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<int> UploadImageAsync(Image img, int translationSubstringId)
         {
-            var query1 = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
+            var query1 = "INSERT INTO images (name_text, id_user, body, url)" +
                         "VALUES (@Name,  @ID_User, @Data, @url) " +
-                        "RETURNING  \"Images\".\"ID\"";
+                        "RETURNING  images.id";
 
-            var query2 = "INSERT INTO \"StringsContextImages\" (\"ID_String\", \"ID_Image\")" +
+            var query2 = "INSERT INTO strings_context_images (id_string, id_image)" +
                         "VALUES (@TranslationSubstringId,  @ImageId) ";
 
             try
@@ -316,7 +316,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("TranslationSubstrings")
+                    var query = new Query("translation_substrings")
                         .Where("ID", id)
                         .AsDelete();
 
@@ -355,7 +355,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("TranslationSubstrings")
+                    var query = new Query("translation_substrings")
                         .Where("ID", item.ID)
                         .AsUpdate(item);
 
@@ -387,15 +387,15 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
         {
-            { "id", "ID" },
-            { "substringtotranslate", "SubstringToTranslate" },
-            { "description", "Description" },
-            { "context", "Context" },
-            { "translationmaxlength", "TranslationMaxLength" },
-            { "id_fileowner", "ID_FileOwner" },
-            { "value", "Value" },
-            { "positionintext", "PositionInText" },
-            { "outdated", "Outdated" },
+            { "id", "id" },
+            { "substring_to_translate", "substring_to_translate" },
+            { "description", "description" },
+            { "context", "context" },
+            { "translation_max_length", "translation_max_length" },
+            { "id_file_owner", "id_file_owner" },
+            { "value", "value" },
+            { "positionin_text", "positionin_text" },
+            { "outdated", "outdated" },
         };
 
         public async Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
@@ -514,39 +514,40 @@ namespace DAL.Reposity.PostgreSqlRepository
             int? fileId = null,
             string searchString = null)
         {
-            try {
+            try
+            {
 
-                var query = new Query("TranslationSubstrings")
+                var query = new Query("translation_substrings")
                .Select(
-                   "ID",
-                   "SubstringToTranslate",
-                   "Description",
-                   "Context",
-                   "TranslationMaxLength",
-                   "ID_FileOwner",
-                   "Value",
-                   "PositionInText",
-                   "Outdated"
+                   "id",
+                   "substring_to_Translate",
+                   "description",
+                   "context",
+                   "translation_max_length",
+                   "id_file_owner",
+                   "value",
+                   "position_in_text",
+                   "outdated"
                );
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
                 if (fileId != null)
                 {
-                    query = query.Where("ID_FileOwner", fileId);
+                    query = query.Where("id_file_owner", fileId);
                 }
                 else
                 {
                     query = query
-                        .WhereIn("ID_FileOwner",
-                            new Query("Files")
+                        .WhereIn("id_file_owner",
+                            new Query("files")
                                 .Select("ID")
-                                .Where("ID_LocalizationProject", projectId));
+                                .Where("id_localization_project", projectId));
                 }
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     var searchPattern = $"%{searchString}%";
-                    query = query.WhereLike("Value", searchPattern);
+                    query = query.WhereLike("value", searchPattern);
                 }
 
                 return query;
@@ -574,11 +575,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query =
-                        new Query("Locales")
-                        .WhereIn("ID",
-                            new Query("TranslationsubStringsLocales")
-                            .Select("Id_Locales")
-                            .Where("Id_TranslationSubStrings", translationSubstringId));
+                        new Query("locales")
+                        .WhereIn("id",
+                            new Query("translation_substrings_locales")
+                            .Select("id_Locales")
+                            .Where("id_translation_substrings", translationSubstringId));
 
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
@@ -614,8 +615,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query =
-                        new Query("TranslationsubStringsLocales")
-                        .Where("Id_TranslationSubStrings", translationSubstringId)
+                        new Query("translation_substrings_locales")
+                        .Where("id_translation_substrings", translationSubstringId)
                         .AsDelete();
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
@@ -651,10 +652,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                     foreach (var localeId in localesIds)
                     {
                         var sql =
-                            "INSERT INTO \"TranslationsubStringsLocales\" " +
+                            "INSERT INTO \translationsub_strings_locales " +
                             "(" +
-                            "\"Id_TranslationSubStrings\", " +
-                            "\"Id_Locales\"" +
+                            "id_translation_substrings, " +
+                            "id_locales" +
                             ") VALUES " +
                             "(" +
                             "@Id_TranslationSubStrings, " +

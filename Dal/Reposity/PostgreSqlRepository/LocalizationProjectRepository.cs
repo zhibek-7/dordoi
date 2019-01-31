@@ -31,7 +31,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public LocalizationProject GetByID(int Id)
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @Id";
+            var sqlString = "SELECT * FROM id_user WHERE id = @Id";
 
             try
             {
@@ -70,12 +70,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("LocalizationProjects").Where("LocalizationProjects.ID", id)
-                        .LeftJoin("Locales", "Locales.ID", "LocalizationProjects.ID_SourceLocale")
-                        .Select(new Query("LocalizationProjects").Where("LocalizationProjects.ID", id)
-                                .LeftJoin("Participants", "Participants.ID_LocalizationProject", "LocalizationProjects.ID").Where("Active", true)
-                                .AsCount("Participants.ID_User"), "CountUsersActive")
-                        .Select("LocalizationProjects.*", "Locales.Name as SourceLocaleName")
+                    var query = new Query("localization_projects").Where("localization_projects.id", id)
+                        .LeftJoin("locales", "locales.id", "localization_projects.id_source_locale")
+                        .Select(new Query("localization_projects").Where("localization_projects.id", id)
+                                .LeftJoin("Participants", "participants.id_localization_project", "localization_projects.id").Where("active", true)
+                                .AsCount("Participants.id_user"), "count_users_active")
+                        .Select("localization_projects.*", "locales.name_text as SourceLocaleName")
                         .Distinct();
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -100,7 +100,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public IEnumerable<LocalizationProject> GetAll()
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM \"LocalizationProjects\"";
+            var sqlString = "SELECT * FROM id_user";
 
             try
             {
@@ -135,7 +135,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
 
 
-                    var sqlString = "SELECT \"ID\", \"Name\" FROM \"LocalizationProjects\"";
+                    var sqlString = "SELECT id, name FROM id_user";
                     this.LogQuery(sqlString);
 
                     IEnumerable<LocalizationProjectForSelectDTO> result =
@@ -184,7 +184,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlQuery = "INSERT INTO \"LocalizationProjects\" (\"Name\", \"Description\", \"URL\", \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
+                    var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
                   + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
                   + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.AbleToDownload + "','" + project.AbleToLeftErrors + "','"
                   + project.DefaultString + "','" + project.NotifyNew + "','" + project.NotifyFinish + "','" + project.NotifyConfirm + "','" + project.Logo + "')";
@@ -220,7 +220,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlQuery = "DELETE FROM  \"LocalizationProjects\"  WHERE \"ID\"= " + id + "";
+                    var sqlQuery = "DELETE FROM  localization_projects  WHERE id= " + id + "";
                     connection.Execute(sqlQuery, new { id });
 
                     this.LogQuery(sqlQuery);
@@ -248,24 +248,24 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void UpdateProject(LocalizationProject project)
         {
-            var sqlQuery = "UPDATE \"LocalizationProjects\" SET" +
-                           "\"Name\"=@Name, " +
-                           "\"Description\"=@Description," +
-                           "\"URL\"=@URL," +
-                           " \"Visibility\"=@Visibility," +
-                           " \"DateOfCreation\"=@DateOfCreation," +
-                           " \"LastActivity\"=@LastActivity," +
-                           " \"ID_SourceLocale\"=@ID_SourceLocale," +
-                           " \"AbleToDownload\"=@AbleToDownload," +
-                           " \"AbleToLeftErrors\"=@AbleToLeftErrors," +
-                           " \"DefaultString\"=@DefaultString," +
-                           " \"NotifyNew\"=@NotifyNew," +
-                           " \"NotifyFinish\"=@NotifyFinish," +
-                           " \"NotifyConfirm\"=@NotifyConfirm," +
-                           " \"notifynewcomment\"=@notifynewcomment," +
-                           " \"export_only_approved_translations\"=@export_only_approved_translations," +
-                           " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated  " +
-                           "WHERE \"ID\"=@ID";
+            var sqlQuery = "UPDATE localization_projects SET" +
+                           "name=@Name, " +
+                           "description=@Description," +
+                           "url=@URL," +
+                           " visibility=@Visibility," +
+                           " date_of_creation=@DateOfCreation," +
+                           " last_activity=@LastActivity," +
+                           " id_source_locale=@ID_SourceLocale," +
+                           " able_to_download=@AbleToDownload," +
+                           " able_to_left_errors=@AbleToLeftErrors," +
+                           " default_string=@DefaultString," +
+                           " notify_new=@NotifyNew," +
+                           " notify_finish=@NotifyFinish," +
+                           " notify_cconfirm=@NotifyConfirm," +
+                           " notify_new_comment=@notifynewcomment," +
+                           " export_only_approved_translations=@export_only_approved_translations," +
+                           " original_if_string_is_not_translated=@original_if_string_is_not_translated  " +
+                           "WHERE id=@ID";
 
 
 
@@ -298,10 +298,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void AddProjectLocales(LocalizationProjectsLocales projectLocales)
         {
-            var sqlQuery = "UPDATE \"LocalizationProjectsLocales\" SET" +
-                        "\"PercentOfTranslation\"=@PercentOfTranslation," +
-                        "\"PercentOfConfirmed\"=@PercentOfConfirmed," +
-                        "WHERE \"ID_LocalizationProject\"=@ID_LocalizationProject AND \"ID_Locale\" = @ID_Locale";
+            var sqlQuery = "UPDATE localization_projects_ocales SET" +
+                        "percent_of_translation=@PercentOfTranslation," +
+                        "percent_of_confirmed=@PercentOfConfirmed," +
+                        "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -331,8 +331,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void DeleteProjectLocales(LocalizationProjectsLocales projectLocales)
         {
-            var sqlQuery = "DELETE FROM \"LocalizationProjectsLocales\" " +
-                           "WHERE \"ID_LocalizationProject\"=@ID_LocalizationProject AND \"ID_Locale\" = @ID_Locale";
+            var sqlQuery = "DELETE FROM localization_projects_ocales " +
+                           "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))

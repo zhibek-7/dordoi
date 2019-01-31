@@ -30,16 +30,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Glossaries")
-                        .LeftJoin("GlossariesLocales", "GlossariesLocales.ID_Glossary", "Glossaries.ID")
-                        .LeftJoin("Locales", "Locales.ID", "GlossariesLocales.ID_Locale")
-                        .LeftJoin("LocalizationProjectsGlossaries", "LocalizationProjectsGlossaries.ID_Glossary", "Glossaries.ID")
-                        .LeftJoin("LocalizationProjects", "LocalizationProjects.ID", "LocalizationProjectsGlossaries.ID_LocalizationProject")
+                    var query = new Query("glossaries")
+                        .LeftJoin("glossaries_locales", "glossaries_locales.id_glossary", "glossaries.id")
+                        .LeftJoin("locales", "locales.id", "glossaries_locales.id_Locale")
+                        .LeftJoin("localization_projectsGlossaries", "localization_projects_glossaries.id_glossary", "glossaries.id")
+                        .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_glossaries.id_localization_project")
                         .Select(
-                            "Glossaries.ID",
-                            "Glossaries.Name",
-                            "Locales.Name as LocaleName",
-                            "LocalizationProjects.Name as LocalizationProjectName"
+                            "glossaries.id",
+                            "glossaries.name_text",
+                            "locales.name_text as Locale_Name",
+                            "localization_projects.name_text as Localization_Project_Name"
                         );
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -79,7 +79,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         Description = glossary.Description,
                         ID_File = (int?)null
                     };
-                    var query = new Query("Glossaries").AsInsert(newGlossaries, true); //true - вернуть сгенерированный id нового объекта
+                    var query = new Query("glossaries").AsInsert(newGlossaries, true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
 
@@ -92,8 +92,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Добавление в таблицу "GlossariesLocales" записей связи глоссария с языками перевода (Glossaries с Locales)
                     await EditGlossariesLocalesAsync(idOfNewGlossary, glossary.Locales_Ids, false);
 
-                    //Добавление в таблицу "LocalizationProjectsGlossaries" записей связи глоссария с проектами локализации (Glossaries с LocalizationProjects)
-                    await EditGlossariesLocalizationProjectsAsync(idOfNewGlossary, glossary.Localization_Projects_Ids, false);
+                    //Добавление в таблицу "localization_projectsGlossaries" записей связи глоссария с проектами локализации (Glossaries с localization_projects)
+                    await EditGlossarieslocalization_projectsAsync(idOfNewGlossary, glossary.Localization_Projects_Ids, false);
                 }
             }
             catch (NpgsqlException exception)
@@ -117,18 +117,18 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Glossaries").Where("Glossaries.ID", glossaryId)
-                        .LeftJoin("GlossariesLocales", "GlossariesLocales.ID_Glossary", "Glossaries.ID")
-                        .LeftJoin("Locales", "Locales.ID", "GlossariesLocales.ID_Locale")
-                        .LeftJoin("LocalizationProjectsGlossaries", "LocalizationProjectsGlossaries.ID_Glossary", "Glossaries.ID")
-                        .LeftJoin("LocalizationProjects", "LocalizationProjects.ID", "LocalizationProjectsGlossaries.ID_LocalizationProject")
+                    var query = new Query("glossaries").Where("glossaries.id", glossaryId)
+                        .LeftJoin("glossaries_locales", "glossaries_locales.id_glossary", "glossaries.id")
+                        .LeftJoin("locales", "locales.id", "glossaries_locales.id_locale")
+                        .LeftJoin("localization_projects_glossaries", "localization_projects_glossaries.id_glossary", "glossaries.id")
+                        .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_glossaries.id_localization_project")
                         .Select(
-                            "Glossaries.ID",
-                            "Glossaries.Name",
-                            "Glossaries.Description",
-                            "Glossaries.ID_File",
-                            "Locales.ID as LocaleID",
-                            "LocalizationProjects.ID as LocalizationProjectID"
+                            "glossaries.id",
+                            "glossaries.name",
+                            "glossaries.description",
+                            "glossaries.id_file",
+                            "locales.id as locale_id",
+                            "localization_projects.id as Localization_Project_ID"
                         );
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -169,7 +169,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         Description = glossary.Description,
                         ID_File = glossary.ID_File
                     };
-                    var query = new Query("Glossaries").Where("ID", glossary.ID).AsUpdate(editedGlossaries);
+                    var query = new Query("glossaries").Where("id", glossary.ID).AsUpdate(editedGlossaries);
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(
@@ -180,8 +180,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Пересоздание связей глоссария с языками перевода (Glossaries с Locales)
                     await EditGlossariesLocalesAsync(glossary.ID, glossary.Locales_Ids);
 
-                    //Пересоздание связей глоссария с проектами локализации (Glossaries с LocalizationProjects)
-                    await EditGlossariesLocalizationProjectsAsync(glossary.ID, glossary.Localization_Projects_Ids);
+                    //Пересоздание связей глоссария с проектами локализации (Glossaries с localization_projects)
+                    await EditGlossarieslocalization_projectsAsync(glossary.ID, glossary.Localization_Projects_Ids);
                 }
             }
             catch (NpgsqlException exception)
@@ -209,7 +209,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     if (isDeleteOldRecords)
                     {
-                        var queryGlossariesLocalesDelete = new Query("GlossariesLocales").Where("ID_Glossary", glossaryId).AsDelete();
+                        var queryGlossariesLocalesDelete = new Query("glossaries_locales").Where("id_glossary", glossaryId).AsDelete();
                         var compiledQueryGlossariesLocalesDelete = _compiler.Compile(queryGlossariesLocalesDelete);
                         LogQuery(compiledQueryGlossariesLocalesDelete);
                         await dbConnection.ExecuteAsync(
@@ -225,7 +225,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     foreach (var element in GlossariesLocales)
                     {
-                        var queryGlossariesLocalesInsert = new Query("GlossariesLocales").AsInsert(element);
+                        var queryGlossariesLocalesInsert = new Query("glossaries_locales").AsInsert(element);
                         var compiledQueryGlossariesLocalesInsert = _compiler.Compile(queryGlossariesLocalesInsert);
                         LogQuery(compiledQueryGlossariesLocalesInsert);
                         await dbConnection.ExecuteAsync(
@@ -246,13 +246,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Пересоздание связей глоссария с проектами локализации (Glossaries с LocalizationProjects).
+        /// Пересоздание связей глоссария с проектами локализации (Glossaries с localization_projects).
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария.</param>
-        /// <param name="localizationProjectsIds">Выбранные проекты локализации.</param>
+        /// <param name="localization_projectsIds">Выбранные проекты локализации.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task EditGlossariesLocalizationProjectsAsync(int glossaryId, IEnumerable<int?> localizationProjectsIds, bool isDeleteOldRecords = true)
+        public async Task EditGlossarieslocalization_projectsAsync(int glossaryId, IEnumerable<int?> localization_projectsIds, bool isDeleteOldRecords = true)
         {
             try
             {
@@ -260,38 +260,38 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     if (isDeleteOldRecords)
                     {
-                        var queryLocalizationProjectsGlossariesDelete = new Query("LocalizationProjectsGlossaries").Where("ID_Glossary", glossaryId).AsDelete();
-                        var compiledQueryLocalizationProjectsGlossariesDelete = _compiler.Compile(queryLocalizationProjectsGlossariesDelete);
-                        LogQuery(compiledQueryLocalizationProjectsGlossariesDelete);
+                        var querylocalization_projectsGlossariesDelete = new Query("localization_projects_glossaries").Where("id_glossary", glossaryId).AsDelete();
+                        var compiledQuerylocalization_projectsGlossariesDelete = _compiler.Compile(querylocalization_projectsGlossariesDelete);
+                        LogQuery(compiledQuerylocalization_projectsGlossariesDelete);
                         await dbConnection.ExecuteAsync(
-                            sql: compiledQueryLocalizationProjectsGlossariesDelete.Sql,
-                            param: compiledQueryLocalizationProjectsGlossariesDelete.NamedBindings);
+                            sql: compiledQuerylocalization_projectsGlossariesDelete.Sql,
+                            param: compiledQuerylocalization_projectsGlossariesDelete.NamedBindings);
                     }
 
-                    var LocalizationProjectsGlossaries = localizationProjectsIds.Select(t => new
+                    var localization_projectsGlossaries = localization_projectsIds.Select(t => new
                     {
                         ID_Glossary = glossaryId,
                         ID_LocalizationProject = t
                     }).ToList();
 
-                    foreach (var element in LocalizationProjectsGlossaries)
+                    foreach (var element in localization_projectsGlossaries)
                     {
-                        var queryLocalizationProjectsGlossariesInsert = new Query("LocalizationProjectsGlossaries").AsInsert(element);
-                        var compiledQueryLocalizationProjectsGlossariesInsert = _compiler.Compile(queryLocalizationProjectsGlossariesInsert);
-                        LogQuery(compiledQueryLocalizationProjectsGlossariesInsert);
+                        var querylocalization_projectsGlossariesInsert = new Query("localization_projects_glossaries").AsInsert(element);
+                        var compiledQuerylocalization_projectsGlossariesInsert = _compiler.Compile(querylocalization_projectsGlossariesInsert);
+                        LogQuery(compiledQuerylocalization_projectsGlossariesInsert);
                         await dbConnection.ExecuteAsync(
-                                sql: compiledQueryLocalizationProjectsGlossariesInsert.Sql,
-                                param: compiledQueryLocalizationProjectsGlossariesInsert.NamedBindings);
+                                sql: compiledQuerylocalization_projectsGlossariesInsert.Sql,
+                                param: compiledQuerylocalization_projectsGlossariesInsert.NamedBindings);
                     }
                 }
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossariesLocalizationProjectsAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossarieslocalization_projectsAsync)} {nameof(NpgsqlException)} ", exception);
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossariesLocalizationProjectsAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossarieslocalization_projectsAsync)} {nameof(Exception)} ", exception);
             }
         }
 
@@ -310,14 +310,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //при удалени глосария удаляются файл, строки, термины и переводы.                
                     //еще Translations (ID_String), на них CommentsImages(ID_Comment),Comments(ID_TranslationSubstrings).
                     //Таблицы с прямой ссылкой на "Comments" (Glossaries.ID_File -> TranslationSubstrings.ID_FileOwner -> TranslationSubstrings.ID -> Comments.Id_TranslationSubStrings => Comments.ID_Comment) - "CommentsImages".
-                    //Таблицы с прямой ссылкой на "Glossaries" - "GlossariesStrings", "GlossariesLocales", "LocalizationProjectsGlossaries".
+                    //Таблицы с прямой ссылкой на "Glossaries" - "GlossariesStrings", "GlossariesLocales", "localization_projectsGlossaries".
 
                     //все из TranslationSubstrings и Files удаляется по Glossaries.ID_File
 
                     //Удаление зависимостей
                     #region Get Glossaries.ID_File
 
-                    var queryGetGlossariesID_File = new Query("Glossaries").Where("ID", id).Select("Glossaries.ID_File");
+                    var queryGetGlossariesID_File = new Query("glossaries").Where("id", id).Select("glossaries.id_file");
                     var compiledQueryGetGlossariesID_File = _compiler.Compile(queryGetGlossariesID_File);
                     LogQuery(compiledQueryGetGlossariesID_File);
                     var idFile = await dbConnection.QueryFirstOrDefaultAsync<int?>(
@@ -330,9 +330,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         #region Таблицы с прямой ссылкой на "Files" (Glossaries.ID_File) - "Tasks", "FilesLocales".
 
-                        var queryUserActions = new Query("UserActions").Where("ID_File", idFile)
+                        var queryUserActions = new Query("user_actions").Where("id_file", idFile)
                             .AsUpdate(
-                                new[] { "ID_File" },
+                                new[] { "id_file" },
                                 new object[] { null }
                                 );
                         var compiledQueryUserActions = _compiler.Compile(queryUserActions);
@@ -345,14 +345,14 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                         #region Get TranslationSubstrings.ID
 
-                        var queryGetTranslationSubstringsID1 = new Query("TranslationSubstrings").Where("ID_FileOwner", idFile).Select("TranslationSubstrings.ID");
+                        var queryGetTranslationSubstringsID1 = new Query("translation_substrings").Where("id_file_owner", idFile).Select("translation_substrings.id");
                         var compiledQueryGetTranslationSubstringsID1 = _compiler.Compile(queryGetTranslationSubstringsID1);
                         LogQuery(compiledQueryGetTranslationSubstringsID1);
                         var idsTranslationSubstrings1 = await dbConnection.QueryAsync<int>(
                             sql: compiledQueryGetTranslationSubstringsID1.Sql,
                             param: compiledQueryGetTranslationSubstringsID1.NamedBindings);
 
-                        var queryGetTranslationSubstringsID2 = new Query("GlossariesStrings").Where("ID_Glossary", id).Select("GlossariesStrings.ID_String");
+                        var queryGetTranslationSubstringsID2 = new Query("glossaries_strings").Where("id_glossary", id).Select("glossaries_strings.id_string");
                         var compiledQueryGetTranslationSubstringsID2 = _compiler.Compile(queryGetTranslationSubstringsID2);
                         LogQuery(compiledQueryGetTranslationSubstringsID2);
                         var idsTranslationSubstrings2 = await dbConnection.QueryAsync<int>(
@@ -367,9 +367,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                         if (idsTranslationSubstrings != null && idsTranslationSubstrings.Count() > 0)
                         {
-                            var queryUserActions2 = new Query("UserActions").WhereIn("ID_String", idsTranslationSubstrings)
+                            var queryUserActions2 = new Query("user_actions").WhereIn("id_string", idsTranslationSubstrings)
                                 .AsUpdate(
-                                    new[] { "ID_String" },
+                                    new[] { "id_string" },
                                     new object[] { null }
                                     );
                             var compiledQueryUserActions2 = _compiler.Compile(queryUserActions2);
@@ -380,16 +380,16 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                             #region Translations
 
-                            var queryGetTranslationsID = new Query("Translations").WhereIn("ID_String", idsTranslationSubstrings).Select("Translations.ID");
+                            var queryGetTranslationsID = new Query("translations").WhereIn("id_string", idsTranslationSubstrings).Select("translations.id");
                             var compiledQueryGetTranslationsID = _compiler.Compile(queryGetTranslationsID);
                             LogQuery(compiledQueryGetTranslationsID);
                             var idsTranslations = await dbConnection.QueryAsync<int>(
                                 sql: compiledQueryGetTranslationsID.Sql,
                                 param: compiledQueryGetTranslationsID.NamedBindings);
 
-                            var queryUserActions3 = new Query("UserActions").WhereIn("ID_Translation", idsTranslations)
+                            var queryUserActions3 = new Query("user_actions").WhereIn("id_translation", idsTranslations)
                                 .AsUpdate(
-                                    new[] { "ID_Translation" },
+                                    new[] { "id_translation" },
                                     new object[] { null }
                                     );
                             var compiledQueryUserActions3 = _compiler.Compile(queryUserActions3);
@@ -402,7 +402,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                             #region "TranslationSubstrings" (Glossaries.ID_File)
 
-                            var queryTranslationSubstrings = new Query("TranslationSubstrings").WhereIn("ID", idsTranslationSubstrings).AsDelete();
+                            var queryTranslationSubstrings = new Query("translation_substrings").WhereIn("id", idsTranslationSubstrings).AsDelete();
                             var compiledQueryTranslationSubstrings = _compiler.Compile(queryTranslationSubstrings);
                             LogQuery(compiledQueryTranslationSubstrings);
                             await dbConnection.ExecuteAsync(
@@ -419,7 +419,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
 
                     //Удаление глоссария
-                    var query = new Query("Glossaries").Where("ID", id).AsDelete();
+                    var query = new Query("glossaries").Where("id", id).AsDelete();
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(
@@ -430,7 +430,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Удаление зависимостей
                     #region "Files" (Glossaries.ID_File)
 
-                    var queryFiles = new Query("Files").Where("ID", idFile).AsDelete();
+                    var queryFiles = new Query("files").Where("id", idFile).AsDelete();
                     var compiledQueryFiles = _compiler.Compile(queryFiles);
                     LogQuery(compiledQueryFiles);
                     await dbConnection.ExecuteAsync(

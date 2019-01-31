@@ -25,7 +25,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlString = "SELECT * FROM \"Locales\"";
+                    var sqlString = "SELECT * FROM locales";
                     this.LogQuery(sqlString);
                     IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(sqlString);
                     return users;
@@ -54,10 +54,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = "SELECT l.* FROM \"Locales\" l " +
-       " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
-       " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
-       " where lp.\"ID\" = @Id";
+                    var query = "SELECT l.* FROM locales l " +
+       " join localization_projects_ocales pl on pl.id_locale = l.id " +
+       " join id_user lp on pl.id_localization_project = lp.id " +
+       " where lp.id = @Id";
 
                     var param = new { Id = projectId };
                     this.LogQuery(query, param);
@@ -93,15 +93,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("LocalizationProjectsLocales")
+                    var query = new Query("localization_projectsLocales")
                         .Where("ID_LocalizationProject", projectId)
-                        .LeftJoin("Locales", "Locales.ID", "LocalizationProjectsLocales.ID_Locale")
+                        .LeftJoin("Locales", "Locales.ID", "localization_projectsLocales.ID_Locale")
                         .Select(
-                            "Locales.Name as LocaleName",
+                            "Locales.name_text as LocaleName",
                             "Locales.url as LocaleUrl",
 
-                            "LocalizationProjectsLocales.PercentOfTranslation",
-                            "LocalizationProjectsLocales.PercentOfConfirmed"
+                            "localization_projectsLocales.PercentOfTranslation",
+                            "localization_projectsLocales.PercentOfConfirmed"
                             )
                         .OrderBy("LocaleName");
                     var compiledQuery = _compiler.Compile(query);

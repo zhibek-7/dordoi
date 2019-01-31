@@ -29,9 +29,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="item">Вариант перевода</param>
         public async Task<int> AddAsync(Translation item)
         {
-            var query = "INSERT INTO \"Translations\" (\"ID_String\", \"Translated\", \"Confirmed\", \"ID_User\", \"DateTime\", \"ID_Locale\")" +
+            var query = "INSERT INTO translations (id_string, translated, confirmed, id_user, datetime, id_locale)" +
                         "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime, @ID_Locale) " +
-                        "RETURNING  \"Translations\".\"ID\"";
+                        "RETURNING  translations.id";
 
             try
             {
@@ -64,7 +64,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список переводов</returns>
         public async Task<IEnumerable<Translation>> GetAllAsync()
         {
-            var query = @"SELECT * FROM 'Translations'";
+            var query = @"SELECT * FROM translations";
 
             try
             {
@@ -99,7 +99,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Вариант перевода</returns>
         public async Task<Translation> GetByIDAsync(int id)
         {
-            var query = "SELECT * FROM \"Translations\" WHERE \"ID\" = @id";
+            var query = "SELECT * FROM translations WHERE id = @id";
 
             try
             {
@@ -135,8 +135,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<bool> RemoveAsync(int id)
         {
             var query = "DELETE " +
-                        "FROM \"Translations\" AS T " +
-                        "WHERE T.\"ID\" = @id";
+                        "FROM translations AS T " +
+                        "WHERE T.id = @id";
 
             try
             {
@@ -175,14 +175,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var updateTranslationSql =
-                        "UPDATE \"Translations\" SET " +
-                        "\"ID_String\"=@ID_String, " +
-                        "\"Translated\"=@Translated, " +
-                        "\"Confirmed\"=@Confirmed, " +
-                        "\"ID_User\"=@ID_User, " +
-                        "\"DateTime\"=@DateTime, " +
-                        "\"ID_Locale\"=@ID_Locale " +
-                        "WHERE \"ID\"=@ID";
+                        "UPDATE translations SET " +
+                        "id_string=@ID_String, " +
+                        "translated=@Translated, " +
+                        "confirmed=@Confirmed, " +
+                        "id_user=@ID_User, " +
+                        "datetime=@DateTime, " +
+                        "id_locale=@ID_Locale " +
+                        "WHERE id=@ID";
                     var updateTranslationParam = item;
                     this.LogQuery(updateTranslationSql, updateTranslationParam);
                     await dbConnection.ExecuteAsync(
@@ -215,8 +215,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByID(int idString)
         {
             var query = "SELECT * " +
-                        "FROM \"Translations\" " +
-                        "WHERE \"ID_String\" = @Id";
+                        "FROM translations " +
+                        "WHERE id_string = @Id";
 
             try
             {
@@ -251,9 +251,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<bool> AcceptTranslation(int idTranslation)
         {
-            var query = "UPDATE \"Translations\" " +
-                        "SET \"Confirmed\" = true " +
-                        "WHERE \"ID\" = @Id";
+            var query = "UPDATE translations " +
+                        "SET confirmed = true " +
+                        "WHERE id = @Id";
 
             try
             {
@@ -288,9 +288,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<bool> RejectTranslation(int idTranslation)
         {
-            var query = "UPDATE \"Translations\" " +
-                        "SET \"Confirmed\" = false " +
-                        "WHERE \"ID\" = @Id";
+            var query = "UPDATE translations " +
+                        "SET confirmed = false " +
+                        "WHERE id = @Id";
 
             try
             {
@@ -325,13 +325,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список вариантов перевода</returns>
         public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(int currentProjectId, string translationText)
         {
-            var query = "SELECT F.\"Name\" AS \"FileOwnerName\", T.\"Translated\" AS \"TranslationVariant\", " +
-                        "TS.\"SubstringToTranslate\" AS \"TranslationText\" " +
-                        "FROM \"LocalizationProjects\" AS LP " +
-                        "INNER JOIN \"Files\" AS F ON F.\"ID_LocalizationProject\" = LP.\"ID\" " +
-                        "INNER JOIN \"TranslationSubstrings\" AS TS ON TS.\"ID_FileOwner\" = F.\"ID\" " +
-                        "INNER JOIN \"Translations\" AS T ON T.\"ID_String\" = TS.\"ID\" " +
-                        "WHERE TS.\"SubstringToTranslate\" LIKE @TranslationText";
+            var query = "SELECT F.name_text AS fileownername, T.translated AS translationvariant, " +
+                        "TS.substring_to_translate AS tTranslationtext " +
+                        "FROM id_user AS LP " +
+                        "INNER JOIN files AS F ON F.id_localization_project = LP.id " +
+                        "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +
+                        "INNER JOIN translations AS T ON T.id_string = TS.id " +
+                        "WHERE TS.substring_to_translate LIKE @TranslationText";
 
             try
             {
@@ -368,15 +368,15 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, TranslationSubstring translationSubstring)
         {
-            var query = "SELECT \"SubstringToTranslate\" AS \"TranslationText\", similarity(\"SubstringToTranslate\", @TranslationSubstringText) AS \"Similarity\", " +
-                        "\"Files\".\"Name\" AS \"FileOwnerName\", \"Translations\".\"Translated\" AS \"TranslationVariant\"" +
-                        "FROM \"LocalizationProjects\" " +
-                        "INNER JOIN \"Files\" ON \"Files\".\"ID_LocalizationProject\" = \"LocalizationProjects\".\"ID\" " +
-                        "INNER JOIN \"TranslationSubstrings\" ON \"TranslationSubstrings\".\"ID_FileOwner\" = \"Files\".\"ID\" " +
-                        "INNER JOIN \"Translations\" ON \"Translations\".\"ID_String\" = \"TranslationSubstrings\".\"ID\" " +
-                        "WHERE (\"LocalizationProjects\".\"ID\" = @ProjectId " +
-                        "AND \"SubstringToTranslate\" % @TranslationSubstringText " +
-                        "AND \"TranslationSubstrings\".\"ID\" != @TranslationSubstringId);";
+            var query = "SELECT substring_to_translate AS translationtext, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
+                        "files.name_text AS fileownername, translations.translated AS translationvariant" +
+                        "FROM id_user " +
+                        "INNER JOIN files ON files.id_localization_project = id_user.id " +
+                        "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
+                        "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
+                        "WHERE (id_user.id = @ProjectId " +
+                        "AND substring_to_translate % @TranslationSubstringText " +
+                        "AND translation_substrings.id != @TranslationSubstringId);";
 
 
             try

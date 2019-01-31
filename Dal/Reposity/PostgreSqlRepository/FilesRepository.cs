@@ -18,20 +18,20 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly int _defaultFileStreamBufferSize = 4096;
 
         private readonly string _insertFileSql =
-            "INSERT INTO \"Files\" (" +
-            "\"ID_LocalizationProject\", " +
-            "\"Name\", " +
-            "\"Description\", " +
-            "\"DateOfChange\", " +
-            "\"StringsCount\", " +
-            "\"Version\", " +
-            "\"Priority\", " +
-            "\"ID_FolderOwner\", " +
-            "\"Encoding\", " +
-            "\"IsFolder\", " +
-            "\"OriginalFullText\", " +
-            "\"IsLastVersion\", " +
-            "\"Id_PreviousVersion\"" +
+            "INSERT INTO files (" +
+            "id_localization_project, " +
+            "name, " +
+            "description, " +
+            "date_of_change, " +
+            "strings_count, " +
+            "version, " +
+            "priority, " +
+            "id_folder_owner, " +
+            "encod, " +
+            "is_folder, " +
+            "original_full_text, " +
+            "is_last_version, " +
+            "id_previous_version" +
             ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
@@ -55,7 +55,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<IEnumerable<File>> GetAllAsync()
         {
-            var sqlString = "SELECT * FROM \"Files\"";
+            var sqlString = "SELECT * FROM files";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -82,7 +82,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<File> GetByIDAsync(int id)
         {
-            var sqlString = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
+            var sqlString = "SELECT * FROM files WHERE id = @id";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -114,10 +114,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Files")
-                        .Where("ID_FolderOwner", parentId)
-                        .WhereLike("Name", name)
-                        .Where("IsLastVersion", true);
+                    var query = new Query("files")
+                        .Where("id_folder_owner", parentId)
+                        .WhereLike("name_text", name)
+                        .Where("is_last_version", true);
 
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
@@ -146,8 +146,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         //Нужно для формирования отчетов
         public IEnumerable<File> GetInitialFolders(int projectId)
         {
-            var sqlString = $"SELECT * FROM \"Files\" WHERE \"ID_LocalizationProject\" = @projectId AND \"ID_FolderOwner\" IS NULL " +
-                "AND \"IsLastVersion\"=true";
+            var sqlString = $"SELECT * FROM files WHERE id_localization_project = @projectId AND id_folder_owner IS NULL " +
+                "AND is_last_version=true";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -175,7 +175,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<int> AddAsync(File file)
         {
-            var sqlString = this._insertFileSql + " RETURNING \"ID\"";
+            var sqlString = this._insertFileSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 this.LogQuery(sqlString, param: file);
@@ -185,7 +185,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> RemoveAsync(int id)
         {
-            var sqlString = "DELETE FROM \"Files\" WHERE \"ID\" = @id";
+            var sqlString = "DELETE FROM files WHERE id = @id";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -220,9 +220,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Files")
+                    var query = new Query("files")
                         .AsUpdate(file)
-                        .Where("ID", file.ID);
+                        .Where("id", file.ID);
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var updatedRows = await connection.ExecuteAsync(compiledQuery.Sql, compiledQuery.NamedBindings);
@@ -249,7 +249,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> Upload(File file)
         {
-            var sqlString = this._insertFileSql + " RETURNING \"ID\"";
+            var sqlString = this._insertFileSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
@@ -273,13 +273,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                             return true;
                         }
 
-                        sqlString = "INSERT INTO \"TranslationSubstrings\" " +
+                        sqlString = "INSERT INTO translation_substrings " +
                                     "(" +
-                                    "\"SubstringToTranslate\", " +
-                                    "\"Context\", " +
-                                    "\"ID_FileOwner\", " +
-                                    "\"Value\", " +
-                                    "\"PositionInText\"" +
+                                    "substring_to_translate, " +
+                                    "context, " +
+                                    "id_file_owner, " +
+                                    "value, " +
+                                    "position_in_text" +
                                     ") " +
                                     "VALUES (" +
                                     "@SubstringToTranslate, " +
@@ -299,7 +299,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         if (n == 0)
                         {
                             file.Strings_Count = translationSubstringsCount;
-                            sqlString = "UPDATE \"Files\" SET \"StringsCount\" = @StringsCount WHERE \"ID\" = @Id";
+                            sqlString = "UPDATE files SET strings_count = @StringsCount WHERE id = @Id";
                             this.LogQuery(sqlString, param: file);
                             await connection.ExecuteAsync(sqlString, file, transaction);
                         }
@@ -336,7 +336,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<System.IO.FileStream> Load(int id, int id_locale = -1)
         {
-            var sqlFileQuery = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
+            var sqlFileQuery = "SELECT * FROM files WHERE id = @id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 try
@@ -348,15 +348,15 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var tempFileName = System.IO.Path.GetTempFileName();
                     if (id_locale != -1)
                     {
-                        var sqlLocalizationProjectQuery = "SELECT * FROM \"LocalizationProjects\" WHERE \"ID\" = @ID_LocalizationProject";
+                        var sqlLocalizationProjectQuery = "SELECT * FROM id_user WHERE id = @ID_LocalizationProject";
                         var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { file.ID });
-                        var sqlTranslationSubstringsQuery = "SELECT * FROM \"TranslationSubstring\" WHERE \"ID_FileOwner\" = @id";
+                        var sqlTranslationSubstringsQuery = "SELECT * FROM translation_substring WHERE id_file_owner = @id";
                         var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
                         translationSubstrings.Sort((x, y) => x.Position_In_Text.CompareTo(y.Position_In_Text));
                         var output = file.Original_Full_Text;
                         for (int i = translationSubstrings.Count - 1; i >= 0; i--)
                         {
-                            var sqlTranslationQuery = string.Format("SELECT * FROM \"Translations\" WHERE \"ID_String\" = @id_translationSubstring AND \"ID_Locale\" = @id_locale{0} SORT BY \"Selected\" DESC, \"Confirmed\" DESC, \"DateTime\" DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND \"Confirmed\" = true" : "");
+                            var sqlTranslationQuery = string.Format("SELECT * FROM translations WHERE id_string = @id_translationSubstring AND id_locale = @id_locale{0} SORT BY selected DESC, confirmed DESC, datetime DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND confirmed = true" : "");
                             var translation = await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery, new { translationSubstrings[i].ID, id_locale });
                             if (translation == null)
                             {
@@ -418,9 +418,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                var query = new Query("Files")
-                    .Where("ID_LocalizationProject", projectId)
-                    .Where("IsLastVersion", true);
+                var query = new Query("files")
+                    .Where("id_localization_project", projectId)
+                    .Where("is_last_version", true);
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
 
@@ -436,10 +436,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             var fileNamesSearchPattern = $"%{fileNamesSearch}%";
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                var query = new Query("Files")
-                    .Where("ID_LocalizationProject", projectId)
-                    .Where("IsLastVersion", true)
-                    .WhereLike("Name", fileNamesSearchPattern);
+                var query = new Query("files")
+                    .Where("id_localization_project", projectId)
+                    .Where("is_last_version", true)
+                    .WhereLike("name_text", fileNamesSearchPattern);
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
@@ -455,9 +455,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                var query = new Query("Files")
-                    .Where("ID", fileId)
-                    .AsUpdate(new[] { "ID_FolderOwner" }, new object[] { newParentId });
+                var query = new Query("files")
+                    .Where("id", fileId)
+                    .AsUpdate(new[] { "id_folder_owner" }, new object[] { newParentId });
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
@@ -476,12 +476,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                 foreach (var localeId in localesIds)
                 {
                     var sql =
-                        "INSERT INTO \"FilesLocales\" " +
+                        "INSERT INTO files_locales " +
                         "(" +
-                        "\"ID_File\", " +
-                        "\"ID_Locale\", " +
-                        "\"PercentOfConfirmed\", " +
-                        "\"PercentOfTranslation\"" +
+                        "id_file, " +
+                        "id_locale, " +
+                        "percent_of_confirmed, " +
+                        "percent_of_translation" +
                         ") VALUES " +
                         "(" +
                         "@ID_File, " +
@@ -504,11 +504,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query =
-                    new Query("Locales")
-                    .WhereIn("ID",
-                        new Query("FilesLocales")
-                        .Select("ID_Locale")
-                        .Where("ID_File", fileId));
+                    new Query("locales")
+                    .WhereIn("id",
+                        new Query("files_locales")
+                        .Select("id_locale")
+                        .Where("id_file", fileId));
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
@@ -525,8 +525,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query =
-                    new Query("FilesLocales")
-                    .Where("ID_File", fileId)
+                    new Query("files_locales")
+                    .Where("id_file", fileId)
                     .AsDelete();
 
                 var compiledQuery = this._compiler.Compile(query);

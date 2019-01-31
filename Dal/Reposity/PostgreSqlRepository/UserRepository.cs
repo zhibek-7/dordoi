@@ -27,7 +27,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    string SQLQuery = "INSERT INTO Users (Name, Password, Photo, Email) VALUES (@Name, @Password, @Photo, @Email)";
+                    string SQLQuery = "INSERT INTO users (name_text, password_text, photo, email) VALUES (@Name, @Password, @Photo, @Email)";
                     this.LogQuery(SQLQuery, param: user);
                     dbConnection.Execute(SQLQuery, user);
                 }
@@ -52,7 +52,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
                 User user = null;
-                string SQLQuery = "SELECT * FROM \"Users\" WHERE Id = @Id";
+                string SQLQuery = "SELECT * FROM users WHERE Id = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var param = new { Id };
@@ -81,10 +81,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                string SQLQuery = "SELECT u.* FROM \"Users\" u " +
-                        " join \"Participants\" p on u.\"ID\" = p.\"ID_User\" " +
-                        " join \"LocalizationProjects\" lp on p.\"ID_LocalizationProject\" = lp.\"ID\" " +
-                        " where lp.\"ID\" = @Id";
+                string SQLQuery = "SELECT u.* FROM users u " +
+                        " join participants p on u.id = p.id_user " +
+                        " join id_user lp on p.id_localization_project = lp.id " +
+                        " where lp.id = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
 
@@ -113,7 +113,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public bool CheckExistUser(User user)
         {
-            string SQLQuery = "SELECT * FROM \"Users\" WHERE Name = @Name AND Password = @Password";
+            string SQLQuery = "SELECT * FROM users WHERE name_text = @Name AND password_text = @Password";
             try
             {
                 User existUser = null;
@@ -147,7 +147,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<User> GetAll()
         {
-            string SQLQuery = "SELECT * FROM \"Users\"";
+            string SQLQuery = "SELECT * FROM users";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -207,7 +207,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public void Update(User user)
         {
-            string SQLQuery = "UPDATE Users SET Name = @Name, Password = @Password, Photo = @Photo, Email = @Email";
+            string SQLQuery = "UPDATE users SET name_text = @Name, password_text = @Password, photo = @Photo, email = @Email";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -240,9 +240,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Users")
-                        .Select("Photo")
-                        .Where("ID", id);
+                    var query = new Query("users")
+                        .Select("photo")
+                        .Where("id", id);
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var userAvatar = await dbConnection.ExecuteScalarAsync<byte[]>(
