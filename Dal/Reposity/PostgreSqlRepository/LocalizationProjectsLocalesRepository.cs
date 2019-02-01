@@ -10,12 +10,48 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectsLocalesRepository : BaseRepository, IRepository<LocalizationProjectsLocales>, ILocalizationProjectsLocalesRepository
+    public class LocalizationProjectsLocalesRepository : BaseRepository,  ILocalizationProjectsLocalesRepository
     {
         public LocalizationProjectsLocalesRepository(string connectionStr) : base(connectionStr)
         {
 
         }
+
+        public IEnumerable<LocalizationProjectsLocales> GetAll(int Id)
+        {
+            // Sql string to select all rows
+            var sqlString = "SELECT * FROM \"LocalizationProjectsLocales\"" +
+                 "WHERE \"ID_LocalizationProject\"=@Id";
+
+            try
+            {
+                var param = new { Id };
+
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    this.LogQuery(sqlString, param);
+                    IEnumerable<LocalizationProjectsLocales> projLocales = dbConnection.Query<LocalizationProjectsLocales>(sqlString, param);
+                    return projLocales;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectsLocalesRepository)}.{nameof(LocalizationProjectsLocalesRepository.GetAll)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectsLocalesRepository)}.{nameof(LocalizationProjectsLocalesRepository.GetAll)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+
+
 
         public IEnumerable<LocalizationProjectsLocales> GetAll()
         {
@@ -52,7 +88,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public void AddProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
             var sqlQuery = "INSERT INTO \"LocalizationProjectsLocales\" (\"ID_LocalizationProject\", \"ID_Locale\", \"PercentOfTranslation\", \"PercentOfConfirmed\")" +
-                        "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) ";
+                        "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) "+
+                        "RETURNING  \"LocalizationProjectsLocales\".\"ID_LocalizationProject\"";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Localization.Controllers
         public ProjectController()
         {
             _localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
+            _localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(Settings.GetStringDB());
             _userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
@@ -96,15 +98,46 @@ namespace Localization.Controllers
             return await _localizationProjectRepository.GetAllForSelectDTOAsync();
         }
 
+        /// <summary>
+        /// добавляет языки
+        /// </summary>
+        /// <param name="projectLocales"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("AddProjectLocale")]
-        public LocalizationProjectsLocales[] EditProject(LocalizationProjectsLocales[] projectLocales, int Id)
+        public LocalizationProjectsLocales[] EditProjectLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
         {
             foreach (LocalizationProjectsLocales projectLocale in projectLocales)
             {
-                _localizationProjectsLocalesRepository.AddProjectsLocales(projectLocale);
+                try
+                {
+                    _localizationProjectsLocalesRepository.AddProjectsLocales(projectLocale);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine("{0} Exception caught.", exception);
+                }
             }
             return projectLocales;
         }
+
+
+        /// <summary>
+        /// взвращает все языки по id проекта
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("ListProjectLocales/{Id}")]
+        public List<LocalizationProjectsLocales> GetProjectsLocales([FromBody] int Id)
+        {
+            return _localizationProjectsLocalesRepository.GetAll(Id).ToList();
+        }
+
+
+
+
+
+
+
     }
 }

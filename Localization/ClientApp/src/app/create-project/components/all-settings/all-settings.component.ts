@@ -33,8 +33,8 @@ export class AllSettingsComponent implements OnInit {
   isChecked = true;
   
   public project: LocalizationProject;
-  //public projectLocale: LocalizationProjectsLocales;
-
+ 
+   // this.searchText = this.projectsLcalesService.currentProjectName;
   pjPublic: string;
   pjFileTrue= false;
   pjSkipUntranslStrTrue= false;
@@ -52,12 +52,23 @@ export class AllSettingsComponent implements OnInit {
     selectedLang: new FormControl()
   });
 
-
+   
   searchText = "";
   dropdownList = [];
+  allProjLocales: Promise<LocalizationProjectsLocales>;
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
+    //вывод всех языков проекта
+
+
+    this.currentProjectName = this.projectsService.currentProjectName;
+    this.currentProjectId = this.projectsService.currentProjectId;
+
+    this.allProjLocales = this.projectsService.getProjectLocales(this.currentProjectId);
+
+    this.allProjLocales
+
     this.dropdownList = [
       { itemName: "Ido", checked: false, id: "1" },
       { itemName: "Аварский", checked: false, id: "2" },
@@ -67,7 +78,7 @@ export class AllSettingsComponent implements OnInit {
       { itemName: "Акан", checked: false, id: "6" },
       { itemName: "Албанский", checked: false, id: "7" },
       { itemName: "Амхарский", checked: false, id: "8" },
-      { itemName: "Английский", checked: false, id: "9" },
+      { itemName: "Английский", checked: false, id: "300" },
       {
         itemName: "Английский (вверх ногами)",
         checked: false,
@@ -78,9 +89,7 @@ export class AllSettingsComponent implements OnInit {
       { itemName: "Русский", checked: false, id: "13" }
     ];
 
-    this.currentProjectName = this.projectsService.currentProjectName;
-    this.currentProjectId = this.projectsService.currentProjectId;
-   // this.searchText = this.projectsLcalesService.currentProjectName;
+   
 
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
@@ -174,7 +183,8 @@ export class AllSettingsComponent implements OnInit {
     //let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
     // this.projectsService.addProject(newProject);
   }
-
+  idPrLocale: number;
+  idLocale: number;
   editProject(Id: number): void {
 
     if (this.pjPublic == "public") {
@@ -184,19 +194,20 @@ export class AllSettingsComponent implements OnInit {
     }
     console.log(this.currentProjectDescription);
 
+    //собирает добавленные языки в один массив
 
-    let projectLocales: LocalizationProjectsLocales[]; 
+    let projectLocales: LocalizationProjectsLocales[]=[]; 
     this.selectedItems.forEach((lang) => {
       projectLocales.push({
         id_LocalizationProject: this.currentProjectId,
         id_Locale: lang.id,
-        percentOfTranslation: 1,
-        PercentOfConfirmed:1
+        percentOfTranslation: 0,
+        PercentOfConfirmed:0
       });     
     })  
 
 
-    //
+    //передает массив языков
     this.projectsService.addProjectLocales(projectLocales);
 
     let project: LocalizationProject = new LocalizationProject(
