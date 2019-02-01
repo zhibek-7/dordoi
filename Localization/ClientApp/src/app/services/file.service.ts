@@ -6,6 +6,7 @@ import { catchError } from "rxjs/operators";
 import { TreeNode } from "primeng/api";
 import { File as FileData } from '../models/database-entities/file.type';
 import { Locale } from '../models/database-entities/locale.type';
+import { FileTranslationInfo } from '../models/database-entities/fileTranslationInfo.type';
 
 @Injectable({
   providedIn: 'root'
@@ -146,6 +147,12 @@ export class FileService {
 
     return this.http
       .post(url, localeId, { responseType: 'blob' });
+  }
+
+  getFileTranslationInfos(fileData: FileData): Observable<FileTranslationInfo[]> {
+    const url = `${this._url}/${fileData.id}/GetTranslationInfo`;
+    return this.http.post<FileTranslationInfo[]>(url, null)
+      .pipe(catchError(this.handleError('getFileTranslationInfo', [])));
   }
 
   handleError<T>(operation = 'Operation', result?: T) {

@@ -138,6 +138,11 @@ namespace Models.Services
             return newNode;
         }
 
+        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(int fileId)
+        {
+            return await this._filesRepository.GetFileTranslationInfoByIdAsync(fileId: fileId);
+        }
+
         private File GetNewFileModel(System.IO.Stream fileContentStream)
         {
             var newFile = new File()

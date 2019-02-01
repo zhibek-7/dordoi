@@ -538,5 +538,27 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(int fileId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("FilesLocales")
+                    .Select(
+                        "ID_Locale as LocaleId",
+                        "PercentOfTranslation",
+                        "PercentOfConfirmed"
+                        )
+                    .Where("ID_File", fileId);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                return await dbConnection.QueryAsync<FileTranslationInfo>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+            }
+        }
+
     }
 }
