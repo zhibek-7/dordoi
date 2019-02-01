@@ -8,7 +8,7 @@ using System;
 
 namespace Models.Services
 {
-    public class GlossaryService
+    public class GlossaryService : BaseService
     {
 
         private readonly IGlossaryRepository _glossaryRepository;
@@ -27,8 +27,8 @@ namespace Models.Services
 
             try
             {
-            return await this._stringsRepository.GetLocalesForStringAsync(translationSubstringId: termId);
-        }
+                return await this._stringsRepository.GetLocalesForStringAsync(translationSubstringId: termId);
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{termId}\" ", exception);
@@ -38,12 +38,12 @@ namespace Models.Services
 
         public async Task<bool> UpdateAsync(Glossary updatedGlossary)
         {
-           
+
 
             try
             {
-            return await this._glossaryRepository.UpdateAsync(item: updatedGlossary);
-        }
+                return await this._glossaryRepository.UpdateAsync(item: updatedGlossary);
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{updatedGlossary}\" ", exception);
@@ -52,12 +52,12 @@ namespace Models.Services
 
         public async Task<Glossary> GetByIDAsync(int glossaryId)
         {
-            
+
 
             try
             {
-            return await this._glossaryRepository.GetByIDAsync(id: glossaryId);
-        }
+                return await this._glossaryRepository.GetByIDAsync(id: glossaryId);
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\" ", exception);
@@ -66,12 +66,12 @@ namespace Models.Services
 
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
-          
+
 
             try
             {
-            return await this._glossaryRepository.GetAllAsync();
-        }
+                return await this._glossaryRepository.GetAllAsync();
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -81,11 +81,11 @@ namespace Models.Services
 
         public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
         {
-           
+
             try
             {
-            return await this._glossaryRepository.GetLocaleByIdAsync(glossaryId: glossaryId);
-        }
+                return await this._glossaryRepository.GetLocaleByIdAsync(glossaryId: glossaryId);
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\" ", exception);
@@ -94,14 +94,14 @@ namespace Models.Services
 
         public async Task UpdateTranslationLocalesForTermAsync(int glossaryId, int termId, IEnumerable<int> localesIds)
         {
-          
+
 
 
             try
             {
-            await this._stringsRepository.DeleteTranslationLocalesAsync(translationSubstringId: termId);
-            await this._stringsRepository.AddTranslationLocalesAsync(translationSubstringId: termId, localesIds: localesIds);
-        }
+                await this._stringsRepository.DeleteTranslationLocalesAsync(translationSubstringId: termId);
+                await this._stringsRepository.AddTranslationLocalesAsync(translationSubstringId: termId, localesIds: localesIds);
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\"    \"{termId}\"   \"{localesIds}\" ", exception);
@@ -117,20 +117,20 @@ namespace Models.Services
             string[] sortBy = null,
             bool? sortAscending = true)
         {
-           
+
 
 
             try
             {
-            return await this._glossaryRepository.GetAssotiatedTermsByGlossaryIdAsync(
-                glossaryId: glossaryId,
-                termPart: termPart,
-                limit: limit ?? 25,
-                offset: offset ?? 0,
-                sortBy: sortBy,
-                sortAscending: sortAscending ?? true
-                );
-        }
+                return await this._glossaryRepository.GetAssotiatedTermsByGlossaryIdAsync(
+                    glossaryId: glossaryId,
+                    termPart: termPart,
+                    limit: limit ?? 25,
+                    offset: offset ?? 0,
+                    sortBy: sortBy,
+                    sortAscending: sortAscending ?? true
+                    );
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error  \"{glossaryId}\" ", exception);
@@ -145,15 +145,15 @@ namespace Models.Services
                 newTerm: newTerm,
                 partOfSpeechId: partOfSpeechId);
             var glossaryLocales = await this._glossaryRepository.GetTranslationLocalesAsync(glossaryId: glossaryId);
-           
+
 
 
             try
             {
-            await this._stringsRepository.AddTranslationLocalesAsync(
-                translationSubstringId: newTermId,
-                localesIds: glossaryLocales.Select(locale => locale.ID));
-        }
+                await this._stringsRepository.AddTranslationLocalesAsync(
+                    translationSubstringId: newTermId,
+                    localesIds: glossaryLocales.Select(locale => locale.ID));
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -163,12 +163,12 @@ namespace Models.Services
 
         public async Task DeleteTermAsync(int glossaryId, int termId)
         {
-          
+
 
             try
             {
-            await this._glossaryRepository.DeleteTermAsync(glossaryId: glossaryId, termId: termId);
-        }
+                await this._glossaryRepository.DeleteTermAsync(glossaryId: glossaryId, termId: termId);
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -178,13 +178,13 @@ namespace Models.Services
 
         public async Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart)
         {
-           
+
 
             try
             {
-            return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
+                return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
 
-        }
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -194,16 +194,16 @@ namespace Models.Services
 
         public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)
         {
-          
+
 
             try
             {
-            await this._glossaryRepository.UpdateTermAsync(
-                glossaryId: glossaryId,
-                updatedTerm: updatedTerm,
-                partOfSpeechId: partOfSpeechId);
+                await this._glossaryRepository.UpdateTermAsync(
+                    glossaryId: glossaryId,
+                    updatedTerm: updatedTerm,
+                    partOfSpeechId: partOfSpeechId);
 
-        }
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
@@ -212,11 +212,11 @@ namespace Models.Services
 
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
         {
-           
+
             try
             {
-            return await _glossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
-        }
+                return await _glossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
+            }
             catch (Exception exception)
             {
                 throw new Exception($"Error", exception);
