@@ -8,7 +8,7 @@ using System;
 
 namespace Models.Services
 {
-    public class GlossariesService
+    public class GlossariesService : BaseService
     {
         private readonly IGlossariesRepository _glossariesRepository;
 
