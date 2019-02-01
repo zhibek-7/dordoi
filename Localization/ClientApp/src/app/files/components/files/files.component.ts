@@ -89,7 +89,8 @@ export class FilesComponent implements OnInit {
       this.files = files;
 
       this.isLoading = false;
-    });
+    },
+    error => alert(error));
   };
 
   addFolder(newFolder: File, parentNode?: TreeNode): void {
@@ -108,7 +109,8 @@ export class FilesComponent implements OnInit {
       () => {
         this.getFiles();
         this.ngxSpinnerService.hide();
-      });
+      },
+      error => alert(error));
   }
 
   addFile(file: File, parentNode: TreeNode): void {
@@ -129,7 +131,8 @@ export class FilesComponent implements OnInit {
         .subscribe(newNode => {
           this.deleteNode(oldNode);
           this.addNode(newNode, parentNode);
-        })
+        },
+        error => alert(error))
     }
   }
 
@@ -160,7 +163,8 @@ export class FilesComponent implements OnInit {
       .subscribe(response => {
         console.log(response);
         this.deleteNode(node);
-      });
+      },
+      error => alert(error));
   }
 
   deleteNode(node: TreeNode) {
@@ -181,7 +185,8 @@ export class FilesComponent implements OnInit {
   }
 
   updateNode(data: FileData): void {
-    this.fileService.updateNode(data).subscribe(response => console.log(response))
+    this.fileService.updateNode(data).subscribe(response => console.log(response),
+      error => alert(error))
   }
 
   onFileUpload(event: any, parentNode?: TreeNode): void {
@@ -210,13 +215,15 @@ export class FilesComponent implements OnInit {
     this.fileService.updateNode(node.data)
       .subscribe(() => {
         this.reloadView();
-      });
+      },
+      error => alert(error));
   }
 
   requestFileDownload(node: TreeNode) {
     this.fileService.downloadFile(node.data)
       .subscribe(
-        data => saveAs(data, node.data.name)
+        data => saveAs(data, node.data.name),
+        error => alert(error)
       );
   }
 
