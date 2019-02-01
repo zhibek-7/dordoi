@@ -7,7 +7,10 @@
   <div class="app-modal-body">
     <div *ngFor="let fileTranslationInfo of fileTranslationInfos">
       <div *ngIf="getLocale(fileTranslationInfo.localeId)" class="row">
-        <div class="col-4">{{getLocale(fileTranslationInfo.localeId).name}}</div>
+        <div class="col-4">
+          <img alt="Locale icon" [style.width]="16+'px'" [src]="getLocale(fileTranslationInfo.localeId).url" />
+          {{getLocale(fileTranslationInfo.localeId).name}}
+        </div>
         <div class="col-8">
           <mat-progress-bar mode="determinate" [value]="fileTranslationInfo.percentOfTranslation"></mat-progress-bar>
         </div>
