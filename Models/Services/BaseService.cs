@@ -14,16 +14,16 @@ namespace Models.Services
         protected readonly ILogTools _logger = new LogTools();
         protected readonly ILogTools _loggerError = new ExceptionLog();
 
-        public String WriteLn(Object str)
+        public string WriteLn(Object str)
         {
             _loggerError.WriteLn(str);
-            return str;
+            return str.ToString();
         }
 
-        public String WriteLn(Object str, Exception err)
+        public string WriteLn(Object str, Exception err)
         {
             _loggerError.WriteLn(str, err);
-            return str;
+            return str.ToString();
         }
     }
 }
