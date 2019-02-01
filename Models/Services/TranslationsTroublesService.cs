@@ -8,13 +8,13 @@ using Models.Interfaces.Repository;
 
 namespace Models.Services
 {
-    public class TranslationsTroublesService
+    public class TranslationsTroublesService : BaseService
     {
         private readonly ITranslationTroubleRepository _translationTroubleRepository;
 
         public TranslationsTroublesService(ITranslationTroubleRepository translationTroubleRepository)
         {
-           
+
 
             try
             {
@@ -28,7 +28,7 @@ namespace Models.Services
 
         public async Task<IEnumerable<TranslationTrouble>> GetAllByTranslationIdAsync(int traslationId)
         {
-           
+
 
             try
             {
@@ -43,7 +43,7 @@ namespace Models.Services
 
         public async Task<int> AddNewGlossaryAsync(TranslationTrouble trouble)
         {
-          
+
 
             try
             {
@@ -57,7 +57,7 @@ namespace Models.Services
 
         public async Task<bool> DeleteTranslationTroubleAsync(int id)
         {
-           
+
 
             try
             {

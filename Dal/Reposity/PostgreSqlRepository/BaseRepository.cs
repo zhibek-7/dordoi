@@ -15,8 +15,6 @@ namespace DAL.Reposity.PostgreSqlRepository
         protected readonly ILogTools _logger = new LogTools();
         protected readonly ILogTools _loggerError = new ExceptionLog();
 
-        protected readonly Compiler _compiler = new PostgresCompiler();
-
         public BaseRepository(string connectionStr)
         {
             this.connectionString = connectionStr;
