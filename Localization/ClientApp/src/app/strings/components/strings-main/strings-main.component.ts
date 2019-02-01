@@ -94,7 +94,7 @@ export class StringsMainComponent implements OnInit {
 
   filesTreeNodeToFilesListRecursive(path: string, fileTreeNode: TreeNode): FileViewModel[] {
     let pathForCurrentNode = path + '/' + fileTreeNode.data.name;
-    if (!fileTreeNode.data.isFolder) {
+    if (!fileTreeNode.data.is_Folder) {
       return [new FileViewModel(pathForCurrentNode, fileTreeNode.data.id)];
     }
     else {

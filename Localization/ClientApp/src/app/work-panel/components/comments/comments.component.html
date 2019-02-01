@@ -23,7 +23,7 @@
                                     </div>
                                     <div *ngIf="!commentEdited">
                                         <div class="row">
-                                            <div class="col-12">{{comment.comment}} </div>
+                                            <div class="col-12">{{comment.comment_text}} </div>
                                         </div>
                                         <ul class="row">
                                             <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">

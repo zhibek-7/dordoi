@@ -78,7 +78,7 @@ export class FilesComponent implements OnInit {
   }
 
   canDrop(node: any) {
-    const nodeIsFolder: boolean = node.data.isFolder;
+    const nodeIsFolder: boolean = node.data.is_Folder;
     return (unused => { return nodeIsFolder; });
   }
 
@@ -141,7 +141,7 @@ export class FilesComponent implements OnInit {
     const nodes = parent ? [...parent.children] : [...this.files];
 
     // Find last index in nodes list
-    const lastIndex = this.findLastIndex(nodes, node => node.data.isFolder == addedNode.data.isFolder);
+    const lastIndex = this.findLastIndex(nodes, node => node.data.is_Folder == addedNode.data.is_Folder);
 
     addedNode.parent = parent;
 

@@ -21,16 +21,16 @@
 <app-file-input-wrapper #updateFileInput (fileConfirmed)="updateFileVersion($event[0], $event[1])"></app-file-input-wrapper>
 <mat-menu #fileRowContextMenu="matMenu">
   <ng-template matMenuContent let-node="node" let-data="data">
-    <button mat-menu-item *ngIf="data.isFolder" (click)="fileInput.activate(node)">
+    <button mat-menu-item *ngIf="data.is_Folder" (click)="fileInput.activate(node)">
       Добавить файл
     </button>
-    <button mat-menu-item *ngIf="data.isFolder" (click)="addFolderModal.showForNode(node)">
+    <button mat-menu-item *ngIf="data.is_Folder" (click)="addFolderModal.showForNode(node)">
       Создать папку
     </button>
-    <button mat-menu-item *ngIf="data.isFolder" (click)="folderInput.activate(node)">
+    <button mat-menu-item *ngIf="data.is_Folder" (click)="folderInput.activate(node)">
       Загрузить папку
     </button>
-    <button mat-menu-item *ngIf="!data.isFolder" (click)="updateFileInput.activate(node)">
+    <button mat-menu-item *ngIf="!data.is_Folder" (click)="updateFileInput.activate(node)">
       Обновить
     </button>
     <mat-divider></mat-divider>
@@ -40,19 +40,19 @@
     <button mat-menu-item (click)="pseudoCut(node)">
       Вырезать
     </button>
-    <button mat-menu-item (click)="moveCurrentlyCutted(node)" [disabled]="!data.isFolder || !cuttedNode">
+    <button mat-menu-item (click)="moveCurrentlyCutted(node)" [disabled]="!data.is_Folder || !cuttedNode">
       Вставить
     </button>
     <button mat-menu-item (click)="deleteFile(node)">
       Удалить
     </button>
-    <button mat-menu-item *ngIf="!data.isFolder" (click)="setFileLanguagesModal.showFile(data)">
+    <button mat-menu-item *ngIf="!data.is_Folder" (click)="setFileLanguagesModal.showFile(data)">
       Задать язык перевода
     </button>
-    <button mat-menu-item *ngIf="!data.isFolder" (click)="requestFileDownload(node)">
+    <button mat-menu-item *ngIf="!data.is_Folder" (click)="requestFileDownload(node)">
       Скачать
     </button>
-    <button mat-menu-item *ngIf="!data.isFolder" routerLink="/Strings/byFileId/{{data.id}}">
+    <button mat-menu-item *ngIf="!data.is_Folder" routerLink="/Strings/byFileId/{{data.id}}">
       Просмотр исходных строк
     </button>
   </ng-template>
@@ -88,17 +88,17 @@
         {{rowData.stringsCount}}
       </td>
       <td class="col-xs-2">
-        <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button>
+        <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.is_Folder" disabled>{{rowData.version}}</button>
       </td>
       <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
-        <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button>
+        <button class="btn btn-default" *ngIf="!rowData.is_Folder" disabled>{{rowData.priority}}</button>
       </td>
       <td class="col-xs-2">
-        <button *ngIf="!rowData.isFolder" mat-raised-button (click)="updateFileInput.click()">
+        <button *ngIf="!rowData.is_Folder" mat-raised-button (click)="updateFileInput.click()">
           Обновить
           <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
         </button>
-        <button *ngIf="!rowData.isFolder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
+        <button *ngIf="!rowData.is_Folder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
           <mat-icon> arrow_downward </mat-icon>
         </button>
         <button mat-icon-button
