@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.DatabaseEntities
 {
@@ -16,6 +17,19 @@ namespace Models.DatabaseEntities
         [Required]
         public string Flag { get; set; }
 
+        public string code { get; set; }
+
+        public DateTime? data_create { get; set; }
+
         public string url { get; set; }
+
+        public Locale(string name, string description, string flag, DateTime? data_create, string url)
+        {
+            this.Name = name;
+            this.Description = description;
+            this.Flag = flag;
+            this.data_create = data_create;
+            this.url = url;
+        }
     }
 }

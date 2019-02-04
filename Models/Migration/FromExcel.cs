@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.IO;
 using OfficeOpenXml;
 using System.Linq;
 using Utilities.Logs;
+using Models.DatabaseEntities;
 
 namespace Models.Migration
 {
@@ -23,35 +23,40 @@ namespace Models.Migration
         /// </summary>
         protected readonly ILogTools _loggerError = new ExceptionLog();
 
-        /// <summary>
-        /// Результат распарсивания Excel-таблицы
-        /// </summary>
-        public string[][] Output;
 
         /// <summary>
-        /// Распарсивает таблицу (с ячейки A1) на первом листе Excel-файла
+        /// Конструктор по умолчанию, не содержащий кода
+        /// </summary>
+        public FromExcel()
+        {
+
+        }
+
+        /// <summary>
+        /// Распарсивает таблицу <see cref="Locale"/>'ей (с ячейки A1) на первом листе Excel-файла и записывает извлеченные сущности в БД
         /// </summary>
         /// <param name="fs">Поток Excel-файла</param>
-        public FromExcel(FileStream fs)
+        public void UploadLocalesFromExcel(System.IO.FileStream fs)
         {
             try
             {
-                _logger.WriteLn("Распарсивание Excel-файла");
-                var tempFileName = Path.GetTempFileName();
-                fs.Seek(0, SeekOrigin.Begin);
-                fs.CopyTo(File.Open(tempFileName, FileMode.Open));
-                using (var xlPackage = new ExcelPackage(new FileInfo(tempFileName)))
+                _logger.WriteLn(string.Format("Распарсивание Excel-файла и запись извлеченных сущностей {0} в БД", nameof(Locale)));
+                var tempFileName = System.IO.Path.GetTempFileName();
+                fs.Seek(0, System.IO.SeekOrigin.Begin);
+                fs.CopyTo(System.IO.File.Open(tempFileName, System.IO.FileMode.Open));
+                using (var xlPackage = new ExcelPackage(new System.IO.FileInfo(tempFileName)))
                 {
                     var myWorksheet = xlPackage.Workbook.Worksheets[1];
                     var totalRows = myWorksheet.Dimension.End.Row;
                     var totalColumns = myWorksheet.Dimension.End.Column;
-                    Output = new string[totalRows - 1][];
                     for (int i = 2; i <= totalRows; i++)
                     {
-                        Output[i - 2] = myWorksheet.Cells[i, 1, i, totalColumns].Select(c => c.Value == null ? string.Empty : c.Value.ToString()).ToArray();
+                        string[] input = myWorksheet.Cells[i, 1, i, totalColumns].Select(c => c.Value == null ? string.Empty : c.Value.ToString()).ToArray();
+                        var loc = new Locale(input[0], string.Empty, input[1], null, input[2]);
+                        //can't use DAL-project to upload Locale because of the circular dependency problem
                     }
                 }
-                File.Delete(tempFileName);
+                System.IO.File.Delete(tempFileName);
             }
             catch (Exception ex)
             {
