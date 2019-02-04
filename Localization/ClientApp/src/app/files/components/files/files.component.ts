@@ -237,19 +237,6 @@ export class FilesComponent implements OnInit {
   requestFileDownload(node: TreeNode) {
     this.fileService.downloadFile(node.data)
       .subscribe(
-        data => saveAs(data, node.data.name),
-        error => alert(error)
-      );
-  }
-
-  translateFileClick(){
-    alert("Тут будет перенаправление на форму для работы над переводом данного файла");
-  }
-
-}
-
-    this.fileService.downloadFile(node.data)
-      .subscribe(
         data => {
           let fileName = node.data.name;
           if (node.data.downloadName && node.data.downloadName != '') {
@@ -258,4 +245,11 @@ export class FilesComponent implements OnInit {
           saveAs(data, fileName);
         },
         error => alert(error)
-      );
+      );
+  }
+
+  translateFileClick(){
+    alert("Тут будет перенаправление на форму для работы над переводом данного файла");
+  }
+
+}    
