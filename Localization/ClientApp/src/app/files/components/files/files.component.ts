@@ -1,27 +1,26 @@
-import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Predicate } from "@angular/core";
 
-import { TreeNode } from 'primeng/api';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { saveAs } from 'file-saver';
+import { TreeNode } from "primeng/api";
+import { NgxSpinnerService } from "ngx-spinner";
+import { saveAs } from "file-saver";
 
-import { FileService } from 'src/app/services/file.service';
-import { ProjectsService } from 'src/app/services/projects.service';
+import { FileService } from "src/app/services/file.service";
+import { ProjectsService } from "src/app/services/projects.service";
 
-import { File as FileData } from 'src/app/models/database-entities/file.type';
+import { File as FileData } from "src/app/models/database-entities/file.type";
 
 @Component({
-  selector: 'app-files',
-  templateUrl: './files.component.html',
-  styleUrls: ['./files.component.css'],
+  selector: "app-files",
+  templateUrl: "./files.component.html",
+  styleUrls: ["./files.component.css"],
   encapsulation: ViewEncapsulation.None
 })
-
 export class FilesComponent implements OnInit {
   files: TreeNode[];
 
   cols: any[];
 
-  searchFilesNamesString: string = '';
+  searchFilesNamesString: string = "";
 
   selectedNode: TreeNode;
 
@@ -32,21 +31,35 @@ export class FilesComponent implements OnInit {
   constructor(
     private fileService: FileService,
     private projectsService: ProjectsService,
-    private ngxSpinnerService: NgxSpinnerService,
-  ) { }
+    private ngxSpinnerService: NgxSpinnerService
+  ) {}
 
   ngOnInit(): void {
-
-    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
-    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-    console.log('Projec=' + sessionStorage.getItem('Projec'));
+    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
+    console.log("Projec=" + sessionStorage.getItem("Projec"));
 
     this.cols = [
-      { field: 'name_text', header: 'Имя' },
-      { field: 'date_Of_Change', header: 'Дата изменения' },
-      { field: 'strings_count', header: 'Строки', width: '100px', textalign: 'right' },
-      { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
-      { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
+      { field: "name_text", header: "Имя" },
+      { field: "date_Of_Change", header: "Дата изменения" },
+      {
+        field: "strings_count",
+        header: "Строки",
+        width: "100px",
+        textalign: "right"
+      },
+      {
+        field: "version",
+        header: "Версия",
+        width: "80px",
+        textalign: "center"
+      },
+      {
+        field: "priority",
+        header: "Приоритет",
+        width: "100px",
+        textalign: "center"
+      },
       {}
     ];
 
@@ -58,68 +71,96 @@ export class FilesComponent implements OnInit {
   }
 
   moveCurrentlyCutted(selectedNode: TreeNode): void {
-    this.fileService.changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
-      .subscribe(() => {
-        this.deleteNode(this.cuttedNode);
-        this.addNode(this.cuttedNode, selectedNode);
-        this.cuttedNode = null;
-      },
-        error => alert(error));
+    this.fileService
+      .changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
+      .subscribe(
+        () => {
+          this.deleteNode(this.cuttedNode);
+          this.addNode(this.cuttedNode, selectedNode);
+          this.cuttedNode = null;
+        },
+        error => alert(error)
+      );
   }
 
   moveNode(nodeToMove: any, newParent: any) {
-    const parentId = newParent ? newParent.data ? newParent.data.id : null : null;
-    this.fileService.changeParentFolder(nodeToMove.data, parentId)
-      .subscribe(() => {
+    const parentId = newParent
+      ? newParent.data
+        ? newParent.data.id
+        : null
+      : null;
+    this.fileService.changeParentFolder(nodeToMove.data, parentId).subscribe(
+      () => {
         this.deleteNode(nodeToMove);
         this.addNode(nodeToMove, newParent);
       },
-        error => alert(error));
+      error => alert(error)
+    );
   }
 
   canDrop(node: any) {
     const nodeIsFolder: boolean = node.data.is_Folder;
-    return (unused => { return nodeIsFolder; });
+    return unused => {
+      return nodeIsFolder;
+    };
   }
 
   getFiles(): void {
     this.isLoading = true;
 
-    this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId, this.searchFilesNamesString).subscribe(files => {
-      this.files = files;
+    this.fileService
+      .getFilesByProjectIdAsTree(
+        this.projectsService.currentProjectId,
+        this.searchFilesNamesString
+      )
+      .subscribe(
+        files => {
+          this.files = files;
 
-      this.isLoading = false;
-    },
-      error => alert(error));
-  };
+          this.isLoading = false;
+        },
+        error => alert(error)
+      );
+  }
 
   addFolder(newFolder: File, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
-    this.fileService.addFolder(newFolder.name, this.projectsService.currentProjectId, parentId).subscribe(
-      node => this.addNode(node, parentNode),
-      error => alert(error.error)
-    );
+    this.fileService
+      .addFolder(
+        newFolder.name,
+        this.projectsService.currentProjectId,
+        parentId
+      )
+      .subscribe(
+        node => this.addNode(node, parentNode),
+        error => alert(error.error)
+      );
   }
 
   uploadFolder(files, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
     this.ngxSpinnerService.show();
-    this.fileService.uploadFolder(files, this.projectsService.currentProjectId, parentId).subscribe(
-      () => {
-        this.getFiles();
-        this.ngxSpinnerService.hide();
-      },
-      error => alert(error));
+    this.fileService
+      .uploadFolder(files, this.projectsService.currentProjectId, parentId)
+      .subscribe(
+        () => {
+          this.getFiles();
+          this.ngxSpinnerService.hide();
+        },
+        error => alert(error)
+      );
   }
 
   addFile(file: File, parentNode: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
-    this.fileService.addFile(file, this.projectsService.currentProjectId, parentId).subscribe(
-      node => this.addNode(node, parentNode),
-      error => alert(error.error)
-    );
+    this.fileService
+      .addFile(file, this.projectsService.currentProjectId, parentId)
+      .subscribe(
+        node => this.addNode(node, parentNode),
+        error => alert(error.error)
+      );
   }
 
   updateFileVersion(event: any, oldNode: TreeNode): void {
@@ -127,12 +168,20 @@ export class FilesComponent implements OnInit {
     if (file) {
       const parentNode = oldNode.parent;
       const parentId = parentNode ? parentNode.data.id : null;
-      this.fileService.updateFileVersion(file, oldNode.data.name_text, this.projectsService.currentProjectId, parentId)
-        .subscribe(newNode => {
-          this.deleteNode(oldNode);
-          this.addNode(newNode, parentNode);
-        },
-          error => alert(error))
+      this.fileService
+        .updateFileVersion(
+          file,
+          oldNode.data.name_text,
+          this.projectsService.currentProjectId,
+          parentId
+        )
+        .subscribe(
+          newNode => {
+            this.deleteNode(oldNode);
+            this.addNode(newNode, parentNode);
+          },
+          error => alert(error)
+        );
     }
   }
 
@@ -141,7 +190,10 @@ export class FilesComponent implements OnInit {
     const nodes = parent ? [...parent.children] : [...this.files];
 
     // Find last index in nodes list
-    const lastIndex = this.findLastIndex(nodes, node => node.data.is_Folder == addedNode.data.is_Folder);
+    const lastIndex = this.findLastIndex(
+      nodes,
+      node => node.data.is_Folder == addedNode.data.is_Folder
+    );
 
     addedNode.parent = parent;
 
@@ -159,12 +211,13 @@ export class FilesComponent implements OnInit {
   }
 
   deleteFile(node: TreeNode): void {
-    this.fileService.deleteNode(node.data)
-      .subscribe(response => {
+    this.fileService.deleteNode(node.data).subscribe(
+      response => {
         console.log(response);
         this.deleteNode(node);
       },
-        error => alert(error));
+      error => alert(error)
+    );
   }
 
   deleteNode(node: TreeNode) {
@@ -172,8 +225,7 @@ export class FilesComponent implements OnInit {
     let nodeIsRoot = indexOfNodeInRootFiles > -1;
     if (nodeIsRoot) {
       this.files.splice(indexOfNodeInRootFiles, 1);
-    }
-    else {
+    } else {
       let parentChildren = node.parent.children;
       parentChildren.splice(parentChildren.lastIndexOf(node), 1);
     }
@@ -185,8 +237,9 @@ export class FilesComponent implements OnInit {
   }
 
   updateNode(data: FileData): void {
-    this.fileService.updateNode(data).subscribe(response => console.log(response),
-      error => alert(error))
+    this.fileService
+      .updateNode(data)
+      .subscribe(response => console.log(response), error => alert(error));
   }
 
   onFileUpload(event: any, parentNode?: TreeNode): void {
@@ -197,7 +250,10 @@ export class FilesComponent implements OnInit {
     // event.files.forEach(file => this.fileService.addFile(file).subscribe(node => this.files = [...this.files, node]));
   }
 
-  private findLastIndex(nodes: TreeNode[], predicate: Predicate<TreeNode>): number {
+  private findLastIndex(
+    nodes: TreeNode[],
+    predicate: Predicate<TreeNode>
+  ): number {
     // Find index in reversed nodes by predicate
     const reversedIndex = nodes.reverse().findIndex(predicate);
 
@@ -212,27 +268,24 @@ export class FilesComponent implements OnInit {
 
   renameNode(node: TreeNode, updatedFile: FileData) {
     node.data.name_text = updatedFile.name_text;
-    this.fileService.updateNode(node.data)
-      .subscribe(() => {
+    this.fileService.updateNode(node.data).subscribe(
+      () => {
         this.reloadView();
       },
-        error => alert(error));
+      error => alert(error)
+    );
   }
 
   requestFileDownload(node: TreeNode) {
-    this.fileService.downloadFile(node.data)
-      .subscribe(
-        data => saveAs(data, node.data.name),
-        error => alert(error)
-      );
+    this.fileService.downloadFile(node.data).subscribe(
+      data => {
+        let fileName = node.data.name_text;
+        if (node.data.download_name && node.data.download_name != "") {
+          fileName = node.data.download_name;
+        }
+        saveAs(data, fileName);
+      },
+      error => alert(error)
+    );
   }
-
 }
-
-        data => {
-          let fileName = node.data.name;
-          if (node.data.downloadName && node.data.downloadName != '') {
-            fileName = node.data.downloadName;
-          }
-          saveAs(data, fileName);
-        },

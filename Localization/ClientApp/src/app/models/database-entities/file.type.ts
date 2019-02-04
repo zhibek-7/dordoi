@@ -14,6 +14,6 @@ export class File {
   id_Folder_Owner: number;
   is_Last_Version: boolean;
   id_Previous_Version: number;
-    translatorName: string;
-    downloadName: string;
+  translator_name: string;
+  download_name: string;
 }
