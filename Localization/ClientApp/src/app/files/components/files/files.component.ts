@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
+import { ActivatedRoute, Router} from '@angular/router';
 
 import { TreeNode } from 'primeng/api';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -29,13 +30,27 @@ export class FilesComponent implements OnInit {
 
   isLoading: boolean;
 
+
+  // Переменные для работы при выборе файлов для перевода
+  isSelectionFileForTranslation: boolean = false;
+  selectedProjectId: number;
+  selectedLanguageId: number;
+
   constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
     private fileService: FileService,
     private projectsService: ProjectsService,
     private ngxSpinnerService: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
+
+    if(this.router.url.indexOf("LanguageFiles") != -1){
+      this.isSelectionFileForTranslation = true;
+      this.selectedProjectId = this.activatedRoute.snapshot.params['projectId'];
+      this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];
+    }
 
     console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
@@ -225,6 +240,10 @@ export class FilesComponent implements OnInit {
         data => saveAs(data, node.data.name),
         error => alert(error)
       );
+  }
+
+  translateFileClick(){
+    alert("Тут будет перенаправление на форму для работы над переводом данного файла");
   }
 
 }
