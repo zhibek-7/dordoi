@@ -27,7 +27,7 @@
              class="dropdown-item"
              (click)="getCurrentProject(project)"
              href='/pj/{{ project.id }}'>
-            {{ project.name }}
+            {{ project.name_text }}
             <a (click)="getCurrentProject(project)"
                href='/Projects/{{ project.id }}'><img src="../assets/icons/main/settings.jpg" width="20" height="20" class="d-inline-block align-top" alt=""></a>
           </a>
@@ -54,13 +54,13 @@
 
     </ul>
 
-    <ul class="navbar-nav mr-auto" >
-    <a class="nav-link disabled"> Проект: {{name}}</a>
+    <ul class="navbar-nav mr-auto">
+      <a class="nav-link disabled"> Проект: {{name}}</a>
 
-    <a class="nav-link" id="userDropdown" role="button" aria-haspopup="true" routerLink='/Profile'>
-      <img src="../assets/images/user-picture.png" width="30" height="30" class="d-inline-block align-top" alt="">
-    </a>
-  </ul>
+      <a class="nav-link" id="userDropdown" role="button" aria-haspopup="true" routerLink='/Profile'>
+        <img src="../assets/images/user-picture.png" width="30" height="30" class="d-inline-block align-top" alt="">
+      </a>
+    </ul>
   </div>
 
   <div class="col-sm-1"></div>

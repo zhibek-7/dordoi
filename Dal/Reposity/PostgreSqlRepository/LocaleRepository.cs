@@ -56,7 +56,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var query = "SELECT l.* FROM locales l " +
        " join localization_projects_ocales pl on pl.id_locale = l.id " +
-       " join id_user lp on pl.id_localization_project = lp.id " +
+       " join localization_projects lp on pl.id_localization_project = lp.id " +
        " where lp.id = @Id";
 
                     var param = new { Id = projectId };
@@ -94,8 +94,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("localization_projectsLocales")
-                        .Where("ID_LocalizationProject", projectId)
-                        .LeftJoin("Locales", "Locales.ID", "localization_projectsLocales.ID_Locale")
+                        .Where("id_localization_project", projectId)
+                        .LeftJoin("Locales", "Locales.ID", "localization_projectsLocales.id_locale")
                         .Select(
                             "Locales.name_text as LocaleName",
                             "Locales.url as LocaleUrl",
@@ -139,11 +139,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
                     var query =
-                        new Query("Locales")
-                        .WhereIn("ID",
-                            new Query("UsersLocales")
-                            .Select("ID_Locale")
-                            .Where("ID_User", userId));
+                        new Query("locales")
+                        .WhereIn("id",
+                            new Query("users_locales")
+                            .Select("id_locale")
+                            .Where("id_user", userId));
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var userLocales = await dbConnection.QueryAsync<Locale>(

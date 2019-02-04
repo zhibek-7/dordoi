@@ -34,17 +34,17 @@ export class SetLanguagesFormModalComponent extends ModalComponent implements On
           .subscribe(project =>
             this.languageService.getLanguageList()
               .subscribe(allLocales => {
-                  this.selectedLocales = localesForTranslationSubstring;
-                  this.availableLocales = allLocales
-                    .filter(locale => locale.id != project.ID_SourceLocale)
-                    .map(locale =>
-                      new Selectable<Locale>(
-                        locale,
-                        this.selectedLocales.some(selectedLocale => selectedLocale.id == locale.id)));
-                },
-              error => console.log(error)),
-          error => console.log(error)),
-      error => console.log(error));
+                this.selectedLocales = localesForTranslationSubstring;
+                this.availableLocales = allLocales
+                  .filter(locale => locale.id != project.ID_Source_Locale)
+                  .map(locale =>
+                    new Selectable<Locale>(
+                      locale,
+                      this.selectedLocales.some(selectedLocale => selectedLocale.id == locale.id)));
+              },
+                error => console.log(error)),
+            error => console.log(error)),
+        error => console.log(error));
   }
 
   setSelectedLocales(newSelection: Locale[]) {

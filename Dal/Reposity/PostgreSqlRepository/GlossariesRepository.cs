@@ -32,8 +32,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var query = new Query("glossaries")
                         .LeftJoin("glossaries_locales", "glossaries_locales.id_glossary", "glossaries.id")
-                        .LeftJoin("locales", "locales.id", "glossaries_locales.id_Locale")
-                        .LeftJoin("localization_projectsGlossaries", "localization_projects_glossaries.id_glossary", "glossaries.id")
+                        .LeftJoin("locales", "locales.id", "glossaries_locales.id_locale")
+                        .LeftJoin("localization_projects_glossaries", "localization_projects_glossaries.id_glossary", "glossaries.id")
                         .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_glossaries.id_localization_project")
                         .Select(
                             "glossaries.id",
@@ -124,7 +124,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_glossaries.id_localization_project")
                         .Select(
                             "glossaries.id",
-                            "glossaries.name",
+                            "glossaries.name_text",
                             "glossaries.description",
                             "glossaries.id_file",
                             "locales.id as locale_id",
@@ -165,9 +165,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Обновление глоссария
                     var editedGlossaries = new
                     {
-                        Name = glossary.Name_text,
-                        Description = glossary.Description,
-                        ID_File = glossary.ID_File
+                        name_text = glossary.Name_text,
+                        description = glossary.Description,
+                        id_file = glossary.ID_File
                     };
                     var query = new Query("glossaries").Where("id", glossary.ID).AsUpdate(editedGlossaries);
                     var compiledQuery = _compiler.Compile(query);
@@ -270,8 +270,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     var localization_projectsGlossaries = localization_projectsIds.Select(t => new
                     {
-                        ID_Glossary = glossaryId,
-                        ID_LocalizationProject = t
+                        id_glossary = glossaryId,
+                        id_localization_project = t
                     }).ToList();
 
                     foreach (var element in localization_projectsGlossaries)

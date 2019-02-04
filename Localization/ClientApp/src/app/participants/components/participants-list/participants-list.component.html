@@ -15,7 +15,7 @@
   <div class="col">
     <select class="form-control m-1" [(ngModel)]="selectedRoleId" (change)="loadParticipants()">
       <option [ngValue]="null">Все роли</option>
-      <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name}}</option>
+      <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name_text}}</option>
     </select>
   </div>
   <div class="col">
@@ -33,19 +33,17 @@
   <thead>
     <tr>
       <th (click)="sortByColumn('username')"
-          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'username'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'username'"
-          >Имя пользователя</th>
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'user_name'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'user_name'">Имя пользователя</th>
       <th (click)="sortByColumn('rolename')"
-          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'rolename'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'rolename'"
-          >Роль в проекте</th>
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'role_name'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'role_name'">Роль в проекте</th>
       <th>Действия</th>
     </tr>
   </thead>
   <tr *ngFor="let participant of participants">
-    <td class="col-xs-6">{{participant.userName}}</td>
-    <td class="col-xs-6">{{participant.roleName}}</td>
+    <td class="col-xs-6">{{participant.user_Name}}</td>
+    <td class="col-xs-6">{{participant.role_Name}}</td>
     <td class="col-xs-2">
       <div class="btn-group">
         <button class="btn btn-default" (click)="participantDetails.showParticipant(participant)">Подробности</button>

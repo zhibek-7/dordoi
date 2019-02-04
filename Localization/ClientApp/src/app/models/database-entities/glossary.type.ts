@@ -1,7 +1,7 @@
-export class Glossary {    
-    public constructor(
-        public id?: number,
-        public name?: string,
-        public description?: string
-    ){ }
+export class Glossary {
+  public constructor(
+    public id?: number,
+    public name_text?: string,
+    public description?: string
+  ) { }
 }

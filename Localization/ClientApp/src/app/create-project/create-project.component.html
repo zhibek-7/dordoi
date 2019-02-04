@@ -1,8 +1,8 @@
 <div style="text-align:center">
   <h1>
-     {{ title }}
+    {{ title }}
   </h1>
- 
+
 </div>
 <form>
   <div class="form-group" *ngFor="let form of forms">
@@ -14,7 +14,7 @@
   </div>
 
   <div class="form-check" *ngFor="let option of options">
-    <input class="form-check-input" type="radio" name='{{option.name}}' id='{{option.id}}' value='{{option.value}}'>
+    <input class="form-check-input" type="radio" name='{{option.name_text}}' id='{{option.id}}' value='{{option.value}}'>
     <label class="form-check-label" for='{{option.id}}'>
       {{option.labelName}}
     </label>
@@ -68,11 +68,11 @@
             <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top" (click)="AllSelected()">
               Select top 30
             </button>
-            
-	<!--<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right">
-              Пользовательские языки
-            </button>
-            -->
+
+            <!--<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right">
+                        Пользовательские языки
+                      </button>
+                      -->
           </div>
 
 
@@ -108,6 +108,6 @@
   <button mat-raised-button color="primary" style="width: 15rem;" (click)="addProject($event)">Сохранить проект</button>
 </form>
 
-  
- 
+
+
 <router-outlet></router-outlet>

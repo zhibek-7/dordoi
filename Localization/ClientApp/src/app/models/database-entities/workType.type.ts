@@ -1,4 +1,4 @@
 export class WorkType {
   id: number;
-  name: string;
+  name_text: string;
 }

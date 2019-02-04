@@ -40,9 +40,9 @@
   <mat-table [dataSource]="dataSource" matSort>
 
 
-    <ng-container matColumnDef="name">
+    <ng-container matColumnDef="name_text">
       <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Имя словаря </label> </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.model.name}} </mat-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.name_text}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="localesName">

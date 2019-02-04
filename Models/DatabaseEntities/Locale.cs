@@ -8,7 +8,7 @@ namespace Models.DatabaseEntities
     public class Locale : BaseEntity
     {
         [Required]
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
         [Required]
         public string Description { get; set; }

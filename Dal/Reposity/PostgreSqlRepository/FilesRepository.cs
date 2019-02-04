@@ -348,7 +348,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var tempFileName = System.IO.Path.GetTempFileName();
                     if (id_locale != -1)
                     {
-                        var sqlLocalizationProjectQuery = "SELECT * FROM id_user WHERE id = @ID_LocalizationProject";
+                        var sqlLocalizationProjectQuery = "SELECT * FROM localization_projects WHERE id = @ID_LocalizationProject";
                         var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { file.ID });
                         var sqlTranslationSubstringsQuery = "SELECT * FROM translation_substring WHERE id_file_owner = @id";
                         var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();

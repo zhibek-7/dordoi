@@ -1,8 +1,8 @@
 export class User {
-    id: number;
-    name: string;
-    password: string;
-    photo: Blob;
-    email: string;
-    joined: boolean;
+  id: number;
+  name_text: string;
+  password_text: string;
+  photo: Blob;
+  email: string;
+  joined: boolean;
 }

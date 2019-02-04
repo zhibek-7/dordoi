@@ -35,16 +35,15 @@ export class EditGlossaryFormModalComponent extends ModalComponent implements On
     await this.loadGlossaryForEditing();
     if (this.glossaryEditable)
       super.show();
-    else
-    {
+    else {
       this.hide();
-      alert("Не удалось открыть для редактирования глоссарий \"" + this.glossary.name + "\", ранее он был удален. \n" +
+      alert("Не удалось открыть для редактирования глоссарий \"" + this.glossary.name_text + "\", ранее он был удален. \n" +
         "Страница будет перезагружена для обновления данных.");
       this.glossaryEditable = new GlossariesForEditing();
       this.error.emit();
     }
   }
-  
+
   async loadGlossaryForEditing() {
     this.glossaryEditable = await this.glossariesService.getGlossaryForEditing(this.glossary.id);
   }

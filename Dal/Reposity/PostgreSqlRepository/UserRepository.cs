@@ -83,7 +83,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 string SQLQuery = "SELECT u.* FROM users u " +
                         " join participants p on u.id = p.id_user " +
-                        " join id_user lp on p.id_localization_project = lp.id " +
+                        " join localization_projects lp on p.id_localization_project = lp.id " +
                         " where lp.id = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
@@ -119,7 +119,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 User existUser = null;
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { user.Name, user.Password };
+                    var param = new { user.Name_text, user.Password_text };
                     this.LogQuery(SQLQuery, param);
                     existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
                     if (existUser == null)

@@ -11,7 +11,7 @@ export class FilterSelectableLocalesPipe implements PipeTransform {
     if (!searchText)
       return listToFilter;
     return listToFilter.filter(selectableLocale =>
-      selectableLocale.model.name.toLowerCase().includes(searchText.toLowerCase()));
+      selectableLocale.model.name_text.toLowerCase().includes(searchText.toLowerCase()));
   }
 
 }

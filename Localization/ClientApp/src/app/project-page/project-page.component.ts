@@ -22,7 +22,7 @@ import { Participant } from '../models/Participants/participant.type';
   selector: 'app-project-page',
   templateUrl: './project-page.component.html',
   styleUrls: ['./project-page.component.css'],
-  providers: [LanguageService, UserService, WorkTypeService, UserActionsService, ParticipantsService ]
+  providers: [LanguageService, UserService, WorkTypeService, UserActionsService, ParticipantsService]
 })
 
 export class ProjectPageComponent implements OnInit {
@@ -39,7 +39,7 @@ export class ProjectPageComponent implements OnInit {
   selectedUser = 'none';
   selectedLang = 'none';
   selectedWorkType = 'none';
-  
+
   filtredUsers = [];
 
   displayedColumns: string[] = ['variant', 'file', 'language', 'time'];
@@ -63,7 +63,7 @@ export class ProjectPageComponent implements OnInit {
     private projectService: ProjectsService,
     private languagesService: LanguageService,
     private userService: UserService,
-    private workTypeService: WorkTypeService, 
+    private workTypeService: WorkTypeService,
     private userActionsService: UserActionsService,
     private participantsService: ParticipantsService
   ) { }
@@ -79,28 +79,26 @@ export class ProjectPageComponent implements OnInit {
 
     this.languagesService.getByProjectId(projectId)
       .subscribe(Languages => { this.langList = Languages; },
-      error => console.error(error));
+        error => console.error(error));
 
     this.languagesService.getLocalesWithPercentByProjectId(projectId)
       .subscribe(localesWithPercent => { this.dataSourceForMainTab.data = localesWithPercent; },
         error => console.error(error));
 
-    this.participantsService.getParticipantsByProjectId(projectId, null, null, null, null, null, ["userName"], true, [ "owner", "manager" ])
-      .subscribe(response =>
-      {
-        this.participantsManager = response.body.filter(t => t.roleShort.toString() == "manager");
-        this.participantsOwner = response.body.filter(t => t.roleShort == "owner");
+    this.participantsService.getParticipantsByProjectId(projectId, null, null, null, null, null, ["userName"], true, ["owner", "manager"])
+      .subscribe(response => {
+        this.participantsManager = response.body.filter(t => t.role_Short.toString() == "manager");
+        this.participantsOwner = response.body.filter(t => t.role_Short == "owner");
       },
-      error => console.error(error));
+        error => console.error(error));
 
     this.projectService.getProjectWithDetails(projectId)
       .subscribe(
-      project =>
-      {
-        this.currentProject = project;
-        this.currentProject.dateOfCreation = new Date(this.currentProject.dateOfCreation);
-        this.currentProject.lastActivity = new Date(this.currentProject.lastActivity);
-      },
+        project => {
+          this.currentProject = project;
+          this.currentProject.date_Of_Creation = new Date(this.currentProject.date_Of_Creation);
+          this.currentProject.last_Activity = new Date(this.currentProject.last_Activity);
+        },
         error => console.error(error));
 
     this.userService.getProjectParticipantList(projectId)
@@ -112,7 +110,7 @@ export class ProjectPageComponent implements OnInit {
       .subscribe(actions => {
         this.userActionsList = actions;
         this.dataSource = new MatTableDataSource(this.userActionsList);
-        },
+      },
         error => console.error(error));
 
     this.filtredUsers = this.userList;
@@ -126,7 +124,7 @@ export class ProjectPageComponent implements OnInit {
     if (filterValue === 'none') {
       this.filtredUsers = this.userList;
     } else {
-      this.filtredUsers = this.userList.filter(function(i) {
+      this.filtredUsers = this.userList.filter(function (i) {
         return filtredArr(i.id);
       });
     }
@@ -143,7 +141,7 @@ export class ProjectPageComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.userActionsList);
     }
     else {
-      const filtredLangArr = this.userActionsList.filter(function(i) {
+      const filtredLangArr = this.userActionsList.filter(function (i) {
         return filtredArr(i.Locale);
       });
       this.dataSource = new MatTableDataSource(filtredLangArr);
@@ -154,8 +152,7 @@ export class ProjectPageComponent implements OnInit {
     }
   }
 
-  applyActionsFilter()
-  {
+  applyActionsFilter() {
     console.log(this.selectedWorkType);
     console.log(this.selectedUser);
     console.log(this.selectedLang);

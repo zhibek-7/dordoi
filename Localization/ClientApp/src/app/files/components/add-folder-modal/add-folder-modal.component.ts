@@ -38,8 +38,8 @@ export class AddFolderModalComponent extends ModalComponent implements OnInit {
 
   resetNewFileModel() {
     this.newFolder = new File();
-    this.newFolder.isFolder = true;
-    this.newFolder.name = '';
+    this.newFolder.is_Folder = true;
+    this.newFolder.name_text = '';
   }
 
 }

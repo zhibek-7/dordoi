@@ -15,7 +15,7 @@ export class AllSettingsComponent implements OnInit {
   args = "ascending";
   reverse = false;
 
-  constructor(private projectsService: ProjectsService) {}
+  constructor(private projectsService: ProjectsService) { }
   currentProjectName = "";
   currentProjectId = null;
   currentProjectDescription = "";
@@ -31,14 +31,14 @@ export class AllSettingsComponent implements OnInit {
   currentProjectid = 1;
   currentProjecturl = "";
   isChecked = true;
-  
+
   public project: LocalizationProject;
   //public projectLocale: LocalizationProjectsLocales;
 
   pjPublic: string;
-  pjFileTrue= false;
-  pjSkipUntranslStrTrue= false;
-  pjExportTrue= false;
+  pjFileTrue = false;
+  pjSkipUntranslStrTrue = false;
+  pjExportTrue = false;
   pjNotificationTrue = false;
   selectedLang: number;
   //public project: LocalizationProject;
@@ -80,7 +80,7 @@ export class AllSettingsComponent implements OnInit {
 
     this.currentProjectName = this.projectsService.currentProjectName;
     this.currentProjectId = this.projectsService.currentProjectId;
-   // this.searchText = this.projectsLcalesService.currentProjectName;
+    // this.searchText = this.projectsLcalesService.currentProjectName;
 
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
@@ -92,13 +92,13 @@ export class AllSettingsComponent implements OnInit {
         this.currentProjectDescription = this.project.description;
         this.currentProjecturl = this.project.url;
         this.currentProjectPublic = this.project.visibility;
-        this.pjFileTrue = this.project.ableToDownload;
-        this.pjSkipUntranslStrTrue = this.project.ableToLeftErrors;
+        this.pjFileTrue = this.project.able_To_Download;
+        this.pjSkipUntranslStrTrue = this.project.able_To_Left_Errors;
         this.pjExportTrue = this.project.export_only_approved_translations;
-        this.pjNotificationTrue = this.project.notifyNew;
+        this.pjNotificationTrue = this.project.notify_New;
 
 
-        this.selectedLang = this.project.ID_SourceLocale;
+        this.selectedLang = this.project.ID_Source_Locale;
         if (this.currentProjectPublic == true) {
           this.pjPublic == "public";
         } else {
@@ -106,7 +106,7 @@ export class AllSettingsComponent implements OnInit {
         }
 
 
-       
+
         console.log(this.currentProjectId);
       },
       error => console.error(error)
@@ -118,7 +118,7 @@ export class AllSettingsComponent implements OnInit {
   AddSelected(event, lang) {
     var target = event.target || event.srcElement || event.currentTarget;
     var idAttr = target.attributes.id;
-    var itemNameAttr = target.attributes.name;
+    var itemNameAttr = target.attributes.name_text;
     var selectedAttr = target.attributes.checked;
     var value = idAttr.nodeValue;
     lang.checked = !lang.checked;
@@ -185,15 +185,15 @@ export class AllSettingsComponent implements OnInit {
     console.log(this.currentProjectDescription);
 
 
-    let projectLocales: LocalizationProjectsLocales[]; 
+    let projectLocales: LocalizationProjectsLocales[];
     this.selectedItems.forEach((lang) => {
       projectLocales.push({
         id_LocalizationProject: this.currentProjectId,
         id_Locale: lang.id,
-        percentOfTranslation: 1,
-        PercentOfConfirmed:1
-      });     
-    })  
+        percent_Of_Translation: 1,
+        Percent_Of_Confirmed: 1
+      });
+    })
 
 
     //

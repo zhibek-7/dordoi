@@ -31,7 +31,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public LocalizationProject GetByID(int Id)
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM id_user WHERE id = @Id";
+            var sqlString = "SELECT * FROM localization_projects WHERE id = @Id";
 
             try
             {
@@ -100,7 +100,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public IEnumerable<LocalizationProject> GetAll()
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM id_user";
+            var sqlString = "SELECT * FROM localization_projects";
 
             try
             {
@@ -135,7 +135,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
 
 
-                    var sqlString = "SELECT id, name FROM id_user";
+                    var sqlString = "SELECT id, name_text FROM localization_projects";
                     this.LogQuery(sqlString);
 
                     IEnumerable<LocalizationProjectForSelectDTO> result =

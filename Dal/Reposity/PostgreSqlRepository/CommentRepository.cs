@@ -138,9 +138,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = "SELECT users.id AS userid, users.name_text AS username," +
                         " comments_text.id AS commentid, comments_text.datetime AS datetime," +
-                        " comments_text.comment_text AS comment " +
+                        " comments_text.comment_text AS comment_text " +
                         "FROM comments_text " +
-                        "INNER JOIN users ON comments.id_user = users.id " +
+                        "INNER JOIN users ON comments_text.id_user = users.id " +
                         "WHERE comments_text.id_translation_substrings = @Id";
 
             try
@@ -219,7 +219,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = "SELECT users.id AS userid, users.name_text AS username," +
                         " comments_text.id AS commentid, comments_text.datetime AS datetime," +
-                        " comments_text.comment_text AS comment " +
+                        " comments_text.comment_text AS comment_text " +
                         "FROM comments_text " +
                         "INNER JOIN users ON comments_text.id_user = users.id " +
                         "WHERE comments_text.id = @Id";

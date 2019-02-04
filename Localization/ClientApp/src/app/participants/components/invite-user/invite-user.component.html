@@ -9,7 +9,7 @@
         <h6>Роль</h6>
       </div>
       <select *ngIf="roles" class="form-control m-1" [(ngModel)]="selectedRoleId">
-        <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name}}</option>
+        <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name_text}}</option>
       </select>
     </div>
     <div class="m-2">
@@ -17,7 +17,7 @@
         <h6>Имя пользователя</h6>
       </div>
       <select *ngIf="users" class="form-control m-1" [(ngModel)]="selectedUserId">
-        <option *ngFor="let user of users" [ngValue]="user.id">{{user.name}}</option>
+        <option *ngFor="let user of users" [ngValue]="user.id">{{user.name_text}}</option>
       </select>
     </div>
   </div>

@@ -3,12 +3,12 @@
  */
 export class GlossariesForEditing {
   id: number;
-  name: string;
+  name_text: string;
   description: string;
 
-  localesIds: number[];
+  locales_Ids: number[];
 
-  localizationProjectsIds: number[];
+  localization_Projects_Ids: number[];
 }
 
 /**

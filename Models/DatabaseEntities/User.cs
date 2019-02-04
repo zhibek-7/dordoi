@@ -5,10 +5,10 @@ namespace Models.DatabaseEntities
     public class User : BaseEntity
     {
         //[Required]
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
         //[Required]
-        public string Password { get; set; }
+        public string Password_text { get; set; }
 
         public Byte[] Photo { get; set; }
 

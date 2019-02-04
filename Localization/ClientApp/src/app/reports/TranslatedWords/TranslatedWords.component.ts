@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ReportService } from '../../services/reports.service';
 import { LanguageService } from '../../services/languages.service';
 import { UserService } from '../../services/user.service';
-import { FileService } from '../../services/file.service'; 
+import { FileService } from '../../services/file.service';
 import { ProjectsService } from '../../services/projects.service';
 
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
@@ -52,10 +52,10 @@ export class TranslatedWordsComponent implements OnInit {
 
     this.projectsService.getProject(this.projectId)
       .subscribe(project => {
-          this.project = project; console.log(this.project.name);
-          this.selected.from = moment(this.project.dateOfCreation);
-          this.selected.to = moment();
-        },
+        this.project = project; console.log(this.project.name_text);
+        this.selected.from = moment(this.project.date_Of_Creation);
+        this.selected.to = moment();
+      },
         error => console.error(error));
   }
 
@@ -81,7 +81,7 @@ export class TranslatedWordsComponent implements OnInit {
   //Переменные для выборки
   userId: number = -1;
   localeId: number = -1;
-  workType: string = "Все";
+  work_Type: string = "Все";
   volumeCalcType: string = "false"; //переделать название переменной
   calcBasisType: string = "true"; //переделать название переменной
   initialFolderId: number = 0;
@@ -92,24 +92,24 @@ export class TranslatedWordsComponent implements OnInit {
   //Датасорс для грида
   dataSource: MatTableDataSource<TranslatedWordsReportRow>;
 
-  
 
-  displayedColumns: string[] = ['name', 'language', 'workType', 'translations' ];
+
+  displayedColumns: string[] = ['name_text', 'language', 'workType', 'translations'];
 
   async getRows() {
     this.reportService.getTranslatedWordsReport(
-        this.project.id,
-        this.selected.from.format("DD.MM.YYYY"),
-        this.selected.to.format("DD.MM.YYYY"),
-        this.volumeCalcType,
-        this.calcBasisType,
-        this.userId,
-        this.localeId,
-        this.workType,
-        this.initialFolderId)
+      this.project.id,
+      this.selected.from.format("DD.MM.YYYY"),
+      this.selected.to.format("DD.MM.YYYY"),
+      this.volumeCalcType,
+      this.calcBasisType,
+      this.userId,
+      this.localeId,
+      this.work_Type,
+      this.initialFolderId)
       .subscribe(
         reportrows => this.reportrows = reportrows,
-      error => console.log(error));
+        error => console.log(error));
   }
 
   setHeaderMsg() {
@@ -124,7 +124,7 @@ export class TranslatedWordsComponent implements OnInit {
 
   getReportPeriod() {
     if (this.selected && this.selected.from && this.selected.to)
-     return this.selected.from.format('DD.MM.YYYY') + ' - ' + this.selected.to.format('DD.MM.YYYY');
+      return this.selected.from.format('DD.MM.YYYY') + ' - ' + this.selected.to.format('DD.MM.YYYY');
   }
 
   clickEvent() {
@@ -140,7 +140,7 @@ export class TranslatedWordsComponent implements OnInit {
       this.calcBasisType,
       this.userId,
       this.localeId,
-      this.workType,
+      this.work_Type,
       this.initialFolderId);
   }
 }

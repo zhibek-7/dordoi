@@ -150,7 +150,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             var query = "SELECT * " +
                         "FROM translation_substrings AS TS " +
                         "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
-                        "INNER JOIN id_user AS LP " +
+                        "INNER JOIN localization_projects AS LP " +
                         "WHERE LP.id = @Id " +
                         "OR LP.visibility = true ";
 
@@ -520,7 +520,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var query = new Query("translation_substrings")
                .Select(
                    "id",
-                   "substring_to_Translate",
+                   "substring_to_translate",
                    "description",
                    "context",
                    "translation_max_length",
@@ -540,7 +540,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     query = query
                         .WhereIn("id_file_owner",
                             new Query("files")
-                                .Select("ID")
+                                .Select("id")
                                 .Where("id_localization_project", projectId));
                 }
 
@@ -578,7 +578,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         new Query("locales")
                         .WhereIn("id",
                             new Query("translation_substrings_locales")
-                            .Select("id_Locales")
+                            .Select("id_locale")
                             .Where("id_translation_substrings", translationSubstringId));
 
                     var compiledQuery = this._compiler.Compile(query);
@@ -652,10 +652,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                     foreach (var localeId in localesIds)
                     {
                         var sql =
-                            "INSERT INTO \translationsub_strings_locales " +
+                            "INSERT INTO translation_substrings_locales " +
                             "(" +
                             "id_translation_substrings, " +
-                            "id_locales" +
+                            "id_locale" +
                             ") VALUES " +
                             "(" +
                             "@Id_TranslationSubStrings, " +

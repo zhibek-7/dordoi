@@ -188,7 +188,7 @@ namespace Models.Services
             var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentId(newFolderModel.Name_text, newFolderModel.Parent_Id);
             if (foundedFolder != null)
             {
-                throw new Exception(WriteLn($"Папка \"{newFolderModel.Name}\" уже есть."));
+                throw new Exception(WriteLn($"Папка \"{newFolderModel.Name_text}\" уже есть."));
             }
 
             var newFolder = this.GetNewFolderModel(
@@ -256,7 +256,7 @@ namespace Models.Services
             var updatedSuccessfully = await this._filesRepository.UpdateAsync(file);
             if (!updatedSuccessfully)
             {
-                throw new Exception(WriteLn($"Не удалось обновить файл \"{foundedFile.Name}\"."));
+                throw new Exception(WriteLn($"Не удалось обновить файл \"{foundedFile.Name_text}\"."));
             }
         }
 
@@ -297,7 +297,7 @@ namespace Models.Services
                 var parentFile = await this._filesRepository.GetByIDAsync(file.ID_Folder_Owner.Value);
                 if (parentFile?.Is_Folder == false)
                 {
-                    throw new Exception(WriteLn($"Нельзя добавить файл/папку \"{file.Name}\", т.к. нельзя иметь файл в качестве родителя."));
+                    throw new Exception(WriteLn($"Нельзя добавить файл/папку \"{file.Name_text}\", т.к. нельзя иметь файл в качестве родителя."));
                 }
             }
 
@@ -313,7 +313,7 @@ namespace Models.Services
             var fileUploaded = await this._filesRepository.Upload(file);
             if (!fileUploaded)
             {
-                throw new Exception(WriteLn($"Не удалось добавить файл \"{file.Name}\" в базу данных."));
+                throw new Exception(WriteLn($"Не удалось добавить файл \"{file.Name_text}\" в базу данных."));
             }
 
             var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentId(file.Name_text, file.ID_Folder_Owner)).ID;
@@ -331,7 +331,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(WriteLn($"Не удалось добавить папку \"{file.Name}\" в базу данных.", exception), exception);
+                throw new Exception(WriteLn($"Не удалось добавить папку \"{file.Name_text}\" в базу данных.", exception), exception);
             }
         }
 

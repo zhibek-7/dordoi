@@ -32,13 +32,11 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
   constructor(
     private projectsService: ProjectsService,
     private languageService: LanguageService,
-  )
-  {
+  ) {
     super();
   }
 
-  ngOnInit()
-  {
+  ngOnInit() {
   }
 
   load() {
@@ -48,7 +46,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
   }
 
   //#region Работа с Locales
-  
+
   loadAvailableLanguages() {
     this.languageService.getLanguageList()
       .subscribe(locale => {
@@ -56,16 +54,16 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
           .map(local =>
             new Selectable<Locale>(
               local,
-              this.glossary.localesIds.some(selectedLocaleId => selectedLocaleId == local.id)
+              this.glossary.locales_Ids.some(selectedLocaleId => selectedLocaleId == local.id)
             ));
       },
         error => console.error(error));
   }
-  
+
   setSelectedLocales(newSelection: Locale[]) {
-    this.glossary.localesIds = newSelection.map(t => t.id);
+    this.glossary.locales_Ids = newSelection.map(t => t.id);
     //Валидация. Обязательно должно быть выбрано хотя бы одно значение.
-    this.errorsRequiredLocales = this.glossary.localesIds.length == 0;
+    this.errorsRequiredLocales = this.glossary.locales_Ids.length == 0;
   }
 
   //#endregion
@@ -79,7 +77,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
           .map(localProject =>
             new Selectable<LocalizationProjectForSelectDTO>(
               localProject,
-              this.glossary.localizationProjectsIds.some(selectedLocalizationProjectId => selectedLocalizationProjectId == localProject.id)
+              this.glossary.localization_Projects_Ids.some(selectedLocalizationProjectId => selectedLocalizationProjectId == localProject.id)
             ));
       },
         error => console.error(error));
@@ -91,7 +89,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
   }
 
   raiseSelectionChanged() {
-    this.glossary.localizationProjectsIds = this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model.id);
+    this.glossary.localization_Projects_Ids = this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model.id);
   }
 
   //#endregion

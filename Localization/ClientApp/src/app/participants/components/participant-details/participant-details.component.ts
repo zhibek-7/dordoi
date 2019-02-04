@@ -46,7 +46,7 @@ export class ParticipantDetailsComponent extends ModalComponent implements OnIni
   }
 
   loadPhoto() {
-    this.usersService.getPhotoById(this.participant.userId)
+    this.usersService.getPhotoById(this.participant.user_Id)
       .subscribe(
         imageBlob => {
           let reader = new FileReader();
@@ -67,7 +67,7 @@ export class ParticipantDetailsComponent extends ModalComponent implements OnIni
   }
 
   loadLocales() {
-    this.localesService.getByUserId(this.participant.userId)
+    this.localesService.getByUserId(this.participant.user_Id)
       .subscribe(
         locales => this.locales = locales,
         error => console.log(error));
@@ -85,11 +85,11 @@ export class ParticipantDetailsComponent extends ModalComponent implements OnIni
   }
 
   deleteParticpant() {
-    this.participantsService.deleteParticipant(this.participant.localizationProjectId, this.participant.userId)
+    this.participantsService.deleteParticipant(this.participant.localization_Project_Id, this.participant.user_Id)
       .subscribe(() => {
-          this.participantDeleted.emit();
-          this.hide();
-        },
+        this.participantDeleted.emit();
+        this.hide();
+      },
         error => console.log(error));
   }
 

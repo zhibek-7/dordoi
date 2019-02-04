@@ -32,7 +32,7 @@ export class StringsMainComponent implements OnInit {
 
   filesViewModels: FileViewModel[] = [];
 
-  selectedFileId: number|null = null;
+  selectedFileId: number | null = null;
 
   private get projectId(): number {
     return this.projectsService.currentProjectId;
@@ -93,8 +93,8 @@ export class StringsMainComponent implements OnInit {
   }
 
   filesTreeNodeToFilesListRecursive(path: string, fileTreeNode: TreeNode): FileViewModel[] {
-    let pathForCurrentNode = path + '/' + fileTreeNode.data.name;
-    if (!fileTreeNode.data.isFolder) {
+    let pathForCurrentNode = path + '/' + fileTreeNode.data.name_text;
+    if (!fileTreeNode.data.is_Folder) {
       return [new FileViewModel(pathForCurrentNode, fileTreeNode.data.id)];
     }
     else {

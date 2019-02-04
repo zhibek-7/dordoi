@@ -21,21 +21,21 @@
   </div>
 </div>
  -->
-<h1 *ngIf="currentProject" class="mt-4 mb-4">{{ currentProject.name }}</h1>
+<h1 *ngIf="currentProject" class="mt-4 mb-4">{{ currentProject.name_text }}</h1>
 <h1 *ngIf="!currentProject">Невозможно подключиться к БД</h1>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-      aria-selected="true">Главная</a>
+       aria-selected="true">Главная</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="acivity-tab" data-toggle="tab" href="#acivity" role="tab" aria-controls="acivity"
-      aria-selected="false">Активность</a>
+       aria-selected="false">Активность</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="problem-tab" data-toggle="tab" href="#problem" role="tab" aria-controls="problem"
-      aria-selected="false">Проблемы переводов</a>
+       aria-selected="false">Проблемы переводов</a>
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
@@ -89,11 +89,11 @@
             </tr>
             <tr>
               <td>Пользователей</td>
-               <td> {{currentProject.countUsersActive}} </td>
+              <td> {{currentProject.countUsersActive}} </td>
             </tr>
             <tr>
               <td>Words to translate</td>
-               <td> <!--{ {currentProject.??}}--> </td>
+              <td> <!--{ {currentProject.??}}--> </td>
             </tr>
             <tr>
               <td>Создан</td>
@@ -121,7 +121,7 @@
                 <span class="mr-2 br-b green">Связаться</span>
               </div>
 
-              </div>
+            </div>
 
             <div *ngFor="let participant of participantsManager">
 
@@ -144,34 +144,34 @@
 
   <div class="tab-pane fade" id="acivity" role="tabpanel" aria-labelledby="acivity-tab">
 
-      <mat-form-field style="margin-right: 1rem;">
-        <mat-select [(value)]="selectedWorkType" (selectionChange)="applyActionsFilter()">
-          <mat-option value="none">Все события</mat-option>
-          <mat-option *ngFor="let workType of workTypeList" [value]="workType.id">{{workType.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field style="margin-right: 1rem;">
+      <mat-select [(value)]="selectedWorkType" (selectionChange)="applyActionsFilter()">
+        <mat-option value="none">Все события</mat-option>
+        <mat-option *ngFor="let workType of workTypeList" [value]="workType.id">{{workType.name_text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field style="margin-right: 1rem;">
-        <mat-select [(value)]="selectedLang" (selectionChange)="applyActionsFilter()">
-          <mat-option value="none">Все языки</mat-option>
-          <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field style="margin-right: 1rem;">
+      <mat-select [(value)]="selectedLang" (selectionChange)="applyActionsFilter()">
+        <mat-option value="none">Все языки</mat-option>
+        <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name_text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-select [(value)]="selectedUser" (selectionChange)="applyActionsFilter()">
-          <mat-option value="none">Все пользователи</mat-option>
-          <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field>
+      <mat-select [(value)]="selectedUser" (selectionChange)="applyActionsFilter()">
+        <mat-option value="none">Все пользователи</mat-option>
+        <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name_text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-accordion *ngFor="let user of filtredUsers" class="mb-4">
+    <mat-accordion *ngFor="let user of filtredUsers" class="mb-4">
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title>
             <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
               <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-              <span class="ml-2" style="color: grey;">{{user.name}}</span>
+              <span class="ml-2" style="color: grey;">{{user.name_text}}</span>
             </a>
           </mat-panel-title>
           <mat-panel-description>
@@ -213,14 +213,14 @@
     <mat-form-field style="margin-right: 1rem;">
       <mat-select [(value)]="selectedLang" (selectionChange)="applyFilterLang($event)">
         <mat-option value="none">Все языки</mat-option>
-        <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name}}</mat-option>
+        <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name_text}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field>
       <mat-select [(value)]="selectedUser" (selectionChange)="applyFilterUsers($event)">
         <mat-option value="none">Все пользователи</mat-option>
-        <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name}}</mat-option>
+        <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name_text}}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -230,7 +230,7 @@
           <mat-panel-title>
             <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
               <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-              <span class="ml-2" style="color: grey;">{{user.name}}</span>
+              <span class="ml-2" style="color: grey;">{{user.name_text}}</span>
             </a>
           </mat-panel-title>
           <mat-panel-description>

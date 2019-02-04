@@ -327,7 +327,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = "SELECT F.name_text AS fileownername, T.translated AS translationvariant, " +
                         "TS.substring_to_translate AS tTranslationtext " +
-                        "FROM id_user AS LP " +
+                        "FROM localization_projects AS LP " +
                         "INNER JOIN files AS F ON F.id_localization_project = LP.id " +
                         "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +
                         "INNER JOIN translations AS T ON T.id_string = TS.id " +
@@ -370,11 +370,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = "SELECT substring_to_translate AS translationtext, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
                         "files.name_text AS fileownername, translations.translated AS translationvariant" +
-                        "FROM id_user " +
-                        "INNER JOIN files ON files.id_localization_project = id_user.id " +
+                        "FROM localization_projects " +
+                        "INNER JOIN files ON files.id_localization_project = localization_projects.id " +
                         "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
                         "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
-                        "WHERE (id_user.id = @ProjectId " +
+                        "WHERE (localization_projects.id = @ProjectId " +
                         "AND substring_to_translate % @TranslationSubstringText " +
                         "AND translation_substrings.id != @TranslationSubstringId);";
 

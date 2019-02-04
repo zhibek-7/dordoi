@@ -29,7 +29,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var selectAllGlossariesSql = "SELECT * FROM \"Glossaries\"";
+                    var selectAllGlossariesSql = "SELECT * FROM glossaries";
                     this.LogQuery(selectAllGlossariesSql);
                     var glossaries = await dbConnection.QueryAsync<Glossary>(selectAllGlossariesSql);
                     return glossaries;
@@ -57,7 +57,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var getGlossaryByIdSql = "SELECT * FROM \"Glossaries\" WHERE id = @GlossaryId LIMIT 1";
+                    var getGlossaryByIdSql = "SELECT * FROM glossaries WHERE id = @GlossaryId LIMIT 1";
                     var getGlossaryByIdParam = new { GlossaryId = id };
                     this.LogQuery(getGlossaryByIdSql, getGlossaryByIdParam);
                     var glossary = await dbConnection.QueryFirstAsync<Glossary>(
@@ -91,7 +91,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sql = "SELECT * FROM \"Glossaries\" WHERE id_file = @FileId LIMIT 1";
+                    var sql = "SELECT * FROM glossaries WHERE id_file = @FileId LIMIT 1";
                     var param = new { FileId = fileId };
                     this.LogQuery(sql, param);
                     var glossary = await dbConnection.QueryFirstOrDefaultAsync<Glossary>(
@@ -128,7 +128,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var updateGlossarySql =
-                        "UPDATE \"Glossaries\" SET name=@Name, description=@Description, id_file=@ID_File " +
+                        "UPDATE glossaries SET name=@Name, description=@Description, id_file=@ID_File " +
                         "WHERE id=@ID";
                     var updateGlossaryParam = item;
                     this.LogQuery(updateGlossarySql, updateGlossaryParam);
@@ -432,18 +432,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Select(
                         new Query("translation_substrings_Locales")
                             .LeftJoin("translations", join =>
-                                join.On("translations.id_string", "TranslationsubStringsLocales.id_translation_substrings")
-                                    .On("translations.id_locale", "TranslationsubStringsLocales.id_locales"))
+                                join.On("translations.id_string", "translation_substrings_locales.id_translation_substrings")
+                                    .On("translations.id_locale", "translation_substrings_locales.id_locales"))
                             .SelectRaw("COUNT(translations.translated) = 0")
                             .Where("translations.translated", "<>", "''")
-                            .WhereRaw("translation_sub_stringsLocales.id_translation_subStrings=translation_substrings.id"),
+                            .WhereRaw("translation_substrings_locales.id_translation_substrings=translation_substrings.id"),
                         "is_editable");
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
                 if (!string.IsNullOrEmpty(termPart))
                 {
                     var patternString = $"%{termPart}%";
-                    query = query.WhereLike("TranslationSubstrings.Value", patternString);
+                    query = query.WhereLike("translation_substrings.value", patternString);
                 }
                 return query;
 
@@ -554,7 +554,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "G.id As glossaryid, " +
                             "G.name_text AS glossaryname, " +
                             "G.description AS glossarydescription " +
-                            "FROM id_user AS LP " +
+                            "FROM localization_projects AS LP " +
                             "INNER JOIN localization_projects_glossaries AS LPG ON LP.id = LPG.id_localization_project " +
                             "INNER JOIN glossaries AS G ON G.id = LPG.id_glossary " +
                             "INNER JOIN files AS F ON F.id = G.id_file " +

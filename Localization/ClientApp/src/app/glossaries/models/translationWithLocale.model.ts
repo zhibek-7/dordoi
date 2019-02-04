@@ -6,12 +6,12 @@ export class TranslationWithLocale extends Translation {
     translation: Translation,
     public locale: Locale
   ) {
-      super(
-        translation.translated,
-        translation.iD_String,
-        translation.iD_User,
-        translation.iD_Locale,
-        translation.id
-      );
+    super(
+      translation.translated,
+      translation.iD_String,
+      translation.iD_User,
+      translation.iD_Locale,
+      translation.id
+    );
   }
 }

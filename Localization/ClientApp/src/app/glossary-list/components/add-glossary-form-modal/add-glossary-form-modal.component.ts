@@ -9,40 +9,34 @@ import { GlossariesForEditing } from 'src/app/models/DTO/glossariesDTO.type';
   templateUrl: './add-glossary-form-modal.component.html',
   styleUrls: ['./add-glossary-form-modal.component.css']
 })
-export class AddGlossaryFormModalComponent extends ModalComponent  implements OnInit
-{
+export class AddGlossaryFormModalComponent extends ModalComponent implements OnInit {
   newGlossary: GlossariesForEditing;
 
   @Output()
   newGlossarySubmitted = new EventEmitter<GlossariesForEditing>();
 
-  constructor()
-  {
+  constructor() {
     super();
     this.resetNewGlossaryModel();
   }
 
-  ngOnInit()
-  {
+  ngOnInit() {
   }
 
-  show()
-  {
+  show() {
     super.show();
     this.resetNewGlossaryModel();
   }
 
-  submit()
-  {
+  submit() {
     this.hide();
     this.newGlossarySubmitted.emit(this.newGlossary);
   }
 
-  resetNewGlossaryModel()
-  {
+  resetNewGlossaryModel() {
     this.newGlossary = new GlossariesForEditing();
-    this.newGlossary.localesIds = [];
-    this.newGlossary.localizationProjectsIds = [];
+    this.newGlossary.locales_Ids = [];
+    this.newGlossary.localization_Projects_Ids = [];
   }
 
 }

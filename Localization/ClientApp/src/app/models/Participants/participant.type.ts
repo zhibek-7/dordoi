@@ -1,11 +1,11 @@
 export class Participant {
   constructor(
-    public localizationProjectId?: number,
-    public userId?: number,
-    public roleId?: number,
+    public localization_Project_Id?: number,
+    public user_Id?: number,
+    public role_Id?: number,
     public active?: boolean,
-    public userName?: string,
-    public roleName?: string,
-    public roleShort?: string
+    public user_Name?: string,
+    public role_Name?: string,
+    public role_Short?: string
   ) { }
 }

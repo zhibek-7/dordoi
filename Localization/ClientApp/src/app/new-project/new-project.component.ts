@@ -42,7 +42,7 @@ export class NewProjectComponent implements OnInit {
 
     if (event.target.checked) {
       this.checkedLanguages.push({
-        name: event.target.value
+        name_text: event.target.value
       });
     } else {
 
@@ -56,8 +56,8 @@ export class NewProjectComponent implements OnInit {
   addProject() {
     console.log('addProject ---!!!!!!!!!');
 
-    this.newProject.name = this.myForm.get('name').value;
-   this.newProject.id = Math.floor(Math.random() * 10000) + 1;
+    this.newProject.name_text = this.myForm.get('name_text').value;
+    this.newProject.id = Math.floor(Math.random() * 10000) + 1;
     this.newProject.url = this.myForm.get('url').value;
 
     this.projectsService.addProject(this.newProject);

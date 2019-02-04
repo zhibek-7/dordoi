@@ -42,12 +42,12 @@ export class FilesComponent implements OnInit {
     console.log('Projec=' + sessionStorage.getItem('Projec'));
 
     this.cols = [
-      { field: 'name', header: 'Имя' },
-      { field: 'dateOfChange', header: 'Дата изменения' },
-      { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
+      { field: 'name_text', header: 'Имя' },
+      { field: 'date_Of_Change', header: 'Дата изменения' },
+      { field: 'strings_count', header: 'Строки', width: '100px', textalign: 'right' },
       { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
       { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
-      { }
+      {}
     ];
 
     this.getFiles();
@@ -64,33 +64,33 @@ export class FilesComponent implements OnInit {
         this.addNode(this.cuttedNode, selectedNode);
         this.cuttedNode = null;
       },
-      error => alert(error));
+        error => alert(error));
   }
 
   moveNode(nodeToMove: any, newParent: any) {
     const parentId = newParent ? newParent.data ? newParent.data.id : null : null;
     this.fileService.changeParentFolder(nodeToMove.data, parentId)
       .subscribe(() => {
-          this.deleteNode(nodeToMove);
-          this.addNode(nodeToMove, newParent);
-        },
+        this.deleteNode(nodeToMove);
+        this.addNode(nodeToMove, newParent);
+      },
         error => alert(error));
   }
 
   canDrop(node: any) {
-    const nodeIsFolder: boolean = node.data.isFolder;
+    const nodeIsFolder: boolean = node.data.is_Folder;
     return (unused => { return nodeIsFolder; });
   }
 
   getFiles(): void {
     this.isLoading = true;
 
-    this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId, this.searchFilesNamesString).subscribe(files => { 
+    this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId, this.searchFilesNamesString).subscribe(files => {
       this.files = files;
 
       this.isLoading = false;
     },
-    error => alert(error));
+      error => alert(error));
   };
 
   addFolder(newFolder: File, parentNode?: TreeNode): void {
@@ -127,12 +127,12 @@ export class FilesComponent implements OnInit {
     if (file) {
       const parentNode = oldNode.parent;
       const parentId = parentNode ? parentNode.data.id : null;
-      this.fileService.updateFileVersion(file, oldNode.data.name, this.projectsService.currentProjectId, parentId)
+      this.fileService.updateFileVersion(file, oldNode.data.name_text, this.projectsService.currentProjectId, parentId)
         .subscribe(newNode => {
           this.deleteNode(oldNode);
           this.addNode(newNode, parentNode);
         },
-        error => alert(error))
+          error => alert(error))
     }
   }
 
@@ -141,7 +141,7 @@ export class FilesComponent implements OnInit {
     const nodes = parent ? [...parent.children] : [...this.files];
 
     // Find last index in nodes list
-    const lastIndex = this.findLastIndex(nodes, node => node.data.isFolder == addedNode.data.isFolder);
+    const lastIndex = this.findLastIndex(nodes, node => node.data.is_Folder == addedNode.data.is_Folder);
 
     addedNode.parent = parent;
 
@@ -164,7 +164,7 @@ export class FilesComponent implements OnInit {
         console.log(response);
         this.deleteNode(node);
       },
-      error => alert(error));
+        error => alert(error));
   }
 
   deleteNode(node: TreeNode) {
@@ -211,18 +211,18 @@ export class FilesComponent implements OnInit {
   }
 
   renameNode(node: TreeNode, updatedFile: FileData) {
-    node.data.name = updatedFile.name;
+    node.data.name_text = updatedFile.name_text;
     this.fileService.updateNode(node.data)
       .subscribe(() => {
         this.reloadView();
       },
-      error => alert(error));
+        error => alert(error));
   }
 
   requestFileDownload(node: TreeNode) {
     this.fileService.downloadFile(node.data)
       .subscribe(
-        data => saveAs(data, node.data.name),
+        data => saveAs(data, node.data.name_text),
         error => alert(error)
       );
   }
