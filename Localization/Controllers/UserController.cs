@@ -45,5 +45,26 @@ namespace Localization.Controllers
 
         }
 
+        //
+        [HttpPost("isUniqueEmail:{email}")]
+        public async Task<bool?> IsUniqueEmail(string email)//[FromBody]
+        {
+            return await userRepository.IsUniqueEmail(email);
+        }
+        [HttpPost("isUniqueLogin:{login}")]
+        public async Task<bool?> IsUniqueLogin(string login)//[FromBody]
+        {
+            return await userRepository.IsUniqueLogin(login);
+        }
+        [HttpPost("registration")]
+        public async Task<int?> CreateUser(User user)
+        {
+            return await userRepository.CreateUser(user);
+        }
+        [HttpPost("login")]
+        public async Task<User> Login(User user)
+        {
+            return await userRepository.Login(user);
+        }
     }
 }

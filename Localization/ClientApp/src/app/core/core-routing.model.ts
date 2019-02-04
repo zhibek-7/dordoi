@@ -72,6 +72,10 @@ const routes: Routes = [
   //  component: DeleteProjectComponent
   //},
   {
+    path: 'account',
+    loadChildren: '../account/module/account.module#AccountModule'
+  },
+  {
     path: 'user-registration',
     component: UserRegistrationComponent
     /*loadChildren: '../user-registration/user-registration.modele.ts#UserRegistrationModule'*/

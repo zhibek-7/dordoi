@@ -268,5 +268,149 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        //
+        public async Task<bool?> IsUniqueEmail(string email)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("Users")
+                        .Where("Email", email)
+                        .AsCount();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    return count == 0;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.IsUniqueEmail)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.IsUniqueEmail)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        public async Task<bool?> IsUniqueLogin(string login)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("Users")
+                        .Where("Name", login)
+                        .AsCount();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    return count == 0;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.IsUniqueLogin)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.IsUniqueLogin)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        public async Task<int?> CreateUser(User user)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var newUser = new
+                    {
+                        Name = user.Name,
+                        Email = user.Email,
+                        Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password),
+                        data_create = DateTime.Now
+                    };
+                    var query = new Query("Users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+
+                    //await dbConnection.ExecuteAsync(
+                    //    sql: compiledQuery.Sql,
+                    //    param: compiledQuery.NamedBindings);
+                    //После выполнение запроса получаем сгенерированный id нового объекта
+                    var idOfNewUser = await dbConnection
+                        .ExecuteScalarAsync<int>(
+                            sql: compiledQuery.Sql,
+                            param: compiledQuery.NamedBindings);
+                    return idOfNewUser;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.CreateUser)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.CreateUser)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        public async Task<User> Login(User user)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    user.Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
+                    string SQLQuery = "SELECT * FROM \"Users\" WHERE (\"Name\" = @Name OR \"Email\" = @Email) AND \"Password\" = @Password";
+                    User existUser = null;
+                    var param = new { user.Name, user.Email, user.Password };
+                    this.LogQuery(SQLQuery, param);
+                    existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();                    
+                    return existUser;
+                
+                    //var password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
+                    //var query = new Query("Users")
+                    //    .Where("Password", password)
+                    //    .Where("Name", user.Name)
+                    //    .Or()
+                    //    .Where("Password", password)
+                    //    .Where("Email", user.Name)
+                    //    .Select("*");
+                    //var compiledQuery = _compiler.Compile(query);
+                    //LogQuery(compiledQuery);
+                    
+                    //var result = await dbConnection
+                    //    .QueryFirstOrDefaultAsync<User>(
+                    //        sql: compiledQuery.Sql,
+                    //        param: compiledQuery.NamedBindings);
+                    //return result;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Login)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Login)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
     }
 }
