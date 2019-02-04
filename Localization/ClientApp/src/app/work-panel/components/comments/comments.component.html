@@ -12,18 +12,58 @@
   <div class="tabsBlock">
     <div class="tab-content" id="nav-tabContent">
 
-      <div class="tab-pane fade show active" id="nav-comment" role="tabpanel" aria-labelledby="nav-comment-tab">
-        <div class="panel panel-primary">
-          <div class="panel-body">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
-                <div class="oneCommentBlock">
-                  <div class="row">
-                    <div class="col-6 userNameRow">{{comment.userName}}</div><div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m'}}</div>
-                  </div>
-                  <div *ngIf="!commentEdited">
-                    <div class="row">
-                      <div class="col-12">{{comment.comment}} </div>
+            <div class="tab-pane fade show active" id="nav-comment" role="tabpanel" aria-labelledby="nav-comment-tab">
+                <div class="panel panel-primary">
+                    <div class="panel-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
+                                <div class="oneCommentBlock">                                 
+                                    <div class="row">
+                                        <div class="col-6 userNameRow">{{comment.userName}}</div><div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m'}}</div>
+                                    </div>
+                                    <div *ngIf="!commentEdited">
+                                        <div class="row">
+                                            <div class="col-12">{{comment.comment_text}} </div>
+                                        </div>
+                                        <ul class="row">
+                                            <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">
+                                                <div>                                                                                                        
+                                                    <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}" />
+                                                </div>
+                                            </li>   
+                                        </ul>
+                                        <div class="row">                                           
+                                            <button class="btn btn-link" (click)="changeCommentClick(comment)">Изменить</button>
+                                            <button class="btn btn-link" (click)="deleteCommentClick(comment)">Удалить</button>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="commentEdited">
+                                      <div class="row">
+                                        <div class="col-12">
+                                          <div class="form-group">
+                                            <textarea class="form-control" rows="2"
+                                                      [(ngModel)]="changedComment.comment"></textarea>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div class="fileBlock mb-2">
+                                        <div class=""><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>                                        
+                                        <ul class="row">
+                                            <li class="list-group-item col-3 imageBlock" *ngFor="let image of comment.images">
+                                                <div>
+                                                    <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}"  />
+                                                </div>
+                                            </li>   
+                                        </ul>
+                                                                          
+                                        <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
+                                        <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.commentId)">Отменить</button></div>
+                                      </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                     <ul class="row">
                       <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">

@@ -93,8 +93,8 @@ export class StringsMainComponent implements OnInit {
   }
 
   filesTreeNodeToFilesListRecursive(path: string, fileTreeNode: TreeNode): FileViewModel[] {
-    let pathForCurrentNode = path + '/' + fileTreeNode.data.name_text;
-    if (!fileTreeNode.data.is_Folder) {
+    let pathForCurrentNode = path + '/' + fileTreeNode.data.name;
+    if (!fileTreeNode.data.isFolder) {
       return [new FileViewModel(pathForCurrentNode, fileTreeNode.data.id)];
     }
     else {
@@ -114,3 +114,6 @@ export class StringsMainComponent implements OnInit {
   }
 
 }
+
+    let pathForCurrentNode = path + '/' + fileTreeNode.data.name_text;
+    if (!fileTreeNode.data.is_Folder) {
