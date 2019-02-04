@@ -14,7 +14,7 @@
       <input type="text" [(ngModel)]="searchFilesNamesString" (input)="getFiles()" placeholder="Искать по файлам" />
     </div>
   </div>
-  
+
   <app-set-languages-modal #setFileLanguagesModal></app-set-languages-modal>
   <app-rename-file-modal #renameModal (nameChangeSubmitted)="renameNode($event[0], $event[1])"></app-rename-file-modal>
   <app-file-input-wrapper #fileInput (fileConfirmed)="onFileUpload($event[0], $event[1])"></app-file-input-wrapper>
@@ -66,7 +66,7 @@
       </button>
     </ng-template>
   </mat-menu>
-  
+
   <p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">
     <ng-template pTemplate="header" let-columns>
       <tr>
@@ -74,27 +74,20 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-      <tr [ttSelectableRow]="rowNode"
-          (dblclick)="fileRowMenuTrigger.openMenu()"
-          dnd-droppable
-          [allowDrop]="canDrop(rowNode.node)"
-          (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
-          dnd-draggable
-          [dragEnabled]="true"
-          [dragData]="rowNode.node"
-          >
+      <tr [ttSelectableRow]="rowNode" (dblclick)="fileRowMenuTrigger.openMenu()" dnd-droppable [allowDrop]="canDrop(rowNode.node)"
+        (onDropSuccess)="moveNode($event.dragData, rowNode.node)" dnd-draggable [dragEnabled]="true" [dragData]="rowNode.node">
         <td [ttEditableColumn]="rowData" class="col-xs-6">
           <div (click)="nodeExpandToggler.onClick($event)">
             <p-treeTableToggler #nodeExpandToggler [rowNode]="rowNode"></p-treeTableToggler>
             <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
-            {{rowData.name}}
+            {{rowData.name_text}}
           </div>
         </td>
         <td class="col-xs-2">
-          {{rowData.dateOfChange | date: 'dd/MM/yyyy'}}
+          {{rowData.date_Of_Change | date: 'dd/MM/yyyy'}}
         </td>
         <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
-          {{rowData.stringsCount}}
+          {{rowData.strings_Count}}
         </td>
         <td class="col-xs-2">
           <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button>
@@ -110,11 +103,8 @@
           <button *ngIf="!rowData.isFolder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
             <mat-icon> arrow_downward </mat-icon>
           </button>
-          <button mat-icon-button
-                  #fileRowMenuTrigger="matMenuTrigger"
-                  [matMenuTriggerFor]="fileRowContextMenu"
-                  [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
-                  >
+          <button mat-icon-button #fileRowMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="fileRowContextMenu"
+            [matMenuTriggerData]="{node: rowNode.node, data: rowData}">
             <mat-icon> more_horiz </mat-icon>
           </button>
         </td>
@@ -148,7 +138,7 @@
       <input type="text" [(ngModel)]="searchFilesNamesString" (input)="getFiles()" placeholder="Искать по файлам" />
     </div>
   </div>
-  
+
   <app-set-languages-modal #setFileLanguagesModal></app-set-languages-modal>
   <app-rename-file-modal #renameModal (nameChangeSubmitted)="renameNode($event[0], $event[1])"></app-rename-file-modal>
   <app-file-input-wrapper #fileInput (fileConfirmed)="onFileUpload($event[0], $event[1])"></app-file-input-wrapper>
@@ -201,7 +191,7 @@
       </button>
     </ng-template> -->
   </mat-menu>
-  
+
   <p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">
     <ng-template pTemplate="header" let-columns>
       <tr>
@@ -209,15 +199,8 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-      <tr [ttSelectableRow]="rowNode"
-          (dblclick)="fileRowMenuTrigger.openMenu()"
-          dnd-droppable
-          [allowDrop]="canDrop(rowNode.node)"
-          (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
-          dnd-draggable
-          [dragEnabled]="true"
-          [dragData]="rowNode.node"
-          >
+      <tr [ttSelectableRow]="rowNode" (dblclick)="fileRowMenuTrigger.openMenu()" dnd-droppable [allowDrop]="canDrop(rowNode.node)"
+        (onDropSuccess)="moveNode($event.dragData, rowNode.node)" dnd-draggable [dragEnabled]="true" [dragData]="rowNode.node">
         <td [ttEditableColumn]="rowData" class="col-xs-6">
           <div (click)="nodeExpandToggler.onClick($event)">
             <p-treeTableToggler #nodeExpandToggler [rowNode]="rowNode"></p-treeTableToggler>
@@ -263,4 +246,3 @@
     </ng-template>
   </p-treeTable>
 </div>
-
