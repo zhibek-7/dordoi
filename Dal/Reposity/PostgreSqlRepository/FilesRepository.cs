@@ -334,7 +334,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<System.IO.FileStream> Load(int id, int id_locale = -1)
+        public async Task<System.IO.FileStream> Download(int id, int id_locale = -1)
         {
             var sqlFileQuery = "SELECT * FROM \"Files\" WHERE \"ID\" = @id";
             using (var connection = new NpgsqlConnection(connectionString))

@@ -397,7 +397,7 @@ namespace Models.Services
 
         public async Task<System.IO.FileStream> GetFile(int fileId, int? localeId)
         {
-            return await this._filesRepository.Load(
+            return await this._filesRepository.Download(
                 id: fileId,
                 id_locale: localeId.HasValue ? localeId.Value : -1);
         }
