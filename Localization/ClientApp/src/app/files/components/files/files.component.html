@@ -17,7 +17,7 @@
 <app-set-languages-modal #setFileLanguagesModal></app-set-languages-modal>
 <app-rename-file-modal #renameModal (nameChangeSubmitted)="renameNode($event[0], $event[1])"></app-rename-file-modal>
 <app-file-input-wrapper #fileInput (fileConfirmed)="onFileUpload($event[0], $event[1])"></app-file-input-wrapper>
-<app-file-input-wrapper #folderInput [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
+<app-file-input-wrapper #folderInputWrapper [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
 <app-file-input-wrapper #updateFileInput (fileConfirmed)="updateFileVersion($event[0], $event[1])"></app-file-input-wrapper>
 <app-translation-progress-modal #translationProgressModal></app-translation-progress-modal>
 <mat-menu #fileRowContextMenu="matMenu">
@@ -28,7 +28,7 @@
     <button mat-menu-item *ngIf="data.isFolder" (click)="addFolderModal.showForNode(node)">
       Создать папку
     </button>
-    <button mat-menu-item *ngIf="data.isFolder" (click)="folderInput.activate(node)">
+    <button mat-menu-item *ngIf="data.isFolder" (click)="folderInputWrapper.activate(node)">
       Загрузить папку
     </button>
     <button mat-menu-item *ngIf="!data.isFolder" (click)="updateFileInput.activate(node)">
