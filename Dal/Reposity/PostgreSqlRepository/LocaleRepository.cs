@@ -10,11 +10,30 @@ using Models.DatabaseEntities.DTO;
 using SqlKata;
 using Models.Interfaces.Repository;
 using Npgsql;
+using Models.Migration;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class LocaleRepository : BaseRepository, ILocaleRepository
     {
+        private readonly string _insertLocaleSql =
+            "INSERT INTO \"Locales\" (" +
+            "\"Name\", " +
+            "\"Description\", " +
+            "\"Flag\", " +
+            "\"code\", " +
+            "\"data_create\", " +
+            "\"url\", " +
+            ") " +
+            "VALUES (" +
+            "\"Name\", " +
+            "\"Description\", " +
+            "\"Flag\", " +
+            "\"code\", " +
+            "\"data_create\", " +
+            "\"url\", " +
+            ")";
+
         public LocaleRepository(string connectionStr) : base(connectionStr)
         {
         }
@@ -165,6 +184,47 @@ namespace DAL.Reposity.PostgreSqlRepository
                     $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByUserIdAsync)} {nameof(Exception)} ",
                     exception);
                 return null;
+            }
+        }
+
+        public async Task<bool> Upload(Locale locale)
+        {
+            var sqlString = this._insertLocaleSql + " RETURNING \"ID\"";
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        this.LogQuery(sqlString, locale);
+                        var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, locale, transaction);
+                        if (!insertedId.HasValue)
+                        {
+                            this._loggerError.WriteLn("Insertion into Locales didn't return id.");
+                            transaction.Rollback();
+                            return false;
+                        }
+                        locale.ID = insertedId.Value;
+                        return true;
+                    }
+                    catch (NpgsqlException exception)
+                    {
+                        this._loggerError.WriteLn(
+                            $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.Upload)} {nameof(NpgsqlException)} ",
+                            exception);
+                        transaction.Rollback();
+                        return false;
+                    }
+                    catch (Exception exception)
+                    {
+                        this._loggerError.WriteLn(
+                            $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.Upload)} {nameof(Exception)} ",
+                            exception);
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
             }
         }
     }

@@ -160,4 +160,9 @@ export class ProjectPageComponent implements OnInit {
     console.log(this.selectedUser);
     console.log(this.selectedLang);
   }
+
+  openLanguageFiles(selectedLanguage: any){
+    console.log(selectedLanguage);
+  }
+
 }
