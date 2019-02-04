@@ -20,7 +20,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public IEnumerable<LocalizationProjectsLocales> GetAll(int Id)
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM localization_projects_locale" +
+            var sqlString = "SELECT * FROM localization_projects_locales     " +
                  "WHERE id_localization_project=@Id";
 
             try

@@ -1,6 +1,7 @@
 /**
  * Язык перевода назначенный на проект локализации с процентом перевода
  */
+export class LocalizationProjectsLocalesDTO {
   // Идентификатор языка
   localeId: number;
   // Наименование языка

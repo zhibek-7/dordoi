@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, Predicate } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Predicate } from "@angular/core";
 
-import { TreeNode } from 'primeng/api';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { saveAs } from 'file-saver';
+import { TreeNode } from "primeng/api";
+import { NgxSpinnerService } from "ngx-spinner";
+import { saveAs } from "file-saver";
 
 import { FileService } from "src/app/services/file.service";
 import { ProjectsService } from "src/app/services/projects.service";
 
-import { File as FileData } from 'src/app/models/database-entities/file.type';
+import { File as FileData } from "src/app/models/database-entities/file.type";
 
 @Component({
   selector: "app-files",
@@ -28,7 +28,6 @@ export class FilesComponent implements OnInit {
 
   isLoading: boolean;
 
-
   // Переменные для работы при выборе файлов для перевода
   isSelectionFileForTranslation: boolean = false;
   selectedProjectId: number;
@@ -47,9 +46,9 @@ export class FilesComponent implements OnInit {
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
     console.log("Projec=" + sessionStorage.getItem("Projec"));
 
-    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
-    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-    console.log('Projec=' + sessionStorage.getItem('Projec'));
+    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
+    console.log("Projec=" + sessionStorage.getItem("Projec"));
 
     this.cols = [
       { field: "name_text", header: "Имя" },
@@ -83,28 +82,38 @@ export class FilesComponent implements OnInit {
   }
 
   moveCurrentlyCutted(selectedNode: TreeNode): void {
-    this.fileService.changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
-      .subscribe(() => {
-        this.deleteNode(this.cuttedNode);
-        this.addNode(this.cuttedNode, selectedNode);
-        this.cuttedNode = null;
-      },
-      error => alert(error));
+    this.fileService
+      .changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
+      .subscribe(
+        () => {
+          this.deleteNode(this.cuttedNode);
+          this.addNode(this.cuttedNode, selectedNode);
+          this.cuttedNode = null;
+        },
+        error => alert(error)
+      );
   }
 
   moveNode(nodeToMove: any, newParent: any) {
-    const parentId = newParent ? newParent.data ? newParent.data.id : null : null;
-    this.fileService.changeParentFolder(nodeToMove.data, parentId)
-      .subscribe(() => {
-          this.deleteNode(nodeToMove);
-          this.addNode(nodeToMove, newParent);
-        },
-        error => alert(error));
+    const parentId = newParent
+      ? newParent.data
+        ? newParent.data.id
+        : null
+      : null;
+    this.fileService.changeParentFolder(nodeToMove.data, parentId).subscribe(
+      () => {
+        this.deleteNode(nodeToMove);
+        this.addNode(nodeToMove, newParent);
+      },
+      error => alert(error)
+    );
   }
 
   canDrop(node: any) {
     const nodeIsFolder: boolean = node.data.isFolder;
-    return (unused => { return nodeIsFolder; });
+    return unused => {
+      return nodeIsFolder;
+    };
   }
 
   getFiles(): void {
@@ -128,21 +137,30 @@ export class FilesComponent implements OnInit {
   addFolder(newFolder: File, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
-    this.fileService.addFolder(newFolder.name, this.projectsService.currentProjectId, parentId).subscribe(
-      node => this.addNode(node, parentNode),
-      error => alert(error.error)
-    );
+    this.fileService
+      .addFolder(
+        newFolder.name,
+        this.projectsService.currentProjectId,
+        parentId
+      )
+      .subscribe(
+        node => this.addNode(node, parentNode),
+        error => alert(error.error)
+      );
   }
 
   uploadFolder(files, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
     this.ngxSpinnerService.show();
-    this.fileService.uploadFolder(files, this.projectsService.currentProjectId, parentId).subscribe(
-      () => {
-        this.getFiles();
-        this.ngxSpinnerService.hide();
-      },
-      error => alert(error));
+    this.fileService
+      .uploadFolder(files, this.projectsService.currentProjectId, parentId)
+      .subscribe(
+        () => {
+          this.getFiles();
+          this.ngxSpinnerService.hide();
+        },
+        error => alert(error)
+      );
   }
 
   addFile(file: File, parentNode: TreeNode): void {
@@ -161,12 +179,20 @@ export class FilesComponent implements OnInit {
     if (file) {
       const parentNode = oldNode.parent;
       const parentId = parentNode ? parentNode.data.id : null;
-      this.fileService.updateFileVersion(file, oldNode.data.name, this.projectsService.currentProjectId, parentId)
-        .subscribe(newNode => {
-          this.deleteNode(oldNode);
-          this.addNode(newNode, parentNode);
-        },
-        error => alert(error))
+      this.fileService
+        .updateFileVersion(
+          file,
+          oldNode.data.name,
+          this.projectsService.currentProjectId,
+          parentId
+        )
+        .subscribe(
+          newNode => {
+            this.deleteNode(oldNode);
+            this.addNode(newNode, parentNode);
+          },
+          error => alert(error)
+        );
     }
   }
 
@@ -210,8 +236,7 @@ export class FilesComponent implements OnInit {
     let nodeIsRoot = indexOfNodeInRootFiles > -1;
     if (nodeIsRoot) {
       this.files.splice(indexOfNodeInRootFiles, 1);
-    }
-    else {
+    } else {
       let parentChildren = node.parent.children;
       parentChildren.splice(parentChildren.lastIndexOf(node), 1);
     }
@@ -253,124 +278,31 @@ export class FilesComponent implements OnInit {
   }
 
   renameNode(node: TreeNode, updatedFile: FileData) {
-    node.data.name = updatedFile.name;
-    this.fileService.updateNode(node.data)
-      .subscribe(() => {
-        this.reloadView();
-      },
-      error => alert(error));
-  }
-
-  requestFileDownload(node: TreeNode) {
-    this.fileService.downloadFile(node.data)
-      .subscribe(
-        data => {
-          let fileName = node.data.name;
-          if (node.data.downloadName && node.data.downloadName != '') {
-            fileName = node.data.downloadName;
-          }
-          saveAs(data, fileName);
-        },
-        error => alert(error)
-      );
-  }
-
-}
-
-}    
-
-import { Component, OnInit, ViewEncapsulation, Predicate } from "@angular/core";
-import { TreeNode } from "primeng/api";
-import { NgxSpinnerService } from "ngx-spinner";
-import { saveAs } from "file-saver";
-import { File as FileData } from "src/app/models/database-entities/file.type";
-    if(this.router.url.indexOf("LanguageFiles") != -1){
-      this.isSelectionFileForTranslation = true;
-      this.selectedProjectId = this.activatedRoute.snapshot.params['projectId'];
-      this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];
-    }
-
-    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
-    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-    console.log('Projec=' + sessionStorage.getItem('Projec'));
-
-  moveCurrentlyCutted(selectedNode: TreeNode): void {
-    this.fileService
-      .changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
-      .subscribe(
-        () => {
-          this.deleteNode(this.cuttedNode);
-          this.addNode(this.cuttedNode, selectedNode);
-          this.cuttedNode = null;
-        },
-        error => alert(error)
-      );
-  moveNode(nodeToMove: any, newParent: any) {
-    const parentId = newParent ? newParent.data ? newParent.data.id : null : null;
-    this.fileService.changeParentFolder(nodeToMove.data, parentId)
-      .subscribe(() => {
-          this.deleteNode(nodeToMove);
-          this.addNode(nodeToMove, newParent);
-        },
-        error => alert(error));
-  }
-  canDrop(node: any) {
-    const nodeIsFolder: boolean = node.data.is_Folder;
-    return unused => {
-      return nodeIsFolder;
-    };
-  }
-
-    this.fileService.addFolder(newFolder.name, this.projectsService.currentProjectId, parentId).subscribe(
-      node => this.addNode(node, parentNode),
-      error => alert(error.error)
-    );
-  }
-
-    const parentId = parentNode ? parentNode.data.id : null;
-    this.ngxSpinnerService.show();
-    this.fileService.uploadFolder(files, this.projectsService.currentProjectId, parentId).subscribe(
-      () => {
-        this.getFiles();
-        this.ngxSpinnerService.hide();
-      },
-      error => alert(error));
-      this.fileService
-        .updateFileVersion(
-          file,
-          oldNode.data.name_text,
-          this.projectsService.currentProjectId,
-          parentId
-        )
-        .subscribe(
-          newNode => {
-            this.deleteNode(oldNode);
-            this.addNode(newNode, parentNode);
-          },
-          error => alert(error)
-        );
-    if (nodeIsRoot) {
-      this.files.splice(indexOfNodeInRootFiles, 1);
-    }
-    else {
-    node.data.name_text = updatedFile.name_text;
+    node.data.name = updatedFile.name_text;
     this.fileService.updateNode(node.data).subscribe(
       () => {
         this.reloadView();
       },
       error => alert(error)
     );
+  }
+
+  requestFileDownload(node: TreeNode) {
     this.fileService.downloadFile(node.data).subscribe(
       data => {
         let fileName = node.data.name_text;
-        if (node.data.download_name && node.data.download_name != "") {
-          fileName = node.data.download_name;
+        if (node.data.downloadName && node.data.downloadName != "") {
+          fileName = node.data.downloadName;
         }
         saveAs(data, fileName);
       },
       error => alert(error)
     );
-
-  translateFileClick(){
-    alert("Тут будет перенаправление на форму для работы над переводом данного файла");
   }
+
+  translateFileClick() {
+    alert(
+      "Тут будет перенаправление на форму для работы над переводом данного файла"
+    );
+  }
+}

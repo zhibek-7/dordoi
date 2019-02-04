@@ -162,8 +162,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var deleteGlossaryStingAssotiationSql =
-                        "DELETE FROM \"GlossariesStrings\" " +
-                        "WHERE \"ID_Glossary\" = @GlossaryId AND id_string = @TermId";
+                        "DELETE FROM glossaries_strings " +
+                        "WHERE id_glossary = @GlossaryId AND id_string = @TermId";
                     var deleteGlossaryStingAssotiationParam = new { GlossaryId = glossaryId, TermId = termId };
                     this.LogQuery(deleteGlossaryStingAssotiationSql, deleteGlossaryStingAssotiationParam);
                     await dbConnection

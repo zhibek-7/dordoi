@@ -52,8 +52,14 @@ namespace Models.Migration
                     for (int i = 2; i <= totalRows; i++)
                     {
                         string[] input = myWorksheet.Cells[i, 1, i, totalColumns].Select(c => c.Value == null ? string.Empty : c.Value.ToString()).ToArray();
-                        var loc = new Locale(input[0], string.Empty, input[1], null, input[2]);
+                        var loc = new Locale();//new Locale(input[0], string.Empty, input[1], null, input[2]);
                         //can't use DAL-project to upload Locale because of the circular dependency problem
+                        loc.name_text = input[0];
+                        loc.description = string.Empty;
+                        loc.flag = input[1];
+                        loc.data_create = null;
+                        loc.url = input[2];
+
                     }
                 }
                 System.IO.File.Delete(tempFileName);

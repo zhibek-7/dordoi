@@ -219,8 +219,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     var GlossariesLocales = localesIds.Select(t => new
                     {
-                        ID_Glossary = glossaryId,
-                        ID_Locale = t
+                        id_glossary = glossaryId,
+                        id_locale = t
                     }).ToList();
 
                     foreach (var element in GlossariesLocales)

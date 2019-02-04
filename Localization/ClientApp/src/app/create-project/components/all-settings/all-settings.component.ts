@@ -15,7 +15,7 @@ export class AllSettingsComponent implements OnInit {
   args = "ascending";
   reverse = false;
 
-  constructor(private projectsService: ProjectsService) { }
+  constructor(private projectsService: ProjectsService) {}
   currentProjectName = "";
   currentProjectId = null;
   currentProjectDescription = "";
@@ -33,8 +33,8 @@ export class AllSettingsComponent implements OnInit {
   isChecked = true;
 
   public project: LocalizationProject;
- 
-   // this.searchText = this.projectsLcalesService.currentProjectName;
+
+  // this.searchText = this.projectsLcalesService.currentProjectName;
   pjPublic: string;
   pjFileTrue = false;
   pjSkipUntranslStrTrue = false;
@@ -52,7 +52,6 @@ export class AllSettingsComponent implements OnInit {
     selectedLang: new FormControl()
   });
 
-   
   searchText = "";
   dropdownList = [];
   allProjLocales: Promise<LocalizationProjectsLocales>;
@@ -61,13 +60,14 @@ export class AllSettingsComponent implements OnInit {
   ngOnInit() {
     //вывод всех языков проекта
 
-
     this.currentProjectName = this.projectsService.currentProjectName;
     this.currentProjectId = this.projectsService.currentProjectId;
 
-    this.allProjLocales = this.projectsService.getProjectLocales(this.currentProjectId);
+    this.allProjLocales = this.projectsService.getProjectLocales(
+      this.currentProjectId
+    );
 
-    this.allProjLocales
+    this.allProjLocales;
 
     this.dropdownList = [
       { itemName: "Ido", checked: false, id: "1" },
@@ -108,15 +108,12 @@ export class AllSettingsComponent implements OnInit {
         this.pjExportTrue = this.project.export_only_approved_translations;
         this.pjNotificationTrue = this.project.notify_New;
 
-
         this.selectedLang = this.project.ID_Source_Locale;
         if (this.currentProjectPublic == true) {
           this.pjPublic == "public";
         } else {
           this.pjPublic == "nopublic";
         }
-
-
 
         console.log(this.currentProjectId);
       },
@@ -188,7 +185,6 @@ export class AllSettingsComponent implements OnInit {
   idPrLocale: number;
   idLocale: number;
   editProject(Id: number): void {
-
     if (this.pjPublic == "public") {
       this.currentProjectPublic = true;
     } else {
@@ -198,16 +194,15 @@ export class AllSettingsComponent implements OnInit {
 
     //собирает добавленные языки в один массив
 
-    let projectLocales: LocalizationProjectsLocales[]=[]; 
-    this.selectedItems.forEach((lang) => {
+    let projectLocales: LocalizationProjectsLocales[] = [];
+    this.selectedItems.forEach(lang => {
       projectLocales.push({
-        id_LocalizationProject: this.currentProjectId,
+        id_Localization_Project: this.currentProjectId,
         id_Locale: lang.id,
-        percentOfTranslation: 0,
-        PercentOfConfirmed:0
-      });     
-    })  
-
+        percent_Of_Translation: 0,
+        Percent_Of_Confirmed: 0
+      });
+    });
 
     //передает массив языков
     this.projectsService.addProjectLocales(projectLocales);
@@ -218,7 +213,7 @@ export class AllSettingsComponent implements OnInit {
       this.currentProjectDescription,
       this.currentProjecturl,
       this.currentProjectPublic, //visibility
-      Date.now,//date dateOfCreation
+      Date.now, //date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
       this.selectedLang,
       this.pjFileTrue, //ableToDownload
@@ -236,7 +231,4 @@ export class AllSettingsComponent implements OnInit {
     Id = this.currentProjectId;
     this.projectsService.updateProject(Id, project);
   }
-
-
-
 }

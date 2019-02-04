@@ -1,23 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, ParamMap } from "@angular/router";
+import { switchMap } from "rxjs/operators";
 import { TreeNode } from "primeng/api";
 
-import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
-import { LanguageService } from 'src/app/services/languages.service';
-import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
-import { FileService } from 'src/app/services/file.service';
-import { FileViewModel } from 'src/app/strings/models/file.viewmodel';
-import { SortingArgs } from 'src/app/shared/models/sorting.args';
-import { ProjectsService } from 'src/app/services/projects.service';
+import { TranslationSubstringService } from "src/app/services/translationSubstring.service";
+import { LanguageService } from "src/app/services/languages.service";
+import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
+import { FileService } from "src/app/services/file.service";
+import { FileViewModel } from "src/app/strings/models/file.viewmodel";
+import { SortingArgs } from "src/app/shared/models/sorting.args";
+import { ProjectsService } from "src/app/services/projects.service";
 
 @Component({
-  selector: 'app-strings-main',
-  templateUrl: './strings-main.component.html',
-  styleUrls: ['./strings-main.component.css']
+  selector: "app-strings-main",
+  templateUrl: "./strings-main.component.html",
+  styleUrls: ["./strings-main.component.css"]
 })
 export class StringsMainComponent implements OnInit {
-
   translationStrings: TranslationSubstring[] = [];
 
   pageSize: number = 10;
@@ -28,7 +27,7 @@ export class StringsMainComponent implements OnInit {
 
   sortByColumnName: string = null;
 
-  stringSearchString: string = '';
+  stringSearchString: string = "";
 
   filesViewModels: FileViewModel[] = [];
 
@@ -44,29 +43,35 @@ export class StringsMainComponent implements OnInit {
     private projectsService: ProjectsService,
     private fileService: FileService,
     private translationSubstringService: TranslationSubstringService,
-    private route: ActivatedRoute,
-  ) { }
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
-    this.fileService.getFilesByProjectIdAsTree(this.projectId)
-      .subscribe(filesTree => {
+    this.fileService.getFilesByProjectIdAsTree(this.projectId).subscribe(
+      filesTree => {
         this.filesViewModels = this.filesTreeToFilesList(filesTree);
-        this.route.paramMap
-          .subscribe(paramMap => {
-            const fileIdParamName = 'fileId';
+        this.route.paramMap.subscribe(
+          paramMap => {
+            const fileIdParamName = "fileId";
             if (paramMap.has(fileIdParamName)) {
               const fileIdParam = +paramMap.get(fileIdParamName);
-              if (this.filesViewModels.some(value => value.id === fileIdParam)) {
+              if (
+                this.filesViewModels.some(value => value.id === fileIdParam)
+              ) {
                 this.selectedFileId = fileIdParam;
               }
             }
             this.loadStrings();
-          }, error => console.log(error))
-      }, error => console.log(error));
+          },
+          error => console.log(error)
+        );
+      },
+      error => console.log(error)
+    );
   }
 
   loadStrings(offset = 0) {
@@ -74,33 +79,55 @@ export class StringsMainComponent implements OnInit {
     if (this.sortByColumnName) {
       sortBy = [this.sortByColumnName];
     }
-    this.translationSubstringService.getStringsByProjectId(this.projectId, this.selectedFileId, this.stringSearchString, this.pageSize, offset, sortBy, this.isSortingAscending)
+    this.translationSubstringService
+      .getStringsByProjectId(
+        this.projectId,
+        this.selectedFileId,
+        this.stringSearchString,
+        this.pageSize,
+        offset,
+        sortBy,
+        this.isSortingAscending
+      )
       .subscribe(
         response => {
           let strings = response.body;
           this.translationStrings = strings;
-          let totalCount = +response.headers.get('totalCount');
+          let totalCount = +response.headers.get("totalCount");
           this.totalCount = totalCount;
           this.currentOffset = offset;
         },
-        error => console.log(error));
+        error => console.log(error)
+      );
   }
 
   filesTreeToFilesList(filesTree: TreeNode[]): FileViewModel[] {
     return filesTree
-      .map(fileTreeNode => this.filesTreeNodeToFilesListRecursive('', fileTreeNode))
-      .reduce((previousValue, currentValue) => previousValue.concat(currentValue), new Array<FileViewModel>());
+      .map(fileTreeNode =>
+        this.filesTreeNodeToFilesListRecursive("", fileTreeNode)
+      )
+      .reduce(
+        (previousValue, currentValue) => previousValue.concat(currentValue),
+        new Array<FileViewModel>()
+      );
   }
 
-  filesTreeNodeToFilesListRecursive(path: string, fileTreeNode: TreeNode): FileViewModel[] {
-    let pathForCurrentNode = path + '/' + fileTreeNode.data.name;
-    if (!fileTreeNode.data.isFolder) {
+  filesTreeNodeToFilesListRecursive(
+    path: string,
+    fileTreeNode: TreeNode
+  ): FileViewModel[] {
+    let pathForCurrentNode = path + "/" + fileTreeNode.data.name_text;
+    if (!fileTreeNode.data.is_Folder) {
       return [new FileViewModel(pathForCurrentNode, fileTreeNode.data.id)];
-    }
-    else {
+    } else {
       return fileTreeNode.children
-        .map(child => this.filesTreeNodeToFilesListRecursive(pathForCurrentNode, child))
-        .reduce((previousValue, currentValue) => previousValue.concat(currentValue), new Array<FileViewModel>());
+        .map(child =>
+          this.filesTreeNodeToFilesListRecursive(pathForCurrentNode, child)
+        )
+        .reduce(
+          (previousValue, currentValue) => previousValue.concat(currentValue),
+          new Array<FileViewModel>()
+        );
     }
   }
 
@@ -112,8 +139,4 @@ export class StringsMainComponent implements OnInit {
     this.sortByColumnName = args.columnName;
     this.isSortingAscending = args.isAscending;
   }
-
 }
-
-    let pathForCurrentNode = path + '/' + fileTreeNode.data.name_text;
-    if (!fileTreeNode.data.is_Folder) {

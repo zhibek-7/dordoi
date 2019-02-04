@@ -1,25 +1,18 @@
-
 <form [formGroup]="formGroup" novalidate (ngSubmit)="submit()">
 
   <h3>Регистрация пользователя</h3>
 
   <div class="form-group">
     <label>Email</label>
-    <input class="form-control"
-           name="email"
-           formControlName="emailFormControl"
-           (keyup)="isUniqueEmail($event)" />
+    <input class="form-control" name="email" formControlName="emailFormControl" (keyup)="isUniqueEmail($event)" />
 
-    <div class="alert alert-danger"
-         *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.required">
+    <div class="alert alert-danger" *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.required">
       Поле "Email" обязательно для заполнения
     </div>
-    <div class="alert alert-danger"
-         *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.email">
+    <div class="alert alert-danger" *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.email">
       Некорректный email
     </div>
-    <div class="alert alert-danger"
-         *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.isUniqueEmail">
+    <div class="alert alert-danger" *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.isUniqueEmail">
       Введенный email занят другим пользователем
     </div>
   </div>
@@ -27,21 +20,15 @@
 
   <div class="form-group">
     <label>Имя пользователя</label>
-    <input class="form-control"
-           name="name"
-           formControlName="nameFormControl"
-           (keyup)="isUniqueLogin($event)" />
+    <input class="form-control" name="name_text" formControlName="nameFormControl" (keyup)="isUniqueLogin($event)" />
 
-    <div class="alert alert-danger"
-         *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.required">
+    <div class="alert alert-danger" *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.required">
       Поле "Имя пользователя" обязательно для заполнения
     </div>
-    <div class="alert alert-danger"
-         *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.pattern">
+    <div class="alert alert-danger" *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.pattern">
       Имя пользователя может содержать символы латинского алфавита, цифры и точки
     </div>
-    <div class="alert alert-danger"
-         *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.isUniqueLogin">
+    <div class="alert alert-danger" *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.isUniqueLogin">
       Введенное имя занято другим пользователем
     </div>
   </div>
@@ -53,29 +40,22 @@
         Пароль
         <mat-icon (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
       </label>
-      <input class="form-control"
-             [type]="hide ? 'password' : 'text'"
-             (keyup)="confirm($event)"
-             name="password"
-             formControlName="passwordFormControl" />
+      <input class="form-control" [type]="hide ? 'password' : 'text'" (keyup)="confirm($event)" name="password_text"
+        formControlName="passwordFormControl" />
 
-      <div class="alert alert-danger"
-           *ngIf="formGroup.controls['passwordFormControl'].invalid && formGroup.controls['passwordFormControl'].touched">
-        Пароль должен содержать не меньше 8 знаков, включая прописные и заглавные символы латинского алфавита, цифры и специальные знаки
+      <div class="alert alert-danger" *ngIf="formGroup.controls['passwordFormControl'].invalid && formGroup.controls['passwordFormControl'].touched">
+        Пароль должен содержать не меньше 8 знаков, включая прописные и заглавные символы латинского алфавита, цифры и
+        специальные знаки
       </div>
     </div>
 
 
     <div class="form-group">
       <label>Подтверждение пароля</label>
-      <input class="form-control"
-             [type]="hide ? 'password' : 'text'"
-             (keyup)="confirm($event)"
-             name="passwordConfirm"
-             formControlName="passwordConfirmFormControl" />
+      <input class="form-control" [type]="hide ? 'password' : 'text'" (keyup)="confirm($event)" name="passwordConfirm"
+        formControlName="passwordConfirmFormControl" />
 
-      <div class="alert alert-danger"
-           *ngIf="formGroup.controls['passwordConfirmFormControl'].invalid && formGroup.controls['passwordConfirmFormControl'].touched">
+      <div class="alert alert-danger" *ngIf="formGroup.controls['passwordConfirmFormControl'].invalid && formGroup.controls['passwordConfirmFormControl'].touched">
         Пароли не совпадают, попробуйте заново ввести
       </div>
     </div>
@@ -84,42 +64,31 @@
 
   <div class="form-group">
     <label>
-      <input type="checkbox"
-             name="agree"
-             formControlName="agreeFormControl" />
+      <input type="checkbox" name="agree" formControlName="agreeFormControl" />
       Я согласен с
-      <a class="green"
-         href="https://angular.io"
-         target="_blank">
+      <a class="green" href="https://angular.io" target="_blank">
         Условиями использования
       </a>
       и
-      <a class="green"
-         href="https://angular.io"
-         target="_blank">
+      <a class="green" href="https://angular.io" target="_blank">
         Политикой конфиденциальности
       </a>.
     </label>
 
-    <div class="alert alert-danger"
-         *ngIf="formGroup.controls['agreeFormControl'].invalid && formGroup.controls['agreeFormControl'].touched">
+    <div class="alert alert-danger" *ngIf="formGroup.controls['agreeFormControl'].invalid && formGroup.controls['agreeFormControl'].touched">
       Без согласия с условиями использования и политикой конфиденциальности вы не можете пройти регистрацию
     </div>
   </div>
 
 
   <div class="form-group">
-    <button class="btn"
-            [class.btn-success]="formGroup.valid"
-            [class.btn-secondary]="formGroup.invalid"
-            [disabled]="formGroup.invalid">
+    <button class="btn" [class.btn-success]="formGroup.valid" [class.btn-secondary]="formGroup.invalid" [disabled]="formGroup.invalid">
       СОЗДАТЬ УЧЁТНУЮ ЗАПИСЬ
     </button>
   </div>
 
   <div class="form-group">
-    <button class="btn btn-secondary"
-            routerLink=''>
+    <button class="btn btn-secondary" routerLink=''>
       ОТМЕНА
     </button>
   </div>
