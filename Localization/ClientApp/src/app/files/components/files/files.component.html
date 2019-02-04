@@ -20,6 +20,7 @@
 <app-file-input-wrapper #folderInputWrapper [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
 <app-file-input-wrapper #updateFileInput (fileConfirmed)="updateFileVersion($event[0], $event[1])"></app-file-input-wrapper>
 <app-translation-progress-modal #translationProgressModal></app-translation-progress-modal>
+<app-file-settings-modal #fileSettingsModal (changesApplied)="updateNode($event)"></app-file-settings-modal>
 <mat-menu #fileRowContextMenu="matMenu">
   <ng-template matMenuContent let-node="node" let-data="data">
     <button mat-menu-item *ngIf="data.isFolder" (click)="fileInput.activate(node)">
@@ -58,6 +59,9 @@
     </button>
     <button mat-menu-item (click)="translationProgressModal.showForFile(data)">
       Прогресс перевода
+    </button>
+    <button mat-menu-item (click)="fileSettingsModal.showForFile(data)">
+      Настройки
     </button>
   </ng-template>
 </mat-menu>

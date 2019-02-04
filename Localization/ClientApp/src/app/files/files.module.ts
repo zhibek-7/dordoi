@@ -22,6 +22,7 @@ import { AddFolderModalComponent } from 'src/app/files/components/add-folder-mod
 import { SetLanguagesModalComponent } from 'src/app/files/components/set-languages-modal/set-languages-modal.component';
 import { RenameFileModalComponent } from 'src/app/files/components/rename-file-modal/rename-file-modal.component';
 import { TranslationProgressModalComponent } from 'src/app/files/components/translation-progress-modal/translation-progress-modal.component';
+import { FileSettingsModalComponent } from 'src/app/files/components/file-settings-modal/file-settings-modal.component';
 
 import { FileService } from 'src/app/services/file.service';
 import { LanguageService } from 'src/app/services/languages.service';
@@ -35,6 +36,7 @@ import { FileInputWrapper } from './components/file-input-wrapper/file-input-wra
     RenameFileModalComponent,
     FileInputWrapper,
     TranslationProgressModalComponent,
+    FileSettingsModalComponent,
   ],
   imports: [
     FormsModule,
