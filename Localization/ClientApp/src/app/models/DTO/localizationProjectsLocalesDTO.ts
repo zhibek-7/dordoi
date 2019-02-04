@@ -3,6 +3,8 @@
  */
 export  class LocalizationProjectsLocalesDTO
 {
+  // Идентификатор языка
+  localeId: number;
   // Наименование языка
   localeName: string;
   // Путь к изображению флага
