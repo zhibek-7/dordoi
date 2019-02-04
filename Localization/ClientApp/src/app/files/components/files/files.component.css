@@ -53,6 +53,7 @@ label {
 table td, table th
 {
     padding: 2px;
+    word-wrap: break-word;
 }
 
 table th
