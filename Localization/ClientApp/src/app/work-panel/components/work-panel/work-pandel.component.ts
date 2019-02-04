@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute} from '@angular/router';
 
 @Component({
     selector: 'work-panel-component',
@@ -18,10 +19,16 @@ export class WorkPanelComponent implements OnInit {
     right3: boolean = true;
     right0: boolean = false;
     middleAndRight: boolean = false;  
-    
-    constructor() { }
 
-    ngOnInit(): void { }
+    fileIdForTranslation: number;
+    
+    constructor(
+        private activatedRoute: ActivatedRoute
+    ) { }
+
+    ngOnInit(): void {
+        this.fileIdForTranslation = this.activatedRoute.snapshot.params['fileId'];
+    }
 
     hideLeftBlockFunction(showLeftBlock: boolean){
         this.showLeftBlock = showLeftBlock;

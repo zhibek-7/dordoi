@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { MatIconModule } from '@angular/material'
 
 import { TranslationSubstring } from '../../../models/database-entities/translationSubstring.type';
@@ -24,6 +24,8 @@ export class PhrasesComponent implements OnInit {
     currentPageNumber: number = 1;
     maxNumberOfPages: number;
 
+    @Input() fileId: number;
+
     constructor(private sharePhraseService: SharePhraseService, 
         private stringService: TranslationSubstringService) {
 
@@ -36,7 +38,7 @@ export class PhrasesComponent implements OnInit {
 
     // Получение всех фраз для перевода
     async getStrings() {
-        this.phrasesList = await this.stringService.getStringsInFile(1).toPromise();     // потом поменять на реальный приходящий файл        
+        this.phrasesList = await this.stringService.getStringsInFile(this.fileId).toPromise();
         this.countPages();
     }
 

@@ -12,7 +12,7 @@ import { UserRegistrationComponent } from '../user-registration/user-registratio
 
 const routes: Routes = [
   {
-    path: 'Translation',
+    path: 'Translation/:fileId',
     loadChildren: '../work-panel/work-panel.module#WorkPanelModule'
   },
   {
