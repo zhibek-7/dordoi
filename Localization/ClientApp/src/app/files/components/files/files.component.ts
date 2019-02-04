@@ -222,9 +222,17 @@ export class FilesComponent implements OnInit {
   requestFileDownload(node: TreeNode) {
     this.fileService.downloadFile(node.data)
       .subscribe(
-        data => saveAs(data, node.data.name_text),
+        data => saveAs(data, node.data.name),
         error => alert(error)
       );
   }
 
 }
+
+        data => {
+          let fileName = node.data.name;
+          if (node.data.downloadName && node.data.downloadName != '') {
+            fileName = node.data.downloadName;
+          }
+          saveAs(data, fileName);
+        },

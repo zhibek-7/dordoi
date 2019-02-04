@@ -18,20 +18,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly int _defaultFileStreamBufferSize = 4096;
 
         private readonly string _insertFileSql =
-            "INSERT INTO files (" +
-            "id_localization_project, " +
-            "name, " +
-            "description, " +
-            "date_of_change, " +
-            "strings_count, " +
-            "version, " +
-            "priority, " +
-            "id_folder_owner, " +
-            "encod, " +
-            "is_folder, " +
-            "original_full_text, " +
-            "is_last_version, " +
-            "id_previous_version" +
+            "\"TranslatorName\", " +
+            "\"DownloadName\"" +
             ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
@@ -46,7 +34,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@IsFolder, " +
             "@OriginalFullText, " +
             "@IsLastVersion, " +
-            "@Id_PreviousVersion" +
+            "@Id_PreviousVersion, " +
+            "@TranslatorName, " +
+            "@DownloadName" +
             ")";
 
         public FilesRepository(string connectionStr) : base(connectionStr)
@@ -334,7 +324,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<System.IO.FileStream> Load(int id, int id_locale = -1)
+        public async Task<System.IO.FileStream> Download(int id, int id_locale = -1)
         {
             var sqlFileQuery = "SELECT * FROM files WHERE id = @id";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -533,6 +523,46 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this.LogQuery(compiledQuery);
 
                 await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+            }
+        }
+
+        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(int fileId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("FilesLocales")
+                    .Select(
+                        "ID_Locale as LocaleId",
+                        "PercentOfTranslation",
+                        "PercentOfConfirmed"
+                        )
+                    .Where("ID_File", fileId);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                return await dbConnection.QueryAsync<FileTranslationInfo>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+            }
+        }
+
+        public async Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(int parentFolderId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("Files")
+                    .Where("ID_FolderOwner", parentFolderId)
+                    .Where("IsLastVersion", true);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                return await dbConnection.QueryAsync<File>(
                     sql: compiledQuery.Sql,
                     param: compiledQuery.NamedBindings);
             }

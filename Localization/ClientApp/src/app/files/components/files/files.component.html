@@ -17,8 +17,10 @@
 <app-set-languages-modal #setFileLanguagesModal></app-set-languages-modal>
 <app-rename-file-modal #renameModal (nameChangeSubmitted)="renameNode($event[0], $event[1])"></app-rename-file-modal>
 <app-file-input-wrapper #fileInput (fileConfirmed)="onFileUpload($event[0], $event[1])"></app-file-input-wrapper>
-<app-file-input-wrapper #folderInput [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
+<app-file-input-wrapper #folderInputWrapper [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
 <app-file-input-wrapper #updateFileInput (fileConfirmed)="updateFileVersion($event[0], $event[1])"></app-file-input-wrapper>
+<app-translation-progress-modal #translationProgressModal></app-translation-progress-modal>
+<app-file-settings-modal #fileSettingsModal (changesApplied)="updateNode($event)"></app-file-settings-modal>
 <mat-menu #fileRowContextMenu="matMenu">
   <ng-template matMenuContent let-node="node" let-data="data">
     <button mat-menu-item *ngIf="data.is_Folder" (click)="fileInput.activate(node)">
@@ -27,7 +29,7 @@
     <button mat-menu-item *ngIf="data.is_Folder" (click)="addFolderModal.showForNode(node)">
       Создать папку
     </button>
-    <button mat-menu-item *ngIf="data.is_Folder" (click)="folderInput.activate(node)">
+    <button mat-menu-item *ngIf="data.isFolder" (click)="folderInputWrapper.activate(node)">
       Загрузить папку
     </button>
     <button mat-menu-item *ngIf="!data.is_Folder" (click)="updateFileInput.activate(node)">
@@ -54,6 +56,12 @@
     </button>
     <button mat-menu-item *ngIf="!data.is_Folder" routerLink="/Strings/byFileId/{{data.id}}">
       Просмотр исходных строк
+    </button>
+    <button mat-menu-item (click)="translationProgressModal.showForFile(data)">
+      Прогресс перевода
+    </button>
+    <button mat-menu-item (click)="fileSettingsModal.showForFile(data)">
+      Настройки
     </button>
   </ng-template>
 </mat-menu>

@@ -149,8 +149,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param = new { idString };
                     this.LogQuery(query, param);
-                    var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, new { Id = idString });
-                    foreach (var comment in comments)
+                    var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, param);
+                    foreach(var comment in comments)
                     {
                         comment.Images = await GetImagesOfCommentAsync(comment.Comment_Id);
                     }

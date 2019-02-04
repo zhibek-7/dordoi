@@ -80,20 +80,20 @@ export class ProjectsService {
 
 
 
-  async addProjectLocales(projectLocale: LocalizationProjectsLocales[]) {
+  async addProjectLocales(projectLocales: LocalizationProjectsLocales[]) {
     console.log("addProject-->");
-    console.log(projectLocale);
+    console.log(projectLocales);
 
     console.log(this.controllerUrl + "add/{project}");
     console.log(this.controllerUrl + "AddProject");
     //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
-    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "AddProjectLocale", projectLocale).toPromise();
+    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + "AddProjectLocale", projectLocales).toPromise();
     return asyncResult;
 
 
     //return this.httpClient.get<Project>(this.controllerUrl + 1);
-  }
+  } 
 
 
   //обновление языков
@@ -106,5 +106,14 @@ export class ProjectsService {
     return asyncResult;
   }
 
+  //все языки 1 проекта
+  async getProjectLocales(Id: number) {
+    console.log("updateProject-->" + Id);
+    console.log(Id);
+    // projectLocale.id_LocalizationProject = Id;
+    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "ListProjectLocales/" + Id, Id).toPromise();
+
+    return asyncResult;
+  }
 
 }

@@ -156,6 +156,12 @@ namespace Localization.WebApi
                 enableRangeProcessing: true);
         }
 
+        [HttpPost("{fileId}/GetTranslationInfo")]
+        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfo(int fileId)
+        {
+            return await this._filesService.GetFileTranslationInfoAsync(fileId: fileId);
+        }
+
     }
 
 }

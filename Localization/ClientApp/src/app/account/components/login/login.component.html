@@ -1,0 +1,56 @@
+
+<form [formGroup]="formGroup" novalidate (ngSubmit)="submit()">
+
+  <h3>Авторизация</h3>
+
+  <div class="alert alert-danger"
+       *ngIf="formGroup.invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['passwordFormControl'].touched && formGroup.errors?.login">
+    Вы ввели неверный email или неверное имя пользователя, или неверный пароль
+  </div>
+
+  <div class="form-group">
+    <label>Email или имя пользователя</label>
+    <input class="form-control"
+           name="login"
+           formControlName="nameFormControl"
+           [class.ng-touched.ng-invalid]="formGroup.invalid"/>
+
+    <div class="alert alert-danger"
+         *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.required">
+      Поле обязательно для заполнения
+    </div>
+  </div>
+
+    <div class="form-group">
+      <label>
+        Пароль
+        <mat-icon (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </label>
+      <input class="form-control"
+             [type]="hide ? 'password' : 'text'"
+             name="password"
+             formControlName="passwordFormControl"/>
+
+      <div class="alert alert-danger"
+           *ngIf="formGroup.controls['passwordFormControl'].invalid && formGroup.controls['passwordFormControl'].touched && formGroup.controls['passwordFormControl'].errors?.required">
+        Поле обязательно для заполнения
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button class="btn"
+              [class.btn-success]="formGroup.valid"
+              [class.btn-secondary]="formGroup.invalid"
+              [disabled]="formGroup.invalid">
+        ВХОД
+      </button>
+    </div>
+
+  <div class="form-group">
+    <button class="btn btn-secondary"
+            routerLink=''>
+      ОТМЕНА
+    </button>
+  </div>
+
+</form>

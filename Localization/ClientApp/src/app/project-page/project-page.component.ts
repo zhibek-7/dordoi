@@ -82,7 +82,7 @@ export class ProjectPageComponent implements OnInit {
         error => console.error(error));
 
     this.languagesService.getLocalesWithPercentByProjectId(projectId)
-      .subscribe(localesWithPercent => { this.dataSourceForMainTab.data = localesWithPercent; },
+      .subscribe(localesWithPercent => { this.dataSourceForMainTab.data = localesWithPercent; console.log(this.dataSourceForMainTab.data); },
         error => console.error(error));
 
     this.participantsService.getParticipantsByProjectId(projectId, null, null, null, null, null, ["userName"], true, ["owner", "manager"])
@@ -157,4 +157,9 @@ export class ProjectPageComponent implements OnInit {
     console.log(this.selectedUser);
     console.log(this.selectedLang);
   }
+
+  openLanguageFiles(selectedLanguage: any){
+    console.log(selectedLanguage);
+  }
+
 }

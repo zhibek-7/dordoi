@@ -30,4 +30,24 @@ export class UserService {
   getPhotoById(userId: number): Observable<Blob> {
     return this.httpClient.post(this.url + userId.toString() + '/getPhoto/', null, { responseType: 'blob' });
   }
+
+  //
+  isUniqueEmail(email: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email, email);
+  }
+  isUniqueLogin(login: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.url + "isUniqueLogin:" + login, login);
+  }
+  createUser(user: User): Observable<Object> {
+    return this.httpClient.post<number>(this.url + "registration", user);    
+  }
+  login(user: User): Observable<User> {
+    return this.httpClient.post<User>(this.url + "login", user);
+  }
+
+//
+//sessionStorage.setItem('currentUserName', 'Иван Иванов');
+//sessionStorage.setItem('currentUserID', '300');
+//this.currentUserName = sessionStorage.getItem('currentUserName');
+//
 }

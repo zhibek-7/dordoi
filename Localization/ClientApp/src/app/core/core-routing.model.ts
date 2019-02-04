@@ -56,6 +56,10 @@ const routes: Routes = [
     loadChildren: '../files/files.module#FilesModule'
   },
   {
+    path: 'LanguageFiles',
+    loadChildren: '../files/files.module#FilesModule'
+  },
+  {
     path: 'Participants',
     loadChildren: '../participants/participants.module#ParticipantsModule'
   },
@@ -64,13 +68,17 @@ const routes: Routes = [
     loadChildren: '../strings/strings.module#StringsModule'
   },
   {
-    path: 'pj/:id',
+    path: 'Project/:id',
     component: ProjectPageComponent
   },
   //{
   //  path: 'delete/:id',
   //  component: DeleteProjectComponent
   //},
+  {
+    path: 'account',
+    loadChildren: '../account/module/account.module#AccountModule'
+  },
   {
     path: 'user-registration',
     component: UserRegistrationComponent
