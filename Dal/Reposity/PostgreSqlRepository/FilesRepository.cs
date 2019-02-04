@@ -560,5 +560,23 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(int parentFolderId)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("Files")
+                    .Where("ID_FolderOwner", parentFolderId)
+                    .Where("IsLastVersion", true);
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+
+                return await dbConnection.QueryAsync<File>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+            }
+        }
+
     }
 }

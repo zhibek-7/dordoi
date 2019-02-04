@@ -17,6 +17,7 @@ namespace Models.Interfaces.Repository
         Task DeleteTranslationLocalesAsync(int fileId);
         Task<System.IO.FileStream> Download(int id, int id_locale = -1);
         Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(int fileId);
+        Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(int parentFolderId);
     }
 
 
