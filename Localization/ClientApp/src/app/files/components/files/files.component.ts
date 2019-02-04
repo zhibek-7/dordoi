@@ -50,20 +50,30 @@ export class FilesComponent implements OnInit {
       this.isSelectionFileForTranslation = true;
       this.selectedProjectId = this.activatedRoute.snapshot.params['projectId'];
       this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];
+
+      this.cols = [
+        { field: 'name', header: 'Имя' },
+        { field: 'dateOfChange', header: 'Дата изменения' },
+        { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
+        // { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
+        // { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
+        { }
+      ];
+    }
+    else {
+      this.cols = [
+        { field: 'name', header: 'Имя' },
+        { field: 'dateOfChange', header: 'Дата изменения' },
+        { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
+        { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
+        { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
+        { }
+      ];
     }
 
     console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-    console.log('Projec=' + sessionStorage.getItem('Projec'));
-
-    this.cols = [
-      { field: 'name', header: 'Имя' },
-      { field: 'dateOfChange', header: 'Дата изменения' },
-      { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
-      { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
-      { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
-      { }
-    ];
+    console.log('Projec=' + sessionStorage.getItem('Projec'));    
 
     this.getFiles();
   }
@@ -248,8 +258,8 @@ export class FilesComponent implements OnInit {
       );
   }
 
-  translateFileClick(){
-    alert("Тут будет перенаправление на форму для работы над переводом данного файла");
+  translateFileClick(selectedFile: any){
+    this.router.navigate(['Translation/' + selectedFile.id]);
   }
 
 }    

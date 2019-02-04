@@ -231,15 +231,15 @@
         <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
           {{rowData.stringsCount}}
         </td>
-        <td class="col-xs-2">
+        <!-- <td class="col-xs-2">
           <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button>
-        </td>
-        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+        </td> -->
+        <!-- <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
           <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button>
-        </td>
+        </td> -->
         <td class="col-xs-2">
           <!-- тут нужно поменять функционал -->
-          <button *ngIf="!rowData.isFolder" mat-raised-button (click)="translateFileClick()">
+          <button *ngIf="!rowData.isFolder" mat-raised-button (click)="translateFileClick(rowData)">
             Перевести
             <!-- <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)"> -->
           </button>
