@@ -247,3 +247,15 @@ export class FilesComponent implements OnInit {
   }
 
 }
+
+    this.fileService.downloadFile(node.data)
+      .subscribe(
+        data => {
+          let fileName = node.data.name;
+          if (node.data.downloadName && node.data.downloadName != '') {
+            fileName = node.data.downloadName;
+          }
+          saveAs(data, fileName);
+        },
+        error => alert(error)
+      );
