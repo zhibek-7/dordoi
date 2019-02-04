@@ -10,6 +10,10 @@ namespace Models.DatabaseEntities.DTO
     public class LocalizationProjectsLocalesDTO : BaseEntity
     {
         /// <summary>
+        /// Идентификатор языка
+        /// </summary>
+        public string LocaleId { get; set; }
+        /// <summary>
         /// Наименование языка
         /// </summary>
         public string LocaleName { get; set; }

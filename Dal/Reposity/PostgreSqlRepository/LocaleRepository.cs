@@ -116,6 +116,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Where("ID_LocalizationProject", projectId)
                         .LeftJoin("Locales", "Locales.ID", "LocalizationProjectsLocales.ID_Locale")
                         .Select(
+                            "Locales.ID as LocaleId",
                             "Locales.Name as LocaleName",
                             "Locales.url as LocaleUrl",
 
