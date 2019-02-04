@@ -17,13 +17,13 @@ namespace DAL.Reposity.PostgreSqlRepository
     public class LocaleRepository : BaseRepository, ILocaleRepository
     {
         private readonly string _insertLocaleSql =
-            "INSERT INTO \"Locales\" (" +
-            "\"Name\", " +
-            "\"Description\", " +
-            "\"Flag\", " +
-            "\"code\", " +
-            "\"data_create\", " +
-            "\"url\", " +
+            "INSERT INTO locales (" +
+            "name_text, " +
+            "description, " +
+            "flag, " +
+            "code, " +
+            "data_create, " +
+            "url, " +
             ") " +
             "VALUES (" +
             "\"Name\", " +
@@ -112,15 +112,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("localization_projectsLocales")
+                    var query = new Query("localization_projects_locales")
                         .Where("id_localization_project", projectId)
-                        .LeftJoin("Locales", "Locales.ID", "localization_projectsLocales.id_locale")
+                        .LeftJoin("locales", "locales.id", "localization_projects_locales.id_locale")
                         .Select(
-                            "Locales.ID as LocaleId",
-                            "Locales.url as LocaleUrl",
+                            "locales.id as LocaleId",
+                            "locales.name_text as LocaleName",
+                            "locales.url as LocaleUrl",
 
-                            "localization_projectsLocales.PercentOfTranslation",
-                            "localization_projectsLocales.PercentOfConfirmed"
+                            "localization_projectsLocales.percent_of_translation",
+                            "localization_projectsLocales.percent_of_confirmed"
                             )
                         .OrderBy("LocaleName");
                     var compiledQuery = _compiler.Compile(query);
@@ -189,7 +190,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> Upload(Locale locale)
         {
-            var sqlString = this._insertLocaleSql + " RETURNING \"ID\"";
+            var sqlString = this._insertLocaleSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();

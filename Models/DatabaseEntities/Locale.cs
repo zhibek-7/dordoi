@@ -25,7 +25,7 @@ namespace Models.DatabaseEntities
 
         public Locale(string name, string description, string flag, DateTime? data_create, string url)
         {
-            this.Name = name;
+            this.Name_text = name;
             this.Description = description;
             this.Flag = flag;
             this.data_create = data_create;

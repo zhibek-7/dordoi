@@ -141,7 +141,7 @@ namespace Models.Services
         public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(int fileId)
         {
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
-            if (file.IsFolder)
+            if (file.Is_Folder)
             {
                 var folderTranslationInfos = new List<FileTranslationInfo>();
                 var childTranslationInfos = await this.GetFileTranslationInfoRecursiveAsync(file: file);
@@ -172,7 +172,7 @@ namespace Models.Services
 
         private async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoRecursiveAsync(File file)
         {
-            if (file.IsFolder)
+            if (file.Is_Folder)
             {
                 var translationIdsToInfos = new List<FileTranslationInfo>();
                 var children = await this._filesRepository.GetFilesByParentFolderIdAsync(parentFolderId: file.ID);

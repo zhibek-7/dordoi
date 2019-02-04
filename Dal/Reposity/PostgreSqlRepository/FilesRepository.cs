@@ -18,9 +18,6 @@ namespace DAL.Reposity.PostgreSqlRepository
         private readonly int _defaultFileStreamBufferSize = 4096;
 
         private readonly string _insertFileSql =
-            "\"TranslatorName\", " +
-            "\"DownloadName\"" +
-            ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
             "@Name, " +
@@ -533,13 +530,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query =
-                    new Query("FilesLocales")
+                    new Query("files_locales")
                     .Select(
-                        "ID_Locale as LocaleId",
-                        "PercentOfTranslation",
-                        "PercentOfConfirmed"
+                        "id_locale as LocaleId",
+                        "percent_of_translation",
+                        "percent_of_confirmed"
                         )
-                    .Where("ID_File", fileId);
+                    .Where("id_file", fileId);
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
@@ -555,9 +552,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query =
-                    new Query("Files")
-                    .Where("ID_FolderOwner", parentFolderId)
-                    .Where("IsLastVersion", true);
+                    new Query("files")
+                    .Where("id_folder_owner", parentFolderId)
+                    .Where("is_last_version", true);
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);

@@ -10,7 +10,7 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectsLocalesRepository : BaseRepository,  ILocalizationProjectsLocalesRepository
+    public class LocalizationProjectsLocalesRepository : BaseRepository, ILocalizationProjectsLocalesRepository
     {
         public LocalizationProjectsLocalesRepository(string connectionStr) : base(connectionStr)
         {
@@ -20,8 +20,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public IEnumerable<LocalizationProjectsLocales> GetAll(int Id)
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM \"LocalizationProjectsLocales\"" +
-                 "WHERE \"ID_LocalizationProject\"=@Id";
+            var sqlString = "SELECT * FROM localization_projects_locale" +
+                 "WHERE id_localization_project=@Id";
 
             try
             {
@@ -88,8 +88,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public void AddProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
             var sqlQuery = "INSERT INTO localization_projects_ocales (id_localization_project, id_locale, percent_of_translation, percent_of_confirmed)" +
-                        "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) ";
-                        "RETURNING  \"LocalizationProjectsLocales\".\"ID_LocalizationProject\"";
+                        "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) " +
+            "RETURNING  localization_projects_locales.id_localization_projec";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
