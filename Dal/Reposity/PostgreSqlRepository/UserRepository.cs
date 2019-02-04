@@ -337,12 +337,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var newUser = new
                     {
-                        Name = user.Name,
+                        Name = user.Name_text,
                         Email = user.Email,
-                        Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password),
+                        Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
                         data_create = DateTime.Now
                     };
-                    var query = new Query("Users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
+                    var query = new Query("users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
 
@@ -375,14 +375,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    user.Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
-                    string SQLQuery = "SELECT * FROM \"Users\" WHERE (\"Name\" = @Name OR \"Email\" = @Email) AND \"Password\" = @Password";
+                    user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
+                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name OR email = @Email) AND password_text = @Password";
                     User existUser = null;
-                    var param = new { user.Name, user.Email, user.Password };
+                    var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);
-                    existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();                    
+                    existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
                     return existUser;
-                
+
                     //var password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
                     //var query = new Query("Users")
                     //    .Where("Password", password)
@@ -393,7 +393,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //    .Select("*");
                     //var compiledQuery = _compiler.Compile(query);
                     //LogQuery(compiledQuery);
-                    
+
                     //var result = await dbConnection
                     //    .QueryFirstOrDefaultAsync<User>(
                     //        sql: compiledQuery.Sql,
