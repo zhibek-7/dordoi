@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { ProjectsService } from '../services/projects.service';
 import { MatTableDataSource, MatSort } from '@angular/material';
@@ -60,6 +60,7 @@ export class ProjectPageComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private projectService: ProjectsService,
     private languagesService: LanguageService,
     private userService: UserService,
@@ -82,7 +83,7 @@ export class ProjectPageComponent implements OnInit {
         error => console.error(error));
 
     this.languagesService.getLocalesWithPercentByProjectId(projectId)
-      .subscribe(localesWithPercent => { this.dataSourceForMainTab.data = localesWithPercent; console.log(this.dataSourceForMainTab.data); },
+      .subscribe(localesWithPercent => { this.dataSourceForMainTab.data = localesWithPercent; },
         error => console.error(error));
 
     this.participantsService.getParticipantsByProjectId(projectId, null, null, null, null, null, ["userName"], true, ["owner", "manager"])
@@ -159,7 +160,9 @@ export class ProjectPageComponent implements OnInit {
   }
 
   openLanguageFiles(selectedLanguage: any){
-    console.log(selectedLanguage);
+    this.router.navigate(
+      ["LanguageFiles/" + selectedLanguage.localeId],
+      { relativeTo: this.route} );
   }
 
 }
