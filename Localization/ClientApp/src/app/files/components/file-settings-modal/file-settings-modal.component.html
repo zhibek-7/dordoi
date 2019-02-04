@@ -1,0 +1,28 @@
+<app-modal [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 class="modal-title">Настройки</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <div class="row">
+      <div class="col">
+        Имя файла для переводчиков
+      </div>
+      <div class="col">
+        <input *ngIf="file" type="text" [(ngModel)]="file.translatorName" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        Имя выходного файла при экспорте
+      </div>
+      <div class="col">
+        <input *ngIf="file" type="text" [(ngModel)]="file.downloadName" />
+      </div>
+    </div>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-default" (click)="hide()">Закрыть</button>
+    <button class="btn btn-default" (click)="applyChages()">Применить</button>
+  </div>
+</app-modal>
