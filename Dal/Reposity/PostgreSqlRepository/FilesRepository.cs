@@ -31,7 +31,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             "\"IsFolder\", " +
             "\"OriginalFullText\", " +
             "\"IsLastVersion\", " +
-            "\"Id_PreviousVersion\"" +
+            "\"Id_PreviousVersion\", " +
+            "\"TranslatorName\", " +
+            "\"DownloadName\"" +
             ") " +
             "VALUES (" +
             "@ID_LocalizationProject," +
@@ -46,7 +48,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@IsFolder, " +
             "@OriginalFullText, " +
             "@IsLastVersion, " +
-            "@Id_PreviousVersion" +
+            "@Id_PreviousVersion, " +
+            "@TranslatorName, " +
+            "@DownloadName" +
             ")";
 
         public FilesRepository(string connectionStr) : base(connectionStr)

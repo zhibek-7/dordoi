@@ -21,5 +21,8 @@ namespace Models.DatabaseEntities
         public int ID_LocalizationProject { get; set; }
         public int? ID_FolderOwner { get; set; }
         public int? Id_PreviousVersion { get; set; }
+
+        public string TranslatorName { get; set; }
+        public string DownloadName { get; set; }
     }
 }
