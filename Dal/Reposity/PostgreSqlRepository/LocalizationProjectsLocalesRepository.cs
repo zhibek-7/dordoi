@@ -87,7 +87,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void AddProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
-            var sqlQuery = "INSERT INTO localization_projects_ocales (id_localization_project, id_locale, percent_of_translation, percent_of_confirmed)" +
+            var sqlQuery = "INSERT INTO localization_projects_locales (id_localization_project, id_locale, percent_of_translation, percent_of_confirmed)" +
                         "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) " +
             "RETURNING  localization_projects_locales.id_localization_projec";
             try
@@ -121,7 +121,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public void UpdateProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
 
-            var sqlQuery = "UPDATE localization_projects_ocales SET" +
+            var sqlQuery = "UPDATE localization_projects_locales SET" +
 
                            "id_locale=@ID_Locale," +
                            "percent_of_confirmed=@PercentOfConfirmed," +

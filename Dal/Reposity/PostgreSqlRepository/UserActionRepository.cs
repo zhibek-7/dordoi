@@ -123,7 +123,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                                "left join public.files f on a.id_file = f.id " +
                                "left join public.translation_substrings s on a.id_string = s.id " +
                                "left join public.translations t on a.id_translation= s.id " +
-                               "left join public.id_user p on a.id_project = p.id";
+                               "left join public.localization_projects p on a.id_project = p.id";
                     LogQuery(_sql);
                     var actions = await dbConnection.QueryAsync<UserAction>(_sql);
                     return actions;

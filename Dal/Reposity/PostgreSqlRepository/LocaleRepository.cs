@@ -74,7 +74,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = "SELECT l.* FROM locales l " +
-       " join localization_projects_ocales pl on pl.id_locale = l.id " +
+       " join localization_projects_locales pl on pl.id_locale = l.id " +
        " join localization_projects lp on pl.id_localization_project = lp.id " +
        " where lp.id = @Id";
 
@@ -120,8 +120,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "locales.name_text as LocaleName",
                             "locales.url as LocaleUrl",
 
-                            "localization_projectsLocales.percent_of_translation",
-                            "localization_projectsLocales.percent_of_confirmed"
+                            "localization_projects_locales.percent_of_translation",
+                            "localization_projects_locales.percent_of_confirmed"
                             )
                         .OrderBy("LocaleName");
                     var compiledQuery = _compiler.Compile(query);

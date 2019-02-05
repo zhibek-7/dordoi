@@ -73,8 +73,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var query = new Query("localization_projects").Where("localization_projects.id", id)
                         .LeftJoin("locales", "locales.id", "localization_projects.id_source_locale")
                         .Select(new Query("localization_projects").Where("localization_projects.id", id)
-                                .LeftJoin("Participants", "participants.id_localization_project", "localization_projects.id").Where("active", true)
-                                .AsCount("Participants.id_user"), "count_users_active")
+                                .LeftJoin("participants", "participants.id_localization_project", "localization_projects.id").Where("active", true)
+                                .AsCount("participants.id_user"), "count_users_active")
                         .Select("localization_projects.*", "locales.name_text as SourceLocaleName")
                         .Distinct();
                     var compiledQuery = _compiler.Compile(query);
@@ -298,7 +298,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void AddProjectLocales(LocalizationProjectsLocales projectLocales)
         {
-            var sqlQuery = "UPDATE localization_projects_ocales SET" +
+            var sqlQuery = "UPDATE localization_projects_locales SET" +
                         "percent_of_translation=@PercentOfTranslation," +
                         "percent_of_confirmed=@PercentOfConfirmed," +
                         "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
@@ -331,7 +331,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void DeleteProjectLocales(LocalizationProjectsLocales projectLocales)
         {
-            var sqlQuery = "DELETE FROM localization_projects_ocales " +
+            var sqlQuery = "DELETE FROM localization_projects_locales " +
                            "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
             try
             {
