@@ -4,6 +4,7 @@ import { LocalizationProject } from '../models/database-entities/localizationPro
 import { Observable, of } from 'rxjs';
 import { LocalizationProjectForSelectDTO } from '../models/DTO/localizationProjectForSelectDTO.type';
 import { LocalizationProjectsLocales } from '../models/database-entities/localizationProjectLocales.type';
+import { Locale } from 'moment';
 
 @Injectable()
 export class ProjectsService {
@@ -108,13 +109,15 @@ export class ProjectsService {
   }
 
   //все языки 1 проекта
-  async getProjectLocales(Id: number) {
-    console.log("updateProject-->" + Id);
-    console.log(Id);
-    // projectLocale.id_LocalizationProject = Id;
-    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "ListProjectLocales/" + Id, Id).toPromise();
-
-    return asyncResult;
+  getProjectLocales(Id: number): Observable<LocalizationProjectsLocales[]> {
+    return this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + "ListProjectLocales/" + Id, Id);//.pipe(map(listOfPojLocales => listOfPojLocales.map(singleProjLoc => new LocalizationProjectsLocales(singleProjLoc.id_LocalizationProject, singleProjLoc.id_Locale, singleProjLoc.percentOfTranslation, singleProjLoc.PercentOfConfirmed))));;
   }
+
+  getLocales(): Observable<Locale[]> {
+    return this.httpClient.post<Locale[]>(this.controllerUrl + "ListLocales", null);
+
+  }
+
+
 
 }
