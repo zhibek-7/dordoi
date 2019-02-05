@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Models.DatabaseEntities;
@@ -13,6 +14,7 @@ namespace Models.Services
     public class FilesService : BaseService
     {
         private readonly int _initialFileVersion = 1;
+        private readonly int _defaultFileStreamBufferSize = 4096;
         private readonly IFilesRepository _filesRepository;
         private readonly IGlossaryRepository _glossaryRepository;
         private readonly ILocaleRepository _localeRepository;
@@ -443,9 +445,28 @@ namespace Models.Services
 
         public async Task<System.IO.FileStream> GetFile(int fileId, int? localeId)
         {
-            return await this._filesRepository.Download(
-                id: fileId,
-                id_locale: localeId.HasValue ? localeId.Value : -1);
+            var file = await this._filesRepository.GetByIDAsync(id: fileId);
+            if (file == null)
+            {
+                throw new Exception("Файл не найден.");
+            }
+
+            var fileContent = await this._filesRepository
+                .GetFileContent(
+                    id: fileId,
+                    id_locale: localeId.HasValue ? localeId.Value : -1);
+            var tempFileName = System.IO.Path.GetTempFileName();
+            var fileStream = System.IO.File.Create(tempFileName);
+            using (var sw = new System.IO.StreamWriter(
+                stream: fileStream,
+                encoding: Encoding.GetEncoding(file.Encoding),
+                bufferSize: this._defaultFileStreamBufferSize,
+                leaveOpen: true))
+            {
+                sw.Write(fileContent);
+            }
+            fileStream.Seek(0, System.IO.SeekOrigin.Begin);
+            return fileStream;
         }
 
     }
