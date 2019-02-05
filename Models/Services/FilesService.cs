@@ -145,8 +145,28 @@ namespace Models.Services
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
             if (file.IsFolder)
             {
+                var childTranslationInfos = new List<FileTranslationInfo>();
+                var currentLevelFiles = new List<File>() { file };
+                while(currentLevelFiles.Any())
+                {
+                    var newLevelFiles = new List<File>();
+                    foreach (var currentLevelFile in currentLevelFiles)
+                    {
+                        if (currentLevelFile.IsFolder)
+                        {
+                            newLevelFiles.AddRange(await this._filesRepository
+                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.ID));
+                        }
+                        else
+                        {
+                            childTranslationInfos.AddRange(await this._filesRepository
+                                .GetFileTranslationInfoByIdAsync(fileId: currentLevelFile.ID));
+                        }
+                    }
+                    currentLevelFiles = newLevelFiles;
+                }
+
                 var folderTranslationInfos = new List<FileTranslationInfo>();
-                var childTranslationInfos = await this.GetFileTranslationInfoRecursiveAsync(file: file);
                 var groupedByLocale = childTranslationInfos.GroupBy(x => x.LocaleId);
                 foreach (var localeIdToTranslationInfos in groupedByLocale)
                 {
@@ -165,25 +185,6 @@ namespace Models.Services
                     });
                 }
                 return folderTranslationInfos;
-            }
-            else
-            {
-                return await this._filesRepository.GetFileTranslationInfoByIdAsync(fileId: file.ID);
-            }
-        }
-
-        private async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoRecursiveAsync(File file)
-        {
-            if (file.IsFolder)
-            {
-                var translationIdsToInfos = new List<FileTranslationInfo>();
-                var children = await this._filesRepository.GetFilesByParentFolderIdAsync(parentFolderId: file.ID);
-                foreach (var childFile in children)
-                {
-                    var childTranslationInfos = await this.GetFileTranslationInfoRecursiveAsync(childFile);
-                    translationIdsToInfos.AddRange(childTranslationInfos);
-                }
-                return translationIdsToInfos;
             }
             else
             {
