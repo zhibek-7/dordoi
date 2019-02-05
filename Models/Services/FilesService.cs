@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -452,22 +453,78 @@ namespace Models.Services
                 throw new Exception("Файл не найден.");
             }
 
-            var fileContent = await this._filesRepository
-                .GetFileContent(
-                    id: fileId,
-                    id_locale: localeId.HasValue ? localeId.Value : -1);
-            var tempFileName = System.IO.Path.GetTempFileName();
-            var fileStream = System.IO.File.Create(tempFileName);
-            using (var sw = new System.IO.StreamWriter(
-                stream: fileStream,
-                encoding: Encoding.GetEncoding(file.Encoding),
-                bufferSize: this._defaultFileStreamBufferSize,
-                leaveOpen: true))
+            if (file.IsFolder)
             {
-                sw.Write(fileContent);
+                var uniqueTempFolderPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
+                var currentLevelFiles = new Dictionary<File, string>() { { file, uniqueTempFolderPath } };
+                while (currentLevelFiles.Any())
+                {
+                    var newLevelFiles = new Dictionary<File, string>();
+                    foreach (var fileToPath in currentLevelFiles)
+                    {
+                        var currentLevelFile = fileToPath.Key;
+                        var currentLevelPath = fileToPath.Value;
+                        var fileName = string
+                            .IsNullOrWhiteSpace(currentLevelFile.DownloadName) ?
+                                currentLevelFile.Name :
+                                currentLevelFile.DownloadName;
+                        if (currentLevelFile.IsFolder)
+                        {
+                            var newFolderPath = System.IO.Path.Combine(currentLevelPath, fileName);
+                            var children = await this._filesRepository
+                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.ID);
+                            foreach (var child in children)
+                            {
+                                newLevelFiles[child] = newFolderPath;
+                            }
+                        }
+                        else
+                        {
+                            var fileContent = await this._filesRepository
+                                .GetFileContent(
+                                    id: currentLevelFile.ID,
+                                    id_locale: localeId.HasValue ? localeId.Value : -1);
+
+                            System.IO.Directory.CreateDirectory(currentLevelPath);
+                            var filePath = System.IO.Path.Combine(currentLevelPath, fileName);
+                            using (var fileStream = System.IO.File.Create(filePath))
+                            using (var streamWriter = new System.IO.StreamWriter(
+                                stream: fileStream,
+                                encoding: Encoding.GetEncoding(currentLevelFile.Encoding)))
+                            {
+                                streamWriter.Write(fileContent);
+                            }
+                        }
+                    }
+                    currentLevelFiles = newLevelFiles;
+                }
+
+                var compressedFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
+                ZipFile.CreateFromDirectory(
+                    sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.Name),
+                    destinationArchiveFileName: compressedFileName);
+                System.IO.Directory.Delete(uniqueTempFolderPath, recursive: true);
+                return System.IO.File.OpenRead(compressedFileName);
             }
-            fileStream.Seek(0, System.IO.SeekOrigin.Begin);
-            return fileStream;
+            else
+            {
+                var fileContent = await this._filesRepository
+                    .GetFileContent(
+                        id: fileId,
+                        id_locale: localeId.HasValue ? localeId.Value : -1);
+                var tempFileName = System.IO.Path.GetTempFileName();
+                var fileStream = System.IO.File.Create(tempFileName);
+                using (var sw = new System.IO.StreamWriter(
+                    stream: fileStream,
+                    encoding: Encoding.GetEncoding(file.Encoding),
+                    bufferSize: this._defaultFileStreamBufferSize,
+                    leaveOpen: true))
+                {
+                    sw.Write(fileContent);
+                }
+                fileStream.Seek(0, System.IO.SeekOrigin.Begin);
+                return fileStream;
+            }
         }
 
     }
