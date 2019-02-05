@@ -93,6 +93,7 @@ export class CommentsComponent implements OnInit {
     getComments(idString: number){
         this.commentService.getAllCommentsInStringById(idString)
             .subscribe( comments => {
+                console.log(comments);
                 this.commentsList = comments;            
         });
     };
