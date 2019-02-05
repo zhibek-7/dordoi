@@ -249,7 +249,9 @@ export class FilesComponent implements OnInit {
       .subscribe(
         data => {
           let fileName = node.data.name;
-          if (node.data.downloadName && node.data.downloadName != '') {
+          if (node.data.isFolder) {
+            fileName = fileName + '.zip';
+          } else if (node.data.downloadName && node.data.downloadName != '') {
             fileName = node.data.downloadName;
           }
           saveAs(data, fileName);

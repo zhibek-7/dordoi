@@ -23,6 +23,8 @@ namespace Models.DatabaseEntities
 
         public string url { get; set; }
 
+        public Locale() { }
+
         public Locale(string name, string description, string flag, DateTime? data_create, string url)
         {
             this.Name = name;

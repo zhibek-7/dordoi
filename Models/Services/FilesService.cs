@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Models.DatabaseEntities;
@@ -13,6 +15,7 @@ namespace Models.Services
     public class FilesService : BaseService
     {
         private readonly int _initialFileVersion = 1;
+        private readonly int _defaultFileStreamBufferSize = 4096;
         private readonly IFilesRepository _filesRepository;
         private readonly IGlossaryRepository _glossaryRepository;
         private readonly ILocaleRepository _localeRepository;
@@ -143,8 +146,28 @@ namespace Models.Services
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
             if (file.IsFolder)
             {
+                var childTranslationInfos = new List<FileTranslationInfo>();
+                var currentLevelFiles = new List<File>() { file };
+                while(currentLevelFiles.Any())
+                {
+                    var newLevelFiles = new List<File>();
+                    foreach (var currentLevelFile in currentLevelFiles)
+                    {
+                        if (currentLevelFile.IsFolder)
+                        {
+                            newLevelFiles.AddRange(await this._filesRepository
+                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.ID));
+                        }
+                        else
+                        {
+                            childTranslationInfos.AddRange(await this._filesRepository
+                                .GetFileTranslationInfoByIdAsync(fileId: currentLevelFile.ID));
+                        }
+                    }
+                    currentLevelFiles = newLevelFiles;
+                }
+
                 var folderTranslationInfos = new List<FileTranslationInfo>();
-                var childTranslationInfos = await this.GetFileTranslationInfoRecursiveAsync(file: file);
                 var groupedByLocale = childTranslationInfos.GroupBy(x => x.LocaleId);
                 foreach (var localeIdToTranslationInfos in groupedByLocale)
                 {
@@ -163,25 +186,6 @@ namespace Models.Services
                     });
                 }
                 return folderTranslationInfos;
-            }
-            else
-            {
-                return await this._filesRepository.GetFileTranslationInfoByIdAsync(fileId: file.ID);
-            }
-        }
-
-        private async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoRecursiveAsync(File file)
-        {
-            if (file.IsFolder)
-            {
-                var translationIdsToInfos = new List<FileTranslationInfo>();
-                var children = await this._filesRepository.GetFilesByParentFolderIdAsync(parentFolderId: file.ID);
-                foreach (var childFile in children)
-                {
-                    var childTranslationInfos = await this.GetFileTranslationInfoRecursiveAsync(childFile);
-                    translationIdsToInfos.AddRange(childTranslationInfos);
-                }
-                return translationIdsToInfos;
             }
             else
             {
@@ -443,9 +447,84 @@ namespace Models.Services
 
         public async Task<System.IO.FileStream> GetFile(int fileId, int? localeId)
         {
-            return await this._filesRepository.Download(
-                id: fileId,
-                id_locale: localeId.HasValue ? localeId.Value : -1);
+            var file = await this._filesRepository.GetByIDAsync(id: fileId);
+            if (file == null)
+            {
+                throw new Exception("Файл не найден.");
+            }
+
+            if (file.IsFolder)
+            {
+                var uniqueTempFolderPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
+                var currentLevelFiles = new Dictionary<File, string>() { { file, uniqueTempFolderPath } };
+                while (currentLevelFiles.Any())
+                {
+                    var newLevelFiles = new Dictionary<File, string>();
+                    foreach (var fileToPath in currentLevelFiles)
+                    {
+                        var currentLevelFile = fileToPath.Key;
+                        var currentLevelPath = fileToPath.Value;
+                        var fileName = string
+                            .IsNullOrWhiteSpace(currentLevelFile.DownloadName) ?
+                                currentLevelFile.Name :
+                                currentLevelFile.DownloadName;
+                        if (currentLevelFile.IsFolder)
+                        {
+                            var newFolderPath = System.IO.Path.Combine(currentLevelPath, fileName);
+                            var children = await this._filesRepository
+                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.ID);
+                            foreach (var child in children)
+                            {
+                                newLevelFiles[child] = newFolderPath;
+                            }
+                        }
+                        else
+                        {
+                            var fileContent = await this._filesRepository
+                                .GetFileContent(
+                                    id: currentLevelFile.ID,
+                                    id_locale: localeId.HasValue ? localeId.Value : -1);
+
+                            System.IO.Directory.CreateDirectory(currentLevelPath);
+                            var filePath = System.IO.Path.Combine(currentLevelPath, fileName);
+                            using (var fileStream = System.IO.File.Create(filePath))
+                            using (var streamWriter = new System.IO.StreamWriter(
+                                stream: fileStream,
+                                encoding: Encoding.GetEncoding(currentLevelFile.Encoding)))
+                            {
+                                streamWriter.Write(fileContent);
+                            }
+                        }
+                    }
+                    currentLevelFiles = newLevelFiles;
+                }
+
+                var compressedFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
+                ZipFile.CreateFromDirectory(
+                    sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.Name),
+                    destinationArchiveFileName: compressedFileName);
+                System.IO.Directory.Delete(uniqueTempFolderPath, recursive: true);
+                return System.IO.File.OpenRead(compressedFileName);
+            }
+            else
+            {
+                var fileContent = await this._filesRepository
+                    .GetFileContent(
+                        id: fileId,
+                        id_locale: localeId.HasValue ? localeId.Value : -1);
+                var tempFileName = System.IO.Path.GetTempFileName();
+                var fileStream = System.IO.File.Create(tempFileName);
+                using (var sw = new System.IO.StreamWriter(
+                    stream: fileStream,
+                    encoding: Encoding.GetEncoding(file.Encoding),
+                    bufferSize: this._defaultFileStreamBufferSize,
+                    leaveOpen: true))
+                {
+                    sw.Write(fileContent);
+                }
+                fileStream.Seek(0, System.IO.SeekOrigin.Begin);
+                return fileStream;
+            }
         }
 
     }
