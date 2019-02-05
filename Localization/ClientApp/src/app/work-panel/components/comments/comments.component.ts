@@ -89,13 +89,14 @@ export class CommentsComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  // Функция получения всех комментариев для данной фразы
-  getComments(idString: number) {
-    this.commentService.getAllCommentsInStringById(idString)
-      .subscribe(comments => {
-        this.commentsList = comments;
-      });
-  };
+    // Функция получения всех комментариев для данной фразы
+    getComments(idString: number){
+        this.commentService.getAllCommentsInStringById(idString)
+            .subscribe( comments => {
+                console.log(comments);
+                this.commentsList = comments;            
+        });
+    };
 
   // Добавление комментария
   public async addComment() {

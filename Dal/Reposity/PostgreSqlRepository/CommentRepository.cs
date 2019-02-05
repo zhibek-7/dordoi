@@ -147,7 +147,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { idString };
+                    var param = new { SubstringId = idString };
                     this.LogQuery(query, param);
                     var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, param);
                     foreach(var comment in comments)
@@ -265,13 +265,19 @@ namespace DAL.Reposity.PostgreSqlRepository
                          "FROM comments_images AS CI " +
                          "WHERE CI.id_comment = @CommentId;";
 
-            var query2 = "DELETE " +
+            var queryDeleteWithImage = 
+                         "DELETE " +
                          "FROM comments_text AS C " +
                          "WHERE C.id = @CommentId; " +
                          "" +
                          "DELETE " +
                          "FROM images AS I " +
                          "WHERE I.id = @ImageId;";
+
+            var queryDeleteOnlyComment =
+                         "DELETE " +
+                         "FROM \"Comments\" AS C " +
+                         "WHERE C.\"ID\" = @CommentId; ";
 
             try
             {
@@ -281,10 +287,21 @@ namespace DAL.Reposity.PostgreSqlRepository
                     this.LogQuery(query1, param1);
                     var deletedImageId = await dbConnection.QueryAsync<int>(query1, param1);
 
-                    var param2 = new { CommentId = commentId, ImageId = deletedImageId.ElementAt(0) };
-                    this.LogQuery(query2, param2);
-                    var deletedRows = await dbConnection.ExecuteAsync(query2, param2);
-                    return deletedRows > 0;
+                    if (deletedImageId.Count() != 0)
+                    {
+                        var param2 = new { CommentId = commentId, ImageId = deletedImageId.ElementAt(0) };
+                        this.LogQuery(queryDeleteWithImage, param2);
+                        var deletedRows = await dbConnection.ExecuteAsync(queryDeleteWithImage, param2);
+                        return deletedRows > 0;
+                    }
+                    else
+                    {
+                        var param2 = new { CommentId = commentId };
+                        this.LogQuery(queryDeleteOnlyComment, param2);
+                        var deletedRows = await dbConnection.ExecuteAsync(queryDeleteOnlyComment, param2);
+                        return deletedRows > 0;
+                    }
+
                 }
             }
             catch (NpgsqlException exception)

@@ -10,7 +10,6 @@ using Models.DatabaseEntities.DTO;
 using SqlKata;
 using Models.Interfaces.Repository;
 using Npgsql;
-using Models.Migration;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {

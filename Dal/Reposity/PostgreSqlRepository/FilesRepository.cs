@@ -15,7 +15,6 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FilesRepository : BaseRepository, IFilesRepository
     {
-        private readonly int _defaultFileStreamBufferSize = 4096;
 
         private readonly string _insertFileSql =
             "VALUES (" +
@@ -321,7 +320,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<System.IO.FileStream> Download(int id, int id_locale = -1)
+        public async Task<string> GetFileContent(int id, int id_locale = -1)
         {
             var sqlFileQuery = "SELECT * FROM files WHERE id = @id";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -332,8 +331,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { id };
                     this.LogQuery(sqlFileQuery, param);
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
-                    var tempFileName = System.IO.Path.GetTempFileName();
-                    if (id_locale != -1)
+                    if (id_locale == -1)
+                    {
+                        return file.OriginalFullText;
+                    }
+                    else
                     {
                         var sqlLocalizationProjectQuery = "SELECT * FROM localization_projects WHERE id = @ID_LocalizationProject";
                         var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { file.ID });
@@ -361,31 +363,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             output = output.Remove(translationSubstrings[i].Position_In_Text, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].Position_In_Text, translation == null ? localizationProject.DefaultString : translation.Translated);
                         }
 
-                        var fileStream = System.IO.File.Create(tempFileName);
-                        using (var sw = new System.IO.StreamWriter(
-                            stream: fileStream,
-                            encoding: Encoding.GetEncoding(file.Encod),
-                            bufferSize: this._defaultFileStreamBufferSize,
-                            leaveOpen: true))
-                        {
-                            sw.Write(output);
-                        }
-                        fileStream.Seek(0, System.IO.SeekOrigin.Begin);
-                        return fileStream;
-                    }
-                    else
-                    {
-                        var fileStream = System.IO.File.Create(tempFileName);
-                        using (var sw = new System.IO.StreamWriter(
-                            stream: fileStream,
-                            encoding: Encoding.GetEncoding(file.Encod),
-                            bufferSize: this._defaultFileStreamBufferSize,
-                            leaveOpen: true))
-                        {
-                            sw.Write(file.Original_Full_Text);
-                        }
-                        fileStream.Seek(0, System.IO.SeekOrigin.Begin);
-                        return fileStream;
+                        return output;
                     }
                 }
                 catch (NpgsqlException exception)
