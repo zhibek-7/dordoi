@@ -1,11 +1,16 @@
 import { LocalizationProject } from "./../../../models/database-entities/localizationProject.type";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ProjectsService } from "../../../services/projects.service";
 //import { ProjectsLocalesService } from "../../../services/projectsLocales.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
-import { forEach } from "@angular/router/src/utils/collection";
+import { Locale } from "src/app/models/database-entities/locale.type";
 
+import { forEach } from "@angular/router/src/utils/collection";
+import { promise } from "protractor";
+import { Promise } from "q";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 @Component({
   selector: "app-all-settings",
   templateUrl: "./all-settings.component.html",
@@ -55,7 +60,9 @@ export class AllSettingsComponent implements OnInit {
    
   searchText = "";
   dropdownList = [];
-  allProjLocales: Promise<LocalizationProjectsLocales>;
+  allProjLocales: LocalizationProjectsLocales[];
+  allLocale = [];
+ 
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
@@ -65,9 +72,29 @@ export class AllSettingsComponent implements OnInit {
     this.currentProjectName = this.projectsService.currentProjectName;
     this.currentProjectId = this.projectsService.currentProjectId;
 
-    this.allProjLocales = this.projectsService.getProjectLocales(this.currentProjectId);
 
-    this.allProjLocales
+    let allLangsPr = [];
+    let allLocales = this.projectsService.getLocales().subscribe(projects => {
+      this.allLocale = projects;
+      this.allLocale.forEach((lang) => {
+        allLangsPr.push({
+
+          itemName: lang["name"],
+          checked: false,
+          id: lang["id"]
+
+        });
+      });
+
+      this.dropdownList = allLangsPr;
+    },
+      error => console.error(error));
+
+
+
+    let allPrLocales = this.projectsService.getProjectLocales(this.currentProjectId)
+      .subscribe(projectsL => { this.allProjLocales = projectsL; },
+        error => console.error(error));
 
     this.dropdownList = [
       { itemName: "Ido", checked: false, id: "1" },
