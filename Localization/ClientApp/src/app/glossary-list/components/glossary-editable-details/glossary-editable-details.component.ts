@@ -1,44 +1,52 @@
-import { Component, OnInit, NgModule, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgModule,
+  Input,
+  Output,
+  EventEmitter
+} from "@angular/core";
 
+import { GlossariesForEditing } from "src/app/models/DTO/glossariesDTO.type";
+import { GlossaryService } from "src/app/services/glossary.service";
 
-import { GlossariesForEditing } from 'src/app/models/DTO/glossariesDTO.type';
-import { GlossaryService } from 'src/app/services/glossary.service';
+import { Locale } from "src/app/models/database-entities/locale.type";
+import { LanguageService } from "src/app/services/languages.service";
 
-import { Locale } from 'src/app/models/database-entities/locale.type';
-import { LanguageService } from 'src/app/services/languages.service';
+import { LocalizationProjectForSelectDTO } from "src/app/models/DTO/localizationProjectForSelectDTO.type";
+import { ProjectsService } from "src/app/services/projects.service";
 
-import { LocalizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
-import { ProjectsService } from 'src/app/services/projects.service';
+import { Selectable } from "src/app/shared/models/selectable.model";
 
-import { Selectable } from 'src/app/shared/models/selectable.model';
-
-import { LoadOnRequestBase } from 'src/app/shared/models/load-on-request-base.model';
+import { LoadOnRequestBase } from "src/app/shared/models/load-on-request-base.model";
 
 @Component({
-  selector: 'app-glossary-editable-details',
-  templateUrl: './glossary-editable-details.component.html',
-  styleUrls: ['./glossary-editable-details.component.css']
+  selector: "app-glossary-editable-details",
+  templateUrl: "./glossary-editable-details.component.html",
+  styleUrls: ["./glossary-editable-details.component.css"]
 })
-export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implements OnInit {
+export class GlossaryEditableDetailsComponent extends LoadOnRequestBase
+  implements OnInit {
   @Input()
   glossary: GlossariesForEditing;
 
   availableLocales: Selectable<Locale>[] = [];
 
-  availableLocalizationProjects: Selectable<LocalizationProjectForSelectDTO>[] = [];
+  availableLocalizationProjects: Selectable<
+    LocalizationProjectForSelectDTO
+  >[] = [];
 
   errorsRequiredLocales: boolean = false;
   errorsRequiredLocalizationProjects: boolean = false;
 
   constructor(
     private projectsService: ProjectsService,
-    private languageService: LanguageService,
+    private languageService: LanguageService
   ) {
     super();
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   load() {
     super.load();
@@ -49,16 +57,20 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
   //#region Работа с Locales
 
   loadAvailableLanguages() {
-    this.languageService.getLanguageList()
-      .subscribe(locale => {
-        this.availableLocales = locale
-          .map(local =>
+    this.languageService.getLanguageList().subscribe(
+      locale => {
+        this.availableLocales = locale.map(
+          local =>
             new Selectable<Locale>(
               local,
-              this.glossary.locales_Ids.some(selectedLocaleId => selectedLocaleId == local.id)
-            ));
+              this.glossary.locales_Ids.some(
+                selectedLocaleId => selectedLocaleId == local.id
+              )
+            )
+        );
       },
-        error => console.error(error));
+      error => console.error(error)
+    );
   }
 
   setSelectedLocales(newSelection: Locale[]) {
@@ -72,27 +84,37 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
   //#region Работа с LocalizationProjects
 
   loadAvailableLocalizationProjects() {
-    this.projectsService.getLocalizationProjectForSelectDTO()
-      .subscribe(localizationProject => {
-        this.availableLocalizationProjects = localizationProject
-          .map(localProject =>
+    this.projectsService.getLocalizationProjectForSelectDTO().subscribe(
+      localizationProject => {
+        this.availableLocalizationProjects = localizationProject.map(
+          localProject =>
             new Selectable<LocalizationProjectForSelectDTO>(
               localProject,
-              this.glossary.localization_Projects_Ids.some(selectedLocalizationProjectId => selectedLocalizationProjectId == localProject.id)
-            ));
+              this.glossary.localization_Projects_Ids.some(
+                selectedLocalizationProjectId =>
+                  selectedLocalizationProjectId == localProject.id
+              )
+            )
+        );
       },
-        error => console.error(error));
+      error => console.error(error)
+    );
   }
 
-  toggleSelection(localizationProject: Selectable<LocalizationProjectForSelectDTO>) {
+  toggleSelection(
+    localizationProject: Selectable<LocalizationProjectForSelectDTO>
+  ) {
     localizationProject.isSelected = !localizationProject.isSelected;
     this.raiseSelectionChanged();
   }
 
   raiseSelectionChanged() {
-    this.glossary.localization_Projects_Ids = this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model.id);
+    this.glossary.localization_Projects_Ids = this.availableLocalizationProjects
+      .filter(localizationProject => localizationProject.isSelected)
+      .map(selectable => selectable.model.id);
     //Валидация. Обязательно должно быть выбрано хотя бы одно значение.
-    this.errorsRequiredLocalizationProjects = this.glossary.localizationProjectsIds.length == 0;
+    this.errorsRequiredLocalizationProjects =
+      this.glossary.localization_Projects_Ids.length == 0;
   }
 
   //#endregion

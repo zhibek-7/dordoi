@@ -61,7 +61,7 @@ export class AllSettingsComponent implements OnInit {
   dropdownList = [];
   allProjLocales: LocalizationProjectsLocales[];
   allLocale = [];
- 
+
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
@@ -70,29 +70,31 @@ export class AllSettingsComponent implements OnInit {
     this.currentProjectName = this.projectsService.currentProjectName;
     this.currentProjectId = this.projectsService.currentProjectId;
 
-
     let allLangsPr = [];
-    let allLocales = this.projectsService.getLocales().subscribe(projects => {
-      this.allLocale = projects;
-      this.allLocale.forEach((lang) => {
-        allLangsPr.push({
-
-          itemName: lang["name"],
-          checked: false,
-          id: lang["id"]
-
+    let allLocales = this.projectsService.getLocales().subscribe(
+      projects => {
+        this.allLocale = projects;
+        this.allLocale.forEach(lang => {
+          allLangsPr.push({
+            itemName: lang["name"],
+            checked: false,
+            id: lang["id"]
+          });
         });
-      });
 
-      this.dropdownList = allLangsPr;
-    },
-      error => console.error(error));
+        this.dropdownList = allLangsPr;
+      },
+      error => console.error(error)
+    );
 
-
-
-    let allPrLocales = this.projectsService.getProjectLocales(this.currentProjectId)
-      .subscribe(projectsL => { this.allProjLocales = projectsL; },
-        error => console.error(error));
+    let allPrLocales = this.projectsService
+      .getProjectLocales(this.currentProjectId)
+      .subscribe(
+        projectsL => {
+          this.allProjLocales = projectsL;
+        },
+        error => console.error(error)
+      );
 
     //this.dropdownList = [
     //  { itemName: "Ido", checked: false, id: "1" },
@@ -220,38 +222,34 @@ export class AllSettingsComponent implements OnInit {
     //собирает добавленные языки в один массив
 
     this.selectedItems.forEach(lang => {
-    let projectLocales: LocalizationProjectsLocales[] = [];
+      let projectLocales: LocalizationProjectsLocales[] = [];
 
-      const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
+      const index = this.allProjLocales.findIndex(
+        list => list["iD_Locale"] == lang.id
+      );
       if (index == 0) {
-
-      }
-      else {
+      } else {
         projectLocales.push({
-          id_LocalizationProject: this.currentProjectId,
+          id_Localization_Project: this.currentProjectId,
           id_Locale: lang.id,
-          percentOfTranslation: 0,
-          PercentOfConfirmed: 0
+          percent_Of_Translation: 0,
+          Percent_Of_Confirmed: 0
         });
       }
 
+      //let projectLocales: LocalizationProjectsLocales[]=[];
+      //this.selectedItems.forEach((lang) => {
+      //  projectLocales.push({
+      //    id_LocalizationProject: this.currentProjectId,
+      //    id_Locale: lang.id,
+      //    percentOfTranslation: 0,
+      //    PercentOfConfirmed:0
+      //  });
+      //})
 
-    })
-
-    //let projectLocales: LocalizationProjectsLocales[]=[]; 
-    //this.selectedItems.forEach((lang) => {
-    //  projectLocales.push({
-    //    id_LocalizationProject: this.currentProjectId,
-    //    id_Locale: lang.id,
-    //    percentOfTranslation: 0,
-    //    PercentOfConfirmed:0
-    //  });     
-    //})  
-
-
-    //передает массив языков
-    this.projectsService.addProjectLocales(projectLocales);
-
+      //передает массив языков
+      this.projectsService.addProjectLocales(projectLocales);
+    });
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,
       this.currentProjectName,

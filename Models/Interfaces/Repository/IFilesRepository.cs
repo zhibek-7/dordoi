@@ -18,6 +18,7 @@ namespace Models.Interfaces.Repository
         Task<string> GetFileContentAsync(int id, int id_locale = -1);
         Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(int fileId);
         Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(int parentFolderId);
+        Task<File> GetLastVersionByNameAndParentId(string name, int? parentId);
     }
 
 
