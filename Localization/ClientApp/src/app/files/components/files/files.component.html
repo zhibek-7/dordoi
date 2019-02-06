@@ -128,22 +128,9 @@
   </p-treeTable>
 </div>
 
-<div *ngIf="isSelectionFileForTranslation">
-  <p>Выбран проект с id = {{selectedProjectId}}</p>
-  <br>
-  <p>Выбран язык проекта с id = {{selectedLanguageId}}</p>
+<div *ngIf="isSelectionFileForTranslation">  
 
-  <!-- <app-add-folder-modal #addFolderModal (newFolderSubmitted)="addFolder($event[0], $event[1])"></app-add-folder-modal> -->
-
-  <div class="row m-2">
-    <!-- <div class="col">
-      <label class="btn btn-secondary">Добавить файл <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
-      <button class="btn btn-secondary" (click)="addFolderModal.showForNode(null)">Создать папку</button>
-      <button class="btn btn-secondary" (click)="folderInput.value = ''; folderInput.click()">
-        Загрузить папку
-        <input type="file" #folderInput webkitdirectory style="display: none;" (change)="uploadFolder(folderInput.files)">
-      </button>
-    </div> -->
+  <div class="row m-2">    
     <div class="col">
       <input type="text" [(ngModel)]="searchFilesNamesString" (input)="getFiles()" placeholder="Искать по файлам" />
     </div>
@@ -153,53 +140,10 @@
   <app-rename-file-modal #renameModal (nameChangeSubmitted)="renameNode($event[0], $event[1])"></app-rename-file-modal>
   <app-file-input-wrapper #fileInput (fileConfirmed)="onFileUpload($event[0], $event[1])"></app-file-input-wrapper>
   <app-file-input-wrapper #folderInputWrapper [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
-  <!-- <app-file-input-wrapper #updateFileInput (fileConfirmed)="updateFileVersion($event[0], $event[1])"></app-file-input-wrapper> -->
   <app-file-input-wrapper #translateFile></app-file-input-wrapper>
   <app-translation-progress-modal #translationProgressModal></app-translation-progress-modal>
   <app-file-settings-modal #fileSettingsModal (changesApplied)="updateNode($event)"></app-file-settings-modal>
-  <mat-menu #fileRowContextMenu="matMenu">
-    <!-- <ng-template matMenuContent let-node="node" let-data="data">
-      <button mat-menu-item *ngIf="data.isFolder" (click)="fileInput.activate(node)">
-        Добавить файл
-      </button>
-      <button mat-menu-item *ngIf="data.isFolder" (click)="addFolderModal.showForNode(node)">
-        Создать папку
-      </button>
-      <button mat-menu-item *ngIf="data.isFolder" (click)="folderInputWrapper.activate(node)">
-        Загрузить папку
-      </button>
-      <button mat-menu-item *ngIf="!data.isFolder" (click)="updateFileInput.activate(node)">
-        Обновить
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="renameModal.showNodeFile(node, data)">
-        Переименовать
-      </button>
-      <button mat-menu-item (click)="pseudoCut(node)">
-        Вырезать
-      </button>
-      <button mat-menu-item (click)="moveCurrentlyCutted(node)" [disabled]="!data.isFolder || !cuttedNode">
-        Вставить
-      </button>
-      <button mat-menu-item (click)="deleteFile(node)">
-        Удалить
-      </button>
-      <button mat-menu-item *ngIf="!data.isFolder" (click)="setFileLanguagesModal.showFile(data)">
-        Задать язык перевода
-      </button>
-      <button mat-menu-item *ngIf="!data.isFolder" (click)="requestFileDownload(node)">
-        Скачать
-      </button>
-      <button mat-menu-item *ngIf="!data.isFolder" routerLink="/Strings/byFileId/{{data.id}}">
-        Просмотр исходных строк
-      </button>
-      <button mat-menu-item (click)="translationProgressModal.showForFile(data)">
-        Прогресс перевода
-      </button>
-      <button mat-menu-item (click)="fileSettingsModal.showForFile(data)">
-        Настройки
-      </button>
-    </ng-template> -->
+  <mat-menu #fileRowContextMenu="matMenu">    
   </mat-menu>
   
   <p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">
@@ -230,29 +174,20 @@
         </td>
         <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
           {{rowData.stringsCount}}
+        </td>        
+        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+          {{rowData.percentOfTranslation | percent }}
         </td>
-        <!-- <td class="col-xs-2">
-          <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.isFolder" disabled>{{rowData.version}}</button>
-        </td> -->
-        <!-- <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
-          <button class="btn btn-default" *ngIf="!rowData.isFolder" disabled>{{rowData.priority}}</button>
-        </td> -->
+        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+            {{rowData.percentOfConfirmed | percent }}
+        </td>
         <td class="col-xs-2">
-          <!-- тут нужно поменять функционал -->
           <button *ngIf="!rowData.isFolder" mat-raised-button (click)="translateFileClick(rowData)">
             Перевести
-            <!-- <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)"> -->
           </button>
           <button *ngIf="!rowData.isFolder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
             <mat-icon> arrow_downward </mat-icon>
-          </button>
-          <!-- <button mat-icon-button
-                  #fileRowMenuTrigger="matMenuTrigger"
-                  [matMenuTriggerFor]="fileRowContextMenu"
-                  [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
-                  >
-            <mat-icon> more_horiz </mat-icon>
-          </button> -->
+          </button>          
         </td>
       </tr>
     </ng-template>
