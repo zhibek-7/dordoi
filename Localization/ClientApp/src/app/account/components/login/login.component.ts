@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, AbstractControl, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/services/user.service';
@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     sessionStorage.setItem('currentUserID', user.id.toString());
+    sessionStorage.setItem('currentUserName', user.name);
     this.router.navigate(['/account/' + user.id]);
   }
 }

@@ -30,7 +30,7 @@ namespace Models.DatabaseEntities
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
-        public int? CountUsersActive { get; set; }
+        public int? CountParticipantsActive { get; set; }
 
 
         public bool AbleToDownload { get; set; }

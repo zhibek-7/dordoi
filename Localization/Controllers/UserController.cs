@@ -6,6 +6,7 @@ using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
+using Models.DatabaseEntities.DTO;
 
 namespace Localization.Controllers
 {
@@ -65,6 +66,22 @@ namespace Localization.Controllers
         public async Task<User> Login(User user)
         {
             return await userRepository.Login(user);
+        }
+
+        [HttpPost("Profile:{id}")]
+        public async Task<UserProfileForEditingDTO> GetProfile(int id)
+        {
+            return await userRepository.GetProfileAsync(id);
+        }
+        [HttpPost("toSaveEdited")]
+        public async Task EditGlossaryAsync(UserProfileForEditingDTO user)
+        {
+            await userRepository.UpdateAsync(user);
+        }
+        [HttpDelete("delete/{id}")]
+        public async Task RemoveAsync(int id)
+        {
+            await userRepository.RemoveAsync(id);
         }
     }
 }

@@ -61,7 +61,12 @@ export class RegistrationComponent implements OnInit {
     if (this.formGroup.valid && this.isUniqueEmailConfirmed && this.isUniqueLoginConfirmed) {
       let user = this.getUser();
       this.userService.createUser(user)
-        .subscribe(newId => { sessionStorage.setItem('currentUserID', newId.toString()); this.router.navigate(['/account/' + newId]); }, error => console.error(error));
+        .subscribe(newId =>
+        {
+          sessionStorage.setItem('currentUserID', newId.toString());
+          sessionStorage.setItem('currentUserName', user.name);
+          this.router.navigate(['/account/' + newId]);
+        }, error => console.error(error));
     }
   }
 
