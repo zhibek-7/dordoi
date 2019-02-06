@@ -77,7 +77,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         Name = glossary.Name_text,
                         Description = glossary.Description,
-                        ID_File = (int?)null
+                        ID_File = glossary.ID_File
                     };
                     var query = new Query("glossaries").AsInsert(newGlossaries, true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
@@ -217,13 +217,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                             param: compiledQueryGlossariesLocalesDelete.NamedBindings);
                     }
 
-                    var GlossariesLocales = localesIds.Select(t => new
+                    var glossariesLocales = localesIds.Select(t => new
                     {
                         id_glossary = glossaryId,
                         id_locale = t
                     }).ToList();
 
-                    foreach (var element in GlossariesLocales)
+                    foreach (var element in glossariesLocales)
                     {
                         var queryGlossariesLocalesInsert = new Query("glossaries_locales").AsInsert(element);
                         var compiledQueryGlossariesLocalesInsert = _compiler.Compile(queryGlossariesLocalesInsert);

@@ -7,7 +7,7 @@
     <app-glossary-editable-details [glossary]="newGlossary" [triggerLoading]="visible"></app-glossary-editable-details>
   </div>
   <div class="app-modal-footer">
-    <button class="btn btn-primary m-1" (click)="submit()" [disabled]="newGlossary.name_text == null || newGlossary.name_text.length == 0 || newGlossary.localesIds.length == 0"> Создать </button>
+    <button class="btn btn-primary m-1" (click)="submit()" [disabled]="newGlossary.name == null || newGlossary.name.length == 0 || newGlossary.localesIds.length == 0 || newGlossary.localizationProjectsIds.length == 0"> Создать </button>
     <button class="btn btn-primary" (click)="hide()"> Отмена </button>
   </div>
 </app-modal>

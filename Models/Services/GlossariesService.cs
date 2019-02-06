@@ -14,11 +14,13 @@ namespace Models.Services
 
         private readonly GlossaryService _glossaryService;
 
+        private readonly IFilesRepository _filesRepository;
 
-        public GlossariesService(IGlossariesRepository glossariesRepository, GlossaryService glossaryService)
+        public GlossariesService(IGlossariesRepository glossariesRepository, GlossaryService glossaryService, IFilesRepository filesRepository)
         {
             _glossariesRepository = glossariesRepository;
             _glossaryService = glossaryService;
+            this._filesRepository = filesRepository;
         }
 
 
@@ -58,6 +60,15 @@ namespace Models.Services
         {
             try
             {
+                var newGlossaryFileId = await this._filesRepository.AddAsync(new File()
+                {
+                    ID_LocalizationProject = glossary.LocalizationProjectsIds.First(x => x.HasValue).Value,
+                    Name = glossary.Name,
+                    DateOfChange = DateTime.Now,
+                    IsFolder = false,
+                    IsLastVersion = true,
+                });
+                glossary.ID_File = newGlossaryFileId;
                 await _glossariesRepository.AddNewGlossaryAsync(glossary);
             }
             catch (Exception exception)

@@ -23,9 +23,9 @@ namespace Localization.WebApi
 
         // GET api/files
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Node<File>>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Node<File>>>> GetAllAsync()
         {
-            var files = await this._filesService.GetAll();
+            var files = await this._filesService.GetAllAsync();
             if (files == null)
             {
                 return BadRequest("Files not found");
@@ -39,7 +39,7 @@ namespace Localization.WebApi
             public string FileNamesSearch { get; set; }
         }
         [HttpPost("byProjectId/{projectId}")]
-        public async Task<ActionResult<IEnumerable<Node<File>>>> GetByProjectId(int projectId, [FromBody] GetByProjectIdParams param)
+        public async Task<ActionResult<IEnumerable<Node<File>>>> GetByProjectIdAsync(int projectId, [FromBody] GetByProjectIdParams param)
         {
             var files = await this._filesService.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: param.FileNamesSearch);
             if (files == null)
@@ -52,9 +52,9 @@ namespace Localization.WebApi
 
         // GET api/files/5
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<File>> Get(int id)
+        public async Task<ActionResult<File>> GetAsync(int id)
         {
-            var foundedFile = await this._filesService.GetById(id);
+            var foundedFile = await this._filesService.GetByIdAsync(id);
             return Ok(foundedFile);
         }
 
@@ -68,10 +68,10 @@ namespace Localization.WebApi
 
         // POST api/files/add/file
         [HttpPost("add/fileByProjectId/{projectId}")]
-        public async Task<ActionResult<Node<File>>> AddFile(IFormFile file, [FromForm] int? parentId, int projectId)
+        public async Task<ActionResult<Node<File>>> AddFileAsync(IFormFile file, [FromForm] int? parentId, int projectId)
         {
             using (var fileContentStream = file.OpenReadStream())
-                return await this._filesService.AddFile(
+                return await this._filesService.AddFileAsync(
                     fileName: file.FileName,
                     fileContentStream: fileContentStream,
                     parentId: parentId,
@@ -79,10 +79,10 @@ namespace Localization.WebApi
         }
 
         [HttpPost("updateFileVersion/byProjectId/{projectId}")]
-        public async Task<ActionResult<Node<File>>> UpdateFileVersion(IFormFile file, [FromForm] int? parentId, int projectId)
+        public async Task<ActionResult<Node<File>>> UpdateFileVersionAsync(IFormFile file, [FromForm] int? parentId, int projectId)
         {
             using (var fileContentStream = file.OpenReadStream())
-                return await this._filesService.UpdateFileVersion(
+                return await this._filesService.UpdateFileVersionAsync(
                     fileName: file.FileName,
                     fileContentStream: fileContentStream,
                     parentId: parentId,
@@ -91,16 +91,16 @@ namespace Localization.WebApi
 
         // POST api/files/add/folder
         [HttpPost("add/folderByProjectId/{projectId}")]
-        public async Task<ActionResult<Node<File>>> AddFolder([FromBody] FolderModel newFolder, int projectId)
+        public async Task<ActionResult<Node<File>>> AddFolderAsync([FromBody] FolderModel newFolder, int projectId)
         {
+            return await this._filesService.AddFolderAsync(newFolder);
             newFolder.Project_Id = projectId;
-            return await this._filesService.AddFolder(newFolder);
         }
 
         [HttpPost("upload/folderByProjectId/{projectId}")]
-        public async Task UploadFolderWithContents(IFormFileCollection files, [FromForm] int? parentId, int projectId)
+        public async Task UploadFolderWithContentsAsync(IFormFileCollection files, [FromForm] int? parentId, int projectId)
         {
-            await this._filesService.AddFolderWithContents(
+            await this._filesService.AddFolderWithContentsAsync(
                 files: files,
                 parentId: parentId,
                 projectId: projectId
@@ -109,17 +109,17 @@ namespace Localization.WebApi
 
         // PUT api/files/update/5
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateNode(int id, File file)
+        public async Task<IActionResult> UpdateNodeAsync(int id, File file)
         {
-            await this._filesService.UpdateNode(id: id, file: file);
+            await this._filesService.UpdateNodeAsync(id: id, file: file);
             return Ok();
         }
 
         // DELETE api/files/delete/5
         [HttpPost("delete")]
-        public async Task<IActionResult> DeleteNode([FromBody] File fileToDelete)
+        public async Task<IActionResult> DeleteNodeAsync([FromBody] File fileToDelete)
         {
-            await this._filesService.DeleteNode(fileToDelete);
+            await this._filesService.DeleteNodeAsync(fileToDelete);
             return Ok();
         }
 
@@ -149,7 +149,7 @@ namespace Localization.WebApi
         [HttpPost("{fileId}/download")]
         public async Task<FileResult> DownloadFileAsync(int fileId, [FromBody] int? localeId)
         {
-            var fileStream = await this._filesService.GetFile(fileId, localeId);
+            var fileStream = await this._filesService.GetFileAsync(fileId, localeId);
             return this.File(
                 fileStream: fileStream,
                 contentType: "application/octet-stream",
@@ -157,7 +157,7 @@ namespace Localization.WebApi
         }
 
         [HttpPost("{fileId}/GetTranslationInfo")]
-        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfo(int fileId)
+        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(int fileId)
         {
             return await this._filesService.GetFileTranslationInfoAsync(fileId: fileId);
         }

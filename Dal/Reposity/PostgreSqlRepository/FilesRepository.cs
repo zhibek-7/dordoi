@@ -94,7 +94,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetLastVersionByNameAndParentId(string name, int? parentId)
+        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, int? parentId)
         {
             try
             {
@@ -116,14 +116,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetLastVersionByNameAndParentId)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetLastVersionByNameAndParentIdAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetLastVersionByNameAndParentId)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetLastVersionByNameAndParentIdAsync)} {nameof(Exception)} ",
                     exception);
                 return null;
             }
@@ -233,7 +233,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<bool> Upload(File file)
+        public async Task<bool> UploadAsync(File file)
         {
             var sqlString = this._insertFileSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -295,7 +295,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     catch (NpgsqlException exception)
                     {
                         this._loggerError.WriteLn(
-                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} {nameof(NpgsqlException)} ",
+                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.UploadAsync)} {nameof(NpgsqlException)} ",
                             exception);
                         transaction.Rollback();
                         return false;
@@ -311,7 +311,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     catch (Exception exception)
                     {
                         this._loggerError.WriteLn(
-                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} {nameof(Exception)} ",
+                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.UploadAsync)} {nameof(Exception)} ",
                             exception);
                         transaction.Rollback();
                         return false;
@@ -320,7 +320,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<string> GetFileContent(int id, int id_locale = -1)
+        public async Task<string> GetFileContentAsync(int id, int id_locale = -1)
         {
             var sqlFileQuery = "SELECT * FROM files WHERE id = @id";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -373,7 +373,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 }
                 catch (Exception exception)
                 {
-                    this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.Upload)} Exception ", exception);
+                    this._loggerError.WriteLn($"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.UploadAsync)} Exception ", exception);
                     return null;
                 }
             }

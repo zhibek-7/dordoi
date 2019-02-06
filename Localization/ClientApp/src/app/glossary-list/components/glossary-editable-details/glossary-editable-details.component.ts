@@ -28,6 +28,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
   availableLocalizationProjects: Selectable<LocalizationProjectForSelectDTO>[] = [];
 
   errorsRequiredLocales: boolean = false;
+  errorsRequiredLocalizationProjects: boolean = false;
 
   constructor(
     private projectsService: ProjectsService,
@@ -90,6 +91,8 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase implemen
 
   raiseSelectionChanged() {
     this.glossary.localization_Projects_Ids = this.availableLocalizationProjects.filter(localizationProject => localizationProject.isSelected).map(selectable => selectable.model.id);
+    //Валидация. Обязательно должно быть выбрано хотя бы одно значение.
+    this.errorsRequiredLocalizationProjects = this.glossary.localizationProjectsIds.length == 0;
   }
 
   //#endregion

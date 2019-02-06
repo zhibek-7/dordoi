@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Dapper;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
@@ -17,7 +18,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
-        public IEnumerable<LocalizationProjectsLocales> GetAll(int Id)
+        public async Task<IEnumerable<LocalizationProjectsLocales>> GetAll(int Id)
         {
             // Sql string to select all rows
             var sqlString = "SELECT * FROM localization_projects_locales     " +
@@ -30,7 +31,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(sqlString, param);
-                    IEnumerable<LocalizationProjectsLocales> projLocales = dbConnection.Query<LocalizationProjectsLocales>(sqlString, param);
+
+
+                    IEnumerable<LocalizationProjectsLocales> projLocales = await dbConnection.QueryAsync<LocalizationProjectsLocales>(sqlString, param);
                     return projLocales;
                 }
             }
@@ -49,7 +52,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
-
 
 
 

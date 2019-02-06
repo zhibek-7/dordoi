@@ -94,25 +94,25 @@ export class AllSettingsComponent implements OnInit {
       .subscribe(projectsL => { this.allProjLocales = projectsL; },
         error => console.error(error));
 
-    this.dropdownList = [
-      { itemName: "Ido", checked: false, id: "1" },
-      { itemName: "Аварский", checked: false, id: "2" },
-      { itemName: "Азербайджанский", checked: false, id: "3" },
-      { itemName: "Авестийский", checked: false, id: "4" },
-      { itemName: "Аймара", checked: false, id: "5" },
-      { itemName: "Акан", checked: false, id: "6" },
-      { itemName: "Албанский", checked: false, id: "7" },
-      { itemName: "Амхарский", checked: false, id: "8" },
-      { itemName: "Английский", checked: false, id: "300" },
-      {
-        itemName: "Английский (вверх ногами)",
-        checked: false,
-        id: "10"
-      },
-      { itemName: "Английский, Аравия", checked: false, id: "11" },
-      { itemName: "Ангийский, Белиз", checked: false, id: "12" },
-      { itemName: "Русский", checked: false, id: "13" }
-    ];
+    //this.dropdownList = [
+    //  { itemName: "Ido", checked: false, id: "1" },
+    //  { itemName: "Аварский", checked: false, id: "2" },
+    //  { itemName: "Азербайджанский", checked: false, id: "3" },
+    //  { itemName: "Авестийский", checked: false, id: "4" },
+    //  { itemName: "Аймара", checked: false, id: "5" },
+    //  { itemName: "Акан", checked: false, id: "6" },
+    //  { itemName: "Албанский", checked: false, id: "7" },
+    //  { itemName: "Амхарский", checked: false, id: "8" },
+    //  { itemName: "Английский", checked: false, id: "300" },
+    //  {
+    //    itemName: "Английский (вверх ногами)",
+    //    checked: false,
+    //    id: "10"
+    //  },
+    //  { itemName: "Английский, Аравия", checked: false, id: "11" },
+    //  { itemName: "Ангийский, Белиз", checked: false, id: "12" },
+    //  { itemName: "Русский", checked: false, id: "13" }
+    //];
 
     this.currentProjectName = this.projectsService.currentProjectName;
     this.currentProjectId = this.projectsService.currentProjectId;
@@ -219,15 +219,35 @@ export class AllSettingsComponent implements OnInit {
 
     //собирает добавленные языки в один массив
 
-    let projectLocales: LocalizationProjectsLocales[] = [];
     this.selectedItems.forEach(lang => {
-      projectLocales.push({
-        id_Localization_Project: this.currentProjectId,
-        id_Locale: lang.id,
-        percent_Of_Translation: 0,
-        Percent_Of_Confirmed: 0
-      });
-    });
+    let projectLocales: LocalizationProjectsLocales[] = [];
+
+      const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
+      if (index == 0) {
+
+      }
+      else {
+        projectLocales.push({
+          id_LocalizationProject: this.currentProjectId,
+          id_Locale: lang.id,
+          percentOfTranslation: 0,
+          PercentOfConfirmed: 0
+        });
+      }
+
+
+    })
+
+    //let projectLocales: LocalizationProjectsLocales[]=[]; 
+    //this.selectedItems.forEach((lang) => {
+    //  projectLocales.push({
+    //    id_LocalizationProject: this.currentProjectId,
+    //    id_Locale: lang.id,
+    //    percentOfTranslation: 0,
+    //    PercentOfConfirmed:0
+    //  });     
+    //})  
+
 
     //передает массив языков
     this.projectsService.addProjectLocales(projectLocales);
