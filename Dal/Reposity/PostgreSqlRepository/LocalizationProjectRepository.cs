@@ -74,7 +74,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .LeftJoin("Locales", "Locales.ID", "LocalizationProjects.ID_SourceLocale")
                         .Select(new Query("LocalizationProjects").Where("LocalizationProjects.ID", id)
                                 .LeftJoin("Participants", "Participants.ID_LocalizationProject", "LocalizationProjects.ID").Where("Active", true)
-                                .AsCount("Participants.ID_User"), "CountUsersActive")
+                                .AsCount("Participants.ID_User"), "CountParticipantsActive")
                         .Select("LocalizationProjects.*", "Locales.Name as SourceLocaleName")
                         .Distinct();
                     var compiledQuery = _compiler.Compile(query);

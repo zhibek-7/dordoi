@@ -11,7 +11,7 @@ export class LocalizationProject {
   //Исходный язык
   sourceLocaleName: string;
   // Количество активных пользователей
-  countUsersActive: number;
+  countParticipantsActive: number;
   ableToDownload: boolean;
   ableToLeftErrors: boolean;
   defaultString: string;
