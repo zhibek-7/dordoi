@@ -62,8 +62,11 @@ namespace Models.Services
             {
                 var newGlossaryFileId = await this._filesRepository.AddAsync(new File()
                 {
+                    ID_LocalizationProject = glossary.LocalizationProjectsIds.First(x => x.HasValue).Value,
                     Name = glossary.Name,
+                    DateOfChange = DateTime.Now,
                     IsFolder = false,
+                    IsLastVersion = true,
                 });
                 glossary.ID_File = newGlossaryFileId;
                 await _glossariesRepository.AddNewGlossaryAsync(glossary);
