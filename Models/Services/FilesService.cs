@@ -242,7 +242,7 @@ namespace Models.Services
 
         public async Task<Node<File>> AddFolderAsync(FolderModel newFolderModel)
         {
-            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentId(newFolderModel.Name_text, newFolderModel.Parent_Id);
+            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(newFolderModel.Name_text, newFolderModel.Parent_Id);
             if (foundedFolder != null)
             {
                 throw new Exception(WriteLn($"Папка \"{newFolderModel.Name_text}\" уже есть."));
@@ -360,7 +360,7 @@ namespace Models.Services
 
             await insertToDbAction(file);
 
-            var addedFile = await this._filesRepository.GetLastVersionByNameAndParentId(file.Name_text, file.ID_Folder_Owner);
+            var addedFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name_text, file.ID_Folder_Owner);
             var icon = GetIconByFile(addedFile);
             return new Node<File>(addedFile, icon);
         }
@@ -373,7 +373,7 @@ namespace Models.Services
                 throw new Exception(WriteLn($"Не удалось добавить файл \"{file.Name_text}\" в базу данных."));
             }
 
-            var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentId(file.Name_text, file.ID_Folder_Owner)).ID;
+            var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name_text, file.ID_Folder_Owner)).ID;
             var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.ID_Localization_Project);
             await this._filesRepository.AddTranslationLocalesAsync(
                 fileId: addedFileId,
