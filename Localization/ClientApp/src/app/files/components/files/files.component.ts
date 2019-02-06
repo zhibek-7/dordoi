@@ -68,7 +68,7 @@ export class FilesComponent implements OnInit {
     } else {
       this.cols = [
         { field: "name_text", header: "Имя" },
-        { field: "dateOfChange", header: "Дата изменения" },
+        { field: "date_Of_Change", header: "Дата изменения" },
         {
           field: "strings_Count",
           header: "Строки",

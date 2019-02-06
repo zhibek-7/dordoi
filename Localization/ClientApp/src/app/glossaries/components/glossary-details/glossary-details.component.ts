@@ -97,7 +97,7 @@ export class GlossaryDetailsComponent implements OnInit {
     if (!this.glossary) return;
 
     this.glossariesService
-      .addNewTerm(this.glossary.id, newTerm, newTerm.partOfSpeechId)
+      .addNewTerm(this.glossary.id, newTerm, newTerm.part_Of_Speech_Id)
       .subscribe(() => this.requestDataReloadService.requestUpdate());
   }
 

@@ -1,21 +1,21 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
+import { MatDialog, MatDialogConfig } from "@angular/material";
 
-import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
-import { ShowImageModalComponent } from '../show-image-modal/show-image-modal';
+import { ModalComponent } from "src/app/shared/components/modal/modal.component";
+import { ShowImageModalComponent } from "../show-image-modal/show-image-modal";
 
-import { TranslationSubstringService } from 'src/app/services/translationSubstring.service';
+import { TranslationSubstringService } from "src/app/services/translationSubstring.service";
 
-import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
-import { Image } from 'src/app/models/database-entities/image.type';
+import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
+import { Image } from "src/app/models/database-entities/image.type";
 
 @Component({
-  selector: 'context-edit-modal-component',
-  templateUrl: './context-edit-modal.component.html',
-  styleUrls: ['./context-edit-modal.component.css']
+  selector: "context-edit-modal-component",
+  templateUrl: "./context-edit-modal.component.html",
+  styleUrls: ["./context-edit-modal.component.css"]
 })
-export class ContextEditModalComponent extends ModalComponent implements OnInit {
-
+export class ContextEditModalComponent extends ModalComponent
+  implements OnInit {
   enteredContext: string = null;
   translationMaxLength: number = 0;
 
@@ -28,22 +28,20 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
 
   constructor(
     private translationSubstringService: TranslationSubstringService,
-    private showImageDialog: MatDialog) {
-
+    private showImageDialog: MatDialog
+  ) {
     super();
 
     this.filesToUpload = [];
     this.images = [];
   }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   // Событие при нажатии кнопки "Сохранить"
   confirmButtunClick() {
     this.currentPhrase.context = this.enteredContext;
-    this.currentPhrase.translationMaxLength = this.translationMaxLength;
+    this.currentPhrase.translation_Max_Length = this.translationMaxLength;
 
     if (this.filesToUpload != null) {
       this.loadScrinshot();
@@ -55,14 +53,17 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
 
   // Функция загрузки скриншота
   loadScrinshot() {
-    this.translationSubstringService.uploadImageToTranslationSubstring(this.filesToUpload, this.currentPhrase.id);
+    this.translationSubstringService.uploadImageToTranslationSubstring(
+      this.filesToUpload,
+      this.currentPhrase.id
+    );
   }
 
   // Открытие модального окна
   show() {
     super.show();
 
-    this.translationMaxLength = this.currentPhrase.translationMaxLength;
+    this.translationMaxLength = this.currentPhrase.translation_Max_Length;
     this.enteredContext = this.currentPhrase.context;
 
     this.loadImages(this.currentPhrase.id);
@@ -76,12 +77,11 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
   }
 
   loadImages(translationSubstringId: number) {
-    this.translationSubstringService.getImagesByTranslationSubstringId(translationSubstringId)
-      .subscribe(
-        images => {
-          this.images = images;
-        }
-      );
+    this.translationSubstringService
+      .getImagesByTranslationSubstringId(translationSubstringId)
+      .subscribe(images => {
+        this.images = images;
+      });
   }
 
   // Функция отображения скриншота в модальном окне в увеличенном размере
@@ -93,7 +93,10 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
     };
 
     super.hide();
-    let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
+    let dialogRef = this.showImageDialog.open(
+      ShowImageModalComponent,
+      dialogConfig
+    );
   }
 
   //Функция, срабатываемая при загрузке скриншота
@@ -105,16 +108,14 @@ export class ContextEditModalComponent extends ModalComponent implements OnInit 
 
     var reader = new FileReader();
     reader.onload = (event: any) => {
-
       var insertedImage = new Image();
       insertedImage.body = event.target.result;
 
       //обрезаем дополнительную информацию о изображении и оставляем только byte[]
       insertedImage.body = insertedImage.body.match(".*base64,(.*)")[1];
 
-      this.images.push(insertedImage)
-    }
+      this.images.push(insertedImage);
+    };
     reader.readAsDataURL(this.filesToUpload[this.filesToUpload.length - 1]);
   }
-
 }

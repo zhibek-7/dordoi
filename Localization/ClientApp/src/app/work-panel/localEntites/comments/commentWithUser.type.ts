@@ -5,8 +5,8 @@ export class CommentWithUser {
         public commentId?: number,
         public comment: string = "",
         public dateTime?: Date,
-        public userId?: number,
-        public userName?: string,
+        public user_Id?: number,
+        public user_Name?: string,
 
         public images: Image[] = undefined
     ) { }

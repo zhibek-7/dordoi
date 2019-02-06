@@ -21,12 +21,12 @@
               <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
                 <div class="oneCommentBlock">
                   <div class="row">
-                    <div class="col-6 userNameRow">{{comment.userName}}</div>
+                    <div class="col-6 userNameRow">{{comment.user_Name}}</div>
                     <div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m'}}</div>
                   </div>
                   <div *ngIf="!commentEdited">
                     <div class="row">
-                      <div class="col-12">{{comment.comment}} </div>
+                      <div class="col-12">{{comment.comment_text}} </div>
                     </div>
                     <ul class="row">
                       <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">
@@ -54,7 +54,7 @@
                       <ul class="row">
                         <li class="list-group-item col-3 imageBlock" *ngFor="let image of comment.images">
                           <div>
-                            <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}" />
+                            <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
                           </div>
                         </li>
                       </ul>
@@ -121,13 +121,13 @@
                       <div class="oneTermBlock">
                         <div *ngIf="!commentEdited">
                           <div class="row termName">
-                            <div class="col-12">{{term.substringToTranslate}} </div>
+                            <div class="col-12">{{term.substring_To_Translate}} </div>
                           </div>
                           <div class="row">
                             <div class="col-12">{{term.description}} </div>
                           </div>
                           <div class="row glossaryName">
-                            <div class="col-12">{{term.glossaryName}} </div>
+                            <div class="col-12">{{term.glossary_Name}} </div>
                           </div>
                           <div class="row">
                             <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
