@@ -53,6 +53,6 @@ namespace Models.DatabaseEntities
             this.data_create = data_create;
             this.url = url;
         }
-        */
+
     }
 }

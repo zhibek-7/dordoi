@@ -57,7 +57,7 @@ const routes: Routes = [
     loadChildren: "../files/files.module#FilesModule"
   },
   {
-    path: "Project/:projectId/LanguageFiles/:localeId",
+    path: "pj/:projectId/LanguageFiles/:localeId",
     loadChildren: "../files/files.module#FilesModule"
   },
   {

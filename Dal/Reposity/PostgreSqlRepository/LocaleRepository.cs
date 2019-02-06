@@ -115,14 +115,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Where("id_localization_project", projectId)
                         .LeftJoin("locales", "locales.id", "localization_projects_locales.id_locale")
                         .Select(
-                            "locales.id as LocaleId",
-                            "locales.name_text as LocaleName",
-                            "locales.url as LocaleUrl",
+                            "locales.id as Locale_Id",
+                            "locales.name_text as Locale_Name",
+                            "locales.url as Locale_Url",
 
                             "localization_projects_locales.percent_of_translation",
                             "localization_projects_locales.percent_of_confirmed"
                             )
-                        .OrderBy("LocaleName");
+                        .OrderBy("Locale_Name");
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var result = await dbConnection.QueryAsync<LocalizationProjectsLocalesDTO>(

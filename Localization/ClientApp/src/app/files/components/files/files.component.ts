@@ -47,34 +47,53 @@ export class FilesComponent implements OnInit {
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
     console.log("Projec=" + sessionStorage.getItem("Projec"));
 
-    if(this.router.url.indexOf("LanguageFiles") != -1){
+    if (this.router.url.indexOf("LanguageFiles") != -1) {
       this.isSelectionFileForTranslation = true;
-      this.selectedProjectId = this.activatedRoute.snapshot.params['projectId'];
-      this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];
+      this.selectedProjectId = this.activatedRoute.snapshot.params["projectId"];
+      this.selectedLanguageId = this.activatedRoute.snapshot.params["localeId"];
 
       this.cols = [
-        { field: 'name', header: 'Имя' },
-        { field: 'dateOfChange', header: 'Дата изменения' },
-        { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
+        { field: "name_text", header: "Имя" },
+        { field: "date_Of_Change", header: "Дата изменения" },
+        {
+          field: "strings_Count",
+          header: "Строки",
+          width: "100px",
+          textalign: "right"
+        },
         // { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
         // { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
-        { }
+        {}
       ];
-    }
-    else {
+    } else {
       this.cols = [
-        { field: 'name', header: 'Имя' },
-        { field: 'dateOfChange', header: 'Дата изменения' },
-        { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
-        { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
-        { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
-        { }
+        { field: "name_text", header: "Имя" },
+        { field: "dateOfChange", header: "Дата изменения" },
+        {
+          field: "strings_Count",
+          header: "Строки",
+          width: "100px",
+          textalign: "right"
+        },
+        {
+          field: "version",
+          header: "Версия",
+          width: "80px",
+          textalign: "center"
+        },
+        {
+          field: "priority",
+          header: "Приоритет",
+          width: "100px",
+          textalign: "center"
+        },
+        {}
       ];
     }
 
-    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
-    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-    console.log('Projec=' + sessionStorage.getItem('Projec'));    
+    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
+    console.log("Projec=" + sessionStorage.getItem("Projec"));
 
     this.getFiles();
   }
@@ -290,22 +309,21 @@ export class FilesComponent implements OnInit {
   }
 
   requestFileDownload(node: TreeNode) {
-    this.fileService.downloadFile(node.data)
-      .subscribe(
-        data => {
-          let fileName = node.data.name;
-          if (node.data.isFolder) {
-            fileName = fileName + '.zip';
-          } else if (node.data.downloadName && node.data.downloadName != '') {
-            fileName = node.data.downloadName;
-          }
-          saveAs(data, fileName);
-        },
-        error => alert(error)
-      );
+    this.fileService.downloadFile(node.data).subscribe(
+      data => {
+        let fileName = node.data.name;
+        if (node.data.isFolder) {
+          fileName = fileName + ".zip";
+        } else if (node.data.downloadName && node.data.downloadName != "") {
+          fileName = node.data.downloadName;
+        }
+        saveAs(data, fileName);
+      },
+      error => alert(error)
+    );
   }
 
-  translateFileClick(selectedFile: any){
-    this.router.navigate(['Translation/' + selectedFile.id]);
+  translateFileClick(selectedFile: any) {
+    this.router.navigate(["Translation/" + selectedFile.id]);
   }
 }

@@ -12,7 +12,7 @@ namespace Models.DatabaseEntities.DTO
         /// <summary>
         /// Идентификатор языка
         /// </summary>
-        public string LocaleId { get; set; }
+        public string Locale_Id { get; set; }
         /// <summary>
         /// Наименование языка
         /// </summary>

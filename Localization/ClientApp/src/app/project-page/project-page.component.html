@@ -27,15 +27,15 @@
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-       aria-selected="true">Главная</a>
+      aria-selected="true">Главная</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="acivity-tab" data-toggle="tab" href="#acivity" role="tab" aria-controls="acivity"
-       aria-selected="false">Активность</a>
+      aria-selected="false">Активность</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="problem-tab" data-toggle="tab" href="#problem" role="tab" aria-controls="problem"
-       aria-selected="false">Проблемы переводов</a>
+      aria-selected="false">Проблемы переводов</a>
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
@@ -51,28 +51,29 @@
 
               <ng-container matColumnDef="flag">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                <mat-cell *matCellDef="let row"><img src='{{row.localeUrl}}' alt="Изображение флага"> </mat-cell>
+                <mat-cell *matCellDef="let row"><img src='{{row.locale_Url}}' alt="Изображение флага"> </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="localeName">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Целевой язык </label> </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.localeName}} </mat-cell>
+              <ng-container matColumnDef="locale_Name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Целевой
+                    язык </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.locale_Name}} </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="percentOfTranslation">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент завершения перевода </label> </mat-header-cell>
-                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percentOfTranslation}}% </mat-cell>
+              <ng-container matColumnDef="percent_Of_Translation">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент завершения
+                    перевода </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percent_Of_Translation}}% </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="percentOfConfirmed">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент утверждение переводов </label> </mat-header-cell>
-                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percentOfConfirmed}}% </mat-cell>
+              <ng-container matColumnDef="percent_Of_Confirmed">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент утверждение
+                    переводов </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percent_Of_Confirmed}}% </mat-cell>
               </ng-container>
-
 
               <mat-header-row *matHeaderRowDef="displayedColumnsForMainTab"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumnsForMainTab;"
-                      (click)="openLanguageFiles(row)" >
+              <mat-row *matRowDef="let row; columns: displayedColumnsForMainTab;" (click)="openLanguageFiles(row)">
               </mat-row>
 
             </mat-table>
@@ -85,23 +86,25 @@
           <table class="table" *ngIf="currentProject">
             <tr>
               <td>Исходный язык</td>
-              <td> {{currentProject.sourceLocaleName}} </td>
+              <td> {{currentProject.source_Locale_Name}} </td>
             </tr>
             <tr>
               <td>Пользователей</td>
-              <td> {{currentProject.countUsersActive}} </td>
+              <td> {{currentProject.count_Users_Active}} </td>
             </tr>
             <tr>
               <td>Words to translate</td>
-              <td> <!--{ {currentProject.??}}--> </td>
+              <td>
+                <!--{ {currentProject.??}}-->
+              </td>
             </tr>
             <tr>
               <td>Создан</td>
-              <td> {{currentProject.dateOfCreation.toLocaleString()}} </td>
+              <td> {{currentProject.date_Of_Creation.toLocaleString()}} </td>
             </tr>
             <tr>
               <td>Последняя активность</td>
-              <td> {{currentProject.lastActivity.toLocaleString()}} </td>
+              <td> {{currentProject.last_Activity.toLocaleString()}} </td>
             </tr>
           </table>
           <hr>
@@ -113,8 +116,9 @@
             <div *ngFor="let participant of participantsOwner">
 
               <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
-                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-                <span class="ml-2" style="color: grey;">{{participant.userName}}</span>
+                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top"
+                  alt="">
+                <span class="ml-2" style="color: grey;">{{participant.user_Name}}</span>
               </a>
               <div class="mt-2">
                 <span class="mr-2 br-b blue">Владелец</span>
@@ -126,8 +130,9 @@
             <div *ngFor="let participant of participantsManager">
 
               <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
-                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-                <span class="ml-2" style="color: grey;">{{participant.userName}}</span>
+                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top"
+                  alt="">
+                <span class="ml-2" style="color: grey;">{{participant.user_Name}}</span>
               </a>
               <div class="mt-2">
                 <span class="mr-2 br-b green">Связаться</span>

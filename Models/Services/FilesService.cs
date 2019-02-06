@@ -148,12 +148,12 @@ namespace Models.Services
             {
                 var childTranslationInfos = new List<FileTranslationInfo>();
                 var currentLevelFiles = new List<File>() { file };
-                while(currentLevelFiles.Any())
+                while (currentLevelFiles.Any())
                 {
                     var newLevelFiles = new List<File>();
                     foreach (var currentLevelFile in currentLevelFiles)
                     {
-                        if (currentLevelFile.IsFolder)
+                        if (currentLevelFile.Is_Folder)
                         {
                             newLevelFiles.AddRange(await this._filesRepository
                                 .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.ID));
@@ -453,7 +453,7 @@ namespace Models.Services
                 throw new Exception("Файл не найден.");
             }
 
-            if (file.IsFolder)
+            if (file.Is_Folder)
             {
                 var uniqueTempFolderPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
                 var currentLevelFiles = new Dictionary<File, string>() { { file, uniqueTempFolderPath } };
@@ -465,10 +465,10 @@ namespace Models.Services
                         var currentLevelFile = fileToPath.Key;
                         var currentLevelPath = fileToPath.Value;
                         var fileName = string
-                            .IsNullOrWhiteSpace(currentLevelFile.DownloadName) ?
-                                currentLevelFile.Name :
-                                currentLevelFile.DownloadName;
-                        if (currentLevelFile.IsFolder)
+                            .IsNullOrWhiteSpace(currentLevelFile.Download_Name) ?
+                                currentLevelFile.Name_text :
+                                currentLevelFile.Download_Name;
+                        if (currentLevelFile.Is_Folder)
                         {
                             var newFolderPath = System.IO.Path.Combine(currentLevelPath, fileName);
                             var children = await this._filesRepository
@@ -490,7 +490,7 @@ namespace Models.Services
                             using (var fileStream = System.IO.File.Create(filePath))
                             using (var streamWriter = new System.IO.StreamWriter(
                                 stream: fileStream,
-                                encoding: Encoding.GetEncoding(currentLevelFile.Encoding)))
+                                encoding: Encoding.GetEncoding(currentLevelFile.Encod)))
                             {
                                 streamWriter.Write(fileContent);
                             }
@@ -501,7 +501,7 @@ namespace Models.Services
 
                 var compressedFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
                 ZipFile.CreateFromDirectory(
-                    sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.Name),
+                    sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.Name_text),
                     destinationArchiveFileName: compressedFileName);
                 System.IO.Directory.Delete(uniqueTempFolderPath, recursive: true);
                 return System.IO.File.OpenRead(compressedFileName);
@@ -516,7 +516,7 @@ namespace Models.Services
                 var fileStream = System.IO.File.Create(tempFileName);
                 using (var sw = new System.IO.StreamWriter(
                     stream: fileStream,
-                    encoding: Encoding.GetEncoding(file.Encoding),
+                    encoding: Encoding.GetEncoding(file.Encod),
                     bufferSize: this._defaultFileStreamBufferSize,
                     leaveOpen: true))
                 {

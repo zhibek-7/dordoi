@@ -333,7 +333,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
                     if (id_locale == -1)
                     {
-                        return file.OriginalFullText;
+                        return file.Original_Full_Text;
                     }
                     else
                     {
