@@ -18,12 +18,14 @@ namespace Localization.Controllers
     {
         private readonly LocalizationProjectRepository _localizationProjectRepository;
         private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
+        private readonly LocaleRepository _localeRepository;
         private readonly UserActionRepository _userActionRepository;
 
         public ProjectController()
         {
             _localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
             _localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(Settings.GetStringDB());
+            _localeRepository = new LocaleRepository(Settings.GetStringDB());
             _userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
@@ -128,9 +130,21 @@ namespace Localization.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("ListProjectLocales/{Id}")]
-        public List<LocalizationProjectsLocales> GetProjectsLocales([FromBody] int Id)
+        public Task<IEnumerable<LocalizationProjectsLocales>> GetProjectsLocales(int Id)
         {
-            return _localizationProjectsLocalesRepository.GetAll(Id).ToList();
+            return _localizationProjectsLocalesRepository.GetAll(Id);
+        }
+
+        /// <summary>
+        /// взвращает все языки
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("ListLocales")]
+        public Task<IEnumerable<Locale>> GetLocales()
+        {
+
+            return _localeRepository.GetAllAsync();
         }
 
 
