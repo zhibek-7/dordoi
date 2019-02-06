@@ -2,33 +2,33 @@
 {
     public class TranslationSubstring : BaseEntity
     {
-        public string Substring_To_Translate { get; set; }
+        public string substring_to_translate { get; set; }
 
-        public string Description { get; set; }
+        public string description { get; set; }
 
-        public string Context { get; set; }
+        public string context { get; set; }
 
-        public int? Translation_Max_Length { get; set; }
+        public int? translation_max_length { get; set; }
 
-        public int ID_File_Owner { get; set; }
+        public int id_file_owner { get; set; }
 
-        public string Value { get; set; }
+        public string value { get; set; }
 
-        public int Position_In_Text { get; set; }
+        public int position_in_text { get; set; }
 
-        public bool? Outdated { get; set; }
+        public bool? outdated { get; set; }
 
         public TranslationSubstring() { }
 
         public TranslationSubstring(string substringToTranslate, string context, int id_FileOwner, string value, int positionInText)
         {
-            this.Substring_To_Translate = substringToTranslate;
-            this.Description = null;
-            this.Context = context;
-            this.Translation_Max_Length = null;
-            this.ID_File_Owner = id_FileOwner;
-            this.Value = value;
-            this.Position_In_Text = positionInText;
+            this.substring_to_translate = substringToTranslate;
+            this.description = null;
+            this.context = context;
+            this.translation_max_length = null;
+            this.id_file_owner = id_FileOwner;
+            this.value = value;
+            this.position_in_text = positionInText;
         }
     }
 }

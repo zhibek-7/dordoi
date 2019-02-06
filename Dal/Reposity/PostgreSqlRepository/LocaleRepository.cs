@@ -205,7 +205,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             transaction.Rollback();
                             return false;
                         }
-                        locale.ID = insertedId.Value;
+                        locale.id = insertedId.Value;
                         return true;
                     }
                     catch (NpgsqlException exception)

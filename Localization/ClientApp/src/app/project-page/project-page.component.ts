@@ -80,7 +80,8 @@ export class ProjectPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.currentUserName = sessionStorage.getItem("currentUserName");
+    this.currentUserName = this.userService.currentUserName;
+    //this.currentUserName = sessionStorage.getItem("currentUserName");
 
     this.workTypeService.getWorkTypes().subscribe(
       workTypes => {
@@ -89,7 +90,8 @@ export class ProjectPageComponent implements OnInit {
       error => console.error(error)
     );
 
-    var projectId = Number(sessionStorage.getItem("ProjecID"));
+    var projectId = this.projectService.currentProjectId;
+    //var projectId = Number(sessionStorage.getItem("ProjecID"));
 
     this.languagesService.getByProjectId(projectId).subscribe(
       Languages => {

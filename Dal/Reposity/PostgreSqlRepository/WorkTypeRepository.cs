@@ -157,7 +157,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var _sql = "UPDATE work_types SET name_text=@name WHERE id=@WorkTypeId ";
-                    var _params = new { name = workType.Name_text, WorkTypeId = workType.ID };
+                    var _params = new { name = workType.Name_text, WorkTypeId = workType.id };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);
                     return true;

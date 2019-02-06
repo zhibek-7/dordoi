@@ -75,7 +75,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Select(new Query("localization_projects").Where("localization_projects.id", id)
                                 .LeftJoin("participants", "participants.id_localization_project", "localization_projects.id").Where("active", true)
                                 .AsCount("participants.id_user"), "count_users_active")
-                        .Select("localization_projects.*", "locales.name_text as SourceLocaleName")
+                        .Select("localization_projects.*", "locales.name_text as source_Locale_Name")
                         .Distinct();
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -184,14 +184,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, \"Visibility\", \"DateOfCreation\", \"LastActivity\", \"ID_SourceLocale\", \"AbleToDownload\", \"AbleToLeftErrors\", \"DefaultString\", \"NotifyNew\", \"NotifyFinish\", \"NotifyConfirm\", \"Logo\") VALUES('"
+                    var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
                   + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
-                  + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.AbleToDownload + "','" + project.AbleToLeftErrors + "','"
-                  + project.DefaultString + "','" + project.NotifyNew + "','" + project.NotifyFinish + "','" + project.NotifyConfirm + "','" + project.Logo + "')";
+                  + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.AbleTo_Left_Errors + "','"
+                  + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')";
 
                     this.LogQuery(sqlQuery);
                     int? projectId = dbConnection.Query<int>(sqlQuery, project).FirstOrDefault();
-                    project.ID = (int)projectId;
+                    project.id = (int)projectId;
                 }
             }
             catch (NpgsqlException exception)

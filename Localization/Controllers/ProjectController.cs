@@ -62,7 +62,7 @@ namespace Localization.Controllers
         public LocalizationProject AddProject([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.ID, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return project;
         }
 
@@ -71,7 +71,7 @@ namespace Localization.Controllers
         public LocalizationProject AddProjectT([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.ID, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return project;
         }
 

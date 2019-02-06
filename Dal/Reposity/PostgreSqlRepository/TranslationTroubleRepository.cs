@@ -102,7 +102,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         item.ID_Trouble,
                         item.Trouble,
                         item.ID_Translation,
-                        item.ID
+                        ID = item.id
                     };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteScalarAsync<int>(_sql, _params);

@@ -28,6 +28,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
   _term: Term = new Term();
 
   translations: TranslationWithLocale[] = [];
+  tempUserId: number = 301; // this.userService.currentUserId;
 
   @Input()
   set term(value: Term) {
@@ -37,8 +38,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
   constructor(
     private translationService: TranslationService,
     private glossariesService: GlossariesService,
-    private requestDataReloadService: RequestDataReloadService,
-    private userService: UserService
+    private requestDataReloadService: RequestDataReloadService //private userService: UserService
   ) {
     super();
   }
@@ -92,8 +92,6 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
       this._term.part_Of_Speech_Id = null;
     }
   }
-
-  tempUserId: number = this.userService.currentUserId;
 
   loadTranslations() {
     this.translationService

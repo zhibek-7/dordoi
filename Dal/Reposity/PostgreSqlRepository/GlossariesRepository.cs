@@ -169,7 +169,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         description = glossary.Description,
                         id_file = glossary.ID_File
                     };
-                    var query = new Query("glossaries").Where("id", glossary.ID).AsUpdate(editedGlossaries);
+                    var query = new Query("glossaries").Where("id", glossary.id).AsUpdate(editedGlossaries);
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(
@@ -178,10 +178,10 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
                     //Пересоздание связей глоссария с языками перевода (Glossaries с Locales)
-                    await EditGlossariesLocalesAsync(glossary.ID, glossary.Locales_Ids);
+                    await EditGlossariesLocalesAsync(glossary.id, glossary.Locales_Ids);
 
                     //Пересоздание связей глоссария с проектами локализации (Glossaries с localization_projects)
-                    await EditGlossarieslocalization_projectsAsync(glossary.ID, glossary.Localization_Projects_Ids);
+                    await EditGlossarieslocalization_projectsAsync(glossary.id, glossary.Localization_Projects_Ids);
                 }
             }
             catch (NpgsqlException exception)

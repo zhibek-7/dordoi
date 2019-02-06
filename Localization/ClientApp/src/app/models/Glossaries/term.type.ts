@@ -3,7 +3,7 @@ import { TranslationSubstring } from "src/app/models/database-entities/translati
 export class Term extends TranslationSubstring {
   constructor(
     id?: number,
-    substring_To_Translate?: string,
+    substring_to_translate?: string,
     description?: string,
     context?: string,
     id_fileOwner?: number,
@@ -15,7 +15,7 @@ export class Term extends TranslationSubstring {
   ) {
     super(
       id,
-      substring_To_Translate,
+      substring_to_translate,
       description,
       context,
       id_fileOwner,

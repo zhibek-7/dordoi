@@ -48,7 +48,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings);
 
-                    return newParticipant.ID;
+                    return newParticipant.id;
                 }
             }
             catch (NpgsqlException exception)

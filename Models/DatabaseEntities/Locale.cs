@@ -45,7 +45,7 @@ namespace Models.DatabaseEntities
         }
         public Locale(int id, string name, string description, string flag, string code, DateTime data_create, string url)
         {
-            ID = id;
+            base.id = id;
             this.name_text = name;
             this.description = description;
             this.code = code;

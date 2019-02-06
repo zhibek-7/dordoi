@@ -225,7 +225,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var query = new Query("files")
                         .AsUpdate(file)
-                        .Where("id", file.ID);
+                        .Where("id", file.id);
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var updatedRows = await connection.ExecuteAsync(compiledQuery.Sql, compiledQuery.NamedBindings);
@@ -268,7 +268,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             transaction.Rollback();
                             return false;
                         }
-                        file.ID = insertedId.Value;
+                        file.id = insertedId.Value;
 
                         if (file.Is_Folder)
                         {
@@ -355,29 +355,29 @@ namespace DAL.Reposity.PostgreSqlRepository
                     else
                     {
                         var sqlLocalizationProjectQuery = "SELECT * FROM localization_projects WHERE id = @ID_LocalizationProject";
-                        var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { file.ID });
+                        var localizationProject = await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery, new { ID = file.id });
                         var sqlTranslationSubstringsQuery = "SELECT * FROM translation_substring WHERE id_file_owner = @id";
                         var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
-                        translationSubstrings.Sort((x, y) => x.Position_In_Text.CompareTo(y.Position_In_Text));
+                        translationSubstrings.Sort((x, y) => x.position_in_text.CompareTo(y.position_in_text));
                         var output = file.Original_Full_Text;
                         for (int i = translationSubstrings.Count - 1; i >= 0; i--)
                         {
                             var sqlTranslationQuery = string.Format("SELECT * FROM translations WHERE id_string = @id_translationSubstring AND id_locale = @id_locale{0} SORT BY selected DESC, confirmed DESC, datetime DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND confirmed = true" : "");
-                            var translation = await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery, new { translationSubstrings[i].ID, id_locale });
+                            var translation = await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery, new { ID = translationSubstrings[i].id, id_locale });
                             if (translation == null)
                             {
-                                if (localizationProject.AbleToLeftErrors)
+                                if (localizationProject.AbleTo_Left_Errors)
                                 {
-                                    int n = translationSubstrings[i].Position_In_Text;
+                                    int n = translationSubstrings[i].position_in_text;
                                     while (n != 0 && (output[n - 1] != '\n' || output[n - 1] != '\r')) n--;
-                                    int m = output.IndexOfAny(new char[] { '\r', '\n' }, translationSubstrings[i].Position_In_Text);
+                                    int m = output.IndexOfAny(new char[] { '\r', '\n' }, translationSubstrings[i].position_in_text);
                                     while (m != output.Length - 1 && output[m + 1] != '\n') m++;
-                                    if (n > (i == 0 ? -1 : translationSubstrings[i - 1].Position_In_Text) && m < (i == translationSubstrings.Count - 1 ? output.Length : translationSubstrings[i + 1].Position_In_Text)) output = output.Remove(n, m - n + 1);
+                                    if (n > (i == 0 ? -1 : translationSubstrings[i - 1].position_in_text) && m < (i == translationSubstrings.Count - 1 ? output.Length : translationSubstrings[i + 1].position_in_text)) output = output.Remove(n, m - n + 1);
                                     continue;
                                 }
                                 if (localizationProject.original_if_string_is_not_translated) continue;
                             }
-                            output = output.Remove(translationSubstrings[i].Position_In_Text, translationSubstrings[i].Value.Length).Insert(translationSubstrings[i].Position_In_Text, translation == null ? localizationProject.DefaultString : translation.Translated);
+                            output = output.Remove(translationSubstrings[i].position_in_text, translationSubstrings[i].value.Length).Insert(translationSubstrings[i].position_in_text, translation == null ? localizationProject.Default_String : translation.Translated);
                         }
 
                         return output;

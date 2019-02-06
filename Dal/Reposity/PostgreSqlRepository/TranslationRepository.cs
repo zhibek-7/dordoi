@@ -383,7 +383,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { TranslationSubstringText = translationSubstring.Substring_To_Translate, TranslationSubstringId = translationSubstring.ID, ProjectId = currentProjectId };
+                    var param = new { TranslationSubstringText = translationSubstring.substring_to_translate, TranslationSubstringId = translationSubstring.id, ProjectId = currentProjectId };
                     this.LogQuery(query, param);
                     IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query, param);
                     return similarTranslations;

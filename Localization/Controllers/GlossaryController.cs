@@ -28,7 +28,7 @@ namespace Localization.WebApi
         [HttpPut("{glossaryId}")]
         public async Task UpdateAsync(int glossaryId, [FromBody] Glossary updatedGlossary)
         {
-            updatedGlossary.ID = glossaryId;
+            updatedGlossary.id = glossaryId;
             await this._glossaryService.UpdateAsync(updatedGlossary: updatedGlossary);
         }
 
@@ -97,7 +97,7 @@ namespace Localization.WebApi
             [FromBody] TranslationSubstring updatedTerm,
             [FromQuery] int? partOfSpeechId)
         {
-            updatedTerm.ID = termId;
+            updatedTerm.id = termId;
             await this._glossaryService
                 .UpdateTermAsync(
                     glossaryId: glossaryId,

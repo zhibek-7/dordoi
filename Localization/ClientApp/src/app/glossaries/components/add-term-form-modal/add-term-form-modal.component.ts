@@ -33,8 +33,8 @@ export class AddTermFormComponent extends ModalComponent implements OnInit {
   }
 
   submitNewTerm() {
-    this.newTerm.substring_To_Translate = this.newTerm.value;
-    this.newTerm.context = "newContext";
+    this.newTerm.substring_To_Translate = this.newTerm.substring_To_Translate;
+    this.newTerm.context = this.newTerm.substring_To_Translate;
     this.newTerm.position_In_Text = 0;
     this.hide();
     this.newTermSubmitted.emit(this.newTerm);

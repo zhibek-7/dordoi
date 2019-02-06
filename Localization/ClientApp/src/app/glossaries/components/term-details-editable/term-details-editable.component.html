@@ -1,10 +1,10 @@
 <h6 *ngIf="glossaryLocale" class="m-1">{{glossaryLocale.name_text}}</h6>
 <label class="m-1">Термин</label>
-<input class="form-control m-1" [(ngModel)]="term.value" type="text" [disabled]="!term.isEditable" />
+<input class="form-control m-1" [(ngModel)]="term.substring_To_Translate" type="text" [disabled]="!term.is_Editable" />
 <label class="m-1">Часть речи</label>
-<select class="form-control m-1" [(ngModel)]="term.partOfSpeechId" [disabled]="!term.isEditable">
+<select class="form-control m-1" [(ngModel)]="term.part_Of_Speech_Id" [disabled]="!term.is_Editable">
   <option [value]="null">Не выбрано</option>
   <option *ngFor="let partOfSpeech of partsOfSpeech" [ngValue]="partOfSpeech.id">{{partOfSpeech.name_text}}</option>
 </select>
 <label class="m-1">Описание</label>
-<textarea style="resize:none" class="form-control m-1" [(ngModel)]="term.description" rows="4" [disabled]="!term.isEditable"></textarea>
+<textarea style="resize:none" class="form-control m-1" [(ngModel)]="term.description" rows="4" [disabled]="!term.is_Editable"></textarea>

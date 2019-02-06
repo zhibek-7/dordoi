@@ -34,9 +34,9 @@ namespace Models.Services
             {
                 var temp = await _glossariesRepository.GetAllAsync();
                 //Создание списка глоссариев со строками перечислений имен связанных объектов.
-                var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesTableViewDTO
+                var resultDTO = temp.GroupBy(t => t.id).Select(t => new GlossariesTableViewDTO
                 {
-                    ID = t.Key,
+                    id = t.Key,
                     Name_text = t.FirstOrDefault().Name_text,
 
                     Locales_Name = string.Join(", ", t.Select(x => x.Locale_Name).Distinct().OrderBy(n => n)),
@@ -90,7 +90,7 @@ namespace Models.Services
                 //Создание глоссария с вложенными списками идентификаторов связанных данных.
                 var resultDTO = new GlossariesForEditingDTO
                 {
-                    ID = temp.FirstOrDefault().ID,
+                    id = temp.FirstOrDefault().id,
                     Name_text = temp.FirstOrDefault().Name_text,
                     Description = temp.FirstOrDefault().Description,
                     ID_File = temp.FirstOrDefault().ID_File,

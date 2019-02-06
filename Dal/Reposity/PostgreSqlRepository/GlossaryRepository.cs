@@ -201,7 +201,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
-            newTerm.ID_File_Owner = glossary.ID_File;
+            newTerm.id_file_owner = glossary.ID_File;
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -218,13 +218,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "position_in_text" +
                         ") VALUES " +
                         "(" +
-                        "@SubstringToTranslate, " +
-                        "@Description, " +
-                        "@Context, " +
-                        "@TranslationMaxLength, " +
-                        "@ID_FileOwner, " +
-                        "@Value, " +
-                        "@PositionInText" +
+                        "@substring_to_translate, " +
+                        "@description, " +
+                        "@context, " +
+                        "@translation_max_length, " +
+                        "@id_file_owner, " +
+                        "@value, " +
+                        "@position_in_text" +
                         ") " +
                         "RETURNING id";
                     var insertNewStingParam = newTerm;
@@ -235,8 +235,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                             param: insertNewStingParam);
 
                     var instertGlossaryStringAssotiationSql =
-                        "INSERT INTO glossaries_strings (id_glossary, id_string,id_par_of_speech) VALUES (@GlossaryId, @StringId, @PartsOfSpeechId)";
-                    var instertGlossaryStringAssotiationParam = new { GlossaryId = glossaryId, StringId = idOfNewTerm, PartsOfSpeechId = partOfSpeechId };
+                        "INSERT INTO glossaries_strings (id_glossary, id_string,id_part_of_speech) VALUES (@glossary_id, @string_id, @parts_of_speechId)";
+                    var instertGlossaryStringAssotiationParam = new { glossary_id = glossaryId, string_id = idOfNewTerm, parts_of_speechId = partOfSpeechId };
                     this.LogQuery(instertGlossaryStringAssotiationSql, instertGlossaryStringAssotiationParam);
                     await dbConnection
                         .ExecuteAsync(
@@ -289,7 +289,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "id_part_of_speech=@PartOfSpeechId " +
                         "WHERE id_string=@StringId " +
                         "AND id_glossary=@GlossaryId";
-                    var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.ID, PartOfSpeechId = partOfSpeechId };
+                    var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.id, PartOfSpeechId = partOfSpeechId };
                     this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
                     await dbConnection.ExecuteAsync(
                         sql: updateTermPartOfSpeechIdSql,
@@ -316,12 +316,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         private static readonly Dictionary<string, string> TermsSortColumnNamesMapping = new Dictionary<string, string>()
         {
             { "id", "translation_substrings.id" },
-            { "substring_totranslate", "translation_substrings.substring_to_translate" },
+            { "substring_to_translate", "translation_substrings.substring_to_translate" },
             { "description", "translation_substrings.description" },
             { "context", "translation_substrings.context" },
             { "translation_max_length", "translation_substrings.translation_max_length" },
             { "id_fileowner", "translation_substrings.id_file_owner" },
-            { "value", "translation_substrings.balue" },
+            { "value", "translation_substrings.value" },
             { "positionin_text", "translation_substrings.position_in_text" },
         };
 
@@ -416,34 +416,34 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
                 var query =
-                new Query("glossaries_strings")
-                    .LeftJoin("translation_substrings", "translation_substrings.id", "glossaries_strings.id_string")
-                    .Where("glossaries_strings.id_glossary", glossaryId)
-                    .Select(
-                        "translation_substrings.id",
-                        "translation_substrings.substring_to_translate",
-                        "translation_substrings.description",
-                        "translation_substrings.context",
-                        "translation_substrings.translation_max_length",
-                        "translation_substrings.id_file_owner",
-                        "translation_substrings.value",
-                        "translation_substrings.position_in_text",
-                        "glossaries_strings.id_part_of_speech as part_of_speech_id")
-                    .Select(
-                        new Query("translation_substrings_Locales")
-                            .LeftJoin("translations", join =>
-                                join.On("translations.id_string", "translation_substrings_locales.id_translation_substrings")
-                                    .On("translations.id_locale", "translation_substrings_locales.id_locales"))
-                            .SelectRaw("COUNT(translations.translated) = 0")
-                            .Where("translations.translated", "<>", "''")
-                            .WhereRaw("translation_substrings_locales.id_translation_substrings=translation_substrings.id"),
-                        "is_editable");
+            new Query("glossaries_strings")
+                .LeftJoin("translation_substrings", "translation_substrings.id", "glossaries_strings.id_string")
+                .Where("glossaries_strings.id_glossary", glossaryId)
+                .Select(
+                    "translation_substrings.id",
+                    "translation_substrings.substring_to_translate",
+                    "translation_substrings.description",
+                    "translation_substrings.context",
+                    "translation_substrings.translation_max_length",
+                    "translation_substrings.id_file_owner",
+                    "translation_substrings.value",
+                    "translation_substrings.position_in_text",
+                    "glossaries_strings.id_part_of_speech as part_of_speech_id")
+                .Select(
+                    new Query("translation_substrings_locales")
+                        .LeftJoin("translations", join =>
+                            join.On("translations.id_string", "translation_substrings_locales.id_translation_substrings")
+                                .On("translations.id_locale", "translation_substrings_locales.id_locale"))
+                        .SelectRaw("COUNT(translations.translated) = 0")
+                        .Where("translations.translated", "<>", "''")
+                        .WhereRaw("translation_substrings_locales.id_translation_substrings=translation_substrings.id"),
+                    "is_editable");
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
                 if (!string.IsNullOrEmpty(termPart))
                 {
                     var patternString = $"%{termPart}%";
-                    query = query.WhereLike("translation_substrings.value", patternString);
+                    query = query.WhereLike("translation_substrings.substring_to_translate", patternString);
                 }
                 return query;
 

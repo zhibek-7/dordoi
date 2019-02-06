@@ -317,7 +317,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("translation_substrings")
-                        .Where("ID", id)
+                        .Where("id", id)
                         .AsDelete();
 
 
@@ -356,7 +356,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("translation_substrings")
-                        .Where("ID", item.ID)
+                        .Where("id", item.id)
                         .AsUpdate(item);
 
                     var compiledQuery = this._compiler.Compile(query);

@@ -5,6 +5,6 @@ namespace Models.DatabaseEntities
     public abstract class BaseEntity
     {
         [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
     }
 }

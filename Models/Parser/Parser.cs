@@ -128,7 +128,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[3].Value, m.Groups[3].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[3].Value, m.Groups[3].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'po'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -147,7 +147,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'properties'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -167,7 +167,7 @@ namespace Models.Parser
             foreach (Match m in matches)
             {
                 bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
-                ts.Add(new TranslationSubstring(m.Groups[isLatin ? 2 : 1].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+                ts.Add(new TranslationSubstring(m.Groups[isLatin ? 2 : 1].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'json'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -186,7 +186,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'strings'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -205,7 +205,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[3].Value, m.Groups[3].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[3].Value, m.Groups[3].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'csv'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -226,14 +226,14 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, simpleRowPattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             matches = Regex.Matches(file.Original_Full_Text, arrayPattern, RegexOptions.Singleline);
             foreach (Match m in matches)
             {
                 string context = m.Groups[1].Value;
                 var itemMatches = Regex.Matches(m.Groups[2].Value, arrayItemPattern, RegexOptions.Singleline);
-                foreach (Match m2 in itemMatches) ts.Add(new TranslationSubstring(m2.Groups[1].Value, m.Groups[1].Value, file.ID, m2.Groups[1].Value, m.Groups[2].Index + m2.Groups[1].Index));
+                foreach (Match m2 in itemMatches) ts.Add(new TranslationSubstring(m2.Groups[1].Value, m.Groups[1].Value, file.id, m2.Groups[1].Value, m.Groups[2].Index + m2.Groups[1].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'xml'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -258,7 +258,7 @@ namespace Models.Parser
                 if (Regex.IsMatch(matches[i].Groups[1].Value, "=>"))
                 {
                     for (int j = 0; j < contextParts.Count; j++) context += string.Format("[{0}]", contextParts[j]);
-                    ts.Add(new TranslationSubstring(matches[i].Groups[3].Value, context, file.ID, matches[i].Groups[3].Value, matches[i].Groups[3].Index));
+                    ts.Add(new TranslationSubstring(matches[i].Groups[3].Value, context, file.id, matches[i].Groups[3].Value, matches[i].Groups[3].Index));
                     contextParts.RemoveAt(contextParts.Count - 1);
                 }
                 else
@@ -284,7 +284,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'resx'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -303,7 +303,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'string'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -322,7 +322,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[1].Value, string.Empty, file.ID, m.Groups[1].Value, m.Groups[1].Index));
+                ts.Add(new TranslationSubstring(m.Groups[1].Value, string.Empty, file.id, m.Groups[1].Value, m.Groups[1].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'txt'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;
@@ -341,7 +341,7 @@ namespace Models.Parser
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.ID, m.Groups[2].Value, m.Groups[2].Index));
+                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'rc'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
             return ts;

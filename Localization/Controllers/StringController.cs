@@ -181,7 +181,7 @@ namespace Localization.WebApi
         [HttpPut("{translationSubstringId}")]
         public async Task UpdateTranslationSubstring(int translationSubstringId, [FromBody] TranslationSubstring updatedTranslationSubstring)
         {
-            updatedTranslationSubstring.ID = translationSubstringId;
+            updatedTranslationSubstring.id = translationSubstringId;
             await this.stringRepository.UpdateAsync(item: updatedTranslationSubstring);
         }
 
