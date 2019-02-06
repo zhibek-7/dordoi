@@ -129,6 +129,8 @@ namespace Models.Services
             newVersionFile.ID_LocalizationProject = projectId;
             newVersionFile.Version = version;
             newVersionFile.Id_PreviousVersion = lastVersionDbFile?.ID;
+            newVersionFile.DownloadName = lastVersionDbFile?.DownloadName;
+            newVersionFile.TranslatorName = lastVersionDbFile?.TranslatorName;
 
             var newNode = await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
 
