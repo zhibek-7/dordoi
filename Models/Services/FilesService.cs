@@ -31,7 +31,7 @@ namespace Models.Services
             this._localeRepository = localeRepository;
         }
 
-        public async Task<IEnumerable<Node<File>>> GetAll()
+        public async Task<IEnumerable<Node<File>>> GetAllAsync()
         {
             var files = await this._filesRepository.GetAllAsync();
             return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
@@ -71,7 +71,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<File> GetById(int id)
+        public async Task<File> GetByIdAsync(int id)
         {
             return await this._filesRepository.GetByIDAsync(id);
         }
@@ -81,9 +81,9 @@ namespace Models.Services
             return this._filesRepository.GetInitialFolders(projectId);
         }
 
-        public async Task<Node<File>> AddFile(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
+        public async Task<Node<File>> AddFileAsync(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
         {
-            var foundedFile = await this._filesRepository.GetLastVersionByNameAndParentId(fileName, parentId);
+            var foundedFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(fileName, parentId);
             if (foundedFile != null)
             {
                 throw new Exception(WriteLn($"Файл \"{fileName}\" уже есть."));
@@ -94,13 +94,13 @@ namespace Models.Services
             newFile.ID_FolderOwner = parentId;
             newFile.ID_LocalizationProject = projectId;
 
-            return await this.AddNode(newFile, insertToDbAction: this.InsertFileToDbAsync);
+            return await this.AddNodeAsync(newFile, insertToDbAction: this.InsertFileToDbAsync);
         }
 
-        public async Task<Node<File>> UpdateFileVersion(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
+        public async Task<Node<File>> UpdateFileVersionAsync(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
         {
             var version = this._initialFileVersion;
-            var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentId(fileName, parentId);
+            var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(fileName, parentId);
             if (lastVersionDbFile != null)
             {
                 if (lastVersionDbFile.IsFolder)
@@ -129,8 +129,10 @@ namespace Models.Services
             newVersionFile.ID_LocalizationProject = projectId;
             newVersionFile.Version = version;
             newVersionFile.Id_PreviousVersion = lastVersionDbFile?.ID;
+            newVersionFile.DownloadName = lastVersionDbFile?.DownloadName;
+            newVersionFile.TranslatorName = lastVersionDbFile?.TranslatorName;
 
-            var newNode = await this.AddNode(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
+            var newNode = await this.AddNodeAsync(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
 
             if (lastVersionDbFile != null)
             {
@@ -238,9 +240,9 @@ namespace Models.Services
             return newFolder;
         }
 
-        public async Task<Node<File>> AddFolder(FolderModel newFolderModel)
+        public async Task<Node<File>> AddFolderAsync(FolderModel newFolderModel)
         {
-            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentId(newFolderModel.Name, newFolderModel.ParentId);
+            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(newFolderModel.Name, newFolderModel.ParentId);
             if (foundedFolder != null)
             {
                 throw new Exception(WriteLn($"Папка \"{newFolderModel.Name}\" уже есть."));
@@ -251,10 +253,10 @@ namespace Models.Services
                 folderOwnerId: newFolderModel.ParentId,
                 localizationProjectId: newFolderModel.ProjectId
                 );
-            return await AddNode(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
+            return await AddNodeAsync(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
         }
 
-        public async Task AddFolderWithContents(IFormFileCollection files, int? parentId, int projectId)
+        public async Task AddFolderWithContentsAsync(IFormFileCollection files, int? parentId, int projectId)
         {
             foreach (var file in files)
             {
@@ -265,7 +267,7 @@ namespace Models.Services
                 var lastParentId = parentId;
                 foreach (var directoryName in directoriesToFile)
                 {
-                    var directoryDbModel = await this._filesRepository.GetLastVersionByNameAndParentId(directoryName, lastParentId);
+                    var directoryDbModel = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(directoryName, lastParentId);
                     if (directoryDbModel == null)
                     {
                         var newFolder = this.GetNewFolderModel(
@@ -295,7 +297,7 @@ namespace Models.Services
             }
         }
 
-        public async Task UpdateNode(int id, File file)
+        public async Task UpdateNodeAsync(int id, File file)
         {
             // Check if file by id exists in database
             var foundedFile = await this._filesRepository.GetByIDAsync(id);
@@ -315,7 +317,7 @@ namespace Models.Services
             }
         }
 
-        public async Task DeleteNode(File file)
+        public async Task DeleteNodeAsync(File file)
         {
             var id = file.ID;
             var foundedFile = await this._filesRepository.GetByIDAsync(id);
@@ -345,7 +347,7 @@ namespace Models.Services
             } while (tempFileModel != null);
         }
 
-        private async Task<Node<File>> AddNode(File file, Func<File, Task> insertToDbAction)
+        private async Task<Node<File>> AddNodeAsync(File file, Func<File, Task> insertToDbAction)
         {
             if (file.ID_FolderOwner.HasValue)
             {
@@ -358,20 +360,20 @@ namespace Models.Services
 
             await insertToDbAction(file);
 
-            var addedFile = await this._filesRepository.GetLastVersionByNameAndParentId(file.Name, file.ID_FolderOwner);
+            var addedFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name, file.ID_FolderOwner);
             var icon = GetIconByFile(addedFile);
             return new Node<File>(addedFile, icon);
         }
 
         private async Task InsertFileToDbAsync(File file)
         {
-            var fileUploaded = await this._filesRepository.Upload(file);
+            var fileUploaded = await this._filesRepository.UploadAsync(file);
             if (!fileUploaded)
             {
                 throw new Exception(WriteLn($"Не удалось добавить файл \"{file.Name}\" в базу данных."));
             }
 
-            var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentId(file.Name, file.ID_FolderOwner)).ID;
+            var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name, file.ID_FolderOwner)).ID;
             var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.ID_LocalizationProject);
             await this._filesRepository.AddTranslationLocalesAsync(
                 fileId: addedFileId,
@@ -445,7 +447,7 @@ namespace Models.Services
             await this._filesRepository.AddTranslationLocalesAsync(fileId: fileId, localesIds: localesIds);
         }
 
-        public async Task<System.IO.FileStream> GetFile(int fileId, int? localeId)
+        public async Task<System.IO.FileStream> GetFileAsync(int fileId, int? localeId)
         {
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
             if (file == null)
@@ -481,7 +483,7 @@ namespace Models.Services
                         else
                         {
                             var fileContent = await this._filesRepository
-                                .GetFileContent(
+                                .GetFileContentAsync(
                                     id: currentLevelFile.ID,
                                     id_locale: localeId.HasValue ? localeId.Value : -1);
 
@@ -509,7 +511,7 @@ namespace Models.Services
             else
             {
                 var fileContent = await this._filesRepository
-                    .GetFileContent(
+                    .GetFileContentAsync(
                         id: fileId,
                         id_locale: localeId.HasValue ? localeId.Value : -1);
                 var tempFileName = System.IO.Path.GetTempFileName();
