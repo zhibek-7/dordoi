@@ -75,9 +75,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Добавление нового глоссария
                     var newGlossaries = new
                     {
-                        Name = glossary.Name_text,
-                        Description = glossary.Description,
-                        ID_File = glossary.ID_File
+                        name_text = glossary.Name_text,
+                        description = glossary.Description,
+                        id_file = glossary.ID_File
                     };
                     var query = new Query("glossaries").AsInsert(newGlossaries, true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);

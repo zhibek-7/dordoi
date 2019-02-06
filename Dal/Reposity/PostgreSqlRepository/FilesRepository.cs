@@ -17,22 +17,39 @@ namespace DAL.Reposity.PostgreSqlRepository
     {
 
         private readonly string _insertFileSql =
-            "VALUES (" +
-            "@ID_LocalizationProject," +
-            "@Name, " +
+            "INSERT INTO files (" +
+            "id_localization_project, " +
+            "name_text, " +
+            "description, " +
+            "date_of_change, " +
+            "strings_count, " +
+            "version, " +
+            "priority, " +
+            "id_folder_owner, " +
+            "encod, " +
+            "is_folder, " +
+            "original_full_text, " +
+            "is_last_version, " +
+            "id_previous_version, " +
+            "translator_name, " +
+            "download_name" +
+            ") "
+            + "VALUES (" +
+            "@ID_Localization_Project," +
+            "@Name_text, " +
             "@Description, " +
-            "@DateOfChange, " +
-            "@StringsCount, " +
+            "@Date_Of_Change, " +
+            "@Strings_Count, " +
             "@Version, " +
             "@Priority, " +
-            "@ID_FolderOwner, " +
-            "@Encoding, " +
-            "@IsFolder, " +
-            "@OriginalFullText, " +
-            "@IsLastVersion, " +
-            "@Id_PreviousVersion, " +
-            "@TranslatorName, " +
-            "@DownloadName" +
+            "@ID_Folder_Owner, " +
+            "@Encod, " +
+            "@Is_Folder, " +
+            "@Original_Full_Text, " +
+            "@Is_Last_Version, " +
+            "@Id_Previous_Version, " +
+            "@Translator_Name, " +
+            "@Download_Name" +
             ")";
 
         public FilesRepository(string connectionStr) : base(connectionStr)

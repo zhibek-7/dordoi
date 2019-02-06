@@ -1,16 +1,15 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { AddGlossaryFormModalComponent } from './add-glossary-form-modal.component';
+import { AddGlossaryFormModalComponent } from "./add-glossary-form-modal.component";
 
-describe('AddGlossaryFormModalComponent', () => {
+describe("AddGlossaryFormModalComponent", () => {
   let component: AddGlossaryFormModalComponent;
   let fixture: ComponentFixture<AddGlossaryFormModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddGlossaryFormModalComponent ]
-    })
-    .compileComponents();
+      declarations: [AddGlossaryFormModalComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('AddGlossaryFormModalComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

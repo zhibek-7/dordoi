@@ -13,6 +13,7 @@ import { TranslationService } from "src/app/services/translationService.service"
 import { TranslationWithLocale } from "src/app/glossaries/models/translationWithLocale.model";
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
 import { forkJoin, Observable } from "rxjs";
+import { UserService } from "../../../services/user.service";
 
 @Component({
   selector: "app-edit-term-form-modal",
@@ -36,7 +37,8 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
   constructor(
     private translationService: TranslationService,
     private glossariesService: GlossariesService,
-    private requestDataReloadService: RequestDataReloadService
+    private requestDataReloadService: RequestDataReloadService,
+    private userService: UserService
   ) {
     super();
   }
@@ -91,7 +93,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
     }
   }
 
-  tempUserId: number = 300;
+  tempUserId: number = this.userService.currentUserId;
 
   loadTranslations() {
     this.translationService
