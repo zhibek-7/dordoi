@@ -3,8 +3,8 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { CollectionViewer, SelectionChange } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, merge } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiService } from '../../../services/api.service';
-import { Resource } from '../../../models/Resource';
+//import { ApiService } from '../../../services/api.service';
+//import { Resource } from '../../../models/Resource';
 import { HttpClient } from '@angular/common/http';
 
 function getDataMap(parentName) {
@@ -125,27 +125,29 @@ export class DynamicDataSource {
 })
 export class FoldersComponent {
   private currentdir = '/';
-  private resoursesData: Resource[];
+  //private resoursesData: Resource[];
   folder;
 
-  constructor(public database: DynamicDatabase, public apiClient: ApiService) {
+  constructor(public database: DynamicDatabase,
+    //public apiClient: ApiService
+  ) {
     this.database.dataMap =
-    apiClient
-      .getResource(
-        this.currentdir.substring(0, this.currentdir.lastIndexOf('/')),
-        // tslint:disable-next-line:max-line-length
-        'eyJhbGciOiJIUzI1NiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAKtWyiwuVrJSSs5PSS3KyczLVtJRykwsUbIyNDWxMDY2NTc20VFKrSiACJgYGRmCBXITM3OAuhJTcjPzjBxAPL3k_FylWgCHcYbMTwAAAA.zUIBZlYhL0JrFVfkYBQ1KYZ66JiZppOg5pLQcDzmbrk',
-        'fileasc'
-      )
-      .subscribe({
-        next: (data: Resource[]) => {
-          this.addChildNode(data);
-        },
-        error: err => console.log(err),
-        complete: () => {
-          console.log('complite');
-        }
-      });
+    //apiClient
+    //  .getResource(
+    //    this.currentdir.substring(0, this.currentdir.lastIndexOf('/')),
+    //    // tslint:disable-next-line:max-line-length
+    //    'eyJhbGciOiJIUzI1NiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAKtWyiwuVrJSSs5PSS3KyczLVtJRykwsUbIyNDWxMDY2NTc20VFKrSiACJgYGRmCBXITM3OAuhJTcjPzjBxAPL3k_FylWgCHcYbMTwAAAA.zUIBZlYhL0JrFVfkYBQ1KYZ66JiZppOg5pLQcDzmbrk',
+    //    'fileasc'
+    //  )
+    //  .subscribe({
+    //    next: (data: Resource[]) => {
+    //      this.addChildNode(data);
+    //    },
+    //    error: err => console.log(err),
+    //    complete: () => {
+    //      console.log('complite');
+    //    }
+    //  });
     this.treeControl = new FlatTreeControl<DynamicFlatNode>(
       this.getLevel,
       this.isExpandable
@@ -181,7 +183,7 @@ export class FoldersComponent {
   }
 
   changeChildNode() {
-    console.log(this.resoursesData, 777);
+    //console.log(this.resoursesData, 777);
   }
 }
 
