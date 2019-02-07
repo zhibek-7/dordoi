@@ -43,8 +43,8 @@
     Приватность
   </label>
   <div class="form-check">
-    <mat-radio-group  [(ngModel)]="pjPublic" [ngModelOptions]="{standalone: true}">
-      <mat-radio-button name="PublicName" value="public" checked>Виден всем пользователям</mat-radio-button>
+    <mat-radio-group  [(ngModel)]="pjPublic" name="currentProjectPublic" [ngModelOptions]="{standalone: true}" ng-checked="">
+      <mat-radio-button name="PublicName" value="public">Виден всем пользователям</mat-radio-button>
       <small id="nameHelp" class="form-text text-muted">Visible to anyone</small>
       <mat-radio-button name="PrivateName" value="nopublic">Виден только участникам</mat-radio-button>
       <small id="nameHelp" class="form-text text-muted"> Visible only to the invited project members</small>
@@ -98,12 +98,12 @@
       <label for="">Исходный язык</label>
     </div>
     <div>
-      <select class="form-control" [(ngModel)]="selectedLang" [(value)]="selected" [ngModelOptions]="{standalone: true}">
-        <option  id='{{lang.id}}' *ngFor="let lang of dropdownList" value='{{lang.id}}' [ngValue]="lang.id"> {{lang.itemName}}</option>
+      <select class="form-control" [(ngModel)]="selectedLang" [ngModelOptions]="{standalone: true}">
+        <option  id='{{lang.id}}' *ngFor="let lang of dropdownList"  [selected]="selectedLang" value='{{lang.id}}'> {{lang.itemName}}</option>
       </select>
     </div>
 
-    <div class="row">
+    <div class="row"> 
       <div class="col">
         <label for="">Целевые языки</label>
         <div class="input-group">
@@ -123,10 +123,16 @@
         <div class="input-group">
           <div class="col-md" size="4" style="height: 10em; overflow: auto;">
             <div class="form-check" *ngFor="let lang of dropdownList |filter:searchText|orderBy:args:reverse">
-              <label class="form-check-label" for=' {{lang.id}}'>
+              <label class="form-check-label"*ngIf="lang.checked==true" for=' {{lang.id}}'>
+                <input class="form-check-input" type="checkbox"  checked id='{{lang.id}}' name='{{lang.itemName}}' (click)="AddSelected($event,lang)">
+                {{lang.itemName}}
+
+              </label>
+
+              <label class="form-check-label"*ngIf="lang.checked==false" for=' {{lang.id}}'>
                 <input class="form-check-input" type="checkbox" id='{{lang.id}}' name='{{lang.itemName}}' (click)="AddSelected($event,lang)">
                 {{lang.itemName}}
-                
+
               </label>
             </div>
 
