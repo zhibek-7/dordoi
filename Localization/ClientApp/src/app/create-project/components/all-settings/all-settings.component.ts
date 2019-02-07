@@ -54,8 +54,8 @@ export class AllSettingsComponent implements OnInit {
     //pjFileTrue: new FormControl(),
     pjExportTrue: new FormControl(),
     pjSkipUntranslStrTrue: new FormControl(),
-    pjNotificationTrue: new FormControl(),
-    selectedLang: new FormControl()
+    pjNotificationTrue: new FormControl()
+
   });
 
    
@@ -113,7 +113,7 @@ export class AllSettingsComponent implements OnInit {
           } else {
 
             lang.checked = false;
-
+            this.selectedL = false;
           }
 
 
@@ -157,13 +157,13 @@ export class AllSettingsComponent implements OnInit {
         this.pjSkipUntranslStrTrue = this.project.ableToLeftErrors;
         this.pjExportTrue = this.project.export_only_approved_translations;
         this.pjNotificationTrue = this.project.notifyNew;
-
-        this.selectedItems = selectedLangs;
         this.selectedLang = this.project.ID_SourceLocale;
+        this.selectedItems = selectedLangs;
+        
         if (this.currentProjectPublic == true) {
-          this.pjPublic == "public";
+          this.pjPublic = "public";
         } else {
-          this.pjPublic == "nopublic";
+          this.pjPublic = "nopublic";
         }
 
         this.selectedL = false;
@@ -171,7 +171,7 @@ export class AllSettingsComponent implements OnInit {
 
         
        
-        console.log(this.currentProjectId);
+        console.log(this.pjPublic);
       },
       error => console.error(error)
     );
