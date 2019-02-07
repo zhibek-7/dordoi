@@ -50,11 +50,11 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
     if (!this.glossary) return;
 
-    this._term.substring_To_Translate = this._term.value;
+    this._term.substring_to_translate = this._term.value;
     let updateTermObservable = this.glossariesService.updateTerm(
       this.glossary.id,
       this._term,
-      this._term.part_Of_Speech_Id
+      this._term.part_of_speech_id
     );
     updateTermObservable.subscribe();
 
@@ -88,8 +88,8 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
   resetTermViewModel() {
     this._term = JSON.parse(JSON.stringify(this._originalTermReference));
-    if (!this._term.part_Of_Speech_Id) {
-      this._term.part_Of_Speech_Id = null;
+    if (!this._term.part_of_speech_id) {
+      this._term.part_of_speech_id = null;
     }
   }
 

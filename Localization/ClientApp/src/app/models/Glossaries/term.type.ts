@@ -6,22 +6,22 @@ export class Term extends TranslationSubstring {
     substring_to_translate?: string,
     description?: string,
     context?: string,
-    id_fileOwner?: number,
-    translation_Max_Length?: number,
+    id_file_owner?: number,
+    translation_max_length?: number,
     value?: string,
-    position_In_Text?: number,
-    public part_Of_Speech_Id?: number,
-    public is_Editable?: boolean
+    position_in_text?: number,
+    public part_of_speech_id?: number,
+    public is_editable?: boolean
   ) {
     super(
       id,
       substring_to_translate,
       description,
       context,
-      id_fileOwner,
-      translation_Max_Length,
+      id_file_owner,
+      translation_max_length,
       value,
-      position_In_Text
+      position_in_text
     );
   }
 }

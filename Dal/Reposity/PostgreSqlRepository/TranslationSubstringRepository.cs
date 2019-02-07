@@ -547,7 +547,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     var searchPattern = $"%{searchString}%";
-                    query = query.WhereLike("value", searchPattern);
+                    query = query.WhereLike("substring_to_translate", searchPattern);
                 }
 
                 return query;

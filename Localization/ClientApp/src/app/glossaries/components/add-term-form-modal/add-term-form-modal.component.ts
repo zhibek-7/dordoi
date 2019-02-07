@@ -33,8 +33,8 @@ export class AddTermFormComponent extends ModalComponent implements OnInit {
   }
 
   submitNewTerm() {
-    this.newTerm.substring_To_Translate = this.newTerm.substring_To_Translate;
-    this.newTerm.context = this.newTerm.substring_To_Translate;
+    this.newTerm.substring_to_translate = this.newTerm.substring_to_translate;
+    this.newTerm.context = this.newTerm.substring_to_translate;
     this.newTerm.position_In_Text = 0;
     this.hide();
     this.newTermSubmitted.emit(this.newTerm);
@@ -42,7 +42,7 @@ export class AddTermFormComponent extends ModalComponent implements OnInit {
 
   resetNewTermModel() {
     this.newTerm = new Term();
-    this.newTerm.part_Of_Speech_Id = null;
-    this.newTerm.is_Editable = true;
+    this.newTerm.part_of_speech_id = null;
+    this.newTerm.is_editable = true;
   }
 }

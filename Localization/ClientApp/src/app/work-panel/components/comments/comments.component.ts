@@ -101,7 +101,6 @@ export class CommentsComponent implements OnInit {
     this.commentService
       .getAllCommentsInStringById(idString)
       .subscribe(comments => {
-        console.log(comments);
         this.commentsList = comments;
       });
   }
@@ -115,24 +114,6 @@ export class CommentsComponent implements OnInit {
     this.commentsList.push(insertedComment);
 
     this.addCommentText = null;
-  }
-
-    // Функция получения всех комментариев для данной фразы
-    getComments(idString: number){
-        this.commentService.getAllCommentsInStringById(idString)
-            .subscribe( comments => {
-                this.commentsList = comments;            
-        });
-    };
-
-    // Добавление комментария
-    public async addComment(){
-        let comment: Comment = new Comment(301, this.stringId, this.addCommentText);        //TODO поменять на id реального пользователя, когда появится
-        let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
-        this.commentsList.push(insertedComment);
-
-        this.addCommentText = null;
-    }
   }
 
   // Изменение комментария
@@ -237,7 +218,7 @@ export class CommentsComponent implements OnInit {
         this.termsList.forEach(element => {
           element.term = new Term(
             element.id,
-            element.substring_To_Translate,
+            element.substring_to_translate,
             element.description,
             element.context,
             element.iD_File_Owner,

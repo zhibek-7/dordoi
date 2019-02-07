@@ -420,13 +420,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Users")
-                        .Where("Users.ID", id)
-                        .LeftJoin("UsersLocales", "UsersLocales.ID_User", "Users.ID")
+                    var query = new Query("users")
+                        .Where("users.id", id)
+                        .LeftJoin("users_locales", "users_locales.id_user", "users.id")
                         .Select(
-                        "Users.*",
-                        "UsersLocales.ID_Locale As LocaleId",
-                        "UsersLocales.IsNative As LocaleIsNative"
+                        "users.*",
+                        "users_locales.id_locale As LocaleId",
+                        "users_locales.is_native As LocaleIsNative"
                         );
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -437,17 +437,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Создание пользователя с вложенными списками идентификаторов связанных данных.
                     var resultDTO = new UserProfileForEditingDTO
                     {
-                        ID = temp.FirstOrDefault().ID,
-                        Name = temp.FirstOrDefault().Name,
-                        Email = temp.FirstOrDefault().Email,
-                        Photo = temp.FirstOrDefault().Photo,
-                        FullName = temp.FirstOrDefault().FullName,
-                        AboutMe = temp.FirstOrDefault().AboutMe,
-                        Gender = temp.FirstOrDefault().Gender,
-                        TimeZone = temp.FirstOrDefault().TimeZone,
-                        
-                        LocalesIds = temp.Select(t => t.LocaleId).Distinct(),
-                        LocalesIdIsNative = temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
+                        id = temp.FirstOrDefault().id,
+                        name = temp.FirstOrDefault().Name,
+                        email = temp.FirstOrDefault().Email,
+                        photo = temp.FirstOrDefault().Photo,
+                        full_name = temp.FirstOrDefault().FullName,
+                        about_me = temp.FirstOrDefault().AboutMe,
+                        gender = temp.FirstOrDefault().Gender,
+                        time_zone = temp.FirstOrDefault().TimeZone,
+
+                        locales_ids = temp.Select(t => t.LocaleId).Distinct(),
+                        locales_id_is_native = temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
                     };
 
                     return resultDTO;
@@ -473,15 +473,15 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var edited = new
                     {
-                        Photo = user.Photo,
-                        Email = user.Email,
+                        photo = user.photo,
+                        email = user.email,
                         //Joined = user.Joined,
-                        FullName = user.FullName,
-                        TimeZone = user.TimeZone,
-                        AboutMe = user.AboutMe,
-                        Gender = user.Gender
+                        full_name = user.full_name,
+                        time_zone = user.time_zone,
+                        about_me = user.about_me,
+                        gender = user.gender
                     };
-                    var query = new Query("Users").Where("ID", user.ID).AsUpdate(edited);
+                    var query = new Query("users").Where("id", user.id).AsUpdate(edited);
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(

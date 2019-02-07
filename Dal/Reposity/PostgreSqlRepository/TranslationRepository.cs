@@ -331,8 +331,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "INNER JOIN files AS F ON F.id_localization_project = LP.id " +
                         "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +
                         "INNER JOIN translations AS T ON T.id_string = TS.id " +
-                        "WHERE TS.substring_to_translate LIKE @TranslationText";
-                        "WHERE LOWER(TS.\"SubstringToTranslate\") LIKE LOWER (@TranslationText)";
+                        "WHERE  LOWER(TS.substring_to_translate) LIKE LOWER(@TranslationText)";
 
             try
             {

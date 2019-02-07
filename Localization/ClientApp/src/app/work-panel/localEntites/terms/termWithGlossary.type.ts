@@ -8,7 +8,7 @@ export class TermWithGlossary {
 
   public constructor(
     public iD?: number,
-    public substring_To_Translate?: string,
+    public substring_to_translate?: string,
     public description?: string,
     public context?: string,
     public iD_File_Owner?: number,

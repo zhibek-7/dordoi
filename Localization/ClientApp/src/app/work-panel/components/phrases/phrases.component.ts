@@ -52,7 +52,7 @@ export class PhrasesComponent implements OnInit {
     let StringsFromNullValue: TranslationSubstring[] = [];
 
     this.phrasesList.forEach(element => {
-      if (element.substring_To_Translate != null) {
+      if (element.substring_to_translate != null) {
         StringsFromNullValue.push(element);
       }
     });
@@ -102,15 +102,15 @@ export class PhrasesComponent implements OnInit {
     this.sharePhraseService.getTranslationsOfPickedPhrase();
   }
 
-    searchInputEmpty(): boolean {
-        if(this.searchText == ''){
-            return true;
-        } else {
-            return false;
-        }
+  searchInputEmpty(): boolean {
+    if (this.searchText == "") {
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    filterPhrasesClick(){
-        alert("Здесь будут функции фильтрации");
-    }
+  filterPhrasesClick() {
+    alert("Здесь будут функции фильтрации");
+  }
 }

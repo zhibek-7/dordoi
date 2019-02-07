@@ -24,23 +24,23 @@
       <div class="panel-body">
         <ul class="list-group list-group-flush">
           <div *ngIf="searchInputEmpty()">
-            <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText | sort:'substringToTranslate' "
-            (click)="choosePhrase(phrase)">
-            <div class="row">
-              <div class="col-1"><img class="colorIcon"></div>
-              <div class="col-11"> {{phrase.substring_To_Translate}} </div>
-            </div>
-          </li>
-          </div>  
-          <div *ngIf="!searchInputEmpty()">
-            <li class="list-group-item list-group-item-action" *ngFor="let phrase of phrasesList | filterPhrases: searchText | sort:'substringToTranslate' "
-            (click)="choosePhrase(phrase)">
+            <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText | sort:'substring_to_translate' "
+              (click)="choosePhrase(phrase)">
               <div class="row">
                 <div class="col-1"><img class="colorIcon"></div>
-                <div class="col-11"> {{phrase.substringToTranslate}} </div>
+                <div class="col-11"> {{phrase.substring_to_translate}} </div>
               </div>
             </li>
-          </div>        
+          </div>
+          <div *ngIf="!searchInputEmpty()">
+            <li class="list-group-item list-group-item-action" *ngFor="let phrase of phrasesList | filterPhrases: searchText | sort:'substring_to_translate' "
+              (click)="choosePhrase(phrase)">
+              <div class="row">
+                <div class="col-1"><img class="colorIcon"></div>
+                <div class="col-11"> {{phrase.substring_to_translate}} </div>
+              </div>
+            </li>
+          </div>
         </ul>
       </div>
     </div>

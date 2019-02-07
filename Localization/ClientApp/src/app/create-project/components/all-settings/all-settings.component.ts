@@ -38,7 +38,7 @@ export class AllSettingsComponent implements OnInit {
   isChecked = true;
 
   public project: LocalizationProject;
- 
+
   // this.searchText = this.projectsLcalesService.currentProjectName;
   selectedL: boolean;
   pjPublic: string;
@@ -89,44 +89,34 @@ export class AllSettingsComponent implements OnInit {
       error => console.error(error)
     );
 
+    let selectedLangs = [];
     let allPrLocales = this.projectsService
       .getProjectLocales(this.currentProjectId)
       .subscribe(
         projectsL => {
           this.allProjLocales = projectsL;
+
+          this.dropdownList.forEach(lang => {
+            const index = this.allProjLocales.findIndex(
+              list => list["iD_Locale"] == lang.id
+            );
+
+            if (index == 0) {
+              selectedLangs.push({
+                itemName: lang.itemName,
+                selected: true,
+                id: lang.id
+              });
+
+              lang.checked = true;
+              this.selectedL = true;
+            } else {
+              lang.checked = false;
+            }
+          });
         },
         error => console.error(error)
       );
-
-    let selectedLangs = [];
-    let allPrLocales = this.projectsService.getProjectLocales(this.currentProjectId)
-      .subscribe(projectsL => {
-        this.allProjLocales = projectsL;
-        
-        this.dropdownList.forEach((lang) => {
-          const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
-
-          if (index == 0) {
-            selectedLangs.push({
-              itemName: lang.itemName,
-              selected: true,
-              id: lang.id
-            });
-
-            lang.checked = true;
-            this.selectedL= true;
-
-          } else {
-
-            lang.checked = false;
-
-          }
-
-
-        });
-      
-      },
-        error => console.error(error));
 
     //this.dropdownList = [
     //  { itemName: "Ido", checked: false, id: "1" },
@@ -147,7 +137,6 @@ export class AllSettingsComponent implements OnInit {
     //  { itemName: "Ангийский, Белиз", checked: false, id: "12" },
     //  { itemName: "Русский", checked: false, id: "13" }
     //];
-   
 
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
@@ -175,8 +164,6 @@ export class AllSettingsComponent implements OnInit {
         this.selectedL = false;
         this.dropdownList = this.dropdownList;
 
-        
-       
         console.log(this.currentProjectId);
       },
       error => console.error(error)
