@@ -283,11 +283,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                                     "position_in_text" +
                                     ") " +
                                     "VALUES (" +
-                                    "@SubstringToTranslate, " +
-                                    "@Context, " +
-                                    "@ID_FileOwner, " +
-                                    "@Value, " +
-                                    "@PositionInText" +
+                                    "@substring_to_translate, " +
+                                    "@context, " +
+                                    "@id_file_owner, " +
+                                    "@value, " +
+                                    "@position_in_text" +
                                     ")";
                         var translationSubstrings = new Parser().Parse(file);
                         var translationSubstringsCount = translationSubstrings.Count;
@@ -300,7 +300,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         if (n == 0)
                         {
                             file.Strings_Count = translationSubstringsCount;
-                            sqlString = "UPDATE files SET strings_count = @StringsCount WHERE id = @Id";
+                            sqlString = "UPDATE files SET strings_count = @Strings_Count WHERE id = @Id";
                             this.LogQuery(sqlString, param: file);
                             await connection.ExecuteAsync(sqlString, file, transaction);
                         }
