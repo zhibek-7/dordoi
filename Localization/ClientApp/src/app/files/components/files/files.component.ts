@@ -49,16 +49,16 @@ export class FilesComponent implements OnInit {
     if(this.router.url.indexOf("LanguageFiles") != -1){
       this.isSelectionFileForTranslation = true;
       this.selectedProjectId = this.activatedRoute.snapshot.params['projectId'];
-      this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];
+      this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];      
 
       this.cols = [
         { field: 'name', header: 'Имя' },
         { field: 'dateOfChange', header: 'Дата изменения' },
-        { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
-        // { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
-        // { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
+        { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' }, 
+        { field: 'percentOfTranslation', header: 'Процент предложенных переводов', width: '130px', textalign: 'center' },       
+        { field: 'percentOfConfirmed', header: 'Процент подтверждённых переводов', width: '150px', textalign: 'center' },       
         { }
-      ];
+      ];        
     }
     else {
       this.cols = [
@@ -73,9 +73,10 @@ export class FilesComponent implements OnInit {
 
     console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-    console.log('Projec=' + sessionStorage.getItem('Projec'));    
-
+    console.log('Projec=' + sessionStorage.getItem('Projec'));   
+    
     this.getFiles();
+
   }
 
   pseudoCut(selectedNode: TreeNode): void {
@@ -113,10 +114,24 @@ export class FilesComponent implements OnInit {
     this.fileService.getFilesByProjectIdAsTree(this.projectsService.currentProjectId, this.searchFilesNamesString).subscribe(files => { 
       this.files = files;
 
+      if(this.isSelectionFileForTranslation){
+        this.files.forEach(file => {
+          this.fileService.getFileTranslationInfos(file.data)
+            .subscribe(translations =>{
+              translations.forEach(translation => {
+                if(translation.localeId == this.selectedLanguageId){
+                  file.data.percentOfTranslation = translation.percentOfTranslation;
+                  file.data.percentOfConfirmed = translation.percentOfConfirmed;
+                }
+              });
+            });
+        });
+      }
+
       this.isLoading = false;
     },
     error => alert(error));
-  };
+  };  
 
   addFolder(newFolder: File, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;

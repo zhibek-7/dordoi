@@ -8,6 +8,7 @@ import { ModalComponent } from 'src/app/shared/components/modal/modal.component'
 
 import { FilterSelectableLocalesPipe } from 'src/app/shared/pipes/filterSelectableLocales.pipe';
 import { OrderByPipe } from 'src/app/shared/pipes/orderBy.pipe';
+import { SetTimeZoneComponent } from './components/set-time-zone/set-time-zone.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { OrderByPipe } from 'src/app/shared/pipes/orderBy.pipe';
     ModalComponent,
     FilterSelectableLocalesPipe,
     OrderByPipe,
+    SetTimeZoneComponent,
   ],
   imports: [
     CommonModule,
@@ -25,6 +27,7 @@ import { OrderByPipe } from 'src/app/shared/pipes/orderBy.pipe';
     PaginationComponent,
     SetLanguagesComponent,
     ModalComponent,
+    SetTimeZoneComponent,
   ]
 })
 export class SharedModule { }

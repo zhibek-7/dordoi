@@ -96,6 +96,14 @@ export class PhrasesComponent implements OnInit {
         this.sharePhraseService.getTranslationsOfPickedPhrase();
     }
 
+    searchInputEmpty(): boolean {
+        if(this.searchText == ''){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     filterPhrasesClick(){
         alert("Здесь будут функции фильтрации");
     }

@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="row" style="margin-bottom: 10px;">
+      <div class="col-3">
+          <label for="address">Адрес:</label>
+      </div>
+      <div class="col-9">
+          <input type="text" id="address" style="width: 100%;" readonly [(ngModel)]="data.address">
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px;">
+      <div class="col-3">
+          <label for="port">Порт:</label>
+      </div>
+      <div class="col-9">
+          <input type="text" id="port" style="width: 100%;" readonly [(ngModel)]="data.port">
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px;">
+      <div class="col-3">
+          <label for="min">Размер минимальной памяти для сервера:</label>
+      </div>
+      <div class="col-9">
+          <input type="text" id="min" style="width: 100%;" readonly [(ngModel)]="data.minSpace">
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px;">
+      <div class="col-3">
+          <label for="max">Размер максимальной памяти для сервера:</label>
+      </div>
+      <div class="col-9">
+          <input type="text" id="max" style="width: 100%;" readonly [(ngModel)]="data.maxSpace">
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px;">
+      <div class="col-3">
+          <label for="status">Статус:</label>
+      </div>
+      <div class="col-9">
+          <input type="text" id="status" style="width: 100%;" readonly [(ngModel)]="data.status">
+      </div>
+    </div>
+  </div>
+
+<div mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="onNoClick()">Закрыть</button>
+</div>

@@ -176,10 +176,8 @@ namespace Models.Services
                     var localeId = localeIdToTranslationInfos.Key;
                     var translationInfos = localeIdToTranslationInfos.ToArray();
                     var filesCount = translationInfos.Length;
-                    var averageConfirmed = translationInfos
-                        .Aggregate(seed: 0d, func: (seed, translationInfo) => seed + translationInfo.PercentOfConfirmed) / filesCount;
-                    var averageTranslated = translationInfos
-                        .Aggregate(seed: 0d, func: (seed, translationInfo) => seed + translationInfo.PercentOfTranslation) / filesCount;
+                    var averageConfirmed = translationInfos.Sum(x => x.PercentOfConfirmed) / filesCount;
+                    var averageTranslated = translationInfos.Sum(x => x.PercentOfTranslation) / filesCount;
                     folderTranslationInfos.Add(new FileTranslationInfo()
                     {
                         LocaleId = localeId,
