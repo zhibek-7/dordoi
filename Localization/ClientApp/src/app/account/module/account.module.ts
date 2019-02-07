@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import { FormControl, Validators, AbstractControl, FormGroup } from '@angular/forms';
 //import { Router } from '@angular/router';
 
+import { LanguageService } from 'src/app/services/languages.service';
+
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -40,6 +42,8 @@ import {
 } from '@angular/material';
 
 import { AccountRoutingModule } from './account-routing.module';
+
+import { SharedModule } from 'src/app/shared/shared.module';
 
 import { UserService } from 'src/app/services/user.service';
 
@@ -94,8 +98,14 @@ import { ProfileComponent } from '../components/profile/profile.component';
     MatTooltipModule,
     MatStepperModule,
 
-    AccountRoutingModule
+    AccountRoutingModule,
+
+    SharedModule
   ],
-  providers: [UserService]
+  providers:
+    [
+      UserService,
+      LanguageService
+    ]
 })
 export class AccountModule { }

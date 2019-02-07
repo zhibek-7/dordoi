@@ -1,11 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import {
-  FormControl,
-  Validators,
-  AbstractControl,
-  FormGroup
-} from "@angular/forms";
-import { Router } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { UserService } from "src/app/services/user.service";
 import { User } from "src/app/models/database-entities/user.type";
@@ -62,7 +57,8 @@ export class LoginComponent implements OnInit {
       this.formGroup.setErrors({ login: true });
       return;
     }
-    sessionStorage.setItem("currentUserID", user.id.toString());
-    this.router.navigate(["/account/" + user.id]);
+    sessionStorage.setItem('currentUserID', user.id.toString());
+    sessionStorage.setItem('currentUserName', user.name);
+    this.router.navigate(['/account/' + user.id]);
   }
 }

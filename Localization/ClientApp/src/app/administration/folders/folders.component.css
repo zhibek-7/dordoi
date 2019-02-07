@@ -1,0 +1,54 @@
+.custom-tree-node {
+  display: flex;
+  align-items: center;
+}
+
+.custom-tree-node:nth-child(odd) {
+  background: #fafafa;
+}
+
+.header-wrap {
+  color: #8e8e8e;
+}
+
+.custom-tree-node .notExpanded, .header-wrap{
+  display: flex;
+  justify-content: space-around;
+}
+
+.node-content, .header-wrap>div:first-child {
+  width: 30% !important;
+}
+.header-wrap>div, .node-detailes{
+  width: 10%;
+}
+
+.header-wrap>div:last-child, .node-detailes:last-child {
+  width: 20%;
+}
+
+.header-wrap>div{
+  padding: 10px;
+  border: 1px solid #dbd9d9;
+  text-align: center;
+}
+
+.node-detailes {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+  padding: 0px 10px;
+}
+
+.icons-wrap {
+  padding-top: 10px;
+}
+
+.icons-wrap>.mat-icon {
+  padding: 0px 20px;
+}
+
+::ng-deep a:not([href]):not([tabindex]) {
+  color: #007bff;
+  text-decoration: underline;
+}

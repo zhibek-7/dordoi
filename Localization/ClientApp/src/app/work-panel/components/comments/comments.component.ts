@@ -117,10 +117,21 @@ export class CommentsComponent implements OnInit {
     this.addCommentText = null;
   }
 
-  // Событие, срабатываемое при нажатии клавиши Enter при добавлении нового комментария
-  onEnterPressComment(event: any) {
-    if (event.which == 13 || event.keyCode == 13) {
-      this.addComment();
+    // Функция получения всех комментариев для данной фразы
+    getComments(idString: number){
+        this.commentService.getAllCommentsInStringById(idString)
+            .subscribe( comments => {
+                this.commentsList = comments;            
+        });
+    };
+
+    // Добавление комментария
+    public async addComment(){
+        let comment: Comment = new Comment(301, this.stringId, this.addCommentText);        //TODO поменять на id реального пользователя, когда появится
+        let insertedComment: CommentWithUser = await this.commentService.createComment(comment);
+        this.commentsList.push(insertedComment);
+
+        this.addCommentText = null;
     }
   }
 

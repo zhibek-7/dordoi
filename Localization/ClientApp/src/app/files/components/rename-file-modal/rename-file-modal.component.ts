@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
@@ -15,6 +15,8 @@ export class RenameFileModalComponent extends ModalComponent implements OnInit {
 
   file: File;
 
+  fileName: string;
+
   @Output() nameChangeSubmitted = new EventEmitter<[TreeNode, File]>();
 
   constructor() {
@@ -27,11 +29,13 @@ export class RenameFileModalComponent extends ModalComponent implements OnInit {
   showNodeFile(node: TreeNode, file: File) {
     this.node = node;
     this.file = file;
+    this.fileName = this.file.name;
     this.show();
   }
 
   submitNameChange() {
     this.hide();
+    this.file.name = this.fileName;
     this.nameChangeSubmitted.emit([this.node, this.file]);
   }
 

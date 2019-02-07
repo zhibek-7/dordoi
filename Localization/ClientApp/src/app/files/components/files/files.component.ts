@@ -49,23 +49,19 @@ export class FilesComponent implements OnInit {
 
     if (this.router.url.indexOf("LanguageFiles") != -1) {
       this.isSelectionFileForTranslation = true;
-      this.selectedProjectId = this.activatedRoute.snapshot.params["projectId"];
-      this.selectedLanguageId = this.activatedRoute.snapshot.params["localeId"];
+      this.selectedProjectId = this.activatedRoute.snapshot.params['projectId'];
+      this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];
 
       this.cols = [
-        { field: "name_text", header: "Имя" },
-        { field: "date_Of_Change", header: "Дата изменения" },
-        {
-          field: "strings_Count",
-          header: "Строки",
-          width: "100px",
-          textalign: "right"
-        },
+        { field: 'name', header: 'Имя' },
+        { field: 'dateOfChange', header: 'Дата изменения' },
+        { field: 'stringsCount', header: 'Строки', width: '100px', textalign: 'right' },
         // { field: 'version', header: 'Версия', width: '80px', textalign: 'center' },
         // { field: 'priority', header: 'Приоритет', width: '100px', textalign: 'center' },
-        {}
+        { }
       ];
-    } else {
+    }
+    else {
       this.cols = [
         { field: "name_text", header: "Имя" },
         { field: "date_Of_Change", header: "Дата изменения" },
@@ -91,11 +87,10 @@ export class FilesComponent implements OnInit {
       ];
     }
 
-    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
-    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
-    console.log("Projec=" + sessionStorage.getItem("Projec"));
+    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
+    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+    console.log('Projec=' + sessionStorage.getItem('Projec'));    
 
-    this.getFiles();
   }
 
   pseudoCut(selectedNode: TreeNode): void {
@@ -149,11 +144,10 @@ export class FilesComponent implements OnInit {
         files => {
           this.files = files;
 
-          this.isLoading = false;
-        },
-        error => alert(error)
-      );
-  }
+      this.isLoading = false;
+    },
+    error => alert(error));
+  };
 
   addFolder(newFolder: File, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
@@ -309,6 +303,59 @@ export class FilesComponent implements OnInit {
   }
 
   requestFileDownload(node: TreeNode) {
+    this.fileService.downloadFile(node.data)
+      .subscribe(
+        data => {
+          let fileName = node.data.name;
+          if (node.data.isFolder) {
+            fileName = fileName + '.zip';
+          } else if (node.data.downloadName && node.data.downloadName != '') {
+            fileName = node.data.downloadName;
+          }
+          saveAs(data, fileName);
+        },
+        error => alert(error)
+      );
+  }
+
+  translateFileClick(selectedFile: any) {
+    this.router.navigate(["Translation/" + selectedFile.id]);
+  }
+}
+
+      this.selectedProjectId = this.activatedRoute.snapshot.params['projectId'];
+      this.selectedLanguageId = this.activatedRoute.snapshot.params['localeId'];      
+        { field: "name_text", header: "Имя" },
+        { field: "date_Of_Change", header: "Дата изменения" },
+        {
+          field: "strings_Count",
+          width: "100px",
+          header: "Строки",
+          textalign: "right"
+        },
+        { field: 'percentOfTranslation', header: 'Процент предложенных переводов', width: '130px', textalign: 'center' },       
+        { field: 'percentOfConfirmed', header: 'Процент подтверждённых переводов', width: '150px', textalign: 'center' },       
+    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
+    console.log("Projec=" + sessionStorage.getItem("Projec"));
+      if(this.isSelectionFileForTranslation){
+        this.files.forEach(file => {
+          this.fileService.getFileTranslationInfos(file.data)
+            .subscribe(translations =>{
+              translations.forEach(translation => {
+                if(translation.localeId == this.selectedLanguageId){
+                  file.data.percentOfTranslation = translation.percentOfTranslation;
+                  file.data.percentOfConfirmed = translation.percentOfConfirmed;
+                }
+              });
+            });
+        });
+      }
+
+      this.isLoading = false;
+    },
+    error => alert(error));
+  };  
     this.fileService.downloadFile(node.data).subscribe(
       data => {
         let fileName = node.data.name;
@@ -321,9 +368,3 @@ export class FilesComponent implements OnInit {
       },
       error => alert(error)
     );
-  }
-
-  translateFileClick(selectedFile: any) {
-    this.router.navigate(["Translation/" + selectedFile.id]);
-  }
-}

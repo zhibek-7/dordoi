@@ -153,7 +153,7 @@ export class FileService {
     const url = `${this._url}/${fileData.id}/GetTranslationInfo`;
     return this.http.post<FileTranslationInfo[]>(url, null)
       .pipe(catchError(this.handleError('getFileTranslationInfo', [])));
-  }
+  }  
 
   handleError<T>(operation = 'Operation', result?: T) {
     return (error: any): Observable<T> => {

@@ -16,4 +16,6 @@ export class File {
   id_Previous_Version: number;
   translator_name: string;
   download_name: string;
+    percentOfTranslation?: number;
+    percentOfConfirmed?: number;
 }

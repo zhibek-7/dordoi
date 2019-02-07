@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { User } from '../models/database-entities/user.type';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UserProfile } from '../models/DTO/userProfile.type';
 
 @Injectable()
 export class UserService {
@@ -44,7 +45,17 @@ export class UserService {
   login(user: User): Observable<User> {
     return this.httpClient.post<User>(this.url + "login", user);
   }
-
+  getProfile(): Observable<UserProfile> {
+    let id = sessionStorage.getItem('currentUserID');
+    return this.httpClient.post<UserProfile>(this.url + "Profile:" + id, id);
+  }
+  toSaveEditedProfile(user: UserProfile): Observable<Object> {
+    return this.httpClient.post(this.url + "toSaveEdited", user);
+  }
+  delete(): Observable<Object> {
+    let id = sessionStorage.getItem('currentUserID');
+    return this.httpClient.delete(this.url + "delete/" + id);
+  }
 //
 //sessionStorage.setItem('currentUserName', 'Иван Иванов');
 //sessionStorage.setItem('currentUserID', '300');

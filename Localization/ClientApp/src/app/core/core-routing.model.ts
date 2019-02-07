@@ -12,8 +12,12 @@ import { UserRegistrationComponent } from "../user-registration/user-registratio
 
 const routes: Routes = [
   {
-    path: "Translation/:fileId",
-    loadChildren: "../work-panel/work-panel.module#WorkPanelModule"
+    path: 'administration',
+    loadChildren: '../administration/administration.module#AdministrationModule',
+  },
+  {
+    path: 'Translation/:fileId',
+    loadChildren: '../work-panel/work-panel.module#WorkPanelModule'
   },
   {
     path: "Projects/:id/reports",
