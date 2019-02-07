@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import {
   MatMenuModule,
   MatIconModule,
+  MatInputModule,
 } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -48,6 +49,7 @@ import { UsersListComponent } from './components/users-list/users-list.component
     MatSidenavModule,
     MatTabsModule,
     MatDatepickerModule,
+    MatInputModule,
     MatFormFieldModule,
     MatTableModule,
     MatPaginatorModule,
