@@ -122,27 +122,7 @@ export class AllSettingsComponent implements OnInit {
       },
         error => console.error(error));
 
-    //this.dropdownList = [
-    //  { itemName: "Ido", checked: false, id: "1" },
-    //  { itemName: "Аварский", checked: false, id: "2" },
-    //  { itemName: "Азербайджанский", checked: false, id: "3" },
-    //  { itemName: "Авестийский", checked: false, id: "4" },
-    //  { itemName: "Аймара", checked: false, id: "5" },
-    //  { itemName: "Акан", checked: false, id: "6" },
-    //  { itemName: "Албанский", checked: false, id: "7" },
-    //  { itemName: "Амхарский", checked: false, id: "8" },
-    //  { itemName: "Английский", checked: false, id: "300" },
-    //  {
-    //    itemName: "Английский (вверх ногами)",
-    //    checked: false,
-    //    id: "10"
-    //  },
-    //  { itemName: "Английский, Аравия", checked: false, id: "11" },
-    //  { itemName: "Ангийский, Белиз", checked: false, id: "12" },
-    //  { itemName: "Русский", checked: false, id: "13" }
-    //];
    
-
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
 
@@ -234,10 +214,7 @@ export class AllSettingsComponent implements OnInit {
     });
   }
 
-  addProject() {
-    //let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
-    // this.projectsService.addProject(newProject);
-  }
+ 
   idPrLocale: number;
   idLocale: number;
   editProject(Id: number): void {
@@ -269,17 +246,6 @@ export class AllSettingsComponent implements OnInit {
 
 
     })
-
-    //let projectLocales: LocalizationProjectsLocales[]=[]; 
-    //this.selectedItems.forEach((lang) => {
-    //  projectLocales.push({
-    //    id_LocalizationProject: this.currentProjectId,
-    //    id_Locale: lang.id,
-    //    percentOfTranslation: 0,
-    //    PercentOfConfirmed:0
-    //  });     
-    //})  
-
 
     //передает массив языков
     this.projectsService.addProjectLocales(projectLocales);
