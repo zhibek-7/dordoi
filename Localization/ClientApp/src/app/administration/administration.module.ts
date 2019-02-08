@@ -4,6 +4,7 @@ import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
 
 import {
+  MatButtonModule,
   MatMenuModule,
   MatIconModule,
   MatInputModule,
@@ -17,6 +18,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+
+import { DataImportService } from '../services/dataImport.service';
 
 import { AdministrationRoutingModule } from './administration-routing.module';
 
@@ -27,6 +32,7 @@ import { FoldersComponent } from './components/folders/folders.component';
 import { ServersComponent } from './components/servers/servers.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
+import { DataImportComponent } from './components/data-import/data-import.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +43,7 @@ import { UsersListComponent } from './components/users-list/users-list.component
     ServersComponent,
     SettingsComponent,
     UsersListComponent,
+    DataImportComponent,
   ],
   imports: [
     AdministrationRoutingModule,
@@ -55,8 +62,12 @@ import { UsersListComponent } from './components/users-list/users-list.component
     MatPaginatorModule,
     CdkTreeModule,
     MatProgressBarModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatSelectModule,
   ],
   providers: [
+    DataImportService,
   ]
 })
 export class AdministrationModule { }

@@ -41,6 +41,10 @@
               <mat-icon>lock</mat-icon>&nbsp;&nbsp;&nbsp;<span>Аутентификация</span>
           </mat-toolbar-row>
 
+          <mat-toolbar-row (click)="showMainContent(7)" [ngClass]="{'active': showImportComponent}">
+              <mat-icon>input</mat-icon>&nbsp;&nbsp;&nbsp;<span>Иморт данных</span>
+          </mat-toolbar-row>
+
         </mat-toolbar>
   </mat-sidenav>
   <mat-sidenav-content >
@@ -62,6 +66,9 @@
       </div>
       <div *ngIf="showAuthComponent">
           <app-auth></app-auth>
+      </div>
+      <div *ngIf="showImportComponent">
+          <app-data-import></app-data-import>
       </div>
     </div>
   </mat-sidenav-content>

@@ -19,5 +19,8 @@ namespace Models.Interfaces.Repository
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns></returns>
         Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent(int projectId);
+
+        Task CleanTableAsync();
+        Task<bool> AddAsync(Locale newLocale);
     }
 }
