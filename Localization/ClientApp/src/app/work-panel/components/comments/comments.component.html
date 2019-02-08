@@ -21,8 +21,8 @@
               <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
                 <div class="oneCommentBlock">
                   <div class="row">
-                    <div class="col-6 userNameRow">{{comment.user_Name}}</div>
-                    <div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m'}}</div>
+                    <div class="col-6 userNameRow">{{comment.user_name}}</div>
+                    <div class="col-6">{{comment.datetime | date: 'd.M.yyyy H:m'}}</div>
                   </div>
                   <div *ngIf="!commentEdited">
                     <div class="row">
@@ -44,7 +44,7 @@
                     <div class="row">
                       <div class="col-12">
                         <div class="form-group">
-                          <textarea class="form-control" rows="2" [(ngModel)]="changedComment.comment"></textarea>
+                          <textarea class="form-control" rows="2" [(ngModel)]="changedComment.comment_text"></textarea>
                         </div>
                       </div>
                     </div>
@@ -60,7 +60,7 @@
                       </ul>
 
                       <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
-                      <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.commentId)">Отменить</button></div>
+                      <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.comment_Id)">Отменить</button></div>
                     </div>
                   </div>
                 </div>
@@ -147,7 +147,7 @@
 
                           <div class="row">
                             <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
-                            <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.commentId)">Отменить</button></div>
+                            <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.comment_Id)">Отменить</button></div>
                           </div>
                         </div>
 

@@ -182,7 +182,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "id_user=@ID_User, " +
                         "datetime=@DateTime, " +
                         "id_locale=@ID_Locale " +
-                        "WHERE id=@ID";
+                        "WHERE id=@id";
                     var updateTranslationParam = item;
                     this.LogQuery(updateTranslationSql, updateTranslationParam.GetType(), updateTranslationParam);
                     await dbConnection.ExecuteAsync(

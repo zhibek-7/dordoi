@@ -109,9 +109,13 @@ export class CommentsComponent implements OnInit {
 
   // Добавление комментария
   public async addComment() {
-    let comment: Comment = new Comment(301, this.stringId, this.addCommentText); //TODO поменять на id реального пользователя, когда появится
+    let comment_loc: Comment = new Comment(
+      301,
+      this.stringId,
+      this.addCommentText
+    ); //TODO поменять на id реального пользователя, когда появится
     let insertedComment: CommentWithUser = await this.commentService.createComment(
-      comment
+      comment_loc
     );
     this.commentsList.push(insertedComment);
 
@@ -120,6 +124,7 @@ export class CommentsComponent implements OnInit {
 
   // Изменение комментария
   async changeCommentClick(comment: CommentWithUser) {
+    console.log(" comment.id=" + comment.comment_id);
     this.commentsList = await [];
     this.changedComment = comment;
     this.commentEdited = true;
@@ -134,13 +139,19 @@ export class CommentsComponent implements OnInit {
 
   // Сохранение измененного комментария
   async saveChangedComment(comment: CommentWithUser) {
+    console.log("comment=" + comment);
+    console.log("comment.comment_Id=" + comment.comment_id);
+    console.log("comment_text =" + comment.comment_text);
+    console.log("changedComment_text=" + this.changedComment.comment_text);
+    console.log("changedComment id=" + this.changedComment.comment_id);
+
     // comment.id_User = userId           // когда появится id реального пользователя, нужно будет использовать его (а пока костыль)
     let updatedComment: Comment = new Comment(
       301,
       this.stringId,
       this.changedComment.comment_text,
       new Date(Date.now()),
-      comment.comment_Id
+      comment.comment_id
     );
 
     await this.commentService.updateComment(updatedComment);
@@ -162,7 +173,7 @@ export class CommentsComponent implements OnInit {
   loadScrinshot() {
     this.commentService.uploadImageToComment(
       this.filesToUpload,
-      this.changedComment.comment_Id
+      this.changedComment.comment_id
     );
   }
 
@@ -202,9 +213,9 @@ export class CommentsComponent implements OnInit {
 
   // Удаление комментария
   deleteCommentClick(comment: CommentWithUser) {
-    this.commentService.deleteComment(comment.comment_Id);
+    this.commentService.deleteComment(comment.comment_id);
     for (var i = 0; i < this.commentsList.length; i++) {
-      if (this.commentsList[i].comment_Id == comment.comment_Id) {
+      if (this.commentsList[i].comment_id == comment.comment_id) {
         this.commentsList.splice(i, 1);
         break;
       }

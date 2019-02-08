@@ -129,7 +129,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var updateGlossarySql =
                         "UPDATE glossaries SET name=@Name, description=@Description, id_file=@ID_File " +
-                        "WHERE id=@ID";
+                        "WHERE id=@id";
                     var updateGlossaryParam = item;
                     this.LogQuery(updateGlossarySql, item.GetType(), updateGlossaryParam);
                     await dbConnection.ExecuteAsync(
@@ -277,7 +277,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "id_file_owner=@ID_FileOwner, " +
                         "value=@Value, " +
                         "position_in_text=@PositionInText " +
-                        "WHERE id=@ID";
+                        "WHERE id=@id";
                     var updateTermParam = updatedTerm;
                     this.LogQuery(updateTermSql, updatedTerm.GetType(), updateTermParam);
                     await dbConnection.ExecuteAsync(

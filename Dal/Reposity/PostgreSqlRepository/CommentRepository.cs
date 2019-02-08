@@ -217,8 +217,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(int id)
         {
-            var query = "SELECT users.id AS userid, users.name_text AS username," +
-                        " comments_text.id AS commentid, comments_text.datetime AS datetime," +
+            var query = "SELECT users.id AS user_id, users.name_text AS user_name," +
+                        " comments_text.id AS comment_id, comments_text.datetime AS datetime," +
                         " comments_text.comment_text AS comment_text " +
                         "FROM comments_text " +
                         "INNER JOIN users ON comments_text.id_user = users.id " +
@@ -331,8 +331,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             var query = "UPDATE comments_text SET " +
                         "datetime=@DateTime, " +
                         "id_user=@ID_User, " +
-                        "comment_text=@Comment " +
-                        "WHERE id=@ID";
+                        "comment_text=@Comment_text " +
+                        "WHERE id=@id";
 
             try
             {

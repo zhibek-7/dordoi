@@ -32,7 +32,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         protected void LogQuery(string sql, Type type, object param)
         {
             //Query {sql}, param: {param}"
-            this._logger.WriteLn($"Query {sql} ", type.GetType(), param);
+            this._logger.WriteLn($"Query {sql} ", type, param);
         }
 
         protected void LogQuery(string sql, object param)
