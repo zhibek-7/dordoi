@@ -18,6 +18,8 @@
 
         public bool? Outdated { get; set; }
 
+        public string Status { get; set; }
+
         public TranslationSubstring() { }
 
         public TranslationSubstring(string substringToTranslate, string context, int id_FileOwner, string value, int positionInText)

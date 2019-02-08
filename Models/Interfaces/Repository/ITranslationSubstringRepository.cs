@@ -12,6 +12,7 @@ namespace Models.Interfaces.Repository
             string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings);
         Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId);
         Task<int> UploadImageAsync(Image image, int translationSubstringId);
+        Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId);
 
         Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
             int projectId,

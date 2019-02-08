@@ -160,7 +160,6 @@ export class CommentsComponent implements OnInit {
             selectedImage: image
         };
 
-
         let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
     }
 

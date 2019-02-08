@@ -84,11 +84,20 @@
     cursor: pointer;
 }
 
-/* .optionsBlock {
-    padding-left: 3%;
-    padding-right: 3%;
-    margin-bottom: 1%;
-} */
+.appendedImage {
+    width: 100%;  
+}
+  
+.imageBlock {
+    cursor: pointer;
+    margin-right: 5%;
+    margin-bottom: 2%;
+    padding: 2%;
+    border-radius: 15%;
+    border-color: #A4BF82;
+    border-width: 2px;
+    border-style: dashed;
+}
 
 .arrowsIcons {
     padding-left: 2%;

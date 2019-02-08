@@ -17,7 +17,8 @@ export class TranslationSubstring {
     public translationMaxLength?: number,
     public value?: string,
     public positionInText?: number,
-    public outdated?: boolean
+    public outdated?: boolean,
+    public status?: string
   ) { }
 
 }

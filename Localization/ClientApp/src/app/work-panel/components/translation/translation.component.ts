@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
+import { ShowImageModalComponent } from '../show-image-modal/show-image-modal';
 import { SelectedWordModalComponent } from '../selected-word-modal/selected-word-modal.component';
 
 import { SharePhraseService } from '../../localServices/share-phrase.service';
@@ -10,6 +11,7 @@ import { TranslationSubstringService } from 'src/app/services/translationSubstri
 
 import { TranslationSubstring } from '../../../models/database-entities/translationSubstring.type';
 import { Translation } from '../../../models/database-entities/translation.type';
+import { Image } from 'src/app/models/database-entities/image.type';
 
 declare var $: any;
 
@@ -31,17 +33,23 @@ export class TranslationComponent implements OnInit {
     phraseForTranslate: TranslationSubstring;
     translatedPhrase: Translation;
 
+    images: Image[];
 
     constructor(private sharePhraseService: SharePhraseService,
         private shareTranslatedPhraseService: ShareTranslatedPhraseService, 
         private translationService: TranslationService,
         private translationSubstringService: TranslationSubstringService,
-        private selectionDialog: MatDialog) {
+        private selectionDialog: MatDialog,
+        private showImageDialog: MatDialog) {
+
+        this.images = [];
 
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
                 this.phraseForTranslate = pickedPhrase;                
                 this.translatedText = null;
+
+                this.loadImages(pickedPhrase.id);
             });                              
     }
 
@@ -157,5 +165,25 @@ export class TranslationComponent implements OnInit {
             return true;
         }
     }    
+
+    loadImages( translationSubstringId: number) {
+        this.translationSubstringService.getImagesByTranslationSubstringId(translationSubstringId)
+            .subscribe(
+                images => {
+                    this.images = images;
+                }
+            );
+    }
+
+    // Функция отображения скриншота в модальном окне в увеличенном размере
+    showImage(image: Image){
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.data = {
+            selectedImage: image
+        };
+
+        let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
+    }
 
 }

@@ -31,12 +31,21 @@
       <context-edit-modal-component #editContextModal [currentPhrase] = "phraseForTranslate" (onEnterContext) = "enterContext($event)"></context-edit-modal-component>
     </div>
       </div>
-    <div *ngIf="showContextBlock">
+    <div *ngIf="showContextBlock">      
       <div class="row mb-1">
-          <div class="col-sm">
-            <div class="objectInCode">{{phraseForTranslate.context}}</div>
-          </div>
+        <div class="col-sm">
+          <div class="objectInCode">{{phraseForTranslate.context}}</div>
         </div>
+        <div class="col-sm">
+            <ul class="row">
+                <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of images">
+                    <div>
+                        <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}"  />
+                    </div>
+                </li>   
+            </ul>
+        </div>
+      </div>
     </div>    
     <hr>
   </div>

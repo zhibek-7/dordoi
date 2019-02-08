@@ -84,7 +84,6 @@ namespace Localization.WebApi
         [HttpPost("GetImagesByStringId/{translationSubstringId}")]
         public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(int translationSubstringId)
         {
-            // Check if comment by id exists in database
             var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
 
             if (foundedString == null)
@@ -95,6 +94,26 @@ namespace Localization.WebApi
             IEnumerable<Image> images = await stringRepository.GetImagesOfTranslationSubstringAsync(translationSubstringId);
 
             return Ok(images);
+        }
+
+        /// <summary>
+        /// Получить статус перевода строки (перевод не предложен, перевод предложен, перевод одобрен)
+        /// </summary>
+        /// <param name="translationSubstringId">id Строки для перевода</param>
+        /// <returns>Статус перевода</returns>
+        [HttpPost("Status/{translationSubstringId}")]
+        public async Task<ActionResult<string>> GetStatusOfTranslationSubstring(int translationSubstringId)
+        {
+            var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
+
+            if (foundedString == null)
+            {
+                return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            }
+
+            string status = await stringRepository.GetStatusOfTranslationSubstringAsync(translationSubstringId);
+
+            return "";
         }
 
         /// <summary>

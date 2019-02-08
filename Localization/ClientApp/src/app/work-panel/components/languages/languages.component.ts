@@ -49,8 +49,8 @@ export class LanguagesComponent implements OnInit {
 
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick.subscribe(pickedPhrase => {
-            this.searchByMemoryText = null;                         
-
+            this.searchByMemoryText = null;    
+            
             // переключает TabBar на вкладку "Предложения языка" при смене слова для перевода
             let activeTab = $(".languagesOptionsBlock .nav-tabs .active").attr('href');
 
@@ -191,6 +191,6 @@ export class LanguagesComponent implements OnInit {
                 )
 
         this.searchByMemoryText = null;
-    }
+    }    
 
 }
