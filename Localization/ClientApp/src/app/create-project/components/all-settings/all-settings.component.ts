@@ -54,8 +54,8 @@ export class AllSettingsComponent implements OnInit {
     //pjFileTrue: new FormControl(),
     pjExportTrue: new FormControl(),
     pjSkipUntranslStrTrue: new FormControl(),
-    pjNotificationTrue: new FormControl()
-
+    pjNotificationTrue: new FormControl(),
+    selectedLang: new FormControl()
   });
 
    
@@ -98,9 +98,9 @@ export class AllSettingsComponent implements OnInit {
         this.allProjLocales = projectsL;
         
         this.dropdownList.forEach((lang) => {
-          const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
+          const index = projectsL.findIndex(list => list["iD_Locale"] == lang.id);
 
-          if (index == 0) {
+          if (index != -1) {
             selectedLangs.push({
               itemName: lang.itemName,
               selected: true,
@@ -157,7 +157,7 @@ export class AllSettingsComponent implements OnInit {
         this.pjSkipUntranslStrTrue = this.project.ableToLeftErrors;
         this.pjExportTrue = this.project.export_only_approved_translations;
         this.pjNotificationTrue = this.project.notifyNew;
-        this.selectedLang = this.project.ID_SourceLocale;
+        this.selectedLang = project["iD_SourceLocale"];
         this.selectedItems = selectedLangs;
         
         if (this.currentProjectPublic == true) {
@@ -171,7 +171,7 @@ export class AllSettingsComponent implements OnInit {
 
         
        
-        console.log(this.pjPublic);
+        console.log(this.selectedItems);
       },
       error => console.error(error)
     );
@@ -255,7 +255,7 @@ export class AllSettingsComponent implements OnInit {
     this.selectedItems.forEach((lang) => {
 
       const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
-      if (index == 0) {
+      if (index !=-1) {
 
       }
       else {
