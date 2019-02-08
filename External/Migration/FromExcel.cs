@@ -37,15 +37,18 @@ namespace Models.Migration
         /// <summary>
         /// Распарсивает таблицу <see cref="Locale"/>'ей (с ячейки A1) на первом листе Excel-файла и возвращает массив извлеченных сущностей
         /// </summary>
-        /// <param name="fs">Поток Excel-файла</param>
-        public Locale[] UploadLocalesFromExcel(System.IO.FileStream fs)
+        /// <param name="stream">Поток Excel-файла</param>
+        public Locale[] GetLocalesFromExcel(System.IO.Stream stream)
         {
             try
             {
                 _logger.WriteLn(string.Format("Распарсивание Excel-файла на предмет сущностей {0}", nameof(Locale)));
                 var tempFileName = System.IO.Path.GetTempFileName();
-                fs.Seek(0, System.IO.SeekOrigin.Begin);
-                fs.CopyTo(System.IO.File.Open(tempFileName, System.IO.FileMode.Open));
+                stream.Seek(0, System.IO.SeekOrigin.Begin);
+                using (var fileStream = System.IO.File.Open(tempFileName, System.IO.FileMode.Open))
+                {
+                    stream.CopyTo(fileStream);
+                }
                 var locales = new List<Locale>();
                 using (var xlPackage = new ExcelPackage(new System.IO.FileInfo(tempFileName)))
                 {

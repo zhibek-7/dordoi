@@ -1,0 +1,11 @@
+table {
+  width: 100%;
+}
+::ng-deep a:not([href]):not([tabindex]) {
+  color: #007bff;
+  text-decoration: underline;
+}
+.second-row > .col-sm > .mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}

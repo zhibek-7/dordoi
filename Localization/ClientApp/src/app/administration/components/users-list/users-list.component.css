@@ -1,0 +1,17 @@
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 25%;
+}
+
+button:focus {
+  outline: none;
+}
+
+::ng-deep a:not([href]):not([tabindex]) {
+  color: #007bff;
+  text-decoration: underline;
+}

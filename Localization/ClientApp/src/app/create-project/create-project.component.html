@@ -1,113 +1,173 @@
 <div style="text-align:center">
   <h1>
-     {{ title }}
+    {{ title }}
   </h1>
- 
+
 </div>
-<form>
-  <div class="form-group" *ngFor="let form of forms">
-    <label for="exampleInputName">{{form.labelName}}</label>
-    <input type="name" class="form-control is-invalid" id='{{form.id}}' placeholder='{{form.placeHolder}}' required>
-    <div class="invalid-feedback">
-      {{form.ivalid_feedback}}
+<form [formGroup]="settings_proj" name="formName">
+
+  <div class="form-group row">
+    <label for="" class="col-3 col-form-label">Название проекта:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field">
+        <input matInput type="text" [(ngModel)]="currentProjectName" [ngModelOptions]="{standalone: true}">
+        <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="" class="col-3 col-form-label">Описание проекта:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field">
+        <input matInput type="text" [(ngModel)]="currentProjectDescription" [ngModelOptions]="{standalone: true}">
+        <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="" class="col-3 col-form-label">Адрес проекта:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field">
+        <input matInput type="text" [(ngModel)]="currentProjecturl" [ngModelOptions]="{standalone: true}">
+        <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
     </div>
   </div>
 
-  <div class="form-check" *ngFor="let option of options">
-    <input class="form-check-input" type="radio" name='{{option.name}}' id='{{option.id}}' value='{{option.value}}'>
-    <label class="form-check-label" for='{{option.id}}'>
-      {{option.labelName}}
-    </label>
-    <small id="nameHelp" class="form-text text-muted">  {{option.small}}</small>
+  <label class="form-check-label" for="PrivatLabl">
+    Приватность
+  </label>
+  <div class="form-check">
+    <mat-radio-group [(ngModel)]="pjPublic" name="currentProjectPublic" [ngModelOptions]="{standalone: true}" ng-checked="">
+      <mat-radio-button name="PublicName" value="public">Виден всем пользователям</mat-radio-button>
+      <small id="nameHelp" class="form-text text-muted">Visible to anyone</small>
+      <mat-radio-button name="PrivateName" value="nopublic">Виден только участникам</mat-radio-button>
+      <small id="nameHelp" class="form-text text-muted"> Visible only to the invited project members</small>
+    </mat-radio-group>
   </div>
+  <div class="form-check">
+    <mat-checkbox class="example-margin" [(ngModel)]="pjFileTrue" id="FileName" name="FileName" [checked]="isChecked" [ngModelOptions]="{standalone: true}">
+      <label class="form-check-label" for="">Переводчики могут загружать файлы для перевода из проекта</label>
+    </mat-checkbox>
 
+    <small id="nameHelp" class="form-text text-muted">
+      Позволяет переводчикам загружать файлы из проекта на свой
+      компьютер для перевода офлайн. Вы, как владелец/менеджер проекта, всегда можете загружать эти файлы.
+    </small>
+  </div>
+  <div class="form-check">
+    <mat-checkbox class="example-margin" [(ngModel)]="pjSkipUntranslStrTrue" name="ScipName" [ngModelOptions]="{standalone: true}">
+      <label class="form-check-label" for="">Пропускать непереведенные строки</label>
+    </mat-checkbox>
+
+    <small id="nameHelp" class="form-text text-muted">
+      Если отмечено, то строки без перевода не будут включены в экспортируемый файл.
+      Эта функция не будет применена к текстовым документам:*.docx, *.pptx,*.xlsx и т.д. во избежание ошибок в
+      переведенных файлах.
+    </small>
+  </div>
+  <div class="form-check">
+    <mat-checkbox class="example-margin" [(ngModel)]="pjExportTrue" name="ExportName" [ngModelOptions]="{standalone: true}">
+      <label class="form-check-label" for="">Экспортировать только утвержденные переводы</label>
+    </mat-checkbox>
+
+    <small id="nameHelp" class="form-text text-muted">
+      Будут экспортированы только утвержденные переводы. Утверждение переводов потребует дополнительных усилий от ваших
+      переводчиков\корректоров.
+    </small>
+  </div>
+  <div class="form-check">
+    <mat-checkbox class="example-margin" [(ngModel)]="pjNotificationTrue" name="PublicName" [ngModelOptions]="{standalone: true}">
+      <label class="form-check-label" for="">Уведомлять менеджеров проекта о новых строках</label>
+    </mat-checkbox>
+  </div>
 
   <div class="form-group">
     <div>
-      <label for="exampleFormControlSelect2">Исходный язык</label>
+      <label for="">Исходный язык</label>
     </div>
     <div>
-
-      <select class="form-control">
-        <option id='{{lang.id}}' *ngFor="let lang of dropdownList">  {{lang.itemName}}</option>
+      <select class="form-control" [(ngModel)]="selectedLang" [ngModelOptions]="{standalone: true}">
+        <option id='{{lang.id}}' *ngFor="let lang of dropdownList" [selected]="selectedLang" value='{{lang.id}}'> {{lang.itemName}}</option>
       </select>
     </div>
-
     <div class="row">
       <div class="col">
-        <label for="exampleFormControlSelect2">Целевые языки</label>
+        <label for="">Целевые языки</label>
         <div class="input-group">
-
           <div class="custom-file">
-            <input type="text" name="itemName" class="form-control" [(ngModel)]="searchText" id="idFilter" placeholder="Фильтровать языки">
+            <input type="text" name="itemName" class="form-control" [(ngModel)]="searchText" id="idFilter" placeholder="Фильтровать языки"
+                   [ngModelOptions]="{standalone: true}">
           </div>
           <div class="input-group-append">
-            <button style="height: 38px;" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top" (click)="args='ascending';reverse=!reverse" id="idOrder">
+            <button style="height: 38px;" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top"
+                    title="Tooltip on top" (click)="args='ascending';reverse=!reverse" id="idOrder">
               <i class="material-icons">sort_by_alpha</i>
             </button>
-
           </div>
         </div>
         <div class="input-group">
           <div class="col-md" size="4" style="height: 10em; overflow: auto;">
             <div class="form-check" *ngFor="let lang of dropdownList |filter:searchText|orderBy:args:reverse">
-              <label class="form-check-label" for=' {{lang.id}}'>
-                <input class="form-check-input" type="checkbox" id='{{lang.id}}'
-                       name='{{lang.itemName}}'
-                       (click)="AddSelected($event,lang)">
+              <label class="form-check-label" *ngIf="lang.checked==true" for=' {{lang.id}}'>
+                <input class="form-check-input" type="checkbox" checked id='{{lang.id}}' name='{{lang.itemName}}' (click)="AddSelected($event,lang)">
+                {{lang.itemName}}
+              </label>
+              <label class="form-check-label" *ngIf="lang.checked==false" for=' {{lang.id}}'>
+                <input class="form-check-input" type="checkbox" id='{{lang.id}}' name='{{lang.itemName}}' (click)="AddSelected($event,lang)">
                 {{lang.itemName}}
               </label>
             </div>
-
           </div>
         </div>
         <div class="input-group">
-
           <div class="btn-group mr-2" role="group" aria-label="First group">
-
-            <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top" (click)="AllSelected()">
+            <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top"
+                    (click)="AllSelected()">
               Select top 30
             </button>
-            
-	<!--<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right">
-              Пользовательские языки
-            </button>
-            -->
+            <!--<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right">
+                Пользовательские языки
+              </button>
+              -->
           </div>
-
 
         </div>
-
       </div>
       <div class="col">
-        <label for="exampleFormControlSelect2">  </label>
+        <label for=""> </label>
         <div class="input-group">
-
           <div class="custom-file">
             <label class="form-check-label"> No language selected</label>
-
           </div>
           <div class="input-group-append">
-
           </div>
         </div>
         <div class="col-md" size="4" style="height: 10em; overflow: auto;">
           <div class="form-check" *ngFor="let lang of selectedItems">
             <label class="form-check-label" for=' {{lang.id}}' id='{{lang.id}}'>
               {{lang.itemName}}
-
             </label>
           </div>
         </div>
 
-
       </div>
-
     </div>
   </div>
-  <button mat-raised-button color="primary" style="width: 15rem;" (click)="addProject($event)">Сохранить проект</button>
-</form>
+  <div>
+    <button mat-raised-button color="primary" style="width: 15rem;" (click)="addProject()">Сохранить проект</button>
 
-  
- 
+
+  </div>
+</form>
 <router-outlet></router-outlet>
+
+
+
+
