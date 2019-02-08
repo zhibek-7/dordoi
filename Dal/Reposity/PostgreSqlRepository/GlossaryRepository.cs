@@ -131,7 +131,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "UPDATE glossaries SET name=@Name, description=@Description, id_file=@ID_File " +
                         "WHERE id=@ID";
                     var updateGlossaryParam = item;
-                    this.LogQuery(updateGlossarySql, updateGlossaryParam);
+                    this.LogQuery(updateGlossarySql, item.GetType(), updateGlossaryParam);
                     await dbConnection.ExecuteAsync(
                         sql: updateGlossarySql,
                         param: updateGlossaryParam);
@@ -228,7 +228,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         ") " +
                         "RETURNING id";
                     var insertNewStingParam = newTerm;
-                    this.LogQuery(insertNewStingSql, insertNewStingParam);
+                    this.LogQuery(insertNewStingSql, newTerm.GetType(), insertNewStingParam);
                     var idOfNewTerm = await dbConnection
                         .ExecuteScalarAsync<int>(
                             sql: insertNewStingSql,
@@ -279,7 +279,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "position_in_text=@PositionInText " +
                         "WHERE id=@ID";
                     var updateTermParam = updatedTerm;
-                    this.LogQuery(updateTermSql, updateTermParam);
+                    this.LogQuery(updateTermSql, updatedTerm.GetType(), updateTermParam);
                     await dbConnection.ExecuteAsync(
                         sql: updateTermSql,
                         param: updateTermParam);

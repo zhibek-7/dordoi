@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Models.Project
 {
+    [Serializable]
     class Project
     {
         /// <summary>

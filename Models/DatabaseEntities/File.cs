@@ -2,6 +2,7 @@
 
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class File : BaseEntity
     {
         public string Name_text { get; set; }

@@ -1,9 +1,12 @@
 ﻿
+using System;
+
 namespace Models.DatabaseEntities.Reports
 {
     /// <summary>
     /// Строка отчета по количеству переведенных строк/слов
     /// </summary>
+    [Serializable]
     public class TranslatedWordsReportRow : BaseReportRow
     {
         /// <summary>

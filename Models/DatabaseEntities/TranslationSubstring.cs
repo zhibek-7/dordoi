@@ -1,5 +1,8 @@
-﻿namespace Models.DatabaseEntities
+﻿using System;
+
+namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class TranslationSubstring : BaseEntity
     {
         public string substring_to_translate { get; set; }

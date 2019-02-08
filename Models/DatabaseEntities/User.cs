@@ -2,6 +2,7 @@
 
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class User : BaseEntity
     {
         //[Required]

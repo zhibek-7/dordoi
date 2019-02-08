@@ -37,7 +37,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, item);
+                    this.LogQuery(query, item.GetType(), item);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, item);
                     return idOfInsertedRow;
                 }
@@ -184,7 +184,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "id_locale=@ID_Locale " +
                         "WHERE id=@ID";
                     var updateTranslationParam = item;
-                    this.LogQuery(updateTranslationSql, updateTranslationParam);
+                    this.LogQuery(updateTranslationSql, updateTranslationParam.GetType(), updateTranslationParam);
                     await dbConnection.ExecuteAsync(
                         sql: updateTranslationSql,
                         param: updateTranslationParam);
@@ -368,14 +368,14 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, TranslationSubstring translationSubstring)
         {
-            var query = "SELECT substring_to_translate AS translationtext, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
-                        "files.name_text AS fileownername, translations.translated AS translationvariant" +
-                        "FROM localization_projects " +
+            var query = "SELECT substring_to_translate AS translation_text, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
+                        "files.name_text AS file_owner_name, translations.translated AS translation_variant" +
+                        " FROM localization_projects " +
                         "INNER JOIN files ON files.id_localization_project = localization_projects.id " +
                         "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
                         "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
                         "WHERE (localization_projects.id = @ProjectId " +
-                        "AND substring_to_translate % @TranslationSubstringText " +
+                        "AND substring_to_translate like '%@TranslationSubstringText' " +
                         "AND translation_substrings.id != @TranslationSubstringId);";
 
 

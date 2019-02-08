@@ -6,6 +6,7 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Проект локализации
     /// </summary>
+    [Serializable]
     public class LocalizationProject : BaseEntity
     {
         [Required]

@@ -28,8 +28,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    string SQLQuery = "INSERT INTO users (name_text, password_text, photo, email) VALUES (@Name, @Password, @Photo, @Email)";
-                    this.LogQuery(SQLQuery, param: user);
+                    string SQLQuery = "INSERT INTO users (name_text, password_text, photo, email) VALUES (@Name_text, @Password_text, @Photo, @Email)";
+                    this.LogQuery(SQLQuery, user.GetType(), user);
                     dbConnection.Execute(SQLQuery, user);
                 }
 
@@ -114,7 +114,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public bool CheckExistUser(User user)
         {
-            string SQLQuery = "SELECT * FROM users WHERE name_text = @Name AND password_text = @Password";
+            string SQLQuery = "SELECT * FROM users WHERE name_text = @Name_text AND password_text = @Password_text";
             try
             {
                 User existUser = null;
@@ -208,12 +208,12 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public void Update(User user)
         {
-            string SQLQuery = "UPDATE users SET name_text = @Name, password_text = @Password, photo = @Photo, email = @Email";
+            string SQLQuery = "UPDATE users SET name_text = @Name_text, password_text = @Password_text, photo = @Photo, email = @Email";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(SQLQuery, param: user);
+                    this.LogQuery(SQLQuery, user.GetType(), user);
                     dbConnection.Execute(SQLQuery, user);
                 }
                 throw new NotImplementedException();
@@ -377,7 +377,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
-                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name OR email = @Email) AND password_text = @Password";
+                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
                     User existUser = null;
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);

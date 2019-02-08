@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Models.DatabaseEntities.DTO
 {
@@ -6,6 +7,7 @@ namespace Models.DatabaseEntities.DTO
     /// Глоссарий со списками идентификатор связанных данных (Locales, LocalizationProjects).
     /// Для модификации, например создание, редактирование.
     /// </summary>
+    [Serializable]
     public class GlossariesForEditingDTO : BaseEntity
     {
         public string Name_text { get; set; }

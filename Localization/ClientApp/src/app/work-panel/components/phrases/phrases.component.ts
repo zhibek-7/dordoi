@@ -103,7 +103,7 @@ export class PhrasesComponent implements OnInit {
   }
 
   searchInputEmpty(): boolean {
-    if (this.searchText == "") {
+    if (this.searchText == "" || this.searchText == null) {
       return true;
     } else {
       return false;

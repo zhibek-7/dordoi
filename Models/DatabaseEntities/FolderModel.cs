@@ -1,5 +1,8 @@
-﻿namespace Models.DatabaseEntities
+﻿using System;
+
+namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class FolderModel
     {
         public string Name_text { get; set; }

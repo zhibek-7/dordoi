@@ -29,7 +29,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var _sql = "INSERT INTO user_actions" +
                                " (id_user, id_work_type, description, id_locale, id_file, id_string, id_translation, id_project) " +
-                               "VALUES (@iduser, @idworktype, @description, @idlocale, @idfile, @idstring, @idtranslation, @idproject)";
+                               "VALUES (@ID_User, @Work_type, @Description, @ID_Locale, @ID_File, @ID_String, @ID_Translation, @ID_Project)";
                     var _params = new
                     {
                         action.ID_User,
@@ -73,7 +73,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "SELECT user_actions.*,work_types.name_text as Worktype  FROM user_actions join work_types on user_actions.id_work_type = work_types.id WHERE id = @actionId LIMIT 1";
+                    var _sql = "SELECT user_actions.*,work_types.name_text as Worktype  FROM user_actions join work_types on user_actions.id_work_type = work_types.id WHERE id = @id LIMIT 1";
                     var _params = new { id };
                     LogQuery(_sql, _params);
                     var action = await dbConnection.QueryFirstAsync<UserAction>(_sql, _params);

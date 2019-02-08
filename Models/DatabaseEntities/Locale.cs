@@ -6,6 +6,7 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Язык перевода
     /// </summary>
+    [Serializable]
     public class Locale : BaseEntity
     {
         [Required]

@@ -15,6 +15,7 @@ import { CommentWithUser } from "../../localEntites/comments/commentWithUser.typ
 import { Term } from "src/app/models/Glossaries/term.type";
 import { Glossary } from "src/app/models/database-entities/glossary.type";
 import { Image } from "src/app/models/database-entities/image.type";
+import { ProjectsService } from "../../../services/projects.service";
 
 import * as $ from "jquery";
 
@@ -45,7 +46,8 @@ export class CommentsComponent implements OnInit {
     private sharePhraseService: SharePhraseService,
     private glossariesService: GlossariesService,
     private shareWordFromModalService: ShareWordFromModalService,
-    private showImageDialog: MatDialog
+    private showImageDialog: MatDialog,
+    private projectsService: ProjectsService
   ) {
     this.commentsList = [];
     this.termsList = [];
@@ -136,9 +138,9 @@ export class CommentsComponent implements OnInit {
     let updatedComment: Comment = new Comment(
       301,
       this.stringId,
-      this.changedComment.comment,
+      this.changedComment.comment_text,
       new Date(Date.now()),
-      comment.commentId
+      comment.comment_Id
     );
 
     await this.commentService.updateComment(updatedComment);
@@ -151,7 +153,7 @@ export class CommentsComponent implements OnInit {
   // Функция завершения редактирования комментария
   endEditingMode() {
     this.commentEdited = false;
-    this.changedComment.comment = "";
+    this.changedComment.comment_text = "";
     this.filesToUpload = null;
     this.getComments(this.stringId);
   }
@@ -160,7 +162,7 @@ export class CommentsComponent implements OnInit {
   loadScrinshot() {
     this.commentService.uploadImageToComment(
       this.filesToUpload,
-      this.changedComment.commentId
+      this.changedComment.comment_Id
     );
   }
 
@@ -200,9 +202,9 @@ export class CommentsComponent implements OnInit {
 
   // Удаление комментария
   deleteCommentClick(comment: CommentWithUser) {
-    this.commentService.deleteComment(comment.commentId);
+    this.commentService.deleteComment(comment.comment_Id);
     for (var i = 0; i < this.commentsList.length; i++) {
-      if (this.commentsList[i].commentId == comment.commentId) {
+      if (this.commentsList[i].comment_Id == comment.comment_Id) {
         this.commentsList.splice(i, 1);
         break;
       }
@@ -211,8 +213,9 @@ export class CommentsComponent implements OnInit {
 
   // Поиск всех терминов из всех глоссариев присоедененных к проекту локализации
   getTerms() {
+    const id = this.projectsService.currentProjectId;
     this.glossariesService
-      .getAllTermsFromAllGlossarisInProject(0) //TODO поменять на id реального проекта, когда появится
+      .getAllTermsFromAllGlossarisInProject(id) //TODO поменять на id реального проекта, когда появится
       .subscribe(allTermsInProject => {
         this.termsList = allTermsInProject;
         this.termsList.forEach(element => {
@@ -221,17 +224,17 @@ export class CommentsComponent implements OnInit {
             element.substring_to_translate,
             element.description,
             element.context,
-            element.iD_File_Owner,
-            element.translation_Max_Length,
+            element.id_file_owner,
+            element.translation_max_length,
             element.value,
-            element.position_In_Text,
-            element.part_Of_Speech_Id,
+            element.position_in_text,
+            element.part_of_speech_id,
             true
           );
           element.glossary = new Glossary(
-            element.glossary_Id,
-            element.glossary_Name,
-            element.glossary_Description
+            element.glossary_id,
+            element.glossary_name,
+            element.glossary_description
           );
         });
       });
@@ -239,8 +242,8 @@ export class CommentsComponent implements OnInit {
 
   // Функция проверки кол-ва вариантов перевода по поиску по памяти
   checkNumberOfTermsInProject() {
-    if (this.termsList.length == 0) {
-      // if(this.termsList==null){
+    //if (this.termsList.length == 0) {
+    if (this.termsList == null) {
       return false;
     } else {
       return true;

@@ -197,7 +197,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     try
                     {
-                        this.LogQuery(sqlString, locale);
+                        this.LogQuery(sqlString, locale.GetType(), locale);
                         var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, locale, transaction);
                         if (!insertedId.HasValue)
                         {

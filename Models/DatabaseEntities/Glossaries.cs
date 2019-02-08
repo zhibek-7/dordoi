@@ -1,9 +1,12 @@
-﻿namespace Models.DatabaseEntities
+﻿using System;
+
+namespace Models.DatabaseEntities
 {
     /// <summary>
     /// Глоссарий со связанными данными без группировки по объектам.
     /// Для получения результата запроса.
     /// </summary>
+    [Serializable]
     public class Glossaries : BaseEntity
     {
         public string Name_text { get; set; }

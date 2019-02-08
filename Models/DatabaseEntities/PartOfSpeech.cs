@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class PartOfSpeech : BaseEntity
     {
         public int ID_Locale { get; set; }

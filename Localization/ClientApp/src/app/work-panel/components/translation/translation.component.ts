@@ -123,8 +123,8 @@ export class TranslationComponent implements OnInit {
   // Событие, срабатывающее при сохранении изменений в модальном окне
   enterContext(changedTranslationSubstring: TranslationSubstring) {
     this.phraseForTranslate.context = changedTranslationSubstring.context;
-    this.phraseForTranslate.translation_Max_Length =
-      changedTranslationSubstring.translation_Max_Length;
+    this.phraseForTranslate.translation_max_length =
+      changedTranslationSubstring.translation_max_length;
 
     this.translationSubstringService
       .updateTranslationSubstring(this.phraseForTranslate)

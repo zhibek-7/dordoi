@@ -24,7 +24,10 @@
       <div class="panel-body">
         <ul class="list-group list-group-flush">
           <div *ngIf="searchInputEmpty()">
-            <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText | sort:'substring_to_translate' "
+            <!-- не работает опчему то
+       <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | filterPhrases: searchText | sort:'substring_to_translate' "
+-->
+            <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | sort:'substring_to_translate' "
               (click)="choosePhrase(phrase)">
               <div class="row">
                 <div class="col-1"><img class="colorIcon"></div>
@@ -33,8 +36,9 @@
             </li>
           </div>
           <div *ngIf="!searchInputEmpty()">
-            <li class="list-group-item list-group-item-action" *ngFor="let phrase of phrasesList | filterPhrases: searchText | sort:'substring_to_translate' "
+            <li class="list-group-item list-group-item-action" *ngFor="let phrase of phrasesList | sort:'substring_to_translate' |  filterPhrases: searchText  "
               (click)="choosePhrase(phrase)">
+
               <div class="row">
                 <div class="col-1"><img class="colorIcon"></div>
                 <div class="col-11"> {{phrase.substring_to_translate}} </div>

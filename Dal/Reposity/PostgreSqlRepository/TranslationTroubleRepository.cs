@@ -187,7 +187,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                string sqlQery = "SELECT * FROM translations_troubles WHERE id_translation = @Id";
+                string sqlQery = "SELECT * FROM translations_troubles WHERE id_translation = @translationId";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var param = new { translationId };

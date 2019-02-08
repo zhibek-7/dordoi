@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Models.DatabaseEntities.PartialEntities.Comment
 {
+    [Serializable]
     public class PostedImage
     {
         public PostedImage(string name, string filename, byte[] file)

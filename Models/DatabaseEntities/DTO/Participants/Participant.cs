@@ -1,5 +1,8 @@
-﻿namespace Models.DatabaseEntities.DTO.Participants
+﻿using System;
+
+namespace Models.DatabaseEntities.DTO.Participants
 {
+    [Serializable]
     public class ParticipantDTO : DatabaseEntities.BaseEntity
     {
 

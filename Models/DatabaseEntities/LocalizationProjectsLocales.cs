@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Models.DatabaseEntities
 {
-  public  class LocalizationProjectsLocales 
+    [Serializable]
+    public class LocalizationProjectsLocales
     {
         [Required]
         public int ID_Localization_Project { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SqlKata;
@@ -25,6 +26,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         protected void LogQuery(string sql)
         {
             this._logger.WriteLn($"Query {sql}");
+        }
+
+
+        protected void LogQuery(string sql, Type type, object param)
+        {
+            //Query {sql}, param: {param}"
+            this._logger.WriteLn($"Query {sql} ", type.GetType(), param);
         }
 
         protected void LogQuery(string sql, object param)

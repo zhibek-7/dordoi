@@ -8,6 +8,7 @@ namespace Models.DatabaseEntities.DTO
     /// Пользователь со списком идентификаторов связанных данных (Locales).
     /// Для модификации, например создание, редактирование.
     /// </summary>
+    [Serializable]
     public class UserProfileForEditingDTO : BaseEntity
     {
         public string name { get; set; }

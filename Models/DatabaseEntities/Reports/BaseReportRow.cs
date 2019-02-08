@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Models.DatabaseEntities.Reports
 {
+    [Serializable]
     public abstract class BaseReportRow
     {
     }

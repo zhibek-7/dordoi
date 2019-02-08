@@ -1,7 +1,9 @@
-﻿using Models.DatabaseEntities;
+﻿using System;
+using Models.DatabaseEntities;
 
 namespace Models.DatabaseEntities.PartialEntities.Glossaries
 {
+    [Serializable]
     public class TermWithGlossary : Term
     {
         /// <summary>

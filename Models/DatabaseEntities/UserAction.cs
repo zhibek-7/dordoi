@@ -6,6 +6,7 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Модель для записи действий пользователей в системе
     /// </summary>
+    [Serializable]
     public class UserAction : BaseEntity
     {
         /// <summary>

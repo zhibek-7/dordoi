@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class Image : BaseEntity
     {
         /// <summary>

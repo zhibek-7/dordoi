@@ -96,7 +96,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(sqlQuery, projectLocale);
+                    this.LogQuery(sqlQuery, projectLocale.GetType(), projectLocale);
                     dbConnection.Execute(sqlQuery, projectLocale);
                 }
             }
@@ -137,7 +137,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(sqlQuery, projectLocale);
+                    this.LogQuery(sqlQuery, projectLocale.GetType(), projectLocale);
                     dbConnection.Execute(sqlQuery, projectLocale);
                 }
             }

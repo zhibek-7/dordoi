@@ -248,24 +248,24 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void UpdateProject(LocalizationProject project)
         {
-            var sqlQuery = "UPDATE localization_projects SET" +
-                           "name=@Name, " +
-                           "description=@Description," +
-                           "url=@URL," +
+            var sqlQuery = "UPDATE localization_projects SET " +
+                           " name=@Name_text, " +
+                           " description=@Description," +
+                           " url=@URL," +
                            " visibility=@Visibility," +
-                           " date_of_creation=@DateOfCreation," +
-                           " last_activity=@LastActivity," +
-                           " id_source_locale=@ID_SourceLocale," +
-                           " able_to_download=@AbleToDownload," +
-                           " able_to_left_errors=@AbleToLeftErrors," +
-                           " default_string=@DefaultString," +
-                           " notify_new=@NotifyNew," +
-                           " notify_finish=@NotifyFinish," +
-                           " notify_cconfirm=@NotifyConfirm," +
-                           " notify_new_comment=@notifynewcomment," +
+                           " date_of_creation=@Date_Of_Creation," +
+                           " last_activity=@Last_Activity," +
+                           " id_source_locale=@ID_Source_Locale," +
+                           " able_to_download=@Able_To_Download," +
+                           " able_to_left_errors=@Able_To_Left_Errors," +
+                           " default_string=@Default_String," +
+                           " notify_new=@Notify_New," +
+                           " notify_finish=@Notify_Finish," +
+                           " notify_cconfirm=@Notify_Confirm," +
+                           " notify_new_comment=@notify_new_comment," +
                            " export_only_approved_translations=@export_only_approved_translations," +
                            " original_if_string_is_not_translated=@original_if_string_is_not_translated  " +
-                           "WHERE id=@ID";
+                           "WHERE id=@id";
 
 
 
@@ -273,7 +273,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(sqlQuery, project);
+                    this.LogQuery(sqlQuery, project.GetType(), project);
                     dbConnection.Execute(sqlQuery, project);
                 }
             }
@@ -307,7 +307,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
 
-                    this.LogQuery(sqlQuery, projectLocales);
+                    this.LogQuery(sqlQuery, projectLocales.GetType(), projectLocales);
                     dbConnection.Execute(sqlQuery, projectLocales);
                 }
             }
@@ -338,7 +338,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
 
-                    this.LogQuery(sqlQuery, projectLocales);
+                    this.LogQuery(sqlQuery, projectLocales.GetType(), projectLocales);
                     dbConnection.Execute(sqlQuery, projectLocales);
                 }
             }

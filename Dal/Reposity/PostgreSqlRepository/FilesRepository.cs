@@ -258,7 +258,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     try
                     {
-                        this.LogQuery(sqlString, param: file);
+                        this.LogQuery(sqlString, file.GetType(), file);
                         var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, file, transaction);
                         if (!insertedId.HasValue)
                         {
@@ -294,14 +294,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                         var n = translationSubstringsCount;
                         foreach (var translationSubstring in translationSubstrings)
                         {
-                            this.LogQuery(sqlString, param: translationSubstring);
+                            this.LogQuery(sqlString, translationSubstring.GetType(), translationSubstring);
                             n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
                         }
                         if (n == 0)
                         {
                             file.Strings_Count = translationSubstringsCount;
                             sqlString = "UPDATE files SET strings_count = @Strings_Count WHERE id = @Id";
-                            this.LogQuery(sqlString, param: file);
+                            this.LogQuery(sqlString, file.GetType(), file);
                             await connection.ExecuteAsync(sqlString, file, transaction);
                         }
                         transaction.Commit();

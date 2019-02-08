@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Models.DatabaseEntities.PartialEntities.Comment
 {
+    [Serializable]
     public class PostedData
     {
         public PostedData(IDictionary<string, PostedImage> images)

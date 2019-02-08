@@ -41,7 +41,7 @@ export class ContextEditModalComponent extends ModalComponent
   // Событие при нажатии кнопки "Сохранить"
   confirmButtunClick() {
     this.currentPhrase.context = this.enteredContext;
-    this.currentPhrase.translation_Max_Length = this.translationMaxLength;
+    this.currentPhrase.translation_max_length = this.translationMaxLength;
 
     if (this.filesToUpload != null) {
       this.loadScrinshot();
@@ -63,7 +63,7 @@ export class ContextEditModalComponent extends ModalComponent
   show() {
     super.show();
 
-    this.translationMaxLength = this.currentPhrase.translation_Max_Length;
+    this.translationMaxLength = this.currentPhrase.translation_max_length;
     this.enteredContext = this.currentPhrase.context;
 
     this.loadImages(this.currentPhrase.id);

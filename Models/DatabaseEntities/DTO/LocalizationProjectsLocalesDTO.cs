@@ -7,6 +7,7 @@ namespace Models.DatabaseEntities.DTO
     /// <summary>
     /// Язык перевода назначенный на проект локализации с процентом перевода
     /// </summary>
+    [Serializable]
     public class LocalizationProjectsLocalesDTO : BaseEntity
     {
         /// <summary>

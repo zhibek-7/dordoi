@@ -38,7 +38,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "INSERT INTO work_types (name_text) VALUES (@Name)";
+                    var _sql = "INSERT INTO work_types (name_text) VALUES (@Name_text)";
                     var _params = new { workType.Name_text };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);

@@ -286,11 +286,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query1, img);
+                    this.LogQuery(query1, img.GetType(), img);
                     var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
 
-                    this.LogQuery(query2, translationSubstringId);
-                    await dbConnection.ExecuteScalarAsync(query2, new { TranslationSubstringId = translationSubstringId, ImageId = idOfInsertedImage });
+                    var t = new { TranslationSubstringId = translationSubstringId, ImageId = idOfInsertedImage };
+
+                    this.LogQuery(query2, t);
+                    await dbConnection.ExecuteScalarAsync(query2, t);
                     return idOfInsertedImage;
                 }
             }
