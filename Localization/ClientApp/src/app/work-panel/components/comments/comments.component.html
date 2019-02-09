@@ -53,7 +53,7 @@
                       <div class=""><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>
                       <ul class="row">
                         <li class="list-group-item col-3 imageBlock" *ngFor="let image of comment.images">
-                          <div>
+                                                <div class="blockWithImage">
                             <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
                           </div>
                         </li>
@@ -136,19 +136,34 @@
                           </div>
                         </div>
 
-                        <div *ngIf="commentEdited">
-                          <div class="row">
-                            <div class="col-12">
-                              <div class="form-group">
-                                <textarea class="form-control" rows="2" [(ngModel)]="changedComment"></textarea>
-                              </div>
+                    <div class="termsList">
+                        <div class="panel panel-primary">
+                            <div class="panel-body">
+                                <div class="panel-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item list-group-item-action" *ngFor="let term of termsList | filterTerms: searchTermText | sort:'glossaryName' ">
+                                            <div class="oneTermBlock">                                                                                 
+                                                <div *ngIf="!commentEdited">
+                                                    <div class="row termName">
+                                                        <div class="col-12">{{term.substringToTranslate}} </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">{{term.description}} </div>
+                                                    </div>
+                                                    <div class="row glossaryName">
+                                                        <div class="col-12">{{term.glossaryName}} </div>
+                                                    </div>                                                    
+                                                    <div class="row">                                                        
+                                                        <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
+                                                        <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary" [term]="term.term"></app-edit-term-form-modal>
+                                                        <button class="btn btn-link" (click)="deleteTermClick(term.glossaryId, term.id)">Удалить</button>
+                                                    </div>
+                                                </div>                                                
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                          </div>
-
-                          <div class="row">
-                            <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
-                            <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.comment_Id)">Отменить</button></div>
-                          </div>
                         </div>
 
                       </div>

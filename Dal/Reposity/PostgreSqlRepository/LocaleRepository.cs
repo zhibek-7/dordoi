@@ -25,12 +25,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             "url, " +
             ") " +
             "VALUES (" +
-            "\"Name\", " +
-            "\"Description\", " +
-            "\"Flag\", " +
-            "\"code\", " +
-            "\"data_create\", " +
-            "\"url\", " +
+            "@Name, " +
+            "@Description, " +
+            "@Flag, " +
+            "@code, " +
+            "@data_create, " +
+            "@url" +
             ")";
 
         public LocaleRepository(string connectionStr) : base(connectionStr)
@@ -187,15 +187,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<bool> Upload(Locale locale)
+        public async Task<bool> AddAsync(Locale newLocale)
         {
             var sqlString = this._insertLocaleSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
-                connection.Open();
-                using (IDbTransaction transaction = connection.BeginTransaction())
+                try
                 {
-                    try
+                    this.LogQuery(sqlString, newLocale);
+                    var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, newLocale);
+                    if (!insertedId.HasValue)
                     {
                         this.LogQuery(sqlString, locale.GetType(), locale);
                         var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, locale, transaction);
@@ -216,17 +217,41 @@ namespace DAL.Reposity.PostgreSqlRepository
                         transaction.Rollback();
                         return false;
                     }
-                    catch (Exception exception)
-                    {
-                        this._loggerError.WriteLn(
-                            $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.Upload)} {nameof(Exception)} ",
-                            exception);
-                        transaction.Rollback();
-                        return false;
-                    }
+                    newLocale.ID = insertedId.Value;
+                    return true;
+                }
+                catch (NpgsqlException exception)
+                {
+                    this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                        exception);
+                    return false;
+                }
+                catch (Exception exception)
+                {
+                    this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.AddAsync)} {nameof(Exception)} ",
+                        exception);
+                    return false;
                 }
             }
         }
+
+        public async Task CleanTableAsync()
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                var query =
+                    new Query("Locales")
+                    .AsDelete();
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                var userLocales = await dbConnection.ExecuteAsync(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings);
+            }
+        }
+
     }
 }
 

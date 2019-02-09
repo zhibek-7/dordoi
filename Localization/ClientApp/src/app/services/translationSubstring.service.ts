@@ -43,6 +43,10 @@ export class TranslationSubstringService {
       return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile);
     }
 
+  getTranslationSubstringStatus(translationSubstringId: number): Observable<string>{
+    return this.http.post<string>(this.url + "Status/" + translationSubstringId, null);
+  }
+
   getStringsByProjectId(
     projectId: number,
     fileId?: number,

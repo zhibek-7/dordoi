@@ -4,8 +4,10 @@ import { FormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
 
 import {
+  MatButtonModule,
   MatMenuModule,
   MatIconModule,
+  MatInputModule,
 } from '@angular/material';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -16,16 +18,21 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+
+import { DataImportService } from '../services/dataImport.service';
 
 import { AdministrationRoutingModule } from './administration-routing.module';
 
-import { AdministrationComponent } from '../administration/administration.component';
-import { AuthComponent } from './auth/auth.component';
-import { EventsComponent } from './events/events.component';
-import { FoldersComponent } from './folders/folders.component';
-import { ServersComponent } from './servers/servers.component';
-import { SettingsComponent } from './settings/settings.component';
-import { UsersListComponent } from './users-list/users-list.component';
+import { AdministrationComponent } from './components/administration/administration.component';
+import { AuthComponent } from './components/auth/auth.component';
+import { EventsComponent } from './components/events/events.component';
+import { FoldersComponent } from './components/folders/folders.component';
+import { ServersComponent } from './components/servers/servers.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { UsersListComponent } from './components/users-list/users-list.component';
+import { DataImportComponent } from './components/data-import/data-import.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +43,7 @@ import { UsersListComponent } from './users-list/users-list.component';
     ServersComponent,
     SettingsComponent,
     UsersListComponent,
+    DataImportComponent,
   ],
   imports: [
     AdministrationRoutingModule,
@@ -48,13 +56,18 @@ import { UsersListComponent } from './users-list/users-list.component';
     MatSidenavModule,
     MatTabsModule,
     MatDatepickerModule,
+    MatInputModule,
     MatFormFieldModule,
     MatTableModule,
     MatPaginatorModule,
     CdkTreeModule,
     MatProgressBarModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatSelectModule,
   ],
   providers: [
+    DataImportService,
   ]
 })
 export class AdministrationModule { }

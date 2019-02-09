@@ -12,6 +12,7 @@ export class AdministrationComponent implements OnInit {
   showServersComponent = false;
   showEventsComponent = false;
   showAuthComponent = false;
+  showImportComponent = false;
 
   constructor() { }
 
@@ -25,5 +26,6 @@ export class AdministrationComponent implements OnInit {
     this.showServersComponent = (type === 4);
     this.showEventsComponent = (type === 5);
     this.showAuthComponent = (type === 6);
+    this.showImportComponent = (type === 7);
   }
  }

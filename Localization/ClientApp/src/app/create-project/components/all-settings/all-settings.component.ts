@@ -90,16 +90,19 @@ export class AllSettingsComponent implements OnInit {
     );
 
     let selectedLangs = [];
-    let allPrLocales = this.projectsService
-      .getProjectLocales(this.currentProjectId)
-      .subscribe(
-        projectsL => {
-          this.allProjLocales = projectsL;
+    let allPrLocales = this.projectsService.getProjectLocales(this.currentProjectId)
+      .subscribe(projectsL => {
+        this.allProjLocales = projectsL;
+        
+        this.dropdownList.forEach((lang) => {
+          const index = projectsL.findIndex(list => list["iD_Locale"] == lang.id);
 
-          this.dropdownList.forEach(lang => {
-            const index = this.allProjLocales.findIndex(
-              list => list["iD_Locale"] == lang.id
-            );
+          if (index != -1) {
+            selectedLangs.push({
+              itemName: lang.itemName,
+              selected: true,
+              id: lang.id
+            });
 
             if (index == 0) {
               selectedLangs.push({
@@ -118,26 +121,17 @@ export class AllSettingsComponent implements OnInit {
         error => console.error(error)
       );
 
-    //this.dropdownList = [
-    //  { itemName: "Ido", checked: false, id: "1" },
-    //  { itemName: "Аварский", checked: false, id: "2" },
-    //  { itemName: "Азербайджанский", checked: false, id: "3" },
-    //  { itemName: "Авестийский", checked: false, id: "4" },
-    //  { itemName: "Аймара", checked: false, id: "5" },
-    //  { itemName: "Акан", checked: false, id: "6" },
-    //  { itemName: "Албанский", checked: false, id: "7" },
-    //  { itemName: "Амхарский", checked: false, id: "8" },
-    //  { itemName: "Английский", checked: false, id: "300" },
-    //  {
-    //    itemName: "Английский (вверх ногами)",
-    //    checked: false,
-    //    id: "10"
-    //  },
-    //  { itemName: "Английский, Аравия", checked: false, id: "11" },
-    //  { itemName: "Ангийский, Белиз", checked: false, id: "12" },
-    //  { itemName: "Русский", checked: false, id: "13" }
-    //];
+            lang.checked = false;
+            this.selectedL = false;
+          }
 
+
+        });
+      
+      },
+        error => console.error(error));
+
+   
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
 
@@ -151,20 +145,22 @@ export class AllSettingsComponent implements OnInit {
         this.pjFileTrue = this.project.able_To_Download;
         this.pjSkipUntranslStrTrue = this.project.able_To_Left_Errors;
         this.pjExportTrue = this.project.export_only_approved_translations;
-        this.pjNotificationTrue = this.project.notify_New;
-
+        this.pjNotificationTrue = this.project.notifyNew;
+        this.selectedLang = project["iD_SourceLocale"];
         this.selectedItems = selectedLangs;
-        this.selectedLang = this.project.ID_Source_Locale;
+        
         if (this.currentProjectPublic == true) {
-          this.pjPublic == "public";
+          this.pjPublic = "public";
         } else {
-          this.pjPublic == "nopublic";
+          this.pjPublic = "nopublic";
         }
 
         this.selectedL = false;
         this.dropdownList = this.dropdownList;
 
-        console.log(this.currentProjectId);
+        
+       
+        console.log(this.selectedItems);
       },
       error => console.error(error)
     );
@@ -227,10 +223,7 @@ export class AllSettingsComponent implements OnInit {
     });
   }
 
-  addProject() {
-    //let newProject: LocalizationProject = new LocalizationProject(this.settings_proj.get('pjName').value, this.settings_proj.get('pjName').value, this.settings_proj.get('pjDescription').value);// поменять на id реального пользователя, когда появится
-    // this.projectsService.addProject(newProject);
-  }
+ 
   idPrLocale: number;
   idLocale: number;
   editProject(Id: number): void {
@@ -246,11 +239,11 @@ export class AllSettingsComponent implements OnInit {
     this.selectedItems.forEach(lang => {
       let projectLocales: LocalizationProjectsLocales[] = [];
 
-      const index = this.allProjLocales.findIndex(
-        list => list["iD_Locale"] == lang.id
-      );
-      if (index == 0) {
-      } else {
+      const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
+      if (index !=-1) {
+
+      }
+      else {
         projectLocales.push({
           id_Localization_Project: this.currentProjectId,
           id_Locale: lang.id,
@@ -269,9 +262,11 @@ export class AllSettingsComponent implements OnInit {
       //  });
       //})
 
-      //передает массив языков
-      this.projectsService.addProjectLocales(projectLocales);
-    });
+    })
+
+    //передает массив языков
+    this.projectsService.addProjectLocales(projectLocales);
+
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,
       this.currentProjectName,

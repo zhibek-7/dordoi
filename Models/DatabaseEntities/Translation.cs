@@ -23,5 +23,7 @@ namespace Models.DatabaseEntities
 
         [Required]
         public int ID_Locale { get; set; }
+
+        public bool Selected { get; set; }
     }
 }

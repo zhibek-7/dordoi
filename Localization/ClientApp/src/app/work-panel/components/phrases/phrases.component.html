@@ -30,7 +30,17 @@
             <li class="list-group-item list-group-item-action" *ngFor="let phrase of currentPageOfPhrases | sort:'substring_to_translate' "
               (click)="choosePhrase(phrase)">
               <div class="row">
-                <div class="col-1"><img class="colorIcon"></div>
+                <div>
+                  <div *ngIf="phrase.status == 'Empty' ">
+                      <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/redIcon.png"></div>
+                  </div>
+                  <div *ngIf="phrase.status == 'Confirmed' ">
+                      <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/yellowIcon.png"></div>
+                  </div>
+                  <div *ngIf="phrase.status == 'Selected' ">
+                      <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/greenIcon.jpg"></div>
+                  </div>
+                </div>                
                 <div class="col-11"> {{phrase.substring_to_translate}} </div>
               </div>
             </li>

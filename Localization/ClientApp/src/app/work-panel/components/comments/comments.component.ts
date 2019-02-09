@@ -191,11 +191,15 @@ export class CommentsComponent implements OnInit {
     );
   }
 
-  // Функция, срабатываемая при загрузке скриншота
-  handleFileInput(file: FileList) {
-    this.filesToUpload.push(file.item(0));
-    if (this.changedComment.images == undefined) {
-      this.changedComment.images = [];
+    // Функция отображения скриншота в модальном окне в увеличенном размере
+    showImage(image: Image){
+        const dialogConfig = new MatDialogConfig();
+
+        dialogConfig.data = {
+            selectedImage: image
+        };
+
+        let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
     }
 
     var reader = new FileReader();

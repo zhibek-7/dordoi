@@ -160,7 +160,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param = new { Id = projectId };
                     this.LogQuery(query, param);
-                    IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<TranslationSubstring>(query, param);
+                    IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<TranslationSubstring>(query, param);                    
                     return strings;
                 }
             }
@@ -203,6 +203,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { Id = fileId };
                     this.LogQuery(query, param);
                     IEnumerable<TranslationSubstring> stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(query, param);
+
+                    foreach (var translationSubstring in stringsInFile)
+                    {
+                        translationSubstring.Status = await GetStatusOfTranslationSubstringAsync(translationSubstring.ID);
+                    }
+
                     return stringsInFile;
                 }
             }
@@ -686,5 +692,51 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId)
+        {
+            var query = "SELECT * " +
+                        "FROM \"Translations\" AS T " +
+                        "WHERE T.\"ID_String\" = @TranslationSubstringId;";    
+                
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    this.LogQuery(query, translationSubstringId);
+                    var translationsOfTheString = await dbConnection.QueryAsync<Translation>(query, new { TranslationSubstringId = translationSubstringId });
+
+                    string status = "Empty";
+
+                    foreach(var translation in translationsOfTheString)
+                    {
+                        if (translation.Selected == true)
+                        {
+                            status = "Selected";
+                            break;
+                        }
+                        if (translation.Confirmed == true)
+                        {
+                            status = "Confirmed";
+                        }                        
+                    }
+
+                    return status;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
     }
 }

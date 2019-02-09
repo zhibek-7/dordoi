@@ -14,6 +14,7 @@ using Models.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Utilities.Logs;
 using System.Net;
+using Models.Migration;
 
 namespace Localization
 {
@@ -50,6 +51,7 @@ namespace Localization
             services.AddScoped<ITranslationTroubleRepository>(provider => new TranslationTroubleRepository(connectionString));
             services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
 
+            services.AddScoped<FromExcel>();
 
 
             services.AddScoped<FilesService>();
