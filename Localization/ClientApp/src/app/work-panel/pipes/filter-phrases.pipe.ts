@@ -8,8 +8,8 @@ export class FilterPhrasesPipe implements PipeTransform {
     searchText = searchText.toLowerCase();
 
     return items.filter(it => {
-      if (it.substringToTranslate == null) return [];
-      return it.substringToTranslate.toLowerCase().includes(searchText);
+      if (it.substring_to_translate == null) return [];
+      return it.substring_to_translate.toLowerCase().includes(searchText);
     });
   }
 }

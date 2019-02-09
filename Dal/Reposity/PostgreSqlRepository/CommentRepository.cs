@@ -368,8 +368,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<int> UploadImageAsync(Image img, int commentId)
         {
-            var query1 = "INSERT INTO images (name_text, id_user, body, url)" +
-                        "VALUES (@Name,  @ID_User, @Data, @url) " +
+            var query1 = "INSERT INTO images (name_text, id_user, body, date_time_added)" +
+                        "VALUES (@Name_text,  @ID_User, @body, @Date_Time_Added) " +
                         "RETURNING  images.id";
 
             var query2 = "INSERT INTO comments_images (id_comment, id_image)" +

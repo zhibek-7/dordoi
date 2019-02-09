@@ -551,9 +551,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "TS.id_file_owner AS id_file_owner, " +
                             "TS.value AS value, " +
                             "TS.position_in_text AS position_in_text, " +
-                            "G.id As glossaryid, " +
-                            "G.name_text AS glossaryname, " +
-                            "G.description AS glossarydescription " +
+                            "G.id As glossary_id, " +
+                            "G.name_text AS glossary_name, " +
+                            "G.description AS glossary_description " +
                             "FROM localization_projects AS LP " +
                             "INNER JOIN localization_projects_glossaries AS LPG ON LP.id = LPG.id_localization_project " +
                             "INNER JOIN glossaries AS G ON G.id = LPG.id_glossary " +
