@@ -11,7 +11,7 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectsLocalesRepository : BaseRepository,  ILocalizationProjectsLocalesRepository
+    public class LocalizationProjectsLocalesRepository : BaseRepository, ILocalizationProjectsLocalesRepository
     {
         public LocalizationProjectsLocalesRepository(string connectionStr) : base(connectionStr)
         {
@@ -21,8 +21,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<IEnumerable<LocalizationProjectsLocales>> GetAll(int Id)
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM \"LocalizationProjectsLocales\"" +
-                 "WHERE \"ID_LocalizationProject\"=@Id";
+            var sqlString = "SELECT * FROM localization_projects_locales     " +
+                 "WHERE id_localization_project=@Id";
 
             try
             {
@@ -80,7 +80,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-     
+
 
 
         /// <summary>
@@ -89,14 +89,14 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void AddProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
-            var sqlQuery = "INSERT INTO \"LocalizationProjectsLocales\" (\"ID_LocalizationProject\", \"ID_Locale\", \"PercentOfTranslation\", \"PercentOfConfirmed\")" +
-                        "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) "+
-                        "RETURNING  \"LocalizationProjectsLocales\".\"ID_LocalizationProject\"";
+            var sqlQuery = "INSERT INTO localization_projects_locales (id_localization_project, id_locale, percent_of_translation, percent_of_confirmed)" +
+                        "VALUES (@ID_LocalizationProject, @ID_Locale, @PercentOfTranslation, @PercentOfConfirmed) " +
+            "RETURNING  localization_projects_locales.id_localization_projec";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(sqlQuery, projectLocale);
+                    this.LogQuery(sqlQuery, projectLocale.GetType(), projectLocale);
                     dbConnection.Execute(sqlQuery, projectLocale);
                 }
             }
@@ -114,7 +114,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        
+
 
         /// <summary>
         /// Обновление
@@ -122,13 +122,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void UpdateProjectsLocales(LocalizationProjectsLocales projectLocale)
         {
-          
-            var sqlQuery = "UPDATE \"LocalizationProjectsLocales\" SET" +
-                         
-                           "\"ID_Locale\"=@ID_Locale," +
-                           "\"PercentOfConfirmed\"=@PercentOfConfirmed," +
 
-                           "WHERE \"ID_LocalizationProject\"=@ID_LocalizationProject";
+            var sqlQuery = "UPDATE localization_projects_locales SET" +
+
+                           "id_locale=@ID_Locale," +
+                           "percent_of_confirmed=@PercentOfConfirmed," +
+
+                           "WHERE id_localization_project=@ID_LocalizationProject";
 
 
 
@@ -137,7 +137,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(sqlQuery, projectLocale);
+                    this.LogQuery(sqlQuery, projectLocale.GetType(), projectLocale);
                     dbConnection.Execute(sqlQuery, projectLocale);
                 }
             }

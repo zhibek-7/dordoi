@@ -1,37 +1,33 @@
-<div class="table-responsive"> 
-<table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>
-        <input type="checkbox" class="checkbox" [(ngModel)]="allDispayedTermsSelectedCheckboxChecked" (change)="toggleSelectionForAllDisplayedTerms()">
-      </th>
-      <th (click)="requestSortBy('value')"
-          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'value'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'value'"
-          >Термин</th>
-      <th (click)="requestSortBy('description')"
-          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'description'"
-          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'description'"
-          >Описание</th>
-      <th>Действия</th>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>
+          <input type="checkbox" class="checkbox" [(ngModel)]="allDispayedTermsSelectedCheckboxChecked" (change)="toggleSelectionForAllDisplayedTerms()">
+        </th>
+        <th (click)="requestSortBy('substring_to_translate')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'">Термин</th>
+        <th (click)="requestSortBy('description')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'description'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'description'">Описание</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tr *ngFor="let termViewModel of termViewModels">
+      <td>
+        <input type="checkbox" class="checkbox" [(ngModel)]="termViewModel.isSelected">
+      </td>
+      <td>{{termViewModel.term.substring_to_translate}}</td>
+      <td>{{termViewModel.term.description}}</td>
+      <td>
+        <div class="btn-group" role="group">
+          <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
+          <app-edit-term-form-modal #editTermFormModal [glossary]="glossary" [term]="termViewModel.term"></app-edit-term-form-modal>
+          <button class="btn btn-link" (click)="deleteTermModal.show()">Удалить</button>
+          <app-delete-term-confirmation-modal #deleteTermModal [term]="termViewModel.term" (deleteTermConfirmed)="deleteTerm(termViewModel.term)"></app-delete-term-confirmation-modal>
+          <button class="btn btn-link" (click)="setLanguagesFormModal.show()">Задать язык</button>
+          <app-set-languages-form-modal #setLanguagesFormModal [glossary]="glossary" [term]="termViewModel.term"></app-set-languages-form-modal>
+        </div>
+      </td>
     </tr>
-  </thead>
-  <tr *ngFor="let termViewModel of termViewModels">
-    <td>
-      <input type="checkbox" class="checkbox" [(ngModel)]="termViewModel.isSelected">
-    </td>
-    <td>{{termViewModel.term.value}}</td>
-    <td>{{termViewModel.term.description}}</td>
-    <td>
-      <div class="btn-group"  role="group">
-        <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
-        <app-edit-term-form-modal #editTermFormModal [glossary]="glossary" [term]="termViewModel.term"></app-edit-term-form-modal>
-        <button class="btn btn-link" (click)="deleteTermModal.show()">Удалить</button>
-        <app-delete-term-confirmation-modal #deleteTermModal [term]="termViewModel.term" (deleteTermConfirmed)="deleteTerm(termViewModel.term)"></app-delete-term-confirmation-modal>
-        <button class="btn btn-link" (click)="setLanguagesFormModal.show()">Задать язык</button>
-        <app-set-languages-form-modal #setLanguagesFormModal [glossary]="glossary" [term]="termViewModel.term"></app-set-languages-form-modal>
-      </div>
-    </td>
-  </tr>
-</table>
+  </table>
 </div>

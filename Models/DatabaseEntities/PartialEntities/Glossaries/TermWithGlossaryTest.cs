@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Models.DatabaseEntities.PartialEntities.Glossaries
 {
+    [Serializable]
     public class TermWithGlossaryTest
     {
         /// <summary>

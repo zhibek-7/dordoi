@@ -9,67 +9,67 @@
            [(ngModel)]="selected"
            name="daterange"
            class="daterangePicker"
-           value="{{getReportPeriod()}}"/>
+           value="{{getReportPeriod()}}" />
   </p>
   <div>
     <div classs="div_bg">
 
-    <!--
-        <div class="col">
-            <select class="form-control m-1" [(ngModel)]="selectedFileId" (change)="applyActionsFilter()" [(value)]="userId2">
-              <option [ngValue]="-1">Все пользователи</option>
-              <option *ngFor="let u of Users" [ngValue]="u.id">{{u.name}}</option>
-            </select>
-          </div>
-        -->
+      <!--
+          <div class="col">
+              <select class="form-control m-1" [(ngModel)]="selectedFileId" (change)="applyActionsFilter()" [(value)]="userId2">
+                <option [ngValue]="-1">Все пользователи</option>
+                <option *ngFor="let u of Users" [ngValue]="u.id">{{u.name_text}}</option>
+              </select>
+            </div>
+          -->
 
 
-        <mat-form-field appearance="outline"  class="input_text"  style="margin-right: 1rem;">
-          <mat-label >Пользователь</mat-label>
-          <mat-select [(value)]="userId" placeholder="Пользователь" style=" color: green;padding: 2px">
-            <mat-option value="-1" selected>Все пользователи</mat-option>
-            <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name}}"</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Пользователь</mat-label>
+        <mat-select [(value)]="userId" placeholder="Пользователь" style=" color: green;padding: 2px">
+          <mat-option value="-1" selected>Все пользователи</mat-option>
+          <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name_text}}"</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
-          <mat-label>Язык перевода</mat-label>
-          <mat-select [(value)]="localeId" placeholder="Язык перевода">
-            <mat-option value="-1" selected>Все языки</mat-option>
-            <mat-option *ngFor="let lang of Languages" value="{{lang.id}}">"{{lang.name}}"</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Язык перевода</mat-label>
+        <mat-select [(value)]="localeId" placeholder="Язык перевода">
+          <mat-option value="-1" selected>Все языки</mat-option>
+          <mat-option *ngFor="let lang of Languages" value="{{lang.id}}">"{{lang.name_text}}"</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
-          <mat-label>Вид работ</mat-label>
-          <mat-select [(value)]="workType" placeholder="Вид работы">
-            <mat-option value="Все" selected>Все</mat-option>
-            <mat-option value="Перевод">Перевод</mat-option>
-            <mat-option value="Редактура">Редактура</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Вид работ</mat-label>
+        <mat-select [(value)]="workType" placeholder="Вид работы">
+          <mat-option value="Все" selected>Все</mat-option>
+          <mat-option value="Перевод">Перевод</mat-option>
+          <mat-option value="Редактура">Редактура</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
-          <mat-label>Подсчет объема по</mat-label>
-          <mat-select [(value)]="volumeCalcType" placeholder="Подсчет объема по">
-            <mat-option value="false" selected>словам</mat-option>
-            <mat-option value="true">знакам с пробелами</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
-          <mat-label>Основа для подсчета</mat-label>
-          <mat-select [(value)]="calcBasisType" placeholder="Основа для подсчета">
-            <mat-option value="false" selected>Исходный язык</mat-option>
-            <mat-option value="true">Язык перевода</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
-          <mat-label>Начальная папка</mat-label>
-          <mat-select [(value)]="initialFolderId" placeholder="Начальная папка">
-            <mat-option value="0">Все</mat-option>
-            <mat-option *ngFor="let folder of Folders" value="{{folder.id}}">"{{folder.name}}"</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Подсчет объема по</mat-label>
+        <mat-select [(value)]="volumeCalcType" placeholder="Подсчет объема по">
+          <mat-option value="false" selected>словам</mat-option>
+          <mat-option value="true">знакам с пробелами</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Основа для подсчета</mat-label>
+        <mat-select [(value)]="calcBasisType" placeholder="Основа для подсчета">
+          <mat-option value="false" selected>Исходный язык</mat-option>
+          <mat-option value="true">Язык перевода</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Начальная папка</mat-label>
+        <mat-select [(value)]="initialFolderId" placeholder="Начальная папка">
+          <mat-option value="0">Все</mat-option>
+          <mat-option *ngFor="let folder of Folders" value="{{folder.id}}">"{{folder.name_text}}"</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
     <div>
       <button (click)="clickEvent()" class="btn  btn-outline-dark">
@@ -89,9 +89,9 @@
 
 <div *ngIf="reportrows">
   <table mat-table [dataSource]="reportrows" class="mat-elevation-z8">
-    <ng-container matColumnDef="name">
+    <ng-container matColumnDef="name_text">
       <th mat-header-cell *matHeaderCellDef> Имя пользовател </th>
-      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.name_text}} </td>
     </ng-container>
 
     <ng-container matColumnDef="language">

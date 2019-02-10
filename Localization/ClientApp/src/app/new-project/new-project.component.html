@@ -10,14 +10,14 @@
           <label for="projectName" class="col-sm-2 col-form-label">Название проекта</label>
           <div class="col-sm-10">
             <input type="text" class="form-control" id="projectName" placeholder="Введите название проекта"
-              formControlName="name">
+                   formControlName="name">
           </div>
         </div>
         <div class="form-group row">
           <label for="projectURL" class="col-sm-2 col-form-label">URL проекта</label>
           <div class="col-sm-10">
             <input type="text" class="form-control" id="projectURL" placeholder="https://crowdin.com/project/projectID"
-              formControlName="url">
+                   formControlName="url">
           </div>
         </div>
 
@@ -33,8 +33,8 @@
         <br>
         <mat-form-field>
           <mat-select placeholder="Выберете язык проекта" formControlName="language">
-            <mat-option *ngFor="let language of languages" [value]="language.name">
-              {{language.name}}
+            <mat-option *ngFor="let language of languages" [value]="language.name_text">
+              {{language.name_text}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -44,14 +44,14 @@
           <div class="row">
             <div class="checkbox-wrap col-sm-5">
               <div class="form-check" *ngFor="let language of languages; let i = index">
-                <input class="form-check-input" type="checkbox" [value]="language.name" id={{i}} (click)="checkLanguage($event)">
+                <input class="form-check-input" type="checkbox" [value]="language.name_text" id={{i}} (click)="checkLanguage($event)">
                 <label class="form-check-label" for={{i}}>
-                    {{language.name}}
+                  {{language.name_text}}
                 </label>
               </div>
             </div>
             <div class="languages-list col-sm-6">
-              <p *ngFor="let checkedLanguage of checkedLanguages"> {{checkedLanguage.name}} </p><br>
+              <p *ngFor="let checkedLanguage of checkedLanguages"> {{checkedLanguage.name_text}} </p><br>
             </div>
           </div>
         </div>

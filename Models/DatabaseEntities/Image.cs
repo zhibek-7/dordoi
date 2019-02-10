@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class Image : BaseEntity
     {
         /// <summary>
@@ -15,13 +16,13 @@ namespace Models.DatabaseEntities
         /// Название изображения
         /// </summary>
         [Required]
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
         /// <summary>
         /// Дата добавления изображения
         /// </summary>
         [Required]
-        public DateTime DateTimeAdded { get; set; }
+        public DateTime Date_Time_Added { get; set; }
 
         /// <summary>
         /// Пользователь, добавивший изображение
@@ -32,6 +33,6 @@ namespace Models.DatabaseEntities
         /// Исхдные данные изображения
         /// </summary>
         [Required]
-        public byte[] Data { get; set; }
+        public byte[] body { get; set; }
     }
 }

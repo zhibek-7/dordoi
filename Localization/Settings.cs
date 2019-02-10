@@ -16,7 +16,9 @@ namespace Localization
         public static string GetStringDB()
         {
             //TODO нужно доработать метод
-            var connectionString = "Host=10.145.251.49;Port=5432;Database=localizationservice;Username=postgres;Password=post123;";
+            var connectionString = "Host=10.145.251.49;Port=5432;Database=localizationsrv;Username=postgres;Password=post123;";
+            //var connectionString = "Host=localhost;Port=5432;Database=localizationsrv;Username=postgres;Password=post123;";
+
             return connectionString;
         }
 

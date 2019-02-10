@@ -6,7 +6,7 @@ import { User } from '../user-account/user';
 
 @Component({
   selector: 'app-user-registration',
-  
+
   templateUrl: './user-registration.component.html',
   styles: [`
         input.ng-touched.ng-invalid {border:solid red 2px;}
@@ -20,10 +20,10 @@ export class UserRegistrationComponent implements OnInit {
   regForm: FormGroup;
   constructor() {
     this.regForm = new FormGroup({
-      "userEmailFormContol" : new FormControl(),
-      "userNameFormControl" : new FormControl(),
-      "userPasswordFormControl" : new FormControl(),
-      "confirmPasswordFormControl" : new FormControl()
+      "userEmailFormContol": new FormControl(),
+      "userNameFormControl": new FormControl(),
+      "userPasswordFormControl": new FormControl(),
+      "confirmPasswordFormControl": new FormControl()
     });
   }
 

@@ -1,148 +1,184 @@
 <div class="commentsAndTermsBlock">
 
-    <div class="directoryBlock">
-        <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link active" id="nav-comment-tab" data-toggle="tab" href="#nav-comment" role="tab" aria-controls="nav-comment" aria-selected="true">Комментарии</a>
-                <a class="nav-item nav-link" id="nav-condition-tab" data-toggle="tab" href="#nav-condition" role="tab" aria-controls="nav-condition" aria-selected="false">Глоссарий</a>
-            </div>
-        </nav>
-    </div>
+  <div class="directoryBlock">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-comment-tab" data-toggle="tab" href="#nav-comment" role="tab"
+          aria-controls="nav-comment" aria-selected="true">Комментарии</a>
+        <a class="nav-item nav-link" id="nav-condition-tab" data-toggle="tab" href="#nav-condition" role="tab"
+          aria-controls="nav-condition" aria-selected="false">Глоссарий</a>
+      </div>
+    </nav>
+  </div>
 
-    <div class="tabsBlock">
-        <div class="tab-content" id="nav-tabContent">
+  <div class="tabsBlock">
+    <div class="tab-content" id="nav-tabContent">
 
-            <div class="tab-pane fade show active" id="nav-comment" role="tabpanel" aria-labelledby="nav-comment-tab">
-                <div class="panel panel-primary">
-                    <div class="panel-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
-                                <div class="oneCommentBlock">                                 
-                                    <div class="row">
-                                        <div class="col-6 userNameRow">{{comment.userName}}</div><div class="col-6">{{comment.dateTime | date: 'd.M.yyyy H:m'}}</div>
-                                    </div>
-                                    <div *ngIf="!commentEdited">
-                                        <div class="row">
-                                            <div class="col-12">{{comment.comment}} </div>
-                                        </div>
-                                        <ul class="row">
-                                            <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">
-                                                <div>                                                                                                        
-                                                    <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}" />
-                                                </div>
-                                            </li>   
-                                        </ul>
-                                        <div class="row">                                           
-                                            <button class="btn btn-link" (click)="changeCommentClick(comment)">Изменить</button>
-                                            <button class="btn btn-link" (click)="deleteCommentClick(comment)">Удалить</button>
-                                        </div>
-                                    </div>
-                                    <div *ngIf="commentEdited">
-                                      <div class="row">
-                                        <div class="col-12">
-                                          <div class="form-group">
-                                            <textarea class="form-control" rows="2"
-                                                      [(ngModel)]="changedComment.comment"></textarea>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="fileBlock mb-2">
-                                        <div class=""><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>                                        
-                                        <ul class="row">
-                                            <li class="list-group-item col-3 imageBlock" *ngFor="let image of comment.images">
-                                                <div class="blockWithImage">
-                                                    <img class="appendedImage" src="data:image/JPEG;base64,{{image.data}}" />
-                                                </div>
-                                            </li>   
-                                        </ul>
-                                                                          
-                                        <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
-                                        <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.commentId)">Отменить</button></div>
-                                      </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+      <div class="tab-pane fade show active" id="nav-comment" role="tabpanel" aria-labelledby="nav-comment-tab">
+        <div class="panel panel-primary">
+          <div class="panel-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
+                <div class="oneCommentBlock">
+                  <div class="row">
+                    <div class="col-6 userNameRow">{{comment.user_name}}</div>
+                    <div class="col-6">{{comment.datetime | date: 'd.M.yyyy H:m'}}</div>
+                  </div>
+                  <div *ngIf="!commentEdited">
+                    <div class="row">
+                      <div class="col-12">{{comment.comment_text}} </div>
                     </div>
-                </div>
-
-                <div class="addCommentBlock">
-                    <div class="container align-center" style="padding:0px;">
-                        <div class="row" style="width: 100%;">                                
-                            <form class="col-10">
-                                <div class=" inputSearch">
-                                    <input type="text"  id="addCommentInput" name="first" class="form-control input-lg" placeholder="Новый комментарий" [(ngModel)]="addCommentText"
-                                    class="col-11" (keyup)="onEnterPressComment($event)">
-                                </div>
-                            </form>
-                            <div class="col-1 float-right align-center arrowIcon" style="padding:0px;">
-                                <mat-icon (click)="addComment()">add_comment</mat-icon>
-                            </div>
+                    <ul class="row">
+                      <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">
+                        <div>
+                          <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
                         </div>
+                      </li>
+                    </ul>
+                    <div class="row">
+                      <button class="btn btn-link" (click)="changeCommentClick(comment)">Изменить</button>
+                      <button class="btn btn-link" (click)="deleteCommentClick(comment)">Удалить</button>
                     </div>
-                </div>
-
-            </div>
-
-            <div class="tab-pane fade" id="nav-condition" role="tabpanel" aria-labelledby="nav-condition-tab">
-
-                <div *ngIf="!checkNumberOfTermsInProject()" class="conditionsBlock">
-                    <div>Глоссарий пуст</div>
-                </div>
-
-                <div *ngIf="checkNumberOfTermsInProject()">
-                    <div class="searchTermBlock">
-                        <div class="container align-center" style="padding:0px;">
-                            <div class="row" style="width: 100%;"> 
-                                <div class="col-1 float-right align-center arrowIcon" style="padding:0px;">
-                                    <a target="_blank" routerLink="../Glossaries" title="Добавить новый термин" ><mat-icon>add_comment</mat-icon></a>                                    
-                                </div>                               
-                                <form class="col-11">
-                                    <div class=" inputSearch">
-                                        <input type="text"  id="searchTermInput" name="first" class="form-control input-lg" placeholder="Поиск в глоссарие" [(ngModel)]="searchTermText"
-                                        class="col-12">
-                                    </div>
-                                </form>                                
-                            </div>
+                  </div>
+                  <div *ngIf="commentEdited">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <textarea class="form-control" rows="2" [(ngModel)]="changedComment.comment_text"></textarea>
                         </div>
+                      </div>
                     </div>
 
-                    <div class="termsList">
-                        <div class="panel panel-primary">
+                    <div class="fileBlock mb-2">
+                      <div class=""><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>
+                      <ul class="row">
+                        <li class="list-group-item col-3 imageBlock" *ngFor="let image of comment.images">
+                          <div class="blockWithImage">
+                            <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
+                          </div>
+                        </li>
+                      </ul>
+
+                      <div class="col-4"><button class="btn greenBtn" (click)="saveChangedComment(comment)">Сохранить</button></div>
+                      <div class="col-4"><button class="btn" (click)="cancelChangingComment(comment.comment_Id)">Отменить</button></div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="addCommentBlock">
+          <div class="container align-center" style="padding:0px;">
+            <div class="row" style="width: 100%;">
+              <form class="col-10">
+                <div class=" inputSearch">
+                  <input type="text" id="addCommentInput" name="first" class="form-control input-lg" placeholder="Новый комментарий"
+                    [(ngModel)]="addCommentText" class="col-11" (keyup)="onEnterPressComment($event)">
+                </div>
+              </form>
+              <div class="col-1 float-right align-center arrowIcon" style="padding:0px;">
+                <mat-icon (click)="addComment()">add_comment</mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tab-pane fade" id="nav-condition" role="tabpanel" aria-labelledby="nav-condition-tab">
+
+        <div *ngIf="!checkNumberOfTermsInProject()" class="conditionsBlock">
+          <div>Глоссарий пуст</div>
+        </div>
+
+        <div *ngIf="checkNumberOfTermsInProject()">
+          <div class="searchTermBlock">
+            <div class="container align-center" style="padding:0px;">
+              <div class="row" style="width: 100%;">
+                <div class="col-1 float-right align-center arrowIcon" style="padding:0px;">
+                  <a target="_blank" routerLink="../Glossaries" title="Добавить новый термин">
+                    <mat-icon>add_comment</mat-icon>
+                  </a>
+                </div>
+                <form class="col-11">
+                  <div class=" inputSearch">
+                    <input type="text" id="searchTermInput" name="first" class="form-control input-lg" placeholder="Поиск в глоссарие"
+                      [(ngModel)]="searchTermText" class="col-12">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="termsList">
+            <div class="panel panel-primary">
+              <div class="panel-body">
+                <div class="panel-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item list-group-item-action" *ngFor="let term of termsList | filterTerms: searchTermText | sort:'glossaryName' ">
+                      <div class="oneTermBlock">
+                        <div *ngIf="!commentEdited">
+                          <div class="row termName">
+                            <div class="col-12">{{term.substring_to_translate}} </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-12">{{term.description}} </div>
+                          </div>
+                          <div class="row glossary_name">
+                            <div class="col-12">{{term.glossary_name}} </div>
+                          </div>
+                          <div class="row">
+                            <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
+                            <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary" [term]="term.term"></app-edit-term-form-modal>
+                            <button class="btn btn-link" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
+                          </div>
+                        </div>
+
+                        <div class="termsList">
+                          <div class="panel panel-primary">
                             <div class="panel-body">
-                                <div class="panel-body">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item list-group-item-action" *ngFor="let term of termsList | filterTerms: searchTermText | sort:'glossaryName' ">
-                                            <div class="oneTermBlock">                                                                                 
-                                                <div *ngIf="!commentEdited">
-                                                    <div class="row termName">
-                                                        <div class="col-12">{{term.substringToTranslate}} </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-12">{{term.description}} </div>
-                                                    </div>
-                                                    <div class="row glossaryName">
-                                                        <div class="col-12">{{term.glossaryName}} </div>
-                                                    </div>                                                    
-                                                    <div class="row">                                                        
-                                                        <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
-                                                        <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary" [term]="term.term"></app-edit-term-form-modal>
-                                                        <button class="btn btn-link" (click)="deleteTermClick(term.glossaryId, term.id)">Удалить</button>
-                                                    </div>
-                                                </div>                                                
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                              <div class="panel-body">
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item list-group-item-action" *ngFor="let term of termsList | filterTerms: searchTermText | sort:'glossary_name' ">
+                                    <div class="oneTermBlock">
+                                      <div *ngIf="!commentEdited">
+                                        <div class="row termName">
+                                          <div class="col-12">{{term.substring_to_translate}} </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-12">{{term.description}} </div>
+                                        </div>
+                                        <div class="row glossary_name">
+                                          <div class="col-12">{{term.glossary_name}} </div>
+                                        </div>
+                                        <div class="row">
+                                          <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
+                                          <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary"
+                                            [term]="term.term"></app-edit-term-form-modal>
+                                          <button class="btn btn-link" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
-                        </div>
-                    </div>                    
+                          </div>
 
+                        </div>
+                    </li>
+                  </ul>
                 </div>
+              </div>
             </div>
+          </div>
 
         </div>
+      </div>
+
     </div>
+  </div>
 
 </div>

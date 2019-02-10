@@ -21,7 +21,7 @@ export class ParticipantsService {
     sortAscending: boolean,
     roleShort: string[]
   ): Observable<HttpResponse<Participant[]>> {
-    let body: any = { };
+    let body: any = {};
     if (limit) {
       body.limit = limit;
     }
@@ -44,7 +44,7 @@ export class ParticipantsService {
       }
     }
     if (roleShort && roleShort.length > 0) {
-      body.roleShort = roleShort;
+      body.role_Short = roleShort;
     }
     return this.httpClient.post<Participant[]>(this.url + 'byProjectId/' + projectId + '/list',
       body,

@@ -99,9 +99,9 @@ namespace Localization.WebApi
                 foreach (var row in reportRows)
                 {
                     rowNum++;
-                    sheet.Cells[rowNum, 1].Value = row.Name;
+                    sheet.Cells[rowNum, 1].Value = row.Name_text;
                     sheet.Cells[rowNum, 2].Value = row.Language;
-                    sheet.Cells[rowNum, 3].Value = row.workType;
+                    sheet.Cells[rowNum, 3].Value = row.work_Type;
                     sheet.Cells[rowNum, 4].Value = row.Translations;
 
                     // указываем что в этой ячейке число

@@ -34,15 +34,15 @@ namespace Models.Services
             {
                 var temp = await _glossariesRepository.GetAllAsync();
                 //Создание списка глоссариев со строками перечислений имен связанных объектов.
-                var resultDTO = temp.GroupBy(t => t.ID).Select(t => new GlossariesTableViewDTO
+                var resultDTO = temp.GroupBy(t => t.id).Select(t => new GlossariesTableViewDTO
                 {
-                    ID = t.Key,
-                    Name = t.FirstOrDefault().Name,
+                    id = t.Key,
+                    Name_text = t.FirstOrDefault().Name_text,
 
-                    LocalesName = string.Join(", ", t.Select(x => x.LocaleName).Distinct().OrderBy(n => n)),
-                    LocalizationProjectsName = string.Join(", ",
-                        t.Select(x => x.LocalizationProjectName).Distinct().OrderBy(n => n))
-                }).OrderBy(t => t.Name);
+                    Locales_Name = string.Join(", ", t.Select(x => x.Locale_Name).Distinct().OrderBy(n => n)),
+                    Localization_Projects_Name = string.Join(", ",
+                        t.Select(x => x.Localization_Project_Name).Distinct().OrderBy(n => n))
+                }).OrderBy(t => t.Name_text);
                 return resultDTO;
             }
             catch (Exception exception)
@@ -62,11 +62,11 @@ namespace Models.Services
             {
                 var newGlossaryFileId = await this._filesRepository.AddAsync(new File()
                 {
-                    ID_LocalizationProject = glossary.LocalizationProjectsIds.First(x => x.HasValue).Value,
-                    Name = glossary.Name,
-                    DateOfChange = DateTime.Now,
-                    IsFolder = false,
-                    IsLastVersion = true,
+                    ID_Localization_Project = glossary.Localization_Projects_Ids.First(x => x.HasValue).Value,
+                    Name_text = glossary.Name_text,
+                    Date_Of_Change = DateTime.Now,
+                    Is_Folder = false,
+                    Is_Last_Version = true,
                 });
                 glossary.ID_File = newGlossaryFileId;
                 await _glossariesRepository.AddNewGlossaryAsync(glossary);
@@ -90,12 +90,12 @@ namespace Models.Services
                 //Создание глоссария с вложенными списками идентификаторов связанных данных.
                 var resultDTO = new GlossariesForEditingDTO
                 {
-                    ID = temp.FirstOrDefault().ID,
-                    Name = temp.FirstOrDefault().Name,
+                    id = temp.FirstOrDefault().id,
+                    Name_text = temp.FirstOrDefault().Name_text,
                     Description = temp.FirstOrDefault().Description,
                     ID_File = temp.FirstOrDefault().ID_File,
-                    LocalesIds = temp.Select(t => t.LocaleID).Distinct(),
-                    LocalizationProjectsIds = temp.Select(t => t.LocalizationProjectID).Distinct()
+                    Locales_Ids = temp.Select(t => t.Locale_ID).Distinct(),
+                    Localization_Projects_Ids = temp.Select(t => t.Localization_Project_ID).Distinct()
                 };
                 return resultDTO;
             }

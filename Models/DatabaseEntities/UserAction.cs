@@ -6,6 +6,7 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Модель для записи действий пользователей в системе
     /// </summary>
+    [Serializable]
     public class UserAction : BaseEntity
     {
         /// <summary>
@@ -22,12 +23,12 @@ namespace Models.DatabaseEntities
         /// ИД вида деятельности 
         /// </summary>
         [Required]
-        public int ID_worktype { get; set; }
+        public int ID_work_type { get; set; }
         /// <summary>
         /// Вид деятельности в виде строки
         /// </summary>
         [Required]
-        public string Worktype { get; set; }
+        public string Work_type { get; set; }
         /// <summary>
         /// Время активности. Устанавливается в БД автоматически
         /// </summary>
@@ -85,8 +86,8 @@ namespace Models.DatabaseEntities
         {
             ID_User = userId;
             User = userName;
-            ID_worktype = actionTypeID;
-            Worktype = actionName;
+            ID_work_type = actionTypeID;
+            Work_type = actionName;
             Description = descript;
             Datetime = DateTime.Now;
         }

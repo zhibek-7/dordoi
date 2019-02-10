@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     public abstract class BaseEntity
     {
         [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
     }
 }

@@ -11,26 +11,26 @@ export class ProjectsService {
 
   private controllerUrl: string = "api/Project/";
 
-    constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
-    get currentProjectId(): number {
-        return +sessionStorage.getItem('ProjecID');
-    }
+  get currentProjectId(): number {
+    return +sessionStorage.getItem('ProjecID');
+  }
 
-    get currentProjectName(): string {
-        return sessionStorage.getItem('ProjectName');
-    }
+  get currentProjectName(): string {
+    return sessionStorage.getItem('ProjectName');
+  }
 
 
 
-    getProjects(): Observable<LocalizationProject[]> {
-      console.log("getProject-->");
+  getProjects(): Observable<LocalizationProject[]> {
+    console.log("getProject-->");
     return this.httpClient.get<LocalizationProject[]>(this.controllerUrl + "List");
-    }
+  }
 
   getProject(id: number): Observable<LocalizationProject> {
-      console.log("getProject="+id);
-      console.log("getProject==="+this.controllerUrl + id);
+    console.log("getProject=" + id);
+    console.log("getProject===" + this.controllerUrl + id);
     return this.httpClient.get<LocalizationProject>(this.controllerUrl + id);
   }
 
@@ -38,12 +38,11 @@ export class ProjectsService {
    * Возвращает проект локализации с подробной иформацией из связанных данных.
    * @param id Идентификатор проекта локализации.
    */
-  getProjectWithDetails(id: number): Observable<LocalizationProject>
-  {
+  getProjectWithDetails(id: number): Observable<LocalizationProject> {
     return this.httpClient.post<LocalizationProject>(this.controllerUrl + "details", id);
   }
 
-  async addProject(project: LocalizationProject,) {
+  async addProject(project: LocalizationProject, ) {
     console.log("addProject-->");
     console.log(project);
 
@@ -71,7 +70,7 @@ export class ProjectsService {
   //  }
   deleteProject(Id: number) {
     console.log("deleteProject-->" + Id);
-    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id );
+    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id);
   }
 
 
@@ -102,7 +101,7 @@ export class ProjectsService {
   async updateProjectLocales(Id: number, projectLocale: LocalizationProjectsLocales[]) {
     console.log("updateProject-->" + Id);
     console.log(projectLocale);
-    // projectLocale.id_LocalizationProject = Id;
+    // projectLocale.id_Localization_Project = Id;
     let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "editProjectLocale/" + Id, projectLocale).toPromise();
 
     return asyncResult;

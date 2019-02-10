@@ -1,7 +1,7 @@
 <div class="mainBlock">
   <div class="row">
     <div class="noPadding" [ngClass]="{'col-md-3':left3, 'col-md-0':left0}" *ngIf="showLeftBlock">
-      <phrases-component [fileId] = "fileIdForTranslation" ></phrases-component>
+      <phrases-component [fileId]="fileIdForTranslation"></phrases-component>
     </div>
     <div class="bd-content noPadding " [ngClass]="{'col-md-6':middleCol6, 'col-md-9':middleCol9, 'col-md-12':middleCol12, 'middleBlock': true, 'middleBlockAndRight': middleAndRight}">
       <div class="row">

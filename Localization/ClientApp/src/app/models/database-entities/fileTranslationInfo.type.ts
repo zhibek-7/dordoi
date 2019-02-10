@@ -1,7 +1,7 @@
 export class FileTranslationInfo {
   public constructor(
-    public localeId: number,
-    public percentOfTranslation: number,
-    public percentOfConfirmed: number,
-  ) { }
+    public locale_Id: number,
+    public percent_Of_Translation: number,
+    public percent_Of_Confirmed: number
+  ) {}
 }

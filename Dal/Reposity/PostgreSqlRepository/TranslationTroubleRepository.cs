@@ -28,8 +28,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "INSERT INTO \"TranslationsTroubles\"" +
-                               " (\"ID_Trouble\", \"Trouble\", \"ID_Translation\") " +
+                    var _sql = "INSERT INTO translations_troubles" +
+                               " (id_trouble, trouble, id_translation) " +
                                "VALUES (@ID_Trouble, @Trouble, @ID_Translation)";
                     var _params = new
                     {
@@ -64,7 +64,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    string SQLQuery = "DELETE FROM \"TranslationsTroubles\" WHERE \"ID\" = @Id";
+                    string SQLQuery = "DELETE FROM translations_troubles WHERE id = @Id";
                     var param = new { id };
                     this.LogQuery(SQLQuery, param);
                     dbConnection.Execute(SQLQuery, param);
@@ -94,15 +94,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "UPDATE \"TranslationsTroubles\"" +
-                               " SET \"ID_Trouble\" = @ID_Trouble, \"Trouble\" = @Trouble, \"ID_Translation\" = @ID_Translation" +
-                               " WHERE \"ID\" = @ID";
+                    var _sql = "UPDATE translations_troubles" +
+                               " SET id_trouble = @ID_Trouble, trouble = @Trouble, id_translation = @ID_Translation" +
+                               " WHERE id = @ID";
                     var _params = new
                     {
                         item.ID_Trouble,
                         item.Trouble,
                         item.ID_Translation,
-                        item.ID
+                        ID = item.id
                     };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
@@ -129,7 +129,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                string sqlQery = "SELECT * FROM \"TranslationsTroubles\" WHERE Id = @Id";
+                string sqlQery = "SELECT * FROM translations_troubles WHERE Id = @Id";
                 TranslationTrouble trouble = null;
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
@@ -159,7 +159,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                string sqlQery = "SELECT * FROM \"TranslationsTroubles\"";
+                string sqlQery = "SELECT * FROM translations_troubles";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(sqlQery);
@@ -187,7 +187,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                string sqlQery = "SELECT * FROM \"TranslationsTroubles\" WHERE \"ID_Translation\" = @Id";
+                string sqlQery = "SELECT * FROM translations_troubles WHERE id_translation = @translationId";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var param = new { translationId };

@@ -1,8 +1,8 @@
 export class SimilarTranslation {
-    public constructor(
-        public fileOwnerName: string,
-        public translationText: string,
-        public translationVariant: string,
-        public similarity: number
-    ) { }
+  public constructor(
+    public file_Owner_Name: string,
+    public translation_Text: string,
+    public translation_Variant: string,
+    public similarity: number
+  ) {}
 }

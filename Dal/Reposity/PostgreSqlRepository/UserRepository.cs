@@ -28,8 +28,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    string SQLQuery = "INSERT INTO Users (Name, Password, Photo, Email) VALUES (@Name, @Password, @Photo, @Email)";
-                    this.LogQuery(SQLQuery, param: user);
+                    string SQLQuery = "INSERT INTO users (name_text, password_text, photo, email) VALUES (@Name_text, @Password_text, @Photo, @Email)";
+                    this.LogQuery(SQLQuery, user.GetType(), user);
                     dbConnection.Execute(SQLQuery, user);
                 }
 
@@ -53,7 +53,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
                 User user = null;
-                string SQLQuery = "SELECT * FROM \"Users\" WHERE Id = @Id";
+                string SQLQuery = "SELECT * FROM users WHERE Id = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var param = new { Id };
@@ -82,10 +82,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                string SQLQuery = "SELECT u.* FROM \"Users\" u " +
-                        " join \"Participants\" p on u.\"ID\" = p.\"ID_User\" " +
-                        " join \"LocalizationProjects\" lp on p.\"ID_LocalizationProject\" = lp.\"ID\" " +
-                        " where lp.\"ID\" = @Id";
+                string SQLQuery = "SELECT u.* FROM users u " +
+                        " join participants p on u.id = p.id_user " +
+                        " join localization_projects lp on p.id_localization_project = lp.id " +
+                        " where lp.id = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
 
@@ -114,13 +114,13 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public bool CheckExistUser(User user)
         {
-            string SQLQuery = "SELECT * FROM \"Users\" WHERE Name = @Name AND Password = @Password";
+            string SQLQuery = "SELECT * FROM users WHERE name_text = @Name_text AND password_text = @Password_text";
             try
             {
                 User existUser = null;
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { user.Name, user.Password };
+                    var param = new { user.Name_text, user.Password_text };
                     this.LogQuery(SQLQuery, param);
                     existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
                     if (existUser == null)
@@ -148,7 +148,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public IEnumerable<User> GetAll()
         {
-            string SQLQuery = "SELECT * FROM \"Users\"";
+            string SQLQuery = "SELECT * FROM users";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -208,12 +208,12 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public void Update(User user)
         {
-            string SQLQuery = "UPDATE Users SET Name = @Name, Password = @Password, Photo = @Photo, Email = @Email";
+            string SQLQuery = "UPDATE users SET name_text = @Name_text, password_text = @Password_text, photo = @Photo, email = @Email";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(SQLQuery, param: user);
+                    this.LogQuery(SQLQuery, user.GetType(), user);
                     dbConnection.Execute(SQLQuery, user);
                 }
                 throw new NotImplementedException();
@@ -241,9 +241,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Users")
-                        .Select("Photo")
-                        .Where("ID", id);
+                    var query = new Query("users")
+                        .Select("photo")
+                        .Where("id", id);
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var userAvatar = await dbConnection.ExecuteScalarAsync<byte[]>(
@@ -338,12 +338,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var newUser = new
                     {
-                        Name = user.Name,
+                        Name = user.Name_text,
                         Email = user.Email,
-                        Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password),
+                        Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
                         data_create = DateTime.Now
                     };
-                    var query = new Query("Users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
+                    var query = new Query("users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
 
@@ -376,13 +376,30 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    user.Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
-                    string SQLQuery = "SELECT \"ID\", \"Name\" FROM \"Users\" WHERE (\"Name\" = @Name OR \"Email\" = @Email) AND \"Password\" = @Password";
+                    user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
+                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
                     User existUser = null;
-                    var param = new { user.Name, user.Email, user.Password };
-                    LogQuery(SQLQuery, param);
-                    existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();                    
-                    return existUser;                
+                    var param = new { user.Name_text, user.Email, user.Password_text };
+                    this.LogQuery(SQLQuery, param);
+                    existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
+                    return existUser;
+
+                    //var password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
+                    //var query = new Query("Users")
+                    //    .Where("Password", password)
+                    //    .Where("Name", user.Name)
+                    //    .Or()
+                    //    .Where("Password", password)
+                    //    .Where("Email", user.Name)
+                    //    .Select("*");
+                    //var compiledQuery = _compiler.Compile(query);
+                    //LogQuery(compiledQuery);
+
+                    //var result = await dbConnection
+                    //    .QueryFirstOrDefaultAsync<User>(
+                    //        sql: compiledQuery.Sql,
+                    //        param: compiledQuery.NamedBindings);
+                    //return result;
                 }
             }
             catch (NpgsqlException exception)
@@ -403,13 +420,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Users")
-                        .Where("Users.ID", id)
-                        .LeftJoin("UsersLocales", "UsersLocales.ID_User", "Users.ID")
+                    var query = new Query("users")
+                        .Where("users.id", id)
+                        .LeftJoin("users_locales", "users_locales.id_user", "users.id")
                         .Select(
-                        "Users.*",
-                        "UsersLocales.ID_Locale As LocaleId",
-                        "UsersLocales.IsNative As LocaleIsNative"
+                        "users.*",
+                        "users_locales.id_locale As LocaleId",
+                        "users_locales.is_native As LocaleIsNative"
                         );
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -420,17 +437,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Создание пользователя с вложенными списками идентификаторов связанных данных.
                     var resultDTO = new UserProfileForEditingDTO
                     {
-                        ID = temp.FirstOrDefault().ID,
-                        Name = temp.FirstOrDefault().Name,
-                        Email = temp.FirstOrDefault().Email,
-                        Photo = temp.FirstOrDefault().Photo,
-                        FullName = temp.FirstOrDefault().FullName,
-                        AboutMe = temp.FirstOrDefault().AboutMe,
-                        Gender = temp.FirstOrDefault().Gender,
-                        TimeZone = temp.FirstOrDefault().TimeZone,
-                        
-                        LocalesIds = temp.Select(t => t.LocaleId).Distinct(),
-                        LocalesIdIsNative = temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
+                        id = temp.FirstOrDefault().id,
+                        name = temp.FirstOrDefault().Name,
+                        email = temp.FirstOrDefault().Email,
+                        photo = temp.FirstOrDefault().Photo,
+                        full_name = temp.FirstOrDefault().FullName,
+                        about_me = temp.FirstOrDefault().AboutMe,
+                        gender = temp.FirstOrDefault().Gender,
+                        time_zone = temp.FirstOrDefault().TimeZone,
+
+                        locales_ids = temp.Select(t => t.LocaleId).Distinct(),
+                        locales_id_is_native = temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
                     };
 
                     return resultDTO;
@@ -456,15 +473,15 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var edited = new
                     {
-                        Photo = user.Photo,
-                        Email = user.Email,
+                        photo = user.photo,
+                        email = user.email,
                         //Joined = user.Joined,
-                        FullName = user.FullName,
-                        TimeZone = user.TimeZone,
-                        AboutMe = user.AboutMe,
-                        Gender = user.Gender
+                        full_name = user.full_name,
+                        time_zone = user.time_zone,
+                        about_me = user.about_me,
+                        gender = user.gender
                     };
-                    var query = new Query("Users").Where("ID", user.ID).AsUpdate(edited);
+                    var query = new Query("users").Where("id", user.id).AsUpdate(edited);
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(

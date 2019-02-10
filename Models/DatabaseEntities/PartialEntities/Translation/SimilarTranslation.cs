@@ -1,5 +1,8 @@
-﻿namespace Models.DatabaseEntities.PartialEntities.Translations
+﻿using System;
+
+namespace Models.DatabaseEntities.PartialEntities.Translations
 {
+    [Serializable]
     public class SimilarTranslation : TranslationWithFile
     {
         /// <summary>

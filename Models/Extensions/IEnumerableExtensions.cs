@@ -21,9 +21,9 @@ namespace Models.Extensions
             var nodes = new List<TNode>();
 
             // Get child nodes by parent node id 
-            var childFiles = files.Where(file => file.ID_FolderOwner == parentId)
-                .OrderByDescending(file => file.IsFolder)
-                .ThenBy(file => file.ID);
+            var childFiles = files.Where(file => file.ID_Folder_Owner == parentId)
+                .OrderByDescending(file => file.Is_Folder)
+                .ThenBy(file => file.id);
 
             foreach (var file in childFiles)
             {
@@ -33,7 +33,7 @@ namespace Models.Extensions
                 var node = createNodeFromFile(file, icon);
 
                 // Get excepted files
-                var childItems = files.Except(childFiles).ToTree(createNodeFromFile, getIconForFile, file.ID);
+                var childItems = files.Except(childFiles).ToTree(createNodeFromFile, getIconForFile, file.id);
 
                 // Add child nodes in node
                 node.Children.AddRange(childItems);

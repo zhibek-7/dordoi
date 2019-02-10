@@ -1,53 +1,77 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders} from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 
-import { Translation } from '../models/database-entities/translation.type';
-import { TranslationWithFile } from '../work-panel/localEntites/translations/translationWithFile.type';
-import { SimilarTranslation } from '../work-panel/localEntites/translations/similarTranslation.type';
-import { TranslationSubstring } from '../models/database-entities/translationSubstring.type';
+import { Translation } from "../models/database-entities/translation.type";
+import { TranslationWithFile } from "../work-panel/localEntites/translations/translationWithFile.type";
+import { SimilarTranslation } from "../work-panel/localEntites/translations/similarTranslation.type";
+import { TranslationSubstring } from "../models/database-entities/translationSubstring.type";
 
-import { Observable } from 'rxjs';
+import { Observable } from "rxjs";
 
 @Injectable()
 export class TranslationService {
+  private url: string =
+    document.getElementsByTagName("base")[0].href + "api/translation";
 
-    private url: string = document.getElementsByTagName('base')[0].href + "api/translation";
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {
-        
-    }
+  async createTranslate(translate: Translation) {
+    return await this.http.post<number>(this.url, translate).toPromise();
+  }
 
-    async createTranslate(translate: Translation){        
-        return await this.http.post<number>(this.url, translate).toPromise();                
-    }
+  async getAllTranslationsInStringById(idString: number) {
+    let translations: Translation[] = await this.http
+      .get<Translation[]>(this.url + "/InString/" + idString)
+      .toPromise();
+    return translations;
+  }
 
-    async getAllTranslationsInStringById(idString: number){
-        let translations: Translation[] = await this.http.get<Translation[]>(this.url + '/InString/' + idString).toPromise();
-        return translations;
-    }
+  async deleteTranslate(idTranslation: number) {
+    await this.http
+      .delete(this.url + "/DeleteTranslation/" + idTranslation)
+      .toPromise();
+  }
 
-    async deleteTranslate(idTranslation: number){
-        await this.http.delete(this.url + '/DeleteTranslation/' + idTranslation).toPromise();
-    }
+  async acceptTranslate(translationId: number) {
+    await this.http
+      .put(this.url + "/AcceptTranslation/" + translationId, true)
+      .toPromise();
+  }
 
-    async acceptTranslate(translationId: number){
-        await this.http.put(this.url + '/AcceptTranslation/' + translationId, true).toPromise();
-    }
+  async rejectTranslate(translationId: number) {
+    await this.http
+      .put(this.url + "/RejectTranslation/" + translationId, false)
+      .toPromise();
+  }
 
-    async rejectTranslate(translationId: number){
-        await this.http.put(this.url + '/RejectTranslation/' + translationId, false).toPromise();
-    }
+  updateTranslation(updatedTranslation: Translation): Observable<Object> {
+    return this.http.put(
+      this.url + "/" + updatedTranslation.id,
+      updatedTranslation
+    );
+  }
 
-    updateTranslation(updatedTranslation: Translation): Observable<Object> {
-        return this.http.put(this.url + "/" + updatedTranslation.id, updatedTranslation);
-    }
+  findTranslationByMemory(
+    currentProjectId: number,
+    translationText: string
+  ): Observable<TranslationWithFile[]> {
+    return this.http.post<TranslationWithFile[]>(
+      this.url +
+        "/FindTranslationByMemory/" +
+        currentProjectId +
+        "/" +
+        translationText,
+      null
+    );
+  }
 
-    findTranslationByMemory(currentProjectId: number, translationText: string): Observable<TranslationWithFile[]>{        
-        return this.http.post<TranslationWithFile[]>(this.url + '/FindTranslationByMemory/' + currentProjectId + "/" + translationText, null);        
-    }
-
-    findSimilarTranslations(currentProjectId: number, translationSubsting: TranslationSubstring): Observable<SimilarTranslation[]>{        
-        return this.http.post<SimilarTranslation[]>(this.url + '/FindSimilarTranslations/' + currentProjectId, translationSubsting);
-    }
-
+  findSimilarTranslations(
+    currentProjectId: number,
+    translationSubsting: TranslationSubstring
+  ): Observable<SimilarTranslation[]> {
+    return this.http.post<SimilarTranslation[]>(
+      this.url + "/FindSimilarTranslations/" + currentProjectId,
+      translationSubsting
+    );
+  }
 }

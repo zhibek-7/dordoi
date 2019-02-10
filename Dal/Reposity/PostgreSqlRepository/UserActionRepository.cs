@@ -27,13 +27,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "INSERT INTO \"UserActions\"" +
-                               " (\"ID_User\", \"ID_worktype\", \"Description\", \"ID_Locale\", \"ID_File\", \"ID_String\", \"ID_Translation\", \"ID_Project\") " +
-                               "VALUES (@iduser, @idworktype, @description, @idlocale, @idfile, @idstring, @idtranslation, @idproject)";
+                    var _sql = "INSERT INTO user_actions" +
+                               " (id_user, id_work_type, description, id_locale, id_file, id_string, id_translation, id_project) " +
+                               "VALUES (@ID_User, @Work_type, @Description, @ID_Locale, @ID_File, @ID_String, @ID_Translation, @ID_Project)";
                     var _params = new
                     {
                         action.ID_User,
-                        action.ID_worktype,
+                        action.Work_type,
                         action.Description,
                         action.ID_Locale,
                         action.ID_File,
@@ -73,7 +73,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "SELECT \"UserActions\".*,\"WorkTypes\".\"Name\" as Worktype  FROM \"UserActions\" join \"WorkTypes\" on \"UserActions\".\"ID_worktype\" = \"WorkTypes\".\"ID\" WHERE \"ID\" = @actionId LIMIT 1";
+                    var _sql = "SELECT user_actions.*,work_types.name_text as Worktype  FROM user_actions join work_types on user_actions.id_work_type = work_types.id WHERE id = @id LIMIT 1";
                     var _params = new { id };
                     LogQuery(_sql, _params);
                     var action = await dbConnection.QueryFirstAsync<UserAction>(_sql, _params);
@@ -106,24 +106,24 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "SELECT a.\"ID\", " +
-                               "u.\"Name\" as user, " +
-                               "w.\"Name\" as worktype, " +
-                               "a.\"Datetime\", " +
-                               "a.\"Description\", " +
-                               "l.\"Name\" as locale, " +
-                               "f.\"Name\" as fileName, " +
-                               "s.\"Value\" as string, " +
-                               "t.\"Translated\" as translation, " +
-                               "p.\"Name\" as project " +
-                               "FROM public.\"UserActions\" a " +
-                               "join public.\"Users\" u on a.\"ID_User\" = u.\"ID\" " +
-                               "join public.\"WorkTypes\" w on a.\"ID_worktype\" = w.\"ID\" " +
-                               "left join public.\"Locales\" l on a.\"ID_Locale\" = l.\"ID\" " +
-                               "left join public.\"Files\" f on a.\"ID_File\" = f.\"ID\" " +
-                               "left join public.\"TranslationSubstrings\" s on a.\"ID_String\" = s.\"ID\" " +
-                               "left join public.\"Translations\" t on a.\"ID_Translation\"= s.\"ID\" " +
-                               "left join public.\"LocalizationProjects\" p on a.\"ID_Project\" = p.\"ID\"";
+                    var _sql = "SELECT a.id, " +
+                               "u.name_text as user, " +
+                               "w.name_text as worktype, " +
+                               "a.datetime, " +
+                               "a.description, " +
+                               "l.name_text as locale, " +
+                               "f.name_text as fileName, " +
+                               "s.value as string, " +
+                               "t.translated as translation, " +
+                               "p.name_text as project " +
+                               "FROM public.user_actions a " +
+                               "join public.users u on a.id_user = u.id " +
+                               "join public.work_types w on a.id_work_type = w.id " +
+                               "left join public.locales l on a.id_locale = l.id " +
+                               "left join public.files f on a.id_file = f.id " +
+                               "left join public.translation_substrings s on a.id_string = s.id " +
+                               "left join public.translations t on a.id_translation= s.id " +
+                               "left join public.localization_projects p on a.id_project = p.id";
                     LogQuery(_sql);
                     var actions = await dbConnection.QueryAsync<UserAction>(_sql);
                     return actions;
@@ -156,7 +156,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "SELECT * FROM \"UserActions\" WHERE \"ID_Project\" = @projectId LIMIT 1";
+                    var _sql = "SELECT * FROM user_actions WHERE id_project = @projectId LIMIT 1";
                     var _params = new { projectId };
                     LogQuery(_sql, _params);
                     var actions = await dbConnection.QueryAsync<UserAction>(_sql, _params);
@@ -190,7 +190,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "DELETE FROM \"UserActions\" WHERE \"ID\" = @WorkTypeId";
+                    var _sql = "DELETE FROM user_actions WHERE id = @WorkTypeId";
                     var _params = new { WorkTypeId = id };
                     LogQuery(_sql, _params);
                     await dbConnection.ExecuteAsync(_sql, _params);

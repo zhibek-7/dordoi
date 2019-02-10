@@ -6,10 +6,11 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Проект локализации
     /// </summary>
+    [Serializable]
     public class LocalizationProject : BaseEntity
     {
         [Required]
-        public string Name { get; set; }
+        public string Name_text { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]
@@ -17,37 +18,37 @@ namespace Models.DatabaseEntities
 
         public bool Visibility { get; set; }
         [Required]
-        public DateTime DateOfCreation { get; set; }
+        public DateTime Date_Of_Creation { get; set; }
         [Required]
-        public DateTime LastActivity { get; set; }
+        public DateTime Last_Activity { get; set; }
         [Required]
-        public int ID_SourceLocale { get; set; }
+        public int ID_Source_Locale { get; set; }
 
         /// <summary>
         /// Исходный язык
         /// </summary>
-        public string SourceLocaleName { get; set; }
+        public string Source_Locale_Name { get; set; }
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
-        public int? CountParticipantsActive { get; set; }
+        public int? Count_Users_Active { get; set; }
 
 
-        public bool AbleToDownload { get; set; }
+        public bool Able_To_Download { get; set; }
 
-        public bool AbleToLeftErrors { get; set; }
+        public bool AbleTo_Left_Errors { get; set; }
 
-        public string DefaultString { get; set; }
+        public string Default_String { get; set; }
 
-        public bool NotifyNew { get; set; }
+        public bool Notify_New { get; set; }
 
-        public bool NotifyFinish { get; set; }
+        public bool Notify_Finish { get; set; }
 
-        public bool NotifyConfirm { get; set; }
+        public bool Notify_Confirm { get; set; }
 
         public byte[] Logo { get; set; }
 
-        public bool notifynewcomment { get; set; }
+        public bool notify_new_comment { get; set; }
 
         public bool original_if_string_is_not_translated { get; set; }
 

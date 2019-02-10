@@ -25,15 +25,15 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<int> AddAsync(Comments comment)
         {
-            var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
-                        "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
-                        "RETURNING  \"Comments\".\"ID\"";
+            var query = "INSERT INTO comments_text (id_translation_substrings, datetime, id_user, comment_text)" +
+                        "VALUES (@Id_Translation_Substrings, @DateTime, @Id_User, @Comment_text) " +
+                        "RETURNING  comments_text.id";
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, param: comment);
+                    this.LogQuery(query, comment.GetType(), comment);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
                     return idOfInsertedRow;
                 }
@@ -64,17 +64,17 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddFileAsync(Comments comment)
         {
 
-            var query = "INSERT INTO \"Images\" (\"Name\",  \"ID_User\", \"Data\", url) VALUES('test',  @ID_User,  '‰PNG','')";
+            var query = "INSERT INTO images (name_text,  id_user, data, url) VALUES('test',  comment.ID_User,  '‰PNG','')";
             /*
-                    var query = "INSERT INTO \"Comments\" (\"ID_TranslationSubstrings\", \"DateTime\", \"ID_User\", \"Comment\")" +
+                    var query = "INSERT INTO comments_text (\"ID_TranslationSubstrings\", datetime, id_user, comment_text)" +
                                     "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
-                                    "RETURNING  \"Comments\".\"ID\"";
+                                    "RETURNING  comments_text.id";
             */
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, param: comment);
+                    this.LogQuery(query, comment.GetType(), comment);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
                     return idOfInsertedRow;
                 }
@@ -102,7 +102,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<Comments>> GetAllAsync()
         {
-            var query = "SELECT * FROM \"Comments\"";
+            var query = "SELECT * FROM comments_text";
 
             try
             {
@@ -136,23 +136,23 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список комментариев</returns>        
         public async Task<IEnumerable<CommentWithUserInfo>> GetAllCommentsInStringByID(int idString)
         {
-            var query = "SELECT \"Users\".\"ID\" AS \"UserId\", \"Users\".\"Name\" AS \"UserName\"," +
-                        " \"Comments\".\"ID\" AS \"CommentId\", \"Comments\".\"DateTime\" AS \"DateTime\"," +
-                        " \"Comments\".\"Comment\" AS \"Comment\" " +
-                        "FROM \"Comments\" " +
-                        "INNER JOIN \"Users\" ON \"Comments\".\"ID_User\" = \"Users\".\"ID\" " +
-                        "WHERE \"Comments\".\"ID_TranslationSubstrings\" = @SubstringId";
+            var query = "SELECT users.id AS user_id, users.name_text AS user_name," +
+                        " comments_text.id AS comment_id, comments_text.datetime AS datetime," +
+                        " comments_text.comment_text AS comment_text " +
+                        "FROM comments_text " +
+                        "INNER JOIN users ON comments_text.id_user = users.id " +
+                        "WHERE comments_text.id_translation_substrings = @Id";
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { SubstringId = idString };
+                    var param = new { Id = idString };
                     this.LogQuery(query, param);
                     var comments = await dbConnection.QueryAsync<CommentWithUserInfo>(query, param);
-                    foreach(var comment in comments)
+                    foreach (var comment in comments)
                     {
-                        comment.Images = await GetImagesOfCommentAsync(comment.CommentId);
+                        comment.images = await GetImagesOfCommentAsync(comment.comment_id);
                     }
                     return comments;
                 }
@@ -181,7 +181,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<Comments> GetByIDAsync(int id)
         {
-            var query = "SELECT * FROM \"Comments\" WHERE \"ID\" = @id";
+            var query = "SELECT * FROM comments_text WHERE id = @id";
 
             try
             {
@@ -217,12 +217,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(int id)
         {
-            var query = "SELECT \"Users\".\"ID\" AS \"UserId\", \"Users\".\"Name\" AS \"UserName\"," +
-                        " \"Comments\".\"ID\" AS \"CommentId\", \"Comments\".\"DateTime\" AS \"DateTime\"," +
-                        " \"Comments\".\"Comment\" AS \"Comment\" " +
-                        "FROM \"Comments\" " +
-                        "INNER JOIN \"Users\" ON \"Comments\".\"ID_User\" = \"Users\".\"ID\" " +
-                        "WHERE \"Comments\".\"ID\" = @Id";
+            var query = "SELECT users.id AS user_id, users.name_text AS user_name," +
+                        " comments_text.id AS comment_id, comments_text.datetime AS datetime," +
+                        " comments_text.comment_text AS comment_text " +
+                        "FROM comments_text " +
+                        "INNER JOIN users ON comments_text.id_user = users.id " +
+                        "WHERE comments_text.id = @Id";
 
             try
             {
@@ -256,28 +256,28 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="id">id комментарий который нужно удалить</param>
         /// <returns></returns>
         public async Task<bool> RemoveAsync(int commentId)
-        {            
+        {
             //"" +
             //"DELETE " +
-            //"FROM \"CommentsImages\" AS CI " +
-            //"WHERE CI.\"ID_Comment\" = @id ";
-            var query1 = "SELECT CI.\"ID_Image\" " +
-                         "FROM \"CommentsImages\" AS CI " +
-                         "WHERE CI.\"ID_Comment\" = @CommentId;";
+            //"FROM comments_images AS CI " +
+            //"WHERE CI.id_comment = @id ";
+            var query1 = "SELECT CI.id_image " +
+                         "FROM comments_images AS CI " +
+                         "WHERE CI.id_comment = @CommentId;";
 
-            var queryDeleteWithImage = 
+            var queryDeleteWithImage =
                          "DELETE " +
-                         "FROM \"Comments\" AS C " +
-                         "WHERE C.\"ID\" = @CommentId; " +
+                         "FROM comments_text AS C " +
+                         "WHERE C.id = @CommentId; " +
                          "" +
                          "DELETE " +
-                         "FROM \"Images\" AS I " +
-                         "WHERE I.\"ID\" = @ImageId;";
+                         "FROM images AS I " +
+                         "WHERE I.id = @ImageId;";
 
             var queryDeleteOnlyComment =
                          "DELETE " +
-                         "FROM \"Comments\" AS C " +
-                         "WHERE C.\"ID\" = @CommentId; ";
+                         "FROM comments_text AS C " +
+                         "WHERE C.id = @CommentId; ";
 
             try
             {
@@ -328,17 +328,17 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<bool> UpdateAsync(Comments comment)
         {
-            var query = "UPDATE \"Comments\" SET " +
-                        "\"DateTime\"=@DateTime, " +
-                        "\"ID_User\"=@ID_User, " +
-                        "\"Comment\"=@Comment " +
-                        "WHERE \"ID\"=@ID";
+            var query = "UPDATE comments_text SET " +
+                        "datetime=@DateTime, " +
+                        "id_user=@ID_User, " +
+                        "comment_text=@Comment_text " +
+                        "WHERE id=@id";
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, comment);
+                    this.LogQuery(query, comment.GetType(), comment);
                     await dbConnection.ExecuteAsync(query, comment);
                     return true;
                 }
@@ -368,22 +368,23 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<int> UploadImageAsync(Image img, int commentId)
         {
-            var query1 = "INSERT INTO \"Images\" (\"Name\", \"ID_User\", \"Data\", url)" +
-                        "VALUES (@Name,  @ID_User, @Data, @url) " +
-                        "RETURNING  \"Images\".\"ID\"";
+            var query1 = "INSERT INTO images (name_text, id_user, body, date_time_added)" +
+                        "VALUES (@Name_text,  @ID_User, @body, @Date_Time_Added) " +
+                        "RETURNING  images.id";
 
-            var query2 = "INSERT INTO \"CommentsImages\" (\"ID_Comment\", \"ID_Image\")" +
+            var query2 = "INSERT INTO comments_images (id_comment, id_image)" +
                         "VALUES (@CommentId,  @ImageId) ";
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query1, img);
+                    this.LogQuery(query1, img.GetType(), img);
                     var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
 
-                    this.LogQuery(query2, commentId);
-                    await dbConnection.ExecuteScalarAsync(query2, new { CommentId = commentId, ImageId = idOfInsertedImage });
+                    var t = new { CommentId = commentId, ImageId = idOfInsertedImage };
+                    this.LogQuery(query2, t);
+                    await dbConnection.ExecuteScalarAsync(query2, t);
                     return idOfInsertedImage;
                 }
             }
@@ -401,7 +402,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
                 return 0;
             }
-        }        
+        }
 
         /// <summary>
         /// Получить все изображения прикрепленные к конкретному комментарию
@@ -410,21 +411,22 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список изображений</returns>
         public async Task<IEnumerable<Image>> GetImagesOfCommentAsync(int commentId)
         {
-            var query = "SELECT Im.\"ID\", Im.\"url\", Im.\"Name\", Im.\"DateTimeAdded\", Im.\"Data\", Im.\"ID_User\" " +
-                        "FROM \"Images\" AS Im " +
-                        "INNER JOIN \"CommentsImages\" AS CI ON CI.\"ID_Image\" = Im.\"ID\" " +
-                        "INNER JOIN \"Comments\" AS C ON C.\"ID\" = CI.\"ID_Comment\" " +
-                        "WHERE C.\"ID\" = @CommentId ";
+            var query = "SELECT Im.id, Im.url, Im.name_text, Im.date_time_added, Im.body, Im.id_user " +
+                        "FROM images AS Im " +
+                        "INNER JOIN comments_images AS CI ON CI.id_image = Im.id " +
+                        "INNER JOIN comments_text AS C ON C.id = CI.id_comment " +
+                        "WHERE C.id = @CommentId ";
 
             try
             {
-                using(var dbConnection = new NpgsqlConnection(connectionString))
+                using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, commentId);
-                    IEnumerable<Image> images = await dbConnection.QueryAsync<Image>(query, new { CommentId = commentId });
+                    var t = new { CommentId = commentId };
+                    this.LogQuery(query, t);
+                    IEnumerable<Image> images = await dbConnection.QueryAsync<Image>(query, t);
                     foreach (var image in images)
                     {
-                        image.URL = Convert.ToBase64String(image.Data);
+                        image.URL = Convert.ToBase64String(image.body);
                     }
                     return images;
                 }

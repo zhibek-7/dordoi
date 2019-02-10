@@ -48,10 +48,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("LocalizationProjectsGlossaries as lpg")
-                        .Where("lpg.ID_Glossary", glossaryId)
-                        .RightJoin("LocalizationProjects as lp", "lpg.ID_LocalizationProject", "lp.ID")
-                        .RightJoin("PartsOfSpeech as pos", "lp.ID_SourceLocale", "pos.LocaleID")
+                    var query = new Query("localization_projects_glossaries as lpg")
+                        .Where("lpg.id_glossary", glossaryId)
+                        .RightJoin("localization_projects as lp", "lpg.id_localization_project", "lp.id")
+                        .RightJoin("parts_of_speech as pos", "lp.id_source_locale", "pos.locale_id")
                         .Select("pos.*");
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);

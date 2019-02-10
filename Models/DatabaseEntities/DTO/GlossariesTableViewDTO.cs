@@ -1,16 +1,19 @@
-﻿namespace Models.DatabaseEntities.DTO
+﻿using System;
+
+namespace Models.DatabaseEntities.DTO
 {
     /// <summary>
     /// Глоссарий со строками перечислений имен связанных объектов (Locales, LocalizationProjects).
     /// Для отображения, например в таблице.
     /// </summary>
+    [Serializable]
     public class GlossariesTableViewDTO : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
-        public string LocalesName { get; set; }
+        public string Locales_Name { get; set; }
 
-        public string LocalizationProjectsName { get; set; }
+        public string Localization_Projects_Name { get; set; }
 
     }
 }

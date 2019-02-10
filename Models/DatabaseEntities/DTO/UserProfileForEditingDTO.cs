@@ -8,27 +8,28 @@ namespace Models.DatabaseEntities.DTO
     /// Пользователь со списком идентификаторов связанных данных (Locales).
     /// Для модификации, например создание, редактирование.
     /// </summary>
+    [Serializable]
     public class UserProfileForEditingDTO : BaseEntity
     {
-        public string Name { get; set; }
-        
+        public string name { get; set; }
+
         //public string Password { get; set; }
 
-        public Byte[] Photo { get; set; }
-        
-        public string Email { get; set; }
+        public Byte[] photo { get; set; }
+
+        public string email { get; set; }
 
         //public bool Joined { get; set; }
 
-        public string FullName { get; set; }
+        public string full_name { get; set; }
 
-        public int? TimeZone { get; set; }
+        public int? time_zone { get; set; }
 
-        public string AboutMe { get; set; }
+        public string about_me { get; set; }
 
-        public bool? Gender { get; set; }
+        public bool? gender { get; set; }
 
-        public IEnumerable<int?> LocalesIds { get; set; }
-        public IEnumerable<Tuple<int, bool>> LocalesIdIsNative { get; set; }
+        public IEnumerable<int?> locales_ids { get; set; }
+        public IEnumerable<Tuple<int, bool>> locales_id_is_native { get; set; }
     }
 }

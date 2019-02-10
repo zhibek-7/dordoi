@@ -16,13 +16,13 @@ namespace DAL.Reposity.PostgreSqlRepository
     public class LocaleRepository : BaseRepository, ILocaleRepository
     {
         private readonly string _insertLocaleSql =
-            "INSERT INTO \"Locales\" (" +
-            "\"Name\", " +
-            "\"Description\", " +
-            "\"Flag\", " +
-            "\"code\", " +
-            "\"data_create\", " +
-            "\"url\"" +
+            "INSERT INTO locales (" +
+            "name_text, " +
+            "description, " +
+            "flag, " +
+            "code, " +
+            "data_create, " +
+            "url, " +
             ") " +
             "VALUES (" +
             "@Name, " +
@@ -43,7 +43,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlString = "SELECT * FROM \"Locales\"";
+                    var sqlString = "SELECT * FROM locales";
                     this.LogQuery(sqlString);
                     IEnumerable<Locale> users = await dbConnection.QueryAsync<Locale>(sqlString);
                     return users;
@@ -72,10 +72,10 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = "SELECT l.* FROM \"Locales\" l " +
-       " join \"LocalizationProjectsLocales\" pl on pl.\"ID_Locale\" = l.\"ID\" " +
-       " join \"LocalizationProjects\" lp on pl.\"ID_LocalizationProject\" = lp.\"ID\" " +
-       " where lp.\"ID\" = @Id";
+                    var query = "SELECT l.* FROM locales l " +
+       " join localization_projects_locales pl on pl.id_locale = l.id " +
+       " join localization_projects lp on pl.id_localization_project = lp.id " +
+       " where lp.id = @Id";
 
                     var param = new { Id = projectId };
                     this.LogQuery(query, param);
@@ -111,18 +111,18 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("LocalizationProjectsLocales")
-                        .Where("ID_LocalizationProject", projectId)
-                        .LeftJoin("Locales", "Locales.ID", "LocalizationProjectsLocales.ID_Locale")
+                    var query = new Query("localization_projects_locales")
+                        .Where("id_localization_project", projectId)
+                        .LeftJoin("locales", "locales.id", "localization_projects_locales.id_locale")
                         .Select(
-                            "Locales.ID as LocaleId",
-                            "Locales.Name as LocaleName",
-                            "Locales.url as LocaleUrl",
+                            "locales.id as Locale_Id",
+                            "locales.name_text as Locale_Name",
+                            "locales.url as Locale_Url",
 
-                            "LocalizationProjectsLocales.PercentOfTranslation",
-                            "LocalizationProjectsLocales.PercentOfConfirmed"
+                            "localization_projects_locales.percent_of_translation",
+                            "localization_projects_locales.percent_of_confirmed"
                             )
-                        .OrderBy("LocaleName");
+                        .OrderBy("Locale_Name");
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var result = await dbConnection.QueryAsync<LocalizationProjectsLocalesDTO>(
@@ -158,11 +158,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
                     var query =
-                        new Query("Locales")
-                        .WhereIn("ID",
-                            new Query("UsersLocales")
-                            .Select("ID_Locale")
-                            .Where("ID_User", userId));
+                        new Query("locales")
+                        .WhereIn("id",
+                            new Query("users_locales")
+                            .Select("id_locale")
+                            .Where("id_user", userId));
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var userLocales = await dbConnection.QueryAsync<Locale>(
@@ -189,7 +189,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> AddAsync(Locale newLocale)
         {
-            var sqlString = this._insertLocaleSql + " RETURNING \"ID\"";
+            var sqlString = this._insertLocaleSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 try
@@ -201,7 +201,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         this._loggerError.WriteLn("Insertion into Locales didn't return id.");
                         return false;
                     }
-                    newLocale.ID = insertedId.Value;
+                    newLocale.id = insertedId.Value;
                     return true;
                 }
                 catch (NpgsqlException exception)

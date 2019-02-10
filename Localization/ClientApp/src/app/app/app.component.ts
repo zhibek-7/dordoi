@@ -9,11 +9,11 @@ import { LocalizationProject } from '../models/database-entities/localizationPro
   styleUrls: ['./app.component.css'],
   providers: [ProjectsService]
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   projects: LocalizationProject[];
   currentProject: LocalizationProject;
   name = '';
-  constructor(private projectService: ProjectsService) {}
+  constructor(private projectService: ProjectsService) { }
 
   ngOnInit() {
     this.projectService.getProjects()
@@ -33,13 +33,13 @@ export class AppComponent implements OnInit{
     this.currentProject = currentProject;
 
 
-    //this.name = currentProject.name;
-    console.log('ProjectName  currentProject.name ==' + currentProject.name);
-    this.name =  this.projectService.currentProjectName;
+    //this.name_text = currentProject.name_text;
+    console.log('ProjectName  currentProject.name_text ==' + currentProject.name_text);
+    this.name = this.projectService.currentProjectName;
     console.log('ProjectName projectsService.currentProjectName ==' + this.name);
 
 
-    sessionStorage.setItem('ProjectName', currentProject.name);
+    sessionStorage.setItem('ProjectName', currentProject.name_text);
     sessionStorage.setItem('ProjecID', currentProject.id.toString());
 
   }

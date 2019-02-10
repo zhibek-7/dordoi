@@ -21,7 +21,7 @@
   </div>
 </div>
  -->
-<h1 *ngIf="currentProject" class="mt-4 mb-4">{{ currentProject.name }}</h1>
+<h1 *ngIf="currentProject" class="mt-4 mb-4">{{ currentProject.name_text }}</h1>
 <h1 *ngIf="!currentProject">Невозможно подключиться к БД</h1>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -51,28 +51,29 @@
 
               <ng-container matColumnDef="flag">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-                <mat-cell *matCellDef="let row"><img src='{{row.localeUrl}}' alt="Изображение флага"> </mat-cell>
+                <mat-cell *matCellDef="let row"><img src='{{row.locale_Url}}' alt="Изображение флага"> </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="localeName">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Целевой язык </label> </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.localeName}} </mat-cell>
+              <ng-container matColumnDef="locale_Name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Целевой
+                    язык </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.locale_Name}} </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="percentOfTranslation">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент завершения перевода </label> </mat-header-cell>
-                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percentOfTranslation}}% </mat-cell>
+              <ng-container matColumnDef="percent_Of_Translation">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент завершения
+                    перевода </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percent_Of_Translation}}% </mat-cell>
               </ng-container>
 
-              <ng-container matColumnDef="percentOfConfirmed">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент утверждение переводов </label> </mat-header-cell>
-                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percentOfConfirmed}}% </mat-cell>
+              <ng-container matColumnDef="percent_Of_Confirmed">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Процент утверждение
+                    переводов </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row" class="mat-cell-center"> {{row.percent_Of_Confirmed}}% </mat-cell>
               </ng-container>
-
 
               <mat-header-row *matHeaderRowDef="displayedColumnsForMainTab"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: displayedColumnsForMainTab;"
-                      (click)="openLanguageFiles(row)" >
+              <mat-row *matRowDef="let row; columns: displayedColumnsForMainTab;" (click)="openLanguageFiles(row)">
               </mat-row>
 
             </mat-table>
@@ -85,11 +86,11 @@
           <table class="table" *ngIf="currentProject">
             <tr>
               <td>Исходный язык</td>
-              <td> {{currentProject.sourceLocaleName}} </td>
+              <td> {{currentProject.source_Locale_Name}} </td>
             </tr>
             <tr>
               <td>Пользователей</td>
-              <td> {{currentProject.countParticipantsActive}} </td>
+              <td> {{currentProject.count_Participants_Active}} </td>
             </tr>
             <!--<tr>
               <td>Words to translate</td>
@@ -97,11 +98,11 @@
             </tr>-->
             <tr>
               <td>Создан</td>
-              <td> {{currentProject.dateOfCreation.toLocaleString()}} </td>
+              <td> {{currentProject.date_Of_Creation.toLocaleString()}} </td>
             </tr>
             <tr>
               <td>Последняя активность</td>
-              <td> {{currentProject.lastActivity.toLocaleString()}} </td>
+              <td> {{currentProject.last_Activity.toLocaleString()}} </td>
             </tr>
           </table>
           <hr>
@@ -113,21 +114,23 @@
             <div *ngFor="let participant of participantsOwner">
 
               <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
-                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-                <span class="ml-2" style="color: grey;">{{participant.userName}}</span>
+                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top"
+                  alt="">
+                <span class="ml-2" style="color: grey;">{{participant.user_Name}}</span>
               </a>
               <div class="mt-2">
                 <span class="mr-2 br-b blue">Владелец</span>
                 <span class="mr-2 br-b green">Связаться</span>
               </div>
 
-              </div>
+            </div>
 
             <div *ngFor="let participant of participantsManager">
 
               <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
-                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-                <span class="ml-2" style="color: grey;">{{participant.userName}}</span>
+                <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top"
+                  alt="">
+                <span class="ml-2" style="color: grey;">{{participant.user_Name}}</span>
               </a>
               <div class="mt-2">
                 <span class="mr-2 br-b green">Связаться</span>
@@ -144,34 +147,34 @@
 
   <div class="tab-pane fade" id="acivity" role="tabpanel" aria-labelledby="acivity-tab">
 
-      <mat-form-field style="margin-right: 1rem;">
-        <mat-select [(value)]="selectedWorkType" (selectionChange)="applyActionsFilter()">
-          <mat-option value="none">Все события</mat-option>
-          <mat-option *ngFor="let workType of workTypeList" [value]="workType.id">{{workType.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field style="margin-right: 1rem;">
+      <mat-select [(value)]="selectedWorkType" (selectionChange)="applyActionsFilter()">
+        <mat-option value="none">Все события</mat-option>
+        <mat-option *ngFor="let workType of workTypeList" [value]="workType.id">{{workType.name_text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field style="margin-right: 1rem;">
-        <mat-select [(value)]="selectedLang" (selectionChange)="applyActionsFilter()">
-          <mat-option value="none">Все языки</mat-option>
-          <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field style="margin-right: 1rem;">
+      <mat-select [(value)]="selectedLang" (selectionChange)="applyActionsFilter()">
+        <mat-option value="none">Все языки</mat-option>
+        <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name_text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-form-field>
-        <mat-select [(value)]="selectedUser" (selectionChange)="applyActionsFilter()">
-          <mat-option value="none">Все пользователи</mat-option>
-          <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-form-field>
+      <mat-select [(value)]="selectedUser" (selectionChange)="applyActionsFilter()">
+        <mat-option value="none">Все пользователи</mat-option>
+        <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name_text}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-      <mat-accordion *ngFor="let user of filtredUsers" class="mb-4">
+    <mat-accordion *ngFor="let user of filtredUsers" class="mb-4">
       <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
           <mat-panel-title>
             <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
               <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-              <span class="ml-2" style="color: grey;">{{user.name}}</span>
+              <span class="ml-2" style="color: grey;">{{user.name_text}}</span>
             </a>
           </mat-panel-title>
           <mat-panel-description>
@@ -213,14 +216,14 @@
     <mat-form-field style="margin-right: 1rem;">
       <mat-select [(value)]="selectedLang" (selectionChange)="applyFilterLang($event)">
         <mat-option value="none">Все языки</mat-option>
-        <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name}}</mat-option>
+        <mat-option *ngFor="let lang of langList;" [value]="lang.id">{{lang.name_text}}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field>
       <mat-select [(value)]="selectedUser" (selectionChange)="applyFilterUsers($event)">
         <mat-option value="none">Все пользователи</mat-option>
-        <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name}}</mat-option>
+        <mat-option *ngFor="let user of userList" [value]="user.id">{{user.name_text}}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -230,7 +233,7 @@
           <mat-panel-title>
             <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
               <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
-              <span class="ml-2" style="color: grey;">{{user.name}}</span>
+              <span class="ml-2" style="color: grey;">{{user.name_text}}</span>
             </a>
           </mat-panel-title>
           <mat-panel-description>

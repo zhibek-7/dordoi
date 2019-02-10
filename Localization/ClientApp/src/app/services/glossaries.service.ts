@@ -111,7 +111,7 @@ export class GlossariesService {
 
   // Получить все термины из всех глоссариев присоедененных к проекту локализации, по id необходимого проекта локализации
   getAllTermsFromAllGlossarisInProject(projectId: number): Observable<TermWithGlossary[]> {
-    return this.httpClient.post<TermWithGlossary[]>(GlossariesService.connectionUrl + '/FindAllTermsInProjects/', projectId)
+    return this.httpClient.post<TermWithGlossary[]>(GlossariesService.connectionUrl + 'FindAllTermsInProjects/', projectId)
       .pipe(catchError(this.handleError));
   }
 

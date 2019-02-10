@@ -1,22 +1,25 @@
-﻿namespace Models.DatabaseEntities
+﻿using System;
+
+namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class TranslationSubstring : BaseEntity
     {
-        public string SubstringToTranslate { get; set; }
+        public string substring_to_translate { get; set; }
 
-        public string Description { get; set; }
+        public string description { get; set; }
 
-        public string Context { get; set; }
+        public string context { get; set; }
 
-        public int? TranslationMaxLength { get; set; }
+        public int? translation_max_length { get; set; }
 
-        public int ID_FileOwner { get; set; }
+        public int id_file_owner { get; set; }
 
-        public string Value { get; set; }
+        public string value { get; set; }
 
-        public int PositionInText { get; set; }
+        public int position_in_text { get; set; }
 
-        public bool? Outdated { get; set; }
+        public bool? outdated { get; set; }
 
         public string Status { get; set; }
 
@@ -24,13 +27,13 @@
 
         public TranslationSubstring(string substringToTranslate, string context, int id_FileOwner, string value, int positionInText)
         {
-            this.SubstringToTranslate = substringToTranslate;
-            this.Description = null;
-            this.Context = context;
-            this.TranslationMaxLength = null;
-            this.ID_FileOwner = id_FileOwner;
-            this.Value = value;
-            this.PositionInText = positionInText;
+            this.substring_to_translate = substringToTranslate;
+            this.description = null;
+            this.context = context;
+            this.translation_max_length = null;
+            this.id_file_owner = id_FileOwner;
+            this.value = value;
+            this.position_in_text = positionInText;
         }
     }
 }

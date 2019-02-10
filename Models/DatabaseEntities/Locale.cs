@@ -6,16 +6,17 @@ namespace Models.DatabaseEntities
     /// <summary>
     /// Язык перевода
     /// </summary>
+    [Serializable]
     public class Locale : BaseEntity
     {
         [Required]
-        public string Name { get; set; }
+        public string name_text { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string description { get; set; }
 
         [Required]
-        public string Flag { get; set; }
+        public string flag { get; set; }
 
         public string code { get; set; }
 
@@ -27,11 +28,32 @@ namespace Models.DatabaseEntities
 
         public Locale(string name, string description, string flag, DateTime? data_create, string url)
         {
-            this.Name = name;
-            this.Description = description;
-            this.Flag = flag;
+            this.name_text = name;
+            this.description = description;
+            this.flag = flag;
             this.data_create = data_create;
             this.url = url;
         }
+
+        public Locale(string name, string description, string flag, string code, DateTime? data_create, string url)
+        {
+            this.name_text = name;
+            this.description = description;
+            this.code = code;
+            this.flag = flag;
+            this.data_create = data_create;
+            this.url = url;
+        }
+        public Locale(int id, string name, string description, string flag, string code, DateTime data_create, string url)
+        {
+            base.id = id;
+            this.name_text = name;
+            this.description = description;
+            this.code = code;
+            this.flag = flag;
+            this.data_create = data_create;
+            this.url = url;
+        }
+
     }
 }

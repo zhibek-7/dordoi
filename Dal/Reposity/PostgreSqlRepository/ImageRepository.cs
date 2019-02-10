@@ -27,7 +27,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlString = "SELECT * FROM \"Images\"";
+                    var sqlString = "SELECT * FROM images";
                     this.LogQuery(sqlString);
                     IEnumerable<Image> images = dbConnection.Query<Image>(sqlString).ToList();
                     return images;

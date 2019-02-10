@@ -1,27 +1,27 @@
 import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
 
-export class Term extends TranslationSubstring {    
-
+export class Term extends TranslationSubstring {
   constructor(
     id?: number,
-    substringToTranslate?: string,
+    substring_to_translate?: string,
     description?: string,
     context?: string,
-    id_fileOwner?: number,
-    translationMaxLength?: number,
+    id_file_owner?: number,
+    translation_max_length?: number,
     value?: string,
-    positionInText?: number,
-    public partOfSpeechId?: number,
-    public isEditable?: boolean,
+    position_in_text?: number,
+    public part_of_speech_id?: number,
+    public is_editable?: boolean
   ) {
-      super(
-        id,
-        substringToTranslate,
-        description,
-        context,
-        id_fileOwner,
-        translationMaxLength,
-        value,
-        positionInText);
+    super(
+      id,
+      substring_to_translate,
+      description,
+      context,
+      id_file_owner,
+      translation_max_length,
+      value,
+      position_in_text
+    );
   }
 }

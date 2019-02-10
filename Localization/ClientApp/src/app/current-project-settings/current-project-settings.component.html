@@ -9,7 +9,7 @@
                   <img src="../assets/images/user-picture.png" width="24" height="24" class="d-inline-block align-top" alt="">
                 </a>
               </li>
-              <li *ngIf="currentProject" class="breadcrumb-item active" aria-current="page">{{ currentProject.name }}</li>
+              <li *ngIf="currentProject" class="breadcrumb-item active" aria-current="page">{{ currentProject.name_text }}</li>
             </ol>
           </nav>
     </div>
@@ -24,45 +24,46 @@
 
 <h1>
   <span *ngIf="currentProject">
-    {{ currentProject.name }}
+    {{ currentProject.name_text }}
   </span>
 
   настройки
 </h1>
 <!-- меню -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item">
-      <a class="nav-item nav-link" routerLink='/create-project/all-settings/'>
-        <mat-icon class="nav-item" >tune</mat-icon></a>
-          </li>
-        <li class="nav-item active">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-item nav-link" routerLink='/create-project/all-settings/'>
+          <mat-icon class="nav-item">tune</mat-icon>
+        </a>
+      </li>
+      <li class="nav-item active">
         <a class="nav-item nav-link active" href="./Translation">Переводы</a>
-        </li>
-        <li class="nav-item">
+      </li>
+      <li class="nav-item">
         <a class="nav-item nav-link" href="./Files">Файлы</a>
-        </li>
-        <li class="nav-item">
+      </li>
+      <li class="nav-item">
         <a class="nav-item nav-link" href="./Participants">Переводчики</a>
-        </li>
-        <li class="nav-item">
+      </li>
+      <li class="nav-item">
         <a class="nav-item nav-link" routerLink="reports">Отчеты</a>
-        </li>
-        <li class="nav-item">
+      </li>
+      <li class="nav-item">
         <a class="nav-item nav-link" href="#">TM & MT</a>
-        </li>
-        <li class="nav-item">
+      </li>
+      <li class="nav-item">
         <a class="nav-item nav-link" href="./Glossaries">Словарь</a>
-        </li>
-        <li class="nav-item">
-      <a class="nav-item nav-link" href="./Strings">Строки</a>
-        </li>
+      </li>
+      <li class="nav-item">
+        <a class="nav-item nav-link" href="./Strings">Строки</a>
+      </li>
 
-      </ul>
+    </ul>
   </div>
 </nav>
 
@@ -77,7 +78,7 @@
       <input type="file" #file (change)="filesUpload(file.files)" hidden>
     </button>
     <button type="button" class="btn btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
+            aria-haspopup="true" aria-expanded="false">
       <span class="sr-only">Toggle Dropdown</span>
     </button>
     <div class="dropdown-menu">

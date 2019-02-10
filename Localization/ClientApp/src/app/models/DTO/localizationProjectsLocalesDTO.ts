@@ -1,17 +1,16 @@
 /**
  * Язык перевода назначенный на проект локализации с процентом перевода
  */
-export  class LocalizationProjectsLocalesDTO
-{
+export class LocalizationProjectsLocalesDTO {
   // Идентификатор языка
-  localeId: number;
+  locale_Id: number;
   // Наименование языка
-  localeName: string;
+  locale_Name: string;
   // Путь к изображению флага
-  localeUrl: string;
+  locale_Url: string;
 
   // Процент переведенных слов
-  percentOfTranslation: number;
+  percent_Of_Translation: number;
   // Процент подтвержденных переводов
-  percentOfConfirmed: number;
+  percent_Of_Confirmed: number;
 }

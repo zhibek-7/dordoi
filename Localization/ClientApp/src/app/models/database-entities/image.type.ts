@@ -1,10 +1,10 @@
-export class Image {    
-    public constructor(
-        public data?: any,
-        public id?: number,
-        public name?: string,
-        public dateTimeAdded?: Date,
-        public iD_User?: number,
-        public url?: string
-    ){ }
+export class Image {
+  public constructor(
+    public body?: any,
+    public id?: number,
+    public name_text?: string,
+    public date_Time_Added?: Date,
+    public iD_User?: number,
+    public url?: string
+  ) { }
 }

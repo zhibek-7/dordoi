@@ -172,7 +172,7 @@ namespace Localization.WebApi
         [HttpPut("{translationId}")]
         public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
         {
-            updatedTranslation.ID = translationId;
+            updatedTranslation.id = translationId;
             var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation);
             if (!updatedSuccessfuly)
                 return this.BadRequest();

@@ -4,12 +4,13 @@ using System.Text;
 
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     class Project
     {
         /// <summary>
         /// Имя пользователя осуществлявшего перевод
         /// </summary>
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
         /// <summary>
         /// Языки на которые переводил пользовател в указанный период времени
@@ -19,7 +20,7 @@ namespace Models.DatabaseEntities
         /// <summary>
         /// Вид работы
         /// </summary>
-        public string workType { get; set; }
+        public string work_Type { get; set; }
 
         /// <summary>
         /// Количество переводов

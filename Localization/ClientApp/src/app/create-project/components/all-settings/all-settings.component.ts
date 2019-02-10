@@ -36,15 +36,15 @@ export class AllSettingsComponent implements OnInit {
   currentProjectid = 1;
   currentProjecturl = "";
   isChecked = true;
-  
+
   public project: LocalizationProject;
- 
+
   // this.searchText = this.projectsLcalesService.currentProjectName;
   selectedL: boolean;
   pjPublic: string;
-  pjFileTrue= false;
-  pjSkipUntranslStrTrue= false;
-  pjExportTrue= false;
+  pjFileTrue = false;
+  pjSkipUntranslStrTrue = false;
+  pjExportTrue = false;
   pjNotificationTrue = false;
   selectedLang: number;
   //public project: LocalizationProject;
@@ -58,12 +58,11 @@ export class AllSettingsComponent implements OnInit {
     selectedLang: new FormControl()
   });
 
-   
   searchText = "";
   dropdownList = [];
   allProjLocales: LocalizationProjectsLocales[];
   allLocale = [];
- 
+
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
@@ -73,56 +72,53 @@ export class AllSettingsComponent implements OnInit {
     this.currentProjectName = this.projectsService.currentProjectName;
     this.currentProjectId = this.projectsService.currentProjectId;
 
-
     let allLangsPr = [];
-    let allLocales = this.projectsService.getLocales().subscribe(projects => {
-      this.allLocale = projects;
-      this.allLocale.forEach((lang) => {
-        allLangsPr.push({
-
-          itemName: lang["name"],
-          checked: false,
-          id: lang["id"]
-
+    let allLocales = this.projectsService.getLocales().subscribe(
+      projects => {
+        this.allLocale = projects;
+        this.allLocale.forEach(lang => {
+          allLangsPr.push({
+            itemName: lang["name"],
+            checked: false,
+            id: lang["id"]
+          });
         });
-      });
 
-      this.dropdownList = allLangsPr;
-    },
-      error => console.error(error));
-
+        this.dropdownList = allLangsPr;
+      },
+      error => console.error(error)
+    );
 
     let selectedLangs = [];
-    let allPrLocales = this.projectsService.getProjectLocales(this.currentProjectId)
-      .subscribe(projectsL => {
-        this.allProjLocales = projectsL;
-        
-        this.dropdownList.forEach((lang) => {
-          const index = projectsL.findIndex(list => list["iD_Locale"] == lang.id);
+    let allPrLocales = this.projectsService
+      .getProjectLocales(this.currentProjectId)
+      .subscribe(
+        projectsL => {
+          this.allProjLocales = projectsL;
 
-          if (index != -1) {
-            selectedLangs.push({
-              itemName: lang.itemName,
-              selected: true,
-              id: lang.id
-            });
+          this.dropdownList.forEach(lang => {
+            const index = projectsL.findIndex(
+              list => list["id_locale"] == lang.id
+            );
 
-            lang.checked = true;
-            this.selectedL= true;
+            if (index != -1) {
+              selectedLangs.push({
+                itemName: lang.itemName,
+                selected: true,
+                id: lang.id
+              });
 
-          } else {
+              lang.checked = true;
+              this.selectedL = true;
+            } else {
+              lang.checked = false;
+              this.selectedL = false;
+            }
+          });
+        },
+        error => console.error(error)
+      );
 
-            lang.checked = false;
-            this.selectedL = false;
-          }
-
-
-        });
-      
-      },
-        error => console.error(error));
-
-   
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
 
@@ -133,13 +129,13 @@ export class AllSettingsComponent implements OnInit {
         this.currentProjectDescription = this.project.description;
         this.currentProjecturl = this.project.url;
         this.currentProjectPublic = this.project.visibility;
-        this.pjFileTrue = this.project.ableToDownload;
-        this.pjSkipUntranslStrTrue = this.project.ableToLeftErrors;
+        this.pjFileTrue = this.project.able_To_Download;
+        this.pjSkipUntranslStrTrue = this.project.able_To_Left_Errors;
         this.pjExportTrue = this.project.export_only_approved_translations;
-        this.pjNotificationTrue = this.project.notifyNew;
-        this.selectedLang = project["iD_SourceLocale"];
+        this.pjNotificationTrue = this.project.notify_New;
+        this.selectedLang = project["ID_Source_Locale"];
         this.selectedItems = selectedLangs;
-        
+
         if (this.currentProjectPublic == true) {
           this.pjPublic = "public";
         } else {
@@ -149,8 +145,6 @@ export class AllSettingsComponent implements OnInit {
         this.selectedL = false;
         this.dropdownList = this.dropdownList;
 
-        
-       
         console.log(this.selectedItems);
       },
       error => console.error(error)
@@ -162,7 +156,7 @@ export class AllSettingsComponent implements OnInit {
   AddSelected(event, lang) {
     var target = event.target || event.srcElement || event.currentTarget;
     var idAttr = target.attributes.id;
-    var itemNameAttr = target.attributes.name;
+    var itemNameAttr = target.attributes.name_text;
     var selectedAttr = target.attributes.checked;
     var value = idAttr.nodeValue;
     lang.checked = !lang.checked;
@@ -214,11 +208,9 @@ export class AllSettingsComponent implements OnInit {
     });
   }
 
- 
   idPrLocale: number;
   idLocale: number;
   editProject(Id: number): void {
-
     if (this.pjPublic == "public") {
       this.currentProjectPublic = true;
     } else {
@@ -228,27 +220,25 @@ export class AllSettingsComponent implements OnInit {
 
     //собирает добавленные языки в один массив
 
-    let projectLocales: LocalizationProjectsLocales[] = [];
-    this.selectedItems.forEach((lang) => {
+    this.selectedItems.forEach(lang => {
+      let projectLocales: LocalizationProjectsLocales[] = [];
 
-      const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
-      if (index !=-1) {
-
-      }
-      else {
+      const index = this.allProjLocales.findIndex(
+        list => list["id_locale"] == lang.id
+      );
+      if (index != -1) {
+      } else {
         projectLocales.push({
-          id_LocalizationProject: this.currentProjectId,
+          id_Localization_Project: this.currentProjectId,
           id_Locale: lang.id,
-          percentOfTranslation: 0,
-          PercentOfConfirmed: 0
+          percent_Of_Translation: 0,
+          Percent_Of_Confirmed: 0
         });
       }
 
-
-    })
-
-    //передает массив языков
-    this.projectsService.addProjectLocales(projectLocales);
+      //передает массив языков
+      this.projectsService.addProjectLocales(projectLocales);
+    });
 
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,
@@ -256,7 +246,7 @@ export class AllSettingsComponent implements OnInit {
       this.currentProjectDescription,
       this.currentProjecturl,
       this.currentProjectPublic, //visibility
-      Date.now,//date dateOfCreation
+      Date.now, //date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
       this.selectedLang,
       this.pjFileTrue, //ableToDownload
@@ -274,7 +264,4 @@ export class AllSettingsComponent implements OnInit {
     Id = this.currentProjectId;
     this.projectsService.updateProject(Id, project);
   }
-
-
-
 }

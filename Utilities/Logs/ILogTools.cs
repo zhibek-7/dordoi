@@ -9,5 +9,6 @@ namespace Utilities.Logs
     {
         void WriteLn(Object str);
         void WriteLn(Object str, Exception err);
+        void WriteLn(Object str, Type type, Object obj);
     }
 }

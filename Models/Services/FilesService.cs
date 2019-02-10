@@ -47,10 +47,10 @@ namespace Models.Services
             else
             {
                 var idsToFiles = (await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch))
-                    .ToDictionary(keySelector: value => value.ID);
-                var parentsIds = idsToFiles.Where(x => x.Value.ID_FolderOwner != null
-                                                    && !idsToFiles.ContainsKey(x.Value.ID_FolderOwner.Value))
-                                           .Select(x => (int)x.Value.ID_FolderOwner)
+                    .ToDictionary(keySelector: value => value.id);
+                var parentsIds = idsToFiles.Where(x => x.Value.ID_Folder_Owner != null
+                                                    && !idsToFiles.ContainsKey(x.Value.ID_Folder_Owner.Value))
+                                           .Select(x => (int)x.Value.ID_Folder_Owner)
                                            .ToList();
                 do
                 {
@@ -58,11 +58,11 @@ namespace Models.Services
                     foreach (var parentId in parentsIds)
                     {
                         var parentFile = await this._filesRepository.GetByIDAsync(parentId);
-                        idsToFiles[parentFile.ID] = parentFile;
-                        if (parentFile.ID_FolderOwner != null
-                            && !idsToFiles.ContainsKey(parentFile.ID_FolderOwner.Value))
+                        idsToFiles[parentFile.id] = parentFile;
+                        if (parentFile.ID_Folder_Owner != null
+                            && !idsToFiles.ContainsKey(parentFile.ID_Folder_Owner.Value))
                         {
-                            newParentsIds.Add(parentFile.ID_FolderOwner.Value);
+                            newParentsIds.Add(parentFile.ID_Folder_Owner.Value);
                         }
                     }
                     parentsIds = newParentsIds;
@@ -90,9 +90,9 @@ namespace Models.Services
             }
 
             var newFile = this.GetNewFileModel(fileContentStream);
-            newFile.Name = fileName;
-            newFile.ID_FolderOwner = parentId;
-            newFile.ID_LocalizationProject = projectId;
+            newFile.Name_text = fileName;
+            newFile.ID_Folder_Owner = parentId;
+            newFile.ID_Localization_Project = projectId;
 
             return await this.AddNodeAsync(newFile, insertToDbAction: this.InsertFileToDbAsync);
         }
@@ -103,12 +103,12 @@ namespace Models.Services
             var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(fileName, parentId);
             if (lastVersionDbFile != null)
             {
-                if (lastVersionDbFile.IsFolder)
+                if (lastVersionDbFile.Is_Folder)
                 {
                     throw new Exception(WriteLn("Нельзя обновить папку."));
                 }
 
-                lastVersionDbFile.IsLastVersion = false;
+                lastVersionDbFile.Is_Last_Version = false;
                 if (!lastVersionDbFile.Version.HasValue)
                 {
                     lastVersionDbFile.Version = this._initialFileVersion;
@@ -124,21 +124,21 @@ namespace Models.Services
             }
 
             var newVersionFile = this.GetNewFileModel(fileContentStream);
-            newVersionFile.Name = fileName;
-            newVersionFile.ID_FolderOwner = parentId;
-            newVersionFile.ID_LocalizationProject = projectId;
+            newVersionFile.Name_text = fileName;
+            newVersionFile.ID_Folder_Owner = parentId;
+            newVersionFile.ID_Localization_Project = projectId;
             newVersionFile.Version = version;
-            newVersionFile.Id_PreviousVersion = lastVersionDbFile?.ID;
-            newVersionFile.DownloadName = lastVersionDbFile?.DownloadName;
-            newVersionFile.TranslatorName = lastVersionDbFile?.TranslatorName;
+            newVersionFile.Id_Previous_Version = lastVersionDbFile?.id;
+            newVersionFile.Download_Name = lastVersionDbFile?.Download_Name;
+            newVersionFile.Translator_Name = lastVersionDbFile?.Translator_Name;
 
             var newNode = await this.AddNodeAsync(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
 
             if (lastVersionDbFile != null)
             {
-                var localesIds = (await this._filesRepository.GetLocalesForFileAsync(fileId: lastVersionDbFile.ID))
-                                 .Select(x => x.ID);
-                await this.UpdateTranslationLocalesForTermAsync(fileId: newNode.Data.ID, localesIds: localesIds);
+                var localesIds = (await this._filesRepository.GetLocalesForFileAsync(fileId: lastVersionDbFile.id))
+                                 .Select(x => x.id);
+                await this.UpdateTranslationLocalesForTermAsync(fileId: newNode.Data.id, localesIds: localesIds);
             }
             return newNode;
         }
@@ -146,24 +146,24 @@ namespace Models.Services
         public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(int fileId)
         {
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
-            if (file.IsFolder)
+            if (file.Is_Folder)
             {
                 var childTranslationInfos = new List<FileTranslationInfo>();
                 var currentLevelFiles = new List<File>() { file };
-                while(currentLevelFiles.Any())
+                while (currentLevelFiles.Any())
                 {
                     var newLevelFiles = new List<File>();
                     foreach (var currentLevelFile in currentLevelFiles)
                     {
-                        if (currentLevelFile.IsFolder)
+                        if (currentLevelFile.Is_Folder)
                         {
                             newLevelFiles.AddRange(await this._filesRepository
-                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.ID));
+                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.id));
                         }
                         else
                         {
                             childTranslationInfos.AddRange(await this._filesRepository
-                                .GetFileTranslationInfoByIdAsync(fileId: currentLevelFile.ID));
+                                .GetFileTranslationInfoByIdAsync(fileId: currentLevelFile.id));
                         }
                     }
                     currentLevelFiles = newLevelFiles;
@@ -189,7 +189,7 @@ namespace Models.Services
             }
             else
             {
-                return await this._filesRepository.GetFileTranslationInfoByIdAsync(fileId: file.ID);
+                return await this._filesRepository.GetFileTranslationInfoByIdAsync(fileId: file.id);
             }
         }
 
@@ -197,12 +197,12 @@ namespace Models.Services
         {
             var newFile = new File()
             {
-                DateOfChange = DateTime.Now,
-                StringsCount = 0,
+                Date_Of_Change = DateTime.Now,
+                Strings_Count = 0,
                 Version = this._initialFileVersion,
                 Priority = 0,
-                IsFolder = false,
-                IsLastVersion = true,
+                Is_Folder = false,
+                Is_Last_Version = true,
             };
 
             string fileContent = string.Empty;
@@ -213,8 +213,8 @@ namespace Models.Services
                 fileContent = fileContentStreamReader.ReadToEnd();
                 fileEncoding = fileContentStreamReader.CurrentEncoding.WebName;
             }
-            newFile.OriginalFullText = fileContent;
-            newFile.Encoding = fileEncoding;
+            newFile.Original_Full_Text = fileContent;
+            newFile.Encod = fileEncoding;
 
             return newFile;
         }
@@ -223,33 +223,33 @@ namespace Models.Services
         {
             return new File()
             {
-                DateOfChange = DateTime.Now,
-                IsFolder = true,
-                IsLastVersion = true,
+                Date_Of_Change = DateTime.Now,
+                Is_Folder = true,
+                Is_Last_Version = true,
             };
         }
 
         private File GetNewFolderModel(string folderName, int? folderOwnerId, int localizationProjectId)
         {
             var newFolder = this.GetNewFolderModel();
-            newFolder.Name = folderName;
-            newFolder.ID_FolderOwner = folderOwnerId;
-            newFolder.ID_LocalizationProject = localizationProjectId;
+            newFolder.Name_text = folderName;
+            newFolder.ID_Folder_Owner = folderOwnerId;
+            newFolder.ID_Localization_Project = localizationProjectId;
             return newFolder;
         }
 
         public async Task<Node<File>> AddFolderAsync(FolderModel newFolderModel)
         {
-            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(newFolderModel.Name, newFolderModel.ParentId);
+            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(newFolderModel.Name_text, newFolderModel.Parent_Id);
             if (foundedFolder != null)
             {
-                throw new Exception(WriteLn($"Папка \"{newFolderModel.Name}\" уже есть."));
+                throw new Exception(WriteLn($"Папка \"{newFolderModel.Name_text}\" уже есть."));
             }
 
             var newFolder = this.GetNewFolderModel(
-                folderName: newFolderModel.Name,
-                folderOwnerId: newFolderModel.ParentId,
-                localizationProjectId: newFolderModel.ProjectId
+                folderName: newFolderModel.Name_text,
+                folderOwnerId: newFolderModel.Parent_Id,
+                localizationProjectId: newFolderModel.Project_Id
                 );
             return await AddNodeAsync(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
         }
@@ -277,7 +277,7 @@ namespace Models.Services
                     }
                     else
                     {
-                        lastParentId = directoryDbModel.ID;
+                        lastParentId = directoryDbModel.id;
                     }
                 }
 
@@ -288,9 +288,9 @@ namespace Models.Services
                 {
                     newFile = this.GetNewFileModel(fileContentStream);
                 }
-                newFile.Name = fileName;
-                newFile.ID_FolderOwner = lastParentId;
-                newFile.ID_LocalizationProject = projectId;
+                newFile.Name_text = fileName;
+                newFile.ID_Folder_Owner = lastParentId;
+                newFile.ID_Localization_Project = projectId;
                 await this.InsertFileToDbAsync(newFile);
             }
         }
@@ -304,20 +304,20 @@ namespace Models.Services
                 throw new Exception(WriteLn($"Не найдено файла/папки с id \"{id}\"."));
             }
 
-            file.ID = id;
+            file.id = id;
             file.Version = foundedFile.Version;
-            file.IsLastVersion = foundedFile.IsLastVersion;
-            file.DateOfChange = DateTime.Now;
+            file.Is_Last_Version = foundedFile.Is_Last_Version;
+            file.Date_Of_Change = DateTime.Now;
             var updatedSuccessfully = await this._filesRepository.UpdateAsync(file);
             if (!updatedSuccessfully)
             {
-                throw new Exception(WriteLn($"Не удалось обновить файл \"{foundedFile.Name}\"."));
+                throw new Exception(WriteLn($"Не удалось обновить файл \"{foundedFile.Name_text}\"."));
             }
         }
 
         public async Task DeleteNodeAsync(File file)
         {
-            var id = file.ID;
+            var id = file.id;
             var foundedFile = await this._filesRepository.GetByIDAsync(id);
             if (foundedFile == null)
             {
@@ -333,10 +333,10 @@ namespace Models.Services
             var tempFileModel = foundedFile;
             do
             {
-                await this._filesRepository.RemoveAsync(id: tempFileModel.ID);
-                if (tempFileModel.Id_PreviousVersion.HasValue)
+                await this._filesRepository.RemoveAsync(id: tempFileModel.id);
+                if (tempFileModel.Id_Previous_Version.HasValue)
                 {
-                    tempFileModel = await this._filesRepository.GetByIDAsync(tempFileModel.Id_PreviousVersion.Value);
+                    tempFileModel = await this._filesRepository.GetByIDAsync(tempFileModel.Id_Previous_Version.Value);
                 }
                 else
                 {
@@ -347,18 +347,18 @@ namespace Models.Services
 
         private async Task<Node<File>> AddNodeAsync(File file, Func<File, Task> insertToDbAction)
         {
-            if (file.ID_FolderOwner.HasValue)
+            if (file.ID_Folder_Owner.HasValue)
             {
-                var parentFile = await this._filesRepository.GetByIDAsync(file.ID_FolderOwner.Value);
-                if (parentFile?.IsFolder == false)
+                var parentFile = await this._filesRepository.GetByIDAsync(file.ID_Folder_Owner.Value);
+                if (parentFile?.Is_Folder == false)
                 {
-                    throw new Exception(WriteLn($"Нельзя добавить файл/папку \"{file.Name}\", т.к. нельзя иметь файл в качестве родителя."));
+                    throw new Exception(WriteLn($"Нельзя добавить файл/папку \"{file.Name_text}\", т.к. нельзя иметь файл в качестве родителя."));
                 }
             }
 
             await insertToDbAction(file);
 
-            var addedFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name, file.ID_FolderOwner);
+            var addedFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name_text, file.ID_Folder_Owner);
             var icon = GetIconByFile(addedFile);
             return new Node<File>(addedFile, icon);
         }
@@ -368,14 +368,14 @@ namespace Models.Services
             var fileUploaded = await this._filesRepository.UploadAsync(file);
             if (!fileUploaded)
             {
-                throw new Exception(WriteLn($"Не удалось добавить файл \"{file.Name}\" в базу данных."));
+                throw new Exception(WriteLn($"Не удалось добавить файл \"{file.Name_text}\" в базу данных."));
             }
 
-            var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name, file.ID_FolderOwner)).ID;
-            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.ID_LocalizationProject);
+            var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.Name_text, file.ID_Folder_Owner)).id;
+            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.ID_Localization_Project);
             await this._filesRepository.AddTranslationLocalesAsync(
                 fileId: addedFileId,
-                localesIds: projectLocales.Select(locale => locale.ID));
+                localesIds: projectLocales.Select(locale => locale.id));
         }
 
         private async Task InsertFolderToDbAsync(File file)
@@ -386,14 +386,14 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(WriteLn($"Не удалось добавить папку \"{file.Name}\" в базу данных.", exception), exception);
+                throw new Exception(WriteLn($"Не удалось добавить папку \"{file.Name_text}\" в базу данных.", exception), exception);
             }
         }
 
         private string GetIconByFile(File file)
         {
             var pathPrefix = "assets/fileIcons/";
-            if (file.IsFolder)
+            if (file.Is_Folder)
             {
                 return $"{pathPrefix}folder.png";
             }
@@ -417,7 +417,7 @@ namespace Models.Services
                     throw new Exception(WriteLn("Указанной родительской папки не существует."));
                 }
 
-                if (!newParent.IsFolder)
+                if (!newParent.Is_Folder)
                 {
                     throw new Exception(WriteLn("Указанный родитель не является папкой."));
                 }
@@ -453,7 +453,7 @@ namespace Models.Services
                 throw new Exception("Файл не найден.");
             }
 
-            if (file.IsFolder)
+            if (file.Is_Folder)
             {
                 var uniqueTempFolderPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
                 var currentLevelFiles = new Dictionary<File, string>() { { file, uniqueTempFolderPath } };
@@ -465,14 +465,14 @@ namespace Models.Services
                         var currentLevelFile = fileToPath.Key;
                         var currentLevelPath = fileToPath.Value;
                         var fileName = string
-                            .IsNullOrWhiteSpace(currentLevelFile.DownloadName) ?
-                                currentLevelFile.Name :
-                                currentLevelFile.DownloadName;
-                        if (currentLevelFile.IsFolder)
+                            .IsNullOrWhiteSpace(currentLevelFile.Download_Name) ?
+                                currentLevelFile.Name_text :
+                                currentLevelFile.Download_Name;
+                        if (currentLevelFile.Is_Folder)
                         {
                             var newFolderPath = System.IO.Path.Combine(currentLevelPath, fileName);
                             var children = await this._filesRepository
-                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.ID);
+                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.id);
                             foreach (var child in children)
                             {
                                 newLevelFiles[child] = newFolderPath;
@@ -482,7 +482,7 @@ namespace Models.Services
                         {
                             var fileContent = await this._filesRepository
                                 .GetFileContentAsync(
-                                    id: currentLevelFile.ID,
+                                    id: currentLevelFile.id,
                                     id_locale: localeId.HasValue ? localeId.Value : -1);
 
                             System.IO.Directory.CreateDirectory(currentLevelPath);
@@ -490,7 +490,7 @@ namespace Models.Services
                             using (var fileStream = System.IO.File.Create(filePath))
                             using (var streamWriter = new System.IO.StreamWriter(
                                 stream: fileStream,
-                                encoding: Encoding.GetEncoding(currentLevelFile.Encoding)))
+                                encoding: Encoding.GetEncoding(currentLevelFile.Encod)))
                             {
                                 streamWriter.Write(fileContent);
                             }
@@ -501,7 +501,7 @@ namespace Models.Services
 
                 var compressedFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
                 ZipFile.CreateFromDirectory(
-                    sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.Name),
+                    sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.Name_text),
                     destinationArchiveFileName: compressedFileName);
                 System.IO.Directory.Delete(uniqueTempFolderPath, recursive: true);
                 return System.IO.File.OpenRead(compressedFileName);
@@ -516,7 +516,7 @@ namespace Models.Services
                 var fileStream = System.IO.File.Create(tempFileName);
                 using (var sw = new System.IO.StreamWriter(
                     stream: fileStream,
-                    encoding: Encoding.GetEncoding(file.Encoding),
+                    encoding: Encoding.GetEncoding(file.Encod),
                     bufferSize: this._defaultFileStreamBufferSize,
                     leaveOpen: true))
                 {

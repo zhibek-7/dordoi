@@ -1,9 +1,12 @@
 ﻿
+using System;
+
 namespace Models.DatabaseEntities
 {
+    [Serializable]
     public class Glossary : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name_text { get; set; }
 
         public string Description { get; set; }
 

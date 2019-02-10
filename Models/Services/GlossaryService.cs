@@ -152,7 +152,7 @@ namespace Models.Services
             {
                 await this._stringsRepository.AddTranslationLocalesAsync(
                     translationSubstringId: newTermId,
-                    localesIds: glossaryLocales.Select(locale => locale.ID));
+                    localesIds: glossaryLocales.Select(locale => locale.id));
             }
             catch (Exception exception)
             {

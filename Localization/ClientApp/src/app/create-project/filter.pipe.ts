@@ -12,6 +12,7 @@ export class FilterPipe implements PipeTransform {
     return dropdownList.filter(
       function(lang){
         console.log(searchText);
+	if(lang.itemName===undefined || lang.itemName == null) return dropdownList;
         
          return lang.itemName.toLowerCase().includes(searchText.toLowerCase());
       }
