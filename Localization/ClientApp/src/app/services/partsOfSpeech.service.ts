@@ -16,7 +16,7 @@ export class PartsOfSpeechService {
       {
         params: new HttpParams({
           fromObject: {
-            glossaryId: glossaryId //glossaryId.toString()
+            glossaryId: glossaryId.toString()
           }
         })
       }

@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { ProjectsService } from '../services/projects.service';
-import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
-import { LocalizationProject } from '../models/database-entities/localizationProject.type';
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { FormGroup, FormControl } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { ProjectsService } from "../services/projects.service";
+import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
+import { LocalizationProject } from "../models/database-entities/localizationProject.type";
 
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
 import { Locale } from "src/app/models/database-entities/locale.type";
@@ -15,31 +15,56 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Component({
-  selector: 'app-create-project',
-  templateUrl: './create-project.component.html',
-  styleUrls: ['./create-project.component.css'],
+  selector: "app-create-project",
+  templateUrl: "./create-project.component.html",
+  styleUrls: ["./create-project.component.css"]
 })
 export class CreateProjectComponent implements OnInit {
-  args = 'ascending';
+  args = "ascending";
   reverse = false;
-  searchText = '';
+  searchText = "";
   form: FormGroup;
-  title = 'Создание проекта Crowdin';
+  title = "Создание проекта Crowdin";
 
   forms: Array<any> = [
-    { labelName: 'Название проекта:', placeHolder: 'Обычно название вашего веб-сайта или приложения', ivalid_feedback: 'Это поле необходимо заполнить', id: 'exampleInputName', describedby: 'emailHelp' },
-    { labelName: 'Адрес проекта:', placeHolder: 'https://crowdin.com/project/<identifier>', ivalid_feedback: 'Это поле необходимо заполнить', id: 'exampleInputAddress', describedby: 'addressHelp' },
+    {
+      labelName: "Название проекта:",
+      placeHolder: "Обычно название вашего веб-сайта или приложения",
+      ivalid_feedback: "Это поле необходимо заполнить",
+      id: "exampleInputName",
+      describedby: "emailHelp"
+    },
+    {
+      labelName: "Адрес проекта:",
+      placeHolder: "https://crowdin.com/project/<identifier>",
+      ivalid_feedback: "Это поле необходимо заполнить",
+      id: "exampleInputAddress",
+      describedby: "addressHelp"
+    }
   ];
 
-options:Array<any>=[
-    {labelName:'Public project',id:'gridRadios1', small:'Visible to anyone. You can restrict access to languages after the project is created.',inputName:'gridRadios', value:'checked'},
-    {labelName:'Private project',id:'gridRadios2', small:'Visible only to the invited project members',inputName:'gridRadios', value:'option2'},];
+  options: Array<any> = [
+    {
+      labelName: "Public project",
+      id: "gridRadios1",
+      small:
+        "Visible to anyone. You can restrict access to languages after the project is created.",
+      inputName: "gridRadios",
+      value: "checked"
+    },
+    {
+      labelName: "Private project",
+      id: "gridRadios2",
+      small: "Visible only to the invited project members",
+      inputName: "gridRadios",
+      value: "option2"
+    }
+  ];
 
-
-//////////////////////////////////////////////////
-  constructor(private projectsService: ProjectsService) { }
+  //////////////////////////////////////////////////
+  constructor(private projectsService: ProjectsService) {}
   currentProjectName = "";
-  currentProjectId = Math.floor(Math.random() * 10000) + 1;;
+  currentProjectId = Math.floor(Math.random() * 10000) + 1;
   currentProjectDescription = "";
   currentProjectPublic = true;
   currentProjectFileTrue = false;
@@ -74,7 +99,7 @@ options:Array<any>=[
     pjNotificationTrue: new FormControl(),
     selectedLang: new FormControl()
   });
-  
+
   dropdownList = [];
   allProjLocales: LocalizationProjectsLocales[];
   allLocale = [];
@@ -82,24 +107,22 @@ options:Array<any>=[
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
-   
     let allLangsPr = [];
-    let allLocales = this.projectsService.getLocales().subscribe(projects => {
-      this.allLocale = projects;
-      this.allLocale.forEach((lang) => {
-        allLangsPr.push({
-
-          itemName: lang["name"],
-          checked: false,
-          id: lang["id"]
-
+    let allLocales = this.projectsService.getLocales().subscribe(
+      projects => {
+        this.allLocale = projects;
+        this.allLocale.forEach(lang => {
+          allLangsPr.push({
+            itemName: lang["name"],
+            checked: false,
+            id: lang["id"]
+          });
         });
-      });
 
-      this.dropdownList = allLangsPr;
-    },
-      error => console.error(error));
-
+        this.dropdownList = allLangsPr;
+      },
+      error => console.error(error)
+    );
   }
 
   AddSelected(event, lang) {
@@ -157,15 +180,11 @@ options:Array<any>=[
     });
   }
 
-
   idPrLocale: number;
   idLocale: number;
- 
-     //TODO вернуть как было.
-    //this.projectService.addProject(newProject)subscribe(response => console.log(response));
 
-
-
+  //TODO вернуть как было.
+  //this.projectService.addProject(newProject)subscribe(response => console.log(response));
 
   addProject(): void {
     let project: LocalizationProject = new LocalizationProject(
@@ -174,7 +193,7 @@ options:Array<any>=[
       this.currentProjectDescription,
       this.currentProjecturl,
       this.currentProjectPublic, //visibility
-      Date.now,//date dateOfCreation
+      Date.now, //date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
       this.selectedLang,
       this.pjFileTrue, //ableToDownload
@@ -193,25 +212,16 @@ options:Array<any>=[
     //собирает добавленные языки в один массив
 
     let projectLocales: LocalizationProjectsLocales[] = [];
-    this.selectedItems.forEach((lang) => {
-
-      
-        projectLocales.push({
-          id_LocalizationProject: this.currentProjectId,
-          id_Locale: lang.id,
-          percentOfTranslation: 0,
-          PercentOfConfirmed: 0
-        });
-    
-
-
-    })
+    this.selectedItems.forEach(lang => {
+      projectLocales.push({
+        id_Localization_Project: this.currentProjectId,
+        id_Locale: lang.id,
+        percent_Of_Translation: 0,
+        Percent_Of_Confirmed: 0
+      });
+    });
 
     //передает массив языков
     this.projectsService.addProjectLocales(projectLocales);
-  
   }
-
-
-  
 }

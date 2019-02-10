@@ -90,21 +90,18 @@ export class AllSettingsComponent implements OnInit {
     );
 
     let selectedLangs = [];
-    let allPrLocales = this.projectsService.getProjectLocales(this.currentProjectId)
-      .subscribe(projectsL => {
-        this.allProjLocales = projectsL;
-        
-        this.dropdownList.forEach((lang) => {
-          const index = projectsL.findIndex(list => list["iD_Locale"] == lang.id);
+    let allPrLocales = this.projectsService
+      .getProjectLocales(this.currentProjectId)
+      .subscribe(
+        projectsL => {
+          this.allProjLocales = projectsL;
 
-          if (index != -1) {
-            selectedLangs.push({
-              itemName: lang.itemName,
-              selected: true,
-              id: lang.id
-            });
+          this.dropdownList.forEach(lang => {
+            const index = projectsL.findIndex(
+              list => list["id_locale"] == lang.id
+            );
 
-            if (index == 0) {
+            if (index != -1) {
               selectedLangs.push({
                 itemName: lang.itemName,
                 selected: true,
@@ -115,23 +112,13 @@ export class AllSettingsComponent implements OnInit {
               this.selectedL = true;
             } else {
               lang.checked = false;
+              this.selectedL = false;
             }
           });
         },
         error => console.error(error)
       );
 
-            lang.checked = false;
-            this.selectedL = false;
-          }
-
-
-        });
-      
-      },
-        error => console.error(error));
-
-   
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
 
@@ -145,10 +132,10 @@ export class AllSettingsComponent implements OnInit {
         this.pjFileTrue = this.project.able_To_Download;
         this.pjSkipUntranslStrTrue = this.project.able_To_Left_Errors;
         this.pjExportTrue = this.project.export_only_approved_translations;
-        this.pjNotificationTrue = this.project.notifyNew;
-        this.selectedLang = project["iD_SourceLocale"];
+        this.pjNotificationTrue = this.project.notify_New;
+        this.selectedLang = project["ID_Source_Locale"];
         this.selectedItems = selectedLangs;
-        
+
         if (this.currentProjectPublic == true) {
           this.pjPublic = "public";
         } else {
@@ -158,8 +145,6 @@ export class AllSettingsComponent implements OnInit {
         this.selectedL = false;
         this.dropdownList = this.dropdownList;
 
-        
-       
         console.log(this.selectedItems);
       },
       error => console.error(error)
@@ -223,7 +208,6 @@ export class AllSettingsComponent implements OnInit {
     });
   }
 
- 
   idPrLocale: number;
   idLocale: number;
   editProject(Id: number): void {
@@ -239,11 +223,11 @@ export class AllSettingsComponent implements OnInit {
     this.selectedItems.forEach(lang => {
       let projectLocales: LocalizationProjectsLocales[] = [];
 
-      const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
-      if (index !=-1) {
-
-      }
-      else {
+      const index = this.allProjLocales.findIndex(
+        list => list["id_locale"] == lang.id
+      );
+      if (index != -1) {
+      } else {
         projectLocales.push({
           id_Localization_Project: this.currentProjectId,
           id_Locale: lang.id,
@@ -252,20 +236,9 @@ export class AllSettingsComponent implements OnInit {
         });
       }
 
-      //let projectLocales: LocalizationProjectsLocales[]=[];
-      //this.selectedItems.forEach((lang) => {
-      //  projectLocales.push({
-      //    id_LocalizationProject: this.currentProjectId,
-      //    id_Locale: lang.id,
-      //    percentOfTranslation: 0,
-      //    PercentOfConfirmed:0
-      //  });
-      //})
-
-    })
-
-    //передает массив языков
-    this.projectsService.addProjectLocales(projectLocales);
+      //передает массив языков
+      this.projectsService.addProjectLocales(projectLocales);
+    });
 
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,

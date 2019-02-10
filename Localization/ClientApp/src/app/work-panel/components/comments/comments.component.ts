@@ -191,17 +191,8 @@ export class CommentsComponent implements OnInit {
     );
   }
 
-    // Функция отображения скриншота в модальном окне в увеличенном размере
-    showImage(image: Image){
-        const dialogConfig = new MatDialogConfig();
-
-        dialogConfig.data = {
-            selectedImage: image
-        };
-
-        let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
-    }
-
+  // Функция, срабатываемая при загрузке скриншота
+  handleFileInput(file: FileList) {
     var reader = new FileReader();
     reader.onload = (event: any) => {
       var insertedImage = new Image();

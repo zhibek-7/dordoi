@@ -53,7 +53,7 @@
                       <div class=""><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>
                       <ul class="row">
                         <li class="list-group-item col-3 imageBlock" *ngFor="let image of comment.images">
-                                                <div class="blockWithImage">
+                          <div class="blockWithImage">
                             <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
                           </div>
                         </li>
@@ -126,7 +126,7 @@
                           <div class="row">
                             <div class="col-12">{{term.description}} </div>
                           </div>
-                          <div class="row glossaryName">
+                          <div class="row glossary_name">
                             <div class="col-12">{{term.glossary_name}} </div>
                           </div>
                           <div class="row">
@@ -136,37 +136,38 @@
                           </div>
                         </div>
 
-                    <div class="termsList">
-                        <div class="panel panel-primary">
+                        <div class="termsList">
+                          <div class="panel panel-primary">
                             <div class="panel-body">
-                                <div class="panel-body">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item list-group-item-action" *ngFor="let term of termsList | filterTerms: searchTermText | sort:'glossaryName' ">
-                                            <div class="oneTermBlock">                                                                                 
-                                                <div *ngIf="!commentEdited">
-                                                    <div class="row termName">
-                                                        <div class="col-12">{{term.substringToTranslate}} </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-12">{{term.description}} </div>
-                                                    </div>
-                                                    <div class="row glossaryName">
-                                                        <div class="col-12">{{term.glossaryName}} </div>
-                                                    </div>                                                    
-                                                    <div class="row">                                                        
-                                                        <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
-                                                        <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary" [term]="term.term"></app-edit-term-form-modal>
-                                                        <button class="btn btn-link" (click)="deleteTermClick(term.glossaryId, term.id)">Удалить</button>
-                                                    </div>
-                                                </div>                                                
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                              <div class="panel-body">
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item list-group-item-action" *ngFor="let term of termsList | filterTerms: searchTermText | sort:'glossary_name' ">
+                                    <div class="oneTermBlock">
+                                      <div *ngIf="!commentEdited">
+                                        <div class="row termName">
+                                          <div class="col-12">{{term.substring_to_translate}} </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-12">{{term.description}} </div>
+                                        </div>
+                                        <div class="row glossary_name">
+                                          <div class="col-12">{{term.glossary_name}} </div>
+                                        </div>
+                                        <div class="row">
+                                          <button class="btn btn-link" (click)="editTermFormModal.show()">Изменить</button>
+                                          <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary"
+                                            [term]="term.term"></app-edit-term-form-modal>
+                                          <button class="btn btn-link" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
                             </div>
-                        </div>
+                          </div>
 
-                      </div>
+                        </div>
                     </li>
                   </ul>
                 </div>

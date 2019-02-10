@@ -1,17 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 
-import { ShowImageModalComponent } from '../show-image-modal/show-image-modal';
-import { SelectedWordModalComponent } from '../selected-word-modal/selected-word-modal.component';
+import { ShowImageModalComponent } from "../show-image-modal/show-image-modal";
+import { SelectedWordModalComponent } from "../selected-word-modal/selected-word-modal.component";
 
 import { SharePhraseService } from "../../localServices/share-phrase.service";
 import { ShareTranslatedPhraseService } from "../../localServices/share-translated-phrase.service";
 import { TranslationService } from "../../../services/translationService.service";
 import { TranslationSubstringService } from "src/app/services/translationSubstring.service";
 
-import { TranslationSubstring } from '../../../models/database-entities/translationSubstring.type';
-import { Translation } from '../../../models/database-entities/translation.type';
-import { Image } from 'src/app/models/database-entities/image.type';
+import { TranslationSubstring } from "../../../models/database-entities/translationSubstring.type";
+import { Translation } from "../../../models/database-entities/translation.type";
+import { Image } from "src/app/models/database-entities/image.type";
 
 declare var $: any;
 
@@ -37,33 +37,29 @@ export class TranslationComponent implements OnInit {
     private shareTranslatedPhraseService: ShareTranslatedPhraseService,
     private translationService: TranslationService,
     private translationSubstringService: TranslationSubstringService,
-    private selectionDialog: MatDialog
+    private selectionDialog: MatDialog,
+    private showImageDialog: MatDialog
   ) {
+    this.images = [];
+
     // Событие, срабатываемое при выборе фразы для перевода
     this.sharePhraseService.onClick.subscribe(pickedPhrase => {
       this.phraseForTranslate = pickedPhrase;
       this.translatedText = null;
+
+      this.loadImages(pickedPhrase.id);
     });
   }
 
-    images: Image[];
+  images: Image[];
 
-    constructor(private sharePhraseService: SharePhraseService,
-        private shareTranslatedPhraseService: ShareTranslatedPhraseService, 
-        private translationService: TranslationService,
-        private translationSubstringService: TranslationSubstringService,
-        private selectionDialog: MatDialog,
-        private showImageDialog: MatDialog) {
-
-        this.images = [];
-
-        // Событие, срабатываемое при выборе фразы для перевода
-        this.sharePhraseService.onClick.subscribe(pickedPhrase => {
-                this.phraseForTranslate = pickedPhrase;                
-                this.translatedText = null;
-
-                this.loadImages(pickedPhrase.id);
-            });                              
+  //Действия при двойном клике по слову
+  openSelectionDialog(event) {
+    let selectedWord;
+    if (window.getSelection) {
+      selectedWord = window.getSelection();
+    } else if (document.getSelection) {
+      selectedWord = document.getSelection();
     }
 
     const dialogConfig = new MatDialogConfig();
@@ -157,24 +153,48 @@ export class TranslationComponent implements OnInit {
     );
     this.translatedPhrase.id = insertedTranslationId;
 
-    loadImages( translationSubstringId: number) {
-        this.translationSubstringService.getImagesByTranslationSubstringId(translationSubstringId)
-            .subscribe(
-                images => {
-                    this.images = images;
-                }
-            );
+    await this.translationService.getAllTranslationsInStringById(
+      this.phraseForTranslate.id
+    );
+    this.shareTranslatedPhraseService.sumbitTranslatedPhrase(
+      this.translatedPhrase
+    );
+
+    this.translatedText = null;
+    this.translatedPhrase = null;
+
+    $("#btnSave").attr("disabled", true);
+    $("#btnSave").attr("disabled", false); // хорошо бы найти стиль который убирает обводку кнопки после нажатия(убирать его другим способом)
+  }
+
+  // Проверка наличия выбранной фразы
+  checkPhrase(): boolean {
+    if (this.sharePhraseService.getSharedPhrase() === undefined) {
+      return false;
+    } else {
+      return true;
     }
+  }
 
-    // Функция отображения скриншота в модальном окне в увеличенном размере
-    showImage(image: Image){
-        const dialogConfig = new MatDialogConfig();
+  loadImages(translationSubstringId: number) {
+    this.translationSubstringService
+      .getImagesByTranslationSubstringId(translationSubstringId)
+      .subscribe(images => {
+        this.images = images;
+      });
+  }
 
-        dialogConfig.data = {
-            selectedImage: image
-        };
+  // Функция отображения скриншота в модальном окне в увеличенном размере
+  showImage(image: Image) {
+    const dialogConfig = new MatDialogConfig();
 
-        let dialogRef = this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
-    }
+    dialogConfig.data = {
+      selectedImage: image
+    };
 
+    let dialogRef = this.showImageDialog.open(
+      ShowImageModalComponent,
+      dialogConfig
+    );
+  }
 }

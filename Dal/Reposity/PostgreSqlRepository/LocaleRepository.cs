@@ -198,26 +198,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, newLocale);
                     if (!insertedId.HasValue)
                     {
-                        this.LogQuery(sqlString, locale.GetType(), locale);
-                        var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, locale, transaction);
-                        if (!insertedId.HasValue)
-                        {
-                            this._loggerError.WriteLn("Insertion into Locales didn't return id.");
-                            transaction.Rollback();
-                            return false;
-                        }
-                        locale.id = insertedId.Value;
-                        return true;
-                    }
-                    catch (NpgsqlException exception)
-                    {
-                        this._loggerError.WriteLn(
-                            $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.Upload)} {nameof(NpgsqlException)} ",
-                            exception);
-                        transaction.Rollback();
+                        this._loggerError.WriteLn("Insertion into Locales didn't return id.");
                         return false;
                     }
-                    newLocale.ID = insertedId.Value;
+                    newLocale.id = insertedId.Value;
                     return true;
                 }
                 catch (NpgsqlException exception)

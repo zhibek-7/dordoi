@@ -160,7 +160,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param = new { Id = projectId };
                     this.LogQuery(query, param);
-                    IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<TranslationSubstring>(query, param);                    
+                    IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<TranslationSubstring>(query, param);
                     return strings;
                 }
             }
@@ -206,7 +206,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     foreach (var translationSubstring in stringsInFile)
                     {
-                        translationSubstring.Status = await GetStatusOfTranslationSubstringAsync(translationSubstring.ID);
+                        translationSubstring.Status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id);
                     }
 
                     return stringsInFile;
@@ -696,8 +696,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = "SELECT * " +
                         "FROM \"Translations\" AS T " +
-                        "WHERE T.\"ID_String\" = @TranslationSubstringId;";    
-                
+                        "WHERE T.\"ID_String\" = @TranslationSubstringId;";
+
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -707,7 +707,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     string status = "Empty";
 
-                    foreach(var translation in translationsOfTheString)
+                    foreach (var translation in translationsOfTheString)
                     {
                         if (translation.Selected == true)
                         {
@@ -717,7 +717,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         if (translation.Confirmed == true)
                         {
                             status = "Confirmed";
-                        }                        
+                        }
                     }
 
                     return status;

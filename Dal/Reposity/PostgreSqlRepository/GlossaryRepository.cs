@@ -270,13 +270,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var updateTermSql =
                         "UPDATE translation_substrings SET " +
-                        "substring_to_translate=@SubstringToTranslate, " +
-                        "description=@Description, " +
-                        "context=@Context, " +
-                        "translation_max_length=@TranslationMaxLength, " +
-                        "id_file_owner=@ID_FileOwner, " +
-                        "value=@Value, " +
-                        "position_in_text=@PositionInText " +
+                        "substring_to_translate=@substring_to_translate, " +
+                        "description=@description, " +
+                        "context=@context, " +
+                        "translation_max_length=@translation_max_length, " +
+                        "id_file_owner=@id_file_owner, " +
+                        "value=@value, " +
+                        "position_in_text=@position_in_text " +
                         "WHERE id=@id";
                     var updateTermParam = updatedTerm;
                     this.LogQuery(updateTermSql, updatedTerm.GetType(), updateTermParam);
