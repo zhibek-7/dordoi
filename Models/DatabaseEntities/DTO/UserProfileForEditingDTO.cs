@@ -19,7 +19,7 @@ namespace Models.DatabaseEntities.DTO
 
         public string email { get; set; }
 
-        //public bool Joined { get; set; }
+        public bool joined { get; set; }
 
         public string full_name { get; set; }
 
