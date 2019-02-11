@@ -477,7 +477,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         photo = user.photo,
                         email = user.email,
-                        joined = user.joined,
+                        //joined = user.joined,
                         full_name = user.full_name,
                         time_zone = user.time_zone,
                         about_me = user.about_me,
