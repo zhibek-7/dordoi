@@ -276,8 +276,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Users")
-                        .Where("Email", email)
+                    var query = new Query("users")
+                        .Where("email", email)
                         .AsCount();
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -306,8 +306,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Users")
-                        .Where("Name", login)
+                    var query = new Query("users")
+                        .Where("name_text", login)
                         .AsCount();
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -338,9 +338,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var newUser = new
                     {
-                        Name = user.Name_text,
-                        Email = user.Email,
-                        Password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
+                        name_text = user.Name_text,
+                        email = user.Email,
+                        password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
                         data_create = DateTime.Now
                     };
                     var query = new Query("users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
@@ -447,7 +447,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                         time_zone = temp.FirstOrDefault().TimeZone,
 
                         locales_ids = temp.Select(t => t.LocaleId).Distinct(),
-                        locales_id_is_native = temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
+                        locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
+                            ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
+                            : null
                     };
 
                     return resultDTO;
@@ -475,9 +477,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         photo = user.photo,
                         email = user.email,
-                        //Joined = user.Joined,
+                        //joined = user.Joined,
                         full_name = user.full_name,
-                        time_zone = user.time_zone,
+                        //time_zone = user.time_zone,
                         about_me = user.about_me,
                         gender = user.gender
                     };
@@ -517,7 +519,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     if (isDeleteOldRecords)
                     {
-                        var queryDelete = new Query("UsersLocales").Where("ID_User", userId).AsDelete();
+                        var queryDelete = new Query("users_locales").Where("id_user", userId).AsDelete();
                         var compiledQueryDelete = _compiler.Compile(queryDelete);
                         LogQuery(compiledQueryDelete);
                         await dbConnection.ExecuteAsync(
@@ -529,16 +531,16 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     var usersLocalesIsNative = localesIdIsNative.Select(t => new
                     {
-                        ID_User = userId,
-                        ID_Locale = t.Item1,
-                        IsNative = t.Item2
+                        id_user = userId,
+                        id_locale = t.Item1,
+                        is_native = t.Item2
                     }).ToList();
 
                     if (usersLocalesIsNative != null && usersLocalesIsNative.Count > 0)
                     {
                         foreach (var element in usersLocalesIsNative)
                         {
-                            var queryInsert = new Query("UsersLocales").AsInsert(element);
+                            var queryInsert = new Query("users_locales").AsInsert(element);
                             var compiledQueryInsert = _compiler.Compile(queryInsert);
                             LogQuery(compiledQueryInsert);
                             await dbConnection.ExecuteAsync(
@@ -550,13 +552,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         var usersLocales = localesIds.Select(t => new
                         {
-                            ID_User = userId,
-                            ID_Locale = t
+                            id_user = userId,
+                            id_locale = t
                         }).ToList();
 
                         foreach (var element in usersLocales)
                         {
-                            var queryInsert = new Query("UsersLocales").AsInsert(element);
+                            var queryInsert = new Query("users_locales").AsInsert(element);
                             var compiledQueryInsert = _compiler.Compile(queryInsert);
                             LogQuery(compiledQueryInsert);
                             await dbConnection.ExecuteAsync(
@@ -582,7 +584,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("Users").Where("ID", id).AsDelete();
+                    var query = new Query("users").Where("id", id).AsDelete();
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(
