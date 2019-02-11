@@ -339,8 +339,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список вариантов перевода</returns>
         public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(int currentProjectId, string translationText)
         {
-            var query = "SELECT F.name_text AS fileownername, T.translated AS translationvariant, " +
-                        "TS.substring_to_translate AS tTranslationtext " +
+            var query = "SELECT F.name_text AS file_Owner_Name, T.translated AS translation_Variant, " +
+                        "TS.substring_to_translate AS translation_Text " +
                         "FROM localization_projects AS LP " +
                         "INNER JOIN files AS F ON F.id_localization_project = LP.id " +
                         "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +

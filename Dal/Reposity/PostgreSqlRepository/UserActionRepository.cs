@@ -276,6 +276,22 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
+        /// Добавление варианта перевода
+        /// </summary>
+        /// <param name="item"></param>
+        public async Task<int> AddAddFileActionAsync(File item, int? idTranslit, WorkTypes wt)
+        {
+            UserAction action = new UserAction();
+            action.Datetime = item.Date_Of_Change;
+            action.ID_Project = item.ID_Localization_Project;
+            action.ID_File = idTranslit;
+            action.File = item.Name_text;
+            action.ID_work_type = (int)wt;
+            return await AddAsync(action);
+        }
+
+
+        /// <summary>
         /// Добавить запись об обновлении файла
         /// </summary>
         /// <param name="userId">Идентификатор пользователя</param>
