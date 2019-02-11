@@ -92,8 +92,8 @@ namespace Localization.WebApi
         [HttpPost("add/folderByProjectId/{projectId}")]
         public async Task<ActionResult<Node<File>>> AddFolderAsync([FromBody] FolderModel newFolder, int projectId)
         {
+            newFolder.ProjectId = projectId;
             return await this._filesService.AddFolderAsync(newFolder);
-            newFolder.Project_Id = projectId;
         }
 
         [HttpPost("upload/folderByProjectId/{projectId}")]
