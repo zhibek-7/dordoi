@@ -26,7 +26,7 @@
           <a *ngFor="let project of projects"
              class="dropdown-item"
              (click)="getCurrentProject(project)"
-             href='/pj/{{ project.id }}'>
+             href='/Project/{{ project.id }}'>
             {{ project.name_text }}
             <a (click)="getCurrentProject(project)"
                href='/Projects/{{ project.id }}'><img src="../assets/icons/main/settings.jpg" width="20" height="20" class="d-inline-block align-top" alt=""></a>
