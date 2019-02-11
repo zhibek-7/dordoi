@@ -14,6 +14,7 @@ using Models.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Utilities.Logs;
 using System.Net;
+using Models.DatabaseEntities;
 using Models.Migration;
 
 namespace Localization
@@ -57,6 +58,8 @@ namespace Localization
             services.AddScoped<FilesService>();
             services.AddScoped<GlossaryService>();
             services.AddScoped<GlossariesService>();
+            services.AddScoped<UserAction>();
+
             /*
             services.AddScoped<IFilesRepository, FilesRepository>();
             services.AddScoped<FilesService>();

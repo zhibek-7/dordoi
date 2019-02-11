@@ -7,7 +7,6 @@ using Dapper;
 using Models.DatabaseEntities;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.PartialEntities.Translations;
 using Npgsql;
@@ -19,8 +18,11 @@ namespace DAL.Reposity.PostgreSqlRepository
     /// </summary>
     public class TranslationRepository : BaseRepository, IRepositoryAsync<Translation>
     {
+        private UserActionRepository _action;
+
         public TranslationRepository(string connectionStr) : base(connectionStr)
         {
+            _action = new UserActionRepository(connectionStr);
         }
 
         /// <summary>
@@ -39,6 +41,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     this.LogQuery(query, item.GetType(), item);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, item);
+
+                    /*Логироание*/
+                    _action.AddAddTraslationActionAsync(item, idOfInsertedRow, WorkTypes.AddTraslation);
+                    /**/
+
                     return idOfInsertedRow;
                 }
             }
@@ -145,6 +152,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { id };
                     this.LogQuery(query, param);
                     var deletedRows = await dbConnection.ExecuteAsync(query, param);
+
+
                     return deletedRows > 0;
                 }
             }
@@ -188,6 +197,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     await dbConnection.ExecuteAsync(
                         sql: updateTranslationSql,
                         param: updateTranslationParam);
+
+                    /*Логироание*/
+                    _action.AddAddTraslationActionAsync(item, item.id, WorkTypes.UpdateTranslation);
+                    /**/
+
                     return true;
                 }
             }

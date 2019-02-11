@@ -314,17 +314,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     //все из TranslationSubstrings и Files удаляется по Glossaries.ID_File
 
-                    //Удаление зависимостей
-                    #region Get Glossaries.ID_File
-
-                    var queryGetGlossariesID_File = new Query("glossaries").Where("id", id).Select("glossaries.id_file");
-                    var compiledQueryGetGlossariesID_File = _compiler.Compile(queryGetGlossariesID_File);
-                    LogQuery(compiledQueryGetGlossariesID_File);
-                    var idFile = await dbConnection.QueryFirstOrDefaultAsync<int?>(
-                        sql: compiledQueryGetGlossariesID_File.Sql,
-                        param: compiledQueryGetGlossariesID_File.NamedBindings);
-
-                    #endregion
+                    var idFile = await GetIdFile(id, dbConnection);
 
                     if (idFile != null)
                     {
@@ -343,27 +333,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                         #region Таблицы с прямой ссылкой на "TranslationSubstrings" (Glossaries.ID_File -> TranslationSubstrings.ID_FileOwner => TranslationSubstrings.ID) - "StringsContextImages", "TranslationsubStringsLocales", "Translations", "Comments".
 
-                        #region Get TranslationSubstrings.ID
+                        var idsTranslationSubstrings = await GetTranslationSubstrings(id, idFile, dbConnection);
 
-                        var queryGetTranslationSubstringsID1 = new Query("translation_substrings").Where("id_file_owner", idFile).Select("translation_substrings.id");
-                        var compiledQueryGetTranslationSubstringsID1 = _compiler.Compile(queryGetTranslationSubstringsID1);
-                        LogQuery(compiledQueryGetTranslationSubstringsID1);
-                        var idsTranslationSubstrings1 = await dbConnection.QueryAsync<int>(
-                            sql: compiledQueryGetTranslationSubstringsID1.Sql,
-                            param: compiledQueryGetTranslationSubstringsID1.NamedBindings);
-
-                        var queryGetTranslationSubstringsID2 = new Query("glossaries_strings").Where("id_glossary", id).Select("glossaries_strings.id_string");
-                        var compiledQueryGetTranslationSubstringsID2 = _compiler.Compile(queryGetTranslationSubstringsID2);
-                        LogQuery(compiledQueryGetTranslationSubstringsID2);
-                        var idsTranslationSubstrings2 = await dbConnection.QueryAsync<int>(
-                            sql: compiledQueryGetTranslationSubstringsID2.Sql,
-                            param: compiledQueryGetTranslationSubstringsID2.NamedBindings);
-
-                        var idsTranslationSubstrings = new List<int>();
-                        idsTranslationSubstrings.AddRange(idsTranslationSubstrings1);
-                        idsTranslationSubstrings.AddRange(idsTranslationSubstrings2);
-
-                        #endregion
 
                         if (idsTranslationSubstrings != null && idsTranslationSubstrings.Count() > 0)
                         {
@@ -451,5 +422,48 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        private async Task<List<int>> GetTranslationSubstrings(int id, int? idFile, NpgsqlConnection dbConnection)
+        {
+            var queryGetTranslationSubstringsID1 = new Query("translation_substrings").Where("id_file_owner", idFile)
+                .Select("translation_substrings.id");
+            var compiledQueryGetTranslationSubstringsID1 = _compiler.Compile(queryGetTranslationSubstringsID1);
+            LogQuery(compiledQueryGetTranslationSubstringsID1);
+            var idsTranslationSubstrings1 = await dbConnection.QueryAsync<int>(
+                sql: compiledQueryGetTranslationSubstringsID1.Sql,
+                param: compiledQueryGetTranslationSubstringsID1.NamedBindings);
+
+            var queryGetTranslationSubstringsID2 = new Query("glossaries_strings").Where("id_glossary", id)
+                .Select("glossaries_strings.id_string");
+            var compiledQueryGetTranslationSubstringsID2 = _compiler.Compile(queryGetTranslationSubstringsID2);
+            LogQuery(compiledQueryGetTranslationSubstringsID2);
+            var idsTranslationSubstrings2 = await dbConnection.QueryAsync<int>(
+                sql: compiledQueryGetTranslationSubstringsID2.Sql,
+                param: compiledQueryGetTranslationSubstringsID2.NamedBindings);
+
+            var idsTranslationSubstrings = new List<int>();
+            idsTranslationSubstrings.AddRange(idsTranslationSubstrings1);
+            idsTranslationSubstrings.AddRange(idsTranslationSubstrings2);
+            return idsTranslationSubstrings;
+        }
+
+        /// <summary>
+        /// Удаление зависимостей
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dbConnection"></param>
+        /// <returns></returns>
+        private async Task<int?> GetIdFile(int id, NpgsqlConnection dbConnection)
+        {
+            //Удаление зависимостей
+
+
+            var queryGetGlossariesID_File = new Query("glossaries").Where("id", id).Select("glossaries.id_file");
+            var compiledQueryGetGlossariesID_File = _compiler.Compile(queryGetGlossariesID_File);
+            LogQuery(compiledQueryGetGlossariesID_File);
+            var idFile = await dbConnection.QueryFirstOrDefaultAsync<int?>(
+                sql: compiledQueryGetGlossariesID_File.Sql,
+                param: compiledQueryGetGlossariesID_File.NamedBindings);
+            return idFile;
+        }
     }
 }
