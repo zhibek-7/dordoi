@@ -31,7 +31,7 @@ namespace Models.DatabaseEntities
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
-        public int? Count_Users_Active { get; set; }
+        public int? count_users_active { get; set; }
 
 
         public bool Able_To_Download { get; set; }
