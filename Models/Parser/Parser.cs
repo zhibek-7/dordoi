@@ -28,25 +28,6 @@ namespace Models.Parser
         /// </summary>
         private Dictionary<string, ParseFunction> ParseFunctions;
 
-        //public string AllowedExtensionsPattern { get; private set; }
-        //public string PoPattern { get; private set; }
-        //public string PropertiesPattern { get; private set; }
-        //public string JsonPattern { get; private set; }
-        //public string StringsPattern { get; private set; }
-        //public string CsvPattern { get; private set; }
-        //public string XmlSimpleRowPattern { get; private set; }
-        //public string XmlArrayPattern { get; private set; }
-        //public string XmlArrayItemPattern { get; private set; }
-        //public string PhpArrayElementPattern { get; private set; }
-        //public string PhpArrayEndPattern { get; private set; }
-        //public string ResxPattern { get; private set; }
-        //public string StringPattern { get; private set; }
-        //public string TxtPattern { get; private set; }
-        //public string RcPattern { get; private set; }
-
-        //private ParserData PD = new ParserData();
-        //public List<TranslationSubstring> TranslationSubstrings;
-
         /// <summary>
         /// Инициализирует объект класса <see cref="Parser"/>
         /// </summary>
@@ -54,8 +35,10 @@ namespace Models.Parser
         {
             ParseFunctions = new Dictionary<string, ParseFunction>()
             {
-                {"po", ParseAsPo },
-                {"properties", ParseAsProperties },
+                {"po", ParseAsPo_Pot },
+                {"pot", ParseAsPo_Pot },
+                {"properties", ParseAsProperties_Ini },
+                {"ini", ParseAsProperties_Ini },
                 {"json", ParseAsJson },
                 {"strings", ParseAsStrings },
                 {"csv", ParseAsCsv },
@@ -66,21 +49,6 @@ namespace Models.Parser
                 {"txt", ParseAsTxt },
                 {"rc", ParseAsRc }
             };
-            //this.AllowedExtensionsPattern = "(po|properties|json|strings|csv|xml|php|resx|string|txt|rc)";
-            //this.PoPattern = "(?:msgctxt\\s+\"([^\"]*)\"\\s+)?msgid\\s+\"([^\"]*)\"\\s+msgstr\\s+\"([^\"]*)\"";
-            //this.PropertiesPattern = "(.*)=(.*)\\s";
-            //this.JsonPattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*:\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
-            //this.StringsPattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*=\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
-            //this.CsvPattern = "(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"(?:(?<=\")\"|[^\"])*(?<!\")\"";
-            //this.XmlSimpleRowPattern = "<string\\W+(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>([^<]*)</string\\s*>";
-            //this.XmlArrayPattern = "<string-array\\W+(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>((?:(?!</string-array).)*)</string-array\\s*>";
-            //this.XmlArrayItemPattern = "<item\\s*>((?:(?!</item).)*)</item\\s*>";
-            //this.PhpArrayElementPattern = "(array\\s*[(]|[[]|=>|(?:[)]|[]])?\\s*,)\\s*((?<!\\\\)'((?:(?<=\\\\)'|[^'])*)(?<!\\\\)'|\\d+)";
-            //this.PhpArrayEndPattern = "(?:[)]|[]])\\s*,\\s*$";
-            //this.ResxPattern = "<data(?:\\s*[^\\s\\\\/>\"'=]+\\s*=\\s*\"[^\"]*\")*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*[^\\s\\\\/>\"'=]+\\s*=\\s*\"[^\"]*\")*\\s*>(?:\\s*<[^\\s\\\\/>\"'=]+\\s*>[^<]*</[^\\s\\\\/>\"'=]+\\s*>)*\\s*<value\\s*>([^<]*)</value\\s*>\\s*(?:\\s*<[^\\s\\\\/>\"'=]+\\s*>[^<]*</[^\\s\\\\/>\"'=]+\\s*>)*\\s*</data\\s*>";
-            //this.StringPattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*=\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
-            //this.TxtPattern = "(.+)\r?\n?";
-            //this.RcPattern = "\\s*(\\d+)\\s*,\\s*\"((?:[^\"]|(?<=\\\\)\")*)\"\\s*";
         }
 
         /// <summary>
@@ -92,7 +60,7 @@ namespace Models.Parser
         {
             _logger.WriteLn(string.Format("Попытка распарсивания файла {0} всеми доступными парсерами", file.Name_text));
             var ans = new Dictionary<string, List<TranslationSubstring>>();
-            foreach (var pf in ParseFunctions) ans.Add(pf.Key, pf.Value(file));
+            foreach (var pf in ParseFunctions.GroupBy(v => v.Value)) ans.Add(pf.First().Key, pf.Key(file));
             var max = ans.First(a => a.Value.Count == ans.Values.Max(v => v.Count));
             _logger.WriteLn(string.Format("Для файла {0} наиболее релевантен '{1}'-парсер (обнаружено записей: {2})", file.Name_text, max.Key, max.Value.Count));
             return ans;
@@ -120,17 +88,23 @@ namespace Models.Parser
         /// </summary>
         /// <param name="file">Файл для распарсивания</param>
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
-        private List<TranslationSubstring> ParseAsPo(File file)
+        private List<TranslationSubstring> ParseAsPo_Pot(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'po'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'po/pot'", file.Name_text));
             var ts = new List<TranslationSubstring>();
-            string pattern = "(?:msgctxt\\s+\"([^\"]*)\"\\s+)?msgid\\s+\"([^\"]*)\"\\s+msgstr\\s+\"([^\"]*)\"";
+            string pattern = "(?:msgctxt\\s+\"([^\"]*)\"\\s+)?msgid\\s+\"([^\"]*)\"\\s+(msgid_plural\\s+\"([^\"]*)\"\\s+)?((?:msgstr(?:\\[\\d+\\])?\\s+\"[^\"]*\"\\s*)+)";
+            string subpattern = "msgstr(?:\\[\\d+\\])?\\s+\"([^\"]*)\"";
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            int count = matches.Count;
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[3].Value, m.Groups[3].Index));
+                var context = m.Groups[1].Value;
+                var original = m.Groups[string.IsNullOrEmpty(m.Groups[3].Value) ? 2 : 4].Value;
+                var matches_trans = Regex.Matches(m.Groups[5].Value, subpattern);
+                foreach (Match m_t in matches_trans) ts.Add(new TranslationSubstring(original, context, file.id, m_t.Groups[1].Value, m.Groups[5].Index + m_t.Groups[1].Index));
+                count += matches_trans.Count - 1;
             }
-            _logger.WriteLn(string.Format("Парсер 'po'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'po'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, count));
             return ts;
         }
 
@@ -139,9 +113,9 @@ namespace Models.Parser
         /// </summary>
         /// <param name="file">Файл для распарсивания</param>
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
-        private List<TranslationSubstring> ParseAsProperties(File file)
+        private List<TranslationSubstring> ParseAsProperties_Ini(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'properties'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'properties/ini'", file.Name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(.*)=(.*)\\s";
             var matches = Regex.Matches(file.Original_Full_Text, pattern);
