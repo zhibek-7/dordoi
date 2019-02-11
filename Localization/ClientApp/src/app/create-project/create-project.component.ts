@@ -113,7 +113,7 @@ export class CreateProjectComponent implements OnInit {
         this.allLocale = projects;
         this.allLocale.forEach(lang => {
           allLangsPr.push({
-            itemName: lang["name"],
+            itemName: lang["name_text"],
             checked: false,
             id: lang["id"]
           });
