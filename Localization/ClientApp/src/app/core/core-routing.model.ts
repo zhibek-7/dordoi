@@ -21,7 +21,7 @@ const routes: Routes = [
   },
   {
     path: "Projects/:id/reports",
-    loadChildren: "../reports/Reports.model#ReportsModule"
+    loadChildren: "../reports/Reports.module#ReportsModule"
   },
   {
     path: "create-project",
@@ -41,7 +41,7 @@ const routes: Routes = [
   },
   {
     path: "Glossaries",
-    loadChildren: "../glossaries/glossaries.model#GlossariesModule"
+    loadChildren: "../glossaries/glossaries.module#GlossariesModule"
   },
   {
     path: "list-glossaries",
@@ -61,7 +61,7 @@ const routes: Routes = [
     loadChildren: "../files/files.module#FilesModule"
   },
   {
-    path: "pj/:projectId/LanguageFiles/:localeId",
+    path: "Project/:projectId/LanguageFiles/:localeId",
     loadChildren: "../files/files.module#FilesModule"
   },
   {
@@ -73,7 +73,7 @@ const routes: Routes = [
     loadChildren: "../strings/strings.module#StringsModule"
   },
   {
-    path: "pj/:id",
+    path: "Project/:id",
     component: ProjectPageComponent
   },
   //{
