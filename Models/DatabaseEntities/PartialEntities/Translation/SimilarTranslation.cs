@@ -8,6 +8,6 @@ namespace Models.DatabaseEntities.PartialEntities.Translations
         /// <summary>
         /// Процент схожести
         /// </summary>
-        public double Similarity { get; set; }
+        public double similarity { get; set; }
     }
 }

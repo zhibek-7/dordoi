@@ -8,16 +8,16 @@ namespace Models.DatabaseEntities.PartialEntities.Translations
         /// <summary>
         /// Файл, которому принадлежит вариант перевода
         /// </summary>
-        public string File_Owner_Name { get; set; }
+        public string file_owner_name { get; set; }
 
         /// <summary>
         /// Текст для перевода
         /// </summary>
-        public string Translation_Text { get; set; }
+        public string translation_text { get; set; }
 
         /// <summary>
         /// Вариант перевода
         /// </summary>
-        public string Translation_Variant { get; set; }
+        public string translation_variant { get; set; }
     }
 }

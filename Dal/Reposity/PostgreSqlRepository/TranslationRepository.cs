@@ -389,7 +389,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
                         "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
                         "WHERE (localization_projects.id = @ProjectId " +
-                        "AND substring_to_translate like '%@TranslationSubstringText' " +
+                        "AND substring_to_translate % @TranslationSubstringText " +
                         "AND translation_substrings.id != @TranslationSubstringId);";
 
 
