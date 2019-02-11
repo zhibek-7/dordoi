@@ -78,7 +78,7 @@ export class AllSettingsComponent implements OnInit {
         this.allLocale = projects;
         this.allLocale.forEach(lang => {
           allLangsPr.push({
-            itemName: lang["name"],
+            itemName: lang["name_text"],
             checked: false,
             id: lang["id"]
           });
@@ -98,7 +98,7 @@ export class AllSettingsComponent implements OnInit {
 
           this.dropdownList.forEach(lang => {
             const index = projectsL.findIndex(
-              list => list["id_locale"] == lang.id
+              list => list["iD_Locale"] == lang.id
             );
 
             if (index != -1) {
@@ -133,7 +133,7 @@ export class AllSettingsComponent implements OnInit {
         this.pjSkipUntranslStrTrue = this.project.able_To_Left_Errors;
         this.pjExportTrue = this.project.export_only_approved_translations;
         this.pjNotificationTrue = this.project.notify_New;
-        this.selectedLang = project["ID_Source_Locale"];
+        this.selectedLang = project["iD_Source_Locale"];
         this.selectedItems = selectedLangs;
 
         if (this.currentProjectPublic == true) {
