@@ -43,7 +43,7 @@
       <button mat-menu-item (click)="pseudoCut(node)">
         Вырезать
       </button>
-      <button mat-menu-item (click)="moveCurrentlyCutted(node)" [disabled]="!data.is_folder || !cuttedNode">
+      <button mat-menu-item (click)="moveCurrentlyCutted(node)" [disabled]="!data.is_folder || !cuttedNode || data.id === cuttedNode.data.id">
         Вставить
       </button>
       <button mat-menu-item (click)="deleteFile(node)">
