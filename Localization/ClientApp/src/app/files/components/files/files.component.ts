@@ -140,7 +140,7 @@ export class FilesComponent implements OnInit {
   }
 
   canDrop(node: any) {
-    const nodeIsFolder: boolean = node.data.isFolder;
+    const nodeIsFolder: boolean = node.data.is_Folder;
     return unused => {
       return nodeIsFolder;
     };

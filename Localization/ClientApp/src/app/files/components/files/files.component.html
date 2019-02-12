@@ -74,8 +74,15 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-      <tr [ttSelectableRow]="rowNode" (dblclick)="fileRowMenuTrigger.openMenu()" dnd-droppable [allowDrop]="canDrop(rowNode.node)"
-        (onDropSuccess)="moveNode($event.dragData, rowNode.node)" dnd-draggable [dragEnabled]="true" [dragData]="rowNode.node">
+      <tr [ttSelectableRow]="rowNode"
+          (dblclick)="fileRowMenuTrigger.openMenu()"
+          dnd-droppable
+          [allowDrop]="canDrop(rowNode.node)"
+          (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
+          dnd-draggable
+          [dragEnabled]="true"
+          [dragData]="rowNode.node"
+          >
         <td [ttEditableColumn]="rowData" class="col-xs-6">
           <div (click)="nodeExpandToggler.onClick($event)">
             <p-treeTableToggler #nodeExpandToggler [rowNode]="rowNode"></p-treeTableToggler>
@@ -103,8 +110,11 @@
           <button *ngIf="!rowData.isFolder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
             <mat-icon> arrow_downward </mat-icon>
           </button>
-          <button mat-icon-button #fileRowMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="fileRowContextMenu"
-            [matMenuTriggerData]="{node: rowNode.node, data: rowData}">
+          <button mat-icon-button
+                  #fileRowMenuTrigger="matMenuTrigger"
+                  [matMenuTriggerFor]="fileRowContextMenu"
+                  [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
+                  >
             <mat-icon> more_horiz </mat-icon>
           </button>
         </td>
