@@ -150,6 +150,52 @@ namespace Localization.Controllers
 
 
 
+        /// <summary>
+        /// обновляет языки
+        /// </summary>
+        /// <param name="projectLocales"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("deleteProjectLocale")]
+        public LocalizationProjectsLocales[] DeleteProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
+        {
+            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
+            {
+                try
+                {
+                    _localizationProjectsLocalesRepository.DeleteProjectsLocales(projectLocale);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine("{0} Exception caught.", exception);
+                }
+            }
+            return projectLocales;
+        }
+
+        /// <summary>
+        /// обновляет языки
+        /// </summary>
+        /// <param name="projectLocales"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("editProjectLocale")]
+        public LocalizationProjectsLocales[] EditProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
+        {
+            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
+            {
+                try
+                {
+                    _localizationProjectsLocalesRepository.UpdateProjectsLocales(projectLocale);
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine("{0} Exception caught.", exception);
+                }
+            }
+            return projectLocales;
+        }
+
 
 
 

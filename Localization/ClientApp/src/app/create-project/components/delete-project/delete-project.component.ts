@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectsService } from '../../../services/projects.service';
-
+import { Router } from "@angular/router";
 @Component({
   selector: 'app-delete-project',
   templateUrl: './delete-project.component.html',
@@ -8,7 +8,7 @@ import { ProjectsService } from '../../../services/projects.service';
 })
 export class DeleteProjectComponent implements OnInit {
   currentProjectId = null;
-  constructor(private projectService: ProjectsService) { }
+  constructor(private router: Router, private projectService: ProjectsService) { }
 
   ngOnInit() {
     this.currentProjectId = sessionStorage.getItem('ProjecID');
@@ -18,5 +18,6 @@ export class DeleteProjectComponent implements OnInit {
   deleteProject(Id: number): void {
     Id = this.currentProjectId;
     this.projectService.deleteProject(Id).subscribe(response => console.log(response));
+    this.router.navigate(["/Projects/" + Id]);
   }
 }

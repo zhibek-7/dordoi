@@ -107,6 +107,23 @@ export class ProjectsService {
     return asyncResult;
   }
 
+  //удаление языков
+  async deleteProjectLocales(projectLocales: LocalizationProjectsLocales[]) {
+    console.log("addProject-->");
+    console.log(projectLocales);
+
+    console.log(this.controllerUrl + "add/{project}");
+    console.log(this.controllerUrl + "AddProject");
+    //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
+
+    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + "deleteProjectLocale", projectLocales).toPromise();
+    return asyncResult;
+
+
+    //return this.httpClient.get<Project>(this.controllerUrl + 1);
+  } 
+
+
   //все языки 1 проекта
   getProjectLocales(Id: number): Observable<LocalizationProjectsLocales[]> {
     return this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + "ListProjectLocales/" + Id, Id);//.pipe(map(listOfPojLocales => listOfPojLocales.map(singleProjLoc => new LocalizationProjectsLocales(singleProjLoc.id_LocalizationProject, singleProjLoc.id_Locale, singleProjLoc.percentOfTranslation, singleProjLoc.PercentOfConfirmed))));;

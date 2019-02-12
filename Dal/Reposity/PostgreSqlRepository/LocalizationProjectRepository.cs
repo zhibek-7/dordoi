@@ -248,24 +248,27 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="project"></param>
         public void UpdateProject(LocalizationProject project)
         {
-            var sqlQuery = "UPDATE localization_projects SET " +
-                           " name=@Name_text, " +
-                           " description=@Description," +
-                           " url=@URL," +
-                           " visibility=@Visibility," +
-                           " date_of_creation=@Date_Of_Creation," +
-                           " last_activity=@Last_Activity," +
-                           " id_source_locale=@ID_Source_Locale," +
-                           " able_to_download=@Able_To_Download," +
-                           " able_to_left_errors=@Able_To_Left_Errors," +
-                           " default_string=@Default_String," +
-                           " notify_new=@Notify_New," +
-                           " notify_finish=@Notify_Finish," +
-                           " notify_cconfirm=@Notify_Confirm," +
-                           " notify_new_comment=@notify_new_comment," +
-                           " export_only_approved_translations=@export_only_approved_translations," +
-                           " original_if_string_is_not_translated=@original_if_string_is_not_translated  " +
-                           "WHERE id=@id";
+            var sqlQuery = "UPDATE \"localization_projects\" SET" +
+                             "\"name_text\"=@Name_text, " +
+                             "\"description\"=@Description," +
+                             "\"url\"=@URL," +
+                             " \"visibility\"=@Visibility," +
+                             " \"date_of_creation\"=@Date_Of_Creation," +
+                             " \"last_activity\"=@Last_Activity," +
+                             " \"id_source_locale\"=@ID_Source_Locale," +
+
+                             " \"able_to_download\"=@Able_To_Download," +
+                             " \"able_to_left_errors\"=@AbleTo_Left_Errors," +
+                             " \"default_string\"=@Default_String," +
+                             " \"notify_new\"=@Notify_New," +
+                             " \"notify_finish\"=@Notify_Finish," +
+                             " \"notify_confirm\"=@Notify_Confirm," +
+                             " \"notify_new_comment\"=@notify_new_comment," +
+                             " \"export_only_approved_translations\"=@export_only_approved_translations," +
+                             " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated  " +
+                             "WHERE \"id\"=@id";
+
+
 
 
 
@@ -299,9 +302,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         public void AddProjectLocales(LocalizationProjectsLocales projectLocales)
         {
             var sqlQuery = "UPDATE localization_projects_locales SET" +
-                        "percent_of_translation=@PercentOfTranslation," +
-                        "percent_of_confirmed=@PercentOfConfirmed," +
-                        "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
+                         "percent_of_translation=@PercentOfTranslation," +
+                         "percent_of_confirmed=@PercentOfConfirmed," +
+                         "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -355,5 +358,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

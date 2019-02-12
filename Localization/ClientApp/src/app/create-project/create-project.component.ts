@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ProjectsService } from "../services/projects.service";
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-
+import { Router } from "@angular/router";
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
 import { Locale } from "src/app/models/database-entities/locale.type";
 
@@ -62,7 +62,7 @@ export class CreateProjectComponent implements OnInit {
   ];
 
   //////////////////////////////////////////////////
-  constructor(private projectsService: ProjectsService) {}
+  constructor(private projectsService: ProjectsService) { }
   currentProjectName = "";
   currentProjectId = Math.floor(Math.random() * 10000) + 1;
   currentProjectDescription = "";
@@ -89,6 +89,7 @@ export class CreateProjectComponent implements OnInit {
   pjExportTrue = false;
   pjNotificationTrue = false;
   selectedLang: number;
+  pjAllLeft = false;
   //public project: LocalizationProject;
 
   settings_proj = new FormGroup({
@@ -188,26 +189,27 @@ export class CreateProjectComponent implements OnInit {
 
   addProject(): void {
     let project: LocalizationProject = new LocalizationProject(
-      this.currentProjectId,
-      this.currentProjectName,
-      this.currentProjectDescription,
-      this.currentProjecturl,
+      this.currentProjectId,//id
+      this.currentProjectName,//name
+      this.currentProjectDescription, //description
+      this.currentProjecturl,//url
       this.currentProjectPublic, //visibility
       Date.now, //date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
-      this.selectedLang,
+      this.selectedLang,//id_SourceLocale
       this.pjFileTrue, //ableToDownload
       this.pjSkipUntranslStrTrue, //ableToLeftErrors
-      //this.pjExportTrue,
-      this.pjNotificationTrue,
 
-      this.pjFileTrue, //ableToDownload
-      this.pjSkipUntranslStrTrue, //ableToLeftErrors
-      this.pjExportTrue,
-      this.pjNotificationTrue,
-      this.pjNotificationTrue
+      this.pjNotificationTrue,//notifyNew
+
+      this.pjAllLeft, //notifyFinish
+      this.pjAllLeft, //notifyConfirm
+      this.pjAllLeft,//notifynewcomment
+      this.pjExportTrue,//export_only_approved_translations
+      this.pjAllLeft//original_if_string_is_not_translated
+
+      //
     ); // поменять на id реального пользователя, когда появится
-
     this.projectsService.addProject(project);
     //собирает добавленные языки в один массив
 

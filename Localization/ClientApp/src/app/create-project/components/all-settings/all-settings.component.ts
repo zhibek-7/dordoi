@@ -5,7 +5,7 @@ import { ProjectsService } from "../../../services/projects.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
 import { Locale } from "src/app/models/database-entities/locale.type";
-
+import { Router } from "@angular/router";
 import { forEach } from "@angular/router/src/utils/collection";
 import { promise } from "protractor";
 import { Promise } from "q";
@@ -20,7 +20,7 @@ export class AllSettingsComponent implements OnInit {
   args = "ascending";
   reverse = false;
 
-  constructor(private projectsService: ProjectsService) {}
+  constructor(private router: Router, private projectsService: ProjectsService) { }
   currentProjectName = "";
   currentProjectId = null;
   currentProjectDescription = "";
@@ -43,9 +43,10 @@ export class AllSettingsComponent implements OnInit {
   selectedL: boolean;
   pjPublic: string;
   pjFileTrue = false;
-  pjSkipUntranslStrTrue = false;
+  pjSkipUntranslStrTrue = true;
   pjExportTrue = false;
   pjNotificationTrue = false;
+  pjAllLeft = false;
   selectedLang: number;
   //public project: LocalizationProject;
 
@@ -125,6 +126,7 @@ export class AllSettingsComponent implements OnInit {
     this.projectsService.getProject(this.currentProjectId).subscribe(
       project => {
         this.project = project;
+        this.project.able_To_Left_Errors = true;
         this.currentProjectId = project.id;
         this.currentProjectDescription = this.project.description;
         this.currentProjecturl = this.project.url;
@@ -156,7 +158,7 @@ export class AllSettingsComponent implements OnInit {
   AddSelected(event, lang) {
     var target = event.target || event.srcElement || event.currentTarget;
     var idAttr = target.attributes.id;
-    var itemNameAttr = target.attributes.name_text;
+    var itemNameAttr = target.attributes.name;
     var selectedAttr = target.attributes.checked;
     var value = idAttr.nodeValue;
     lang.checked = !lang.checked;
@@ -218,50 +220,73 @@ export class AllSettingsComponent implements OnInit {
     }
     console.log(this.currentProjectDescription);
 
-    //собирает добавленные языки в один массив
 
-    this.selectedItems.forEach(lang => {
-      let projectLocales: LocalizationProjectsLocales[] = [];
+    //удаляет добавленные языки в один массив
+    let DeleteprojectLocales: LocalizationProjectsLocales[] = [];
+    this.allProjLocales.forEach(lang => {
 
-      const index = this.allProjLocales.findIndex(
-        list => list["id_locale"] == lang.id
-      );
-      if (index != -1) {
-      } else {
-        projectLocales.push({
-          id_Localization_Project: this.currentProjectId,
-          id_Locale: lang.id,
-          percent_Of_Translation: 0,
-          Percent_Of_Confirmed: 0
-        });
-      }
-
-      //передает массив языков
-      this.projectsService.addProjectLocales(projectLocales);
+      const index = this.selectedItems.findIndex(list => list.id == lang["iD_Locale"]);
+      //if (index!=-1) {
+      DeleteprojectLocales.push({
+        id_Localization_Project: this.currentProjectId,
+        id_Locale: lang["iD_Locale"],
+        percent_Of_Translation: 0,
+        Percent_Of_Confirmed: 0
+      });
+      //}
     });
 
+    //передает массив языков
+    this.projectsService.deleteProjectLocales(DeleteprojectLocales);
+
+
+
+    //собирает добавленные языки в один массив
+    let projectLocales: LocalizationProjectsLocales[] = [];
+    this.selectedItems.forEach(lang => {
+      const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
+
+      //if (index == -1) {
+      projectLocales.push({
+        id_Localization_Project: this.currentProjectId,
+        id_Locale: lang.id,
+        percent_Of_Translation: 0,
+        Percent_Of_Confirmed: 0
+      });
+      //} else {
+
+      //}
+
+
+    });
+    //передает массив языков
+    this.projectsService.addProjectLocales(projectLocales);
     let project: LocalizationProject = new LocalizationProject(
-      this.currentProjectId,
-      this.currentProjectName,
-      this.currentProjectDescription,
-      this.currentProjecturl,
+      this.currentProjectId,//id
+      this.currentProjectName,//name
+      this.currentProjectDescription, //description
+      this.currentProjecturl,//url
       this.currentProjectPublic, //visibility
       Date.now, //date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
-      this.selectedLang,
+      this.selectedLang,//id_SourceLocale
       this.pjFileTrue, //ableToDownload
       this.pjSkipUntranslStrTrue, //ableToLeftErrors
-      //this.pjExportTrue,
-      this.pjNotificationTrue,
 
-      this.pjFileTrue, //ableToDownload
-      this.pjSkipUntranslStrTrue, //ableToLeftErrors
-      this.pjExportTrue,
-      this.pjNotificationTrue,
-      this.pjNotificationTrue
+      this.pjNotificationTrue,//notifyNew
+
+      this.pjAllLeft, //notifyFinish
+      this.pjAllLeft, //notifyConfirm
+      this.pjAllLeft,//notifynewcomment
+      this.pjExportTrue,//export_only_approved_translations
+      this.pjAllLeft//original_if_string_is_not_translated
+
+      //
     ); // поменять на id реального пользователя, когда появится
 
     Id = this.currentProjectId;
     this.projectsService.updateProject(Id, project);
+
+    this.router.navigate(["/Projects/" + Id]);
   }
 }
