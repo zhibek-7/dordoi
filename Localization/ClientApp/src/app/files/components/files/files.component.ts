@@ -23,8 +23,6 @@ export class FilesComponent implements OnInit {
 
   searchFilesNamesString: string = "";
 
-  selectedNode: TreeNode;
-
   cuttedNode: TreeNode;
 
   isLoading: boolean;
@@ -113,7 +111,7 @@ export class FilesComponent implements OnInit {
 
   moveCurrentlyCutted(selectedNode: TreeNode): void {
     this.fileService
-      .changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
+      .changeParentFolder(this.cuttedNode.data, selectedNode.data.id)
       .subscribe(
         () => {
           this.deleteNode(this.cuttedNode);
