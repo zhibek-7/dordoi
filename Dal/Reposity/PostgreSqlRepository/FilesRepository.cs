@@ -271,7 +271,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         }
                         file.id = insertedId.Value;
 
-                        if (file.Is_Folder)
+                        if (file.is_folder)
                         {
                             /*Логироание*/
                             _action.AddAddFileActionAsync(file, file.id, WorkTypes.AddFile);
@@ -305,7 +305,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         }
                         if (n == 0)
                         {
-                            file.Strings_Count = translationSubstringsCount;
+                            file.strings_count = translationSubstringsCount;
                             sqlString = "UPDATE files SET strings_count = @Strings_Count WHERE id = @Id";
                             this.LogQuery(sqlString, file.GetType(), file);
                             await connection.ExecuteAsync(sqlString, file, transaction);
@@ -354,7 +354,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
                     if (id_locale == -1)
                     {
-                        return file.Original_Full_Text;
+                        return file.original_full_text;
                     }
                     else
                     {
@@ -363,7 +363,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         var sqlTranslationSubstringsQuery = "SELECT * FROM translation_substring WHERE id_file_owner = @id";
                         var translationSubstrings = (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id })).AsList();
                         translationSubstrings.Sort((x, y) => x.position_in_text.CompareTo(y.position_in_text));
-                        var output = file.Original_Full_Text;
+                        var output = file.original_full_text;
                         for (int i = translationSubstrings.Count - 1; i >= 0; i--)
                         {
                             var sqlTranslationQuery = string.Format("SELECT * FROM translations WHERE id_string = @id_translationSubstring AND id_locale = @id_locale{0} SORT BY selected DESC, confirmed DESC, datetime DESC LIMIT 1", localizationProject.export_only_approved_translations ? " AND confirmed = true" : "");

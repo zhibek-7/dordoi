@@ -58,11 +58,11 @@ namespace Models.Parser
         /// <returns>Cловарь, в котором ключ <see cref="string"/> - расширение, а значение - выделенный соответствующим парсером список <see cref="List{}"/> объектов класса <see cref="TranslationSubstring"/></returns>
         public Dictionary<string, List<TranslationSubstring>> UseAllParsers(File file)
         {
-            _logger.WriteLn(string.Format("Попытка распарсивания файла {0} всеми доступными парсерами", file.Name_text));
+            _logger.WriteLn(string.Format("Попытка распарсивания файла {0} всеми доступными парсерами", file.name_text));
             var ans = new Dictionary<string, List<TranslationSubstring>>();
             foreach (var pf in ParseFunctions.GroupBy(v => v.Value)) ans.Add(pf.First().Key, pf.Key(file));
             var max = ans.First(a => a.Value.Count == ans.Values.Max(v => v.Count));
-            _logger.WriteLn(string.Format("Для файла {0} наиболее релевантен '{1}'-парсер (обнаружено записей: {2})", file.Name_text, max.Key, max.Value.Count));
+            _logger.WriteLn(string.Format("Для файла {0} наиболее релевантен '{1}'-парсер (обнаружено записей: {2})", file.name_text, max.Key, max.Value.Count));
             return ans;
         }
 
@@ -74,12 +74,12 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/>, выделенных из файла выбранным (или автоматически подобранным) парсером</returns>
         public List<TranslationSubstring> Parse(File file, string extension = "")
         {
-            _logger.WriteLn(string.Format("Попытка распарсивания файла {0}", file.Name_text));
-            string ext = string.IsNullOrEmpty(extension) ? file.Name_text.Split('.').Last().ToLower() : extension;
+            _logger.WriteLn(string.Format("Попытка распарсивания файла {0}", file.name_text));
+            string ext = string.IsNullOrEmpty(extension) ? file.name_text.Split('.').Last().ToLower() : extension;
             var ts = new List<TranslationSubstring>();
             if (ParseFunctions.ContainsKey(ext)) ts = ParseFunctions[ext](file); else throw new ParserException(ParserException.ParserExceptionTypes.WrongExtension);
             if (ts.Count == 0) throw new ParserException(ParserException.ParserExceptionTypes.NoElements);
-            _logger.WriteLn(string.Format("Файл {0} успешно распарсен{1}", file.Name_text, string.IsNullOrEmpty(extension) ? string.Empty : string.Format(" (принудительно применен парсер для расширения '{0}')", ext)));
+            _logger.WriteLn(string.Format("Файл {0} успешно распарсен{1}", file.name_text, string.IsNullOrEmpty(extension) ? string.Empty : string.Format(" (принудительно применен парсер для расширения '{0}')", ext)));
             return ts;
         }
 
@@ -90,11 +90,11 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsPo_Pot(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'po/pot'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'po/pot'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(?:msgctxt\\s+\"([^\"]*)\"\\s+)?msgid\\s+\"([^\"]*)\"\\s+(msgid_plural\\s+\"([^\"]*)\"\\s+)?((?:msgstr(?:\\[\\d+\\])?\\s+\"[^\"]*\"\\s*)+)";
             string subpattern = "msgstr(?:\\[\\d+\\])?\\s+\"([^\"]*)\"";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             int count = matches.Count;
             foreach (Match m in matches)
             {
@@ -104,7 +104,7 @@ namespace Models.Parser
                 foreach (Match m_t in matches_trans) ts.Add(new TranslationSubstring(original, context, file.id, m_t.Groups[1].Value, m.Groups[5].Index + m_t.Groups[1].Index));
                 count += matches_trans.Count - 1;
             }
-            _logger.WriteLn(string.Format("Парсер 'po'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, count));
+            _logger.WriteLn(string.Format("Парсер 'po'-файлов обнаружил в файле {0} записей: {1}", file.name_text, count));
             return ts;
         }
 
@@ -115,15 +115,15 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsProperties_Ini(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'properties/ini'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'properties/ini'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(.*)=(.*)\\s";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'properties'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'properties'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -134,16 +134,16 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsJson(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'json'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'json'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*:\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
                 ts.Add(new TranslationSubstring(m.Groups[isLatin ? 2 : 1].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'json'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'json'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -154,15 +154,15 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsStrings(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'strings'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'strings'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*=\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'strings'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'strings'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -173,15 +173,15 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsCsv(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'csv'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'csv'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"(?:(?<=\")\"|[^\"])*(?<!\")\"";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[3].Value, m.Groups[3].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'csv'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'csv'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -192,24 +192,24 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsXml(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'xml'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'xml'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string simpleRowPattern = "<string\\W+(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>([^<]*)</string\\s*>";
             string arrayPattern = "<string-array\\W+(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>((?:(?!</string-array).)*)</string-array\\s*>";
             string arrayItemPattern = "<item\\s*>((?:(?!</item).)*)</item\\s*>";
-            var matches = Regex.Matches(file.Original_Full_Text, simpleRowPattern);
+            var matches = Regex.Matches(file.original_full_text, simpleRowPattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
-            matches = Regex.Matches(file.Original_Full_Text, arrayPattern, RegexOptions.Singleline);
+            matches = Regex.Matches(file.original_full_text, arrayPattern, RegexOptions.Singleline);
             foreach (Match m in matches)
             {
                 string context = m.Groups[1].Value;
                 var itemMatches = Regex.Matches(m.Groups[2].Value, arrayItemPattern, RegexOptions.Singleline);
                 foreach (Match m2 in itemMatches) ts.Add(new TranslationSubstring(m2.Groups[1].Value, m.Groups[1].Value, file.id, m2.Groups[1].Value, m.Groups[2].Index + m2.Groups[1].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'xml'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'xml'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -220,11 +220,11 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsPhp(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'php'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'php'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string arrayElementPattern = "(array\\s*[(]|[[]|=>|(?:[)]|[]])?\\s*,)\\s*((?<!\\\\)'((?:(?<=\\\\)'|[^'])*)(?<!\\\\)'|\\d+)";
             string arrayEndPattern = "(?:[)]|[]])\\s*,\\s*$";
-            var matches = Regex.Matches(file.Original_Full_Text, arrayElementPattern);
+            var matches = Regex.Matches(file.original_full_text, arrayElementPattern);
             var contextParts = new List<string>();
             for (int i = 0; i < matches.Count; i++)
             {
@@ -241,7 +241,7 @@ namespace Models.Parser
                     contextParts.Add(matches[i].Groups[2].Value);
                 }
             }
-            _logger.WriteLn(string.Format("Парсер 'php'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'php'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -252,15 +252,15 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsResx(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'resx'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'resx'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "<data(?:\\s*[^\\s\\\\/>\"'=]+\\s*=\\s*\"[^\"]*\")*\\s*name\\s*=\\s*\"([^\"]*)\"\\s*(?:\\s*[^\\s\\\\/>\"'=]+\\s*=\\s*\"[^\"]*\")*\\s*>(?:\\s*<[^\\s\\\\/>\"'=]+\\s*>[^<]*</[^\\s\\\\/>\"'=]+\\s*>)*\\s*<value\\s*>([^<]*)</value\\s*>\\s*(?:\\s*<[^\\s\\\\/>\"'=]+\\s*>[^<]*</[^\\s\\\\/>\"'=]+\\s*>)*\\s*</data\\s*>";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'resx'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'resx'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -271,15 +271,15 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsString(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'string'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'string'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*=\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'string'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'string'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -290,15 +290,15 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsTxt(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'txt'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'txt'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "(.+)\r?\n?";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[1].Value, string.Empty, file.id, m.Groups[1].Value, m.Groups[1].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'txt'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'txt'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -309,15 +309,15 @@ namespace Models.Parser
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
         private List<TranslationSubstring> ParseAsRc(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'rc'", file.Name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'rc'", file.name_text));
             var ts = new List<TranslationSubstring>();
             string pattern = "\\s*(\\d+)\\s*,\\s*\"((?:[^\"]|(?<=\\\\)\")*)\"\\s*";
-            var matches = Regex.Matches(file.Original_Full_Text, pattern);
+            var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches)
             {
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
-            _logger.WriteLn(string.Format("Парсер 'rc'-файлов обнаружил в файле {0} записей: {1}", file.Name_text, ts.Count));
+            _logger.WriteLn(string.Format("Парсер 'rc'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
