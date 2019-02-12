@@ -14,13 +14,14 @@
     </mat-form-field>
     <button mat-raised-button (click)="beginImport()">Импорт</button>
   </section>
-  <mat-form-field>
+  <mat-form-field class="width-to-parent">
     <textarea matInput
               cdkTextareaAutosize
               #autosize="cdkTextareaAutosize"
               cdkAutosizeMinRows="4"
               cdkAutosizeMaxRows="20"
               placeholder="Лог"
+              [(value)]="log"
               ></textarea>
   </mat-form-field>
 </div>

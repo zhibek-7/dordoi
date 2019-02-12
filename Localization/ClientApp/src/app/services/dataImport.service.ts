@@ -12,7 +12,7 @@ export class DataImportService {
 
   constructor(private http: HttpClient) { }
 
-  importData(file: File, entityName: string, cleanTableBeforeImportFlag?: boolean): Observable<Object> {
+  importData(file: File, entityName: string, signalrConnectionId: string, cleanTableBeforeImportFlag?: boolean): Observable<Object> {
     const url = `${this._url}/${entityName}`;
 
     const formData = new FormData();
@@ -23,6 +23,13 @@ export class DataImportService {
     }
     else {
       formData.append('cleanTableBeforeImportFlag', 'false');
+    }
+
+    if (signalrConnectionId) {
+      formData.append('signalrConnectionId', signalrConnectionId);
+    }
+    else {
+      formData.append('signalrConnectionId', '');
     }
 
     return this.http.post<Object>(url, formData);

@@ -120,6 +120,7 @@ namespace Localization
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddSignalR(options => options.EnableDetailedErrors = false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -156,6 +157,10 @@ namespace Localization
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
+            });
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<Hubs.DataImportHub>("/dataimport/hub");
             });
 
             app.UseCors("SiteCorsPolicy"); // это тоже для нескольких портов(см. выше)

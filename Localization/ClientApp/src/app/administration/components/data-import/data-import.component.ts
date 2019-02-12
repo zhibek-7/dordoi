@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import * as signalR from "@aspnet/signalr";
+
 import { DataType } from '../../models/dataType.type';
+import { LogEntry } from 'src/app/models/data-import/logEntry.type';
 
 import { DataImportService } from 'src/app/services/dataImport.service';
 
@@ -18,6 +21,10 @@ export class DataImportComponent implements OnInit {
 
   selectedDataType: DataType = null;
 
+  log: string = '';
+
+  connection: signalR.HubConnection = null;
+
   constructor(
     private dataImportService: DataImportService,
   ) {
@@ -27,6 +34,14 @@ export class DataImportComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl("/dataimport/hub")
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+    this.connection.on("LogUpdated",
+      (logEntry: LogEntry) => {
+        this.log += `${logEntry.date.toLocaleString()} ${logEntry.message}\n`;
+      });
   }
 
   fileSelected(fileInputChangeArgs: any) {
@@ -37,8 +52,22 @@ export class DataImportComponent implements OnInit {
   }
 
   beginImport() {
-    this.dataImportService.importData(this.selectedFile, this.selectedDataType.entityName, this.cleanTableBeforeImportFlag)
-      .subscribe();
+    this.connection.start()
+      .catch(error => {
+        console.log(error);
+        alert(error);
+      })
+      .then(() => {
+        this.connection.invoke<string>("GetConnectionId")
+          .then(connectionId => {
+            this.dataImportService.importData(
+                this.selectedFile,
+                this.selectedDataType.entityName,
+                connectionId,
+                this.cleanTableBeforeImportFlag)
+              .subscribe();
+          });
+      });
   }
 
 }
