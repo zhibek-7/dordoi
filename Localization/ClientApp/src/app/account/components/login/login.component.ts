@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
         .login(user)
         .subscribe( response => {    
             this.authenticationService.saveToken(response.token);     
-            // this.userService.getProfile().subscribe();     
+            this.userService.getProfile().subscribe();     
           },
           error => {
             alert("Авторизация не пройдена");

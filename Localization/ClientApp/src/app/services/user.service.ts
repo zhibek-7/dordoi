@@ -55,7 +55,7 @@ export class UserService {
   // }
 
   getProfile() {
-      return this.httpClient.post(this.url + "Profile", {
+      return this.httpClient.post(this.url + "Profile", null, {
         headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
     });
   }  

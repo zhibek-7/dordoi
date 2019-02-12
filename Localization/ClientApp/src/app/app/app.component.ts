@@ -5,19 +5,22 @@ import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
-import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ProjectsService, AuthenticationService]
+  providers: [ProjectsService]
 })
 export class AppComponent implements OnInit {
+
   projects: LocalizationProject[];
   currentProject: LocalizationProject;
   name = '';
+
+  userAuthorized: boolean;
+
   constructor(private projectService: ProjectsService,
               private authenticationService: AuthenticationService) { }
 
@@ -53,11 +56,16 @@ export class AppComponent implements OnInit {
     this.authenticationService.deleteToken();
   }
 
-  // userAuthorized(): Observable<boolean> {
+  async checkAuthorization() {
+    this.userAuthorized = await this.authenticationService.checkUserAuthorisation();  
+  }
 
-  //   var responseToForm: boolean;
+  // userAuthorized(): boolean {
 
-  //   this.authenticationService.checkUserAuthorisation().pipe(map(res => console.log(res)));
+    
+
+  //   return this.userAuthorize;
+  //   // return this.authenticationService.checkUserAuthorisation().subscribe();
   //     // .subscribe(
   //     //   response => {
   //     //     responseToForm = response;

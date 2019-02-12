@@ -162,10 +162,10 @@ namespace Localization.Controllers
         }
 
         [HttpPost("checkUserAuthorisation")]
-        public async Task<IActionResult> CheckUserAuthorisation()
+        public IActionResult CheckUserAuthorisation()
         {
             var username = User.Identity.Name;
-            if(username != null)
+            if (username != null)
             {
                 return Ok(true);
             }

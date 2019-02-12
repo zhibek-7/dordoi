@@ -60,15 +60,15 @@
       </li>
       
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="userDropdown" role="button" aria-haspopup="true" href="#" data-toggle="dropdown" aria-expanded="false" >
+        <a (click)="checkAuthorization()"  class="nav-link dropdown-toggle" id="userDropdown" role="button" aria-haspopup="true" href="#" data-toggle="dropdown" aria-expanded="false" >
           <img src="../assets/images/user-picture.png" width="30" height="30" class="d-inline-block align-top" alt="">
         </a>
         <div class="dropdown-menu" aria-labelledby="userDropdown">
           <a class="dropdown-item" routerLink='account'>Профиль</a>
 
-          <div *ngIf="userAuthorized()">
+          <div *ngIf="userAuthorized">
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" routerLink='' (click)="logOut()">Выйти из профиля</a>
+              <a class="dropdown-item" (click)="logOut()" style="cursor:pointer;">Выйти из профиля</a>
           </div>          
         </div>
       </li>
