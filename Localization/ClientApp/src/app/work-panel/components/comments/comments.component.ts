@@ -193,6 +193,11 @@ export class CommentsComponent implements OnInit {
 
   // Функция, срабатываемая при загрузке скриншота
   handleFileInput(file: FileList) {
+    this.filesToUpload.push(file.item(0));
+    if (this.changedComment.images == undefined) {
+      this.changedComment.images = [];
+    }
+
     var reader = new FileReader();
     reader.onload = (event: any) => {
       var insertedImage = new Image();

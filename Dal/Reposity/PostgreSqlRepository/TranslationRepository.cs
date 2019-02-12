@@ -7,7 +7,6 @@ using Dapper;
 using Models.DatabaseEntities;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.PartialEntities.Translations;
 using Npgsql;
@@ -19,8 +18,11 @@ namespace DAL.Reposity.PostgreSqlRepository
     /// </summary>
     public class TranslationRepository : BaseRepository, IRepositoryAsync<Translation>
     {
+        private UserActionRepository _action;
+
         public TranslationRepository(string connectionStr) : base(connectionStr)
         {
+            _action = new UserActionRepository(connectionStr);
         }
 
         /// <summary>
@@ -39,6 +41,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     this.LogQuery(query, item.GetType(), item);
                     var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, item);
+
+                    /*Логироание*/
+                    _action.AddAddTraslationActionAsync(item, idOfInsertedRow, WorkTypes.AddTraslation);
+                    /**/
+
                     return idOfInsertedRow;
                 }
             }
@@ -145,6 +152,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { id };
                     this.LogQuery(query, param);
                     var deletedRows = await dbConnection.ExecuteAsync(query, param);
+
+
                     return deletedRows > 0;
                 }
             }
@@ -188,6 +197,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     await dbConnection.ExecuteAsync(
                         sql: updateTranslationSql,
                         param: updateTranslationParam);
+
+                    /*Логироание*/
+                    _action.AddAddTraslationActionAsync(item, item.id, WorkTypes.UpdateTranslation);
+                    /**/
+
                     return true;
                 }
             }
@@ -325,8 +339,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список вариантов перевода</returns>
         public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(int currentProjectId, string translationText)
         {
-            var query = "SELECT F.name_text AS fileownername, T.translated AS translationvariant, " +
-                        "TS.substring_to_translate AS tTranslationtext " +
+            var query = "SELECT F.name_text AS file_Owner_Name, T.translated AS translation_Variant, " +
+                        "TS.substring_to_translate AS translation_Text " +
                         "FROM localization_projects AS LP " +
                         "INNER JOIN files AS F ON F.id_localization_project = LP.id " +
                         "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +
@@ -375,7 +389,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
                         "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
                         "WHERE (localization_projects.id = @ProjectId " +
-                        "AND substring_to_translate like '%@TranslationSubstringText' " +
+                        "AND substring_to_translate % @TranslationSubstringText " +
                         "AND translation_substrings.id != @TranslationSubstringId);";
 
 

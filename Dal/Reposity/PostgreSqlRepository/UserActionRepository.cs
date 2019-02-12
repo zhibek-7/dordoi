@@ -28,18 +28,19 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var _sql = "INSERT INTO user_actions" +
-                               " (id_user, id_work_type, description, id_locale, id_file, id_string, id_translation, id_project) " +
-                               "VALUES (@ID_User, @Work_type, @Description, @ID_Locale, @ID_File, @ID_String, @ID_Translation, @ID_Project)";
+                               " (id_user, id_work_type, description, id_locale, id_file, id_string, id_translation, id_project, datetime) " +
+                               "VALUES (@ID_User, @ID_work_type, @Description, @ID_Locale, @ID_File, @ID_String, @ID_Translation, @ID_Project, @Datetime)";
                     var _params = new
                     {
                         action.ID_User,
-                        action.Work_type,
+                        action.ID_work_type,
                         action.Description,
                         action.ID_Locale,
                         action.ID_File,
                         action.ID_String,
                         action.ID_Translation,
-                        action.ID_Project
+                        action.ID_Project,
+                        action.Datetime
                     };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
@@ -275,6 +276,22 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
+        /// Добавление варианта перевода
+        /// </summary>
+        /// <param name="item"></param>
+        public async Task<int> AddAddFileActionAsync(File item, int? idTranslit, WorkTypes wt)
+        {
+            UserAction action = new UserAction();
+            action.Datetime = item.Date_Of_Change;
+            action.ID_Project = item.ID_Localization_Project;
+            action.ID_File = idTranslit;
+            action.File = item.Name_text;
+            action.ID_work_type = (int)wt;
+            return await AddAsync(action);
+        }
+
+
+        /// <summary>
         /// Добавить запись об обновлении файла
         /// </summary>
         /// <param name="userId">Идентификатор пользователя</param>
@@ -348,6 +365,28 @@ namespace DAL.Reposity.PostgreSqlRepository
             act.ID_Translation = translationId;
             act.ID_String = stringId;
             return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавление варианта перевода
+        /// </summary>
+        /// <param name="item"></param>
+        public async Task<int> AddAddTraslationActionAsync(Translation item, int? idTranslit, WorkTypes wt)
+        {
+            UserAction action = new UserAction();
+
+            action.ID_String = item.ID_String;
+            action.ID_Translation = idTranslit;
+            action.Translation = item.Translated;
+            action.ID_work_type = (int)wt;
+            action.ID_User = item.ID_User;
+            action.Datetime = item.DateTime;
+            action.ID_Locale = item.ID_Locale;
+
+            //TODO нехватает данных, нужно вычислять.
+            //action.ID_Project = projectId;
+            //action.ID_Translation = translationId;
+            return await AddAsync(action);
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace Models.DatabaseEntities
     {
         public string Name_text { get; set; }
         public string Description { get; set; }
-        public DateTime? Date_Of_Change { get; set; }
+        public DateTime Date_Of_Change { get; set; }
 
         public int? Strings_Count { get; set; }
         public int? Version { get; set; }

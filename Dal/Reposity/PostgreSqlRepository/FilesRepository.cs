@@ -50,8 +50,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Download_Name" +
             ")";
 
+        private UserActionRepository _action;
+
         public FilesRepository(string connectionStr) : base(connectionStr)
         {
+            _action = new UserActionRepository(connectionStr);
         }
 
         public async Task<IEnumerable<File>> GetAllAsync()
@@ -270,6 +273,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                         if (file.Is_Folder)
                         {
+                            /*Логироание*/
+                            _action.AddAddFileActionAsync(file, file.id, WorkTypes.AddFile);
+                            /**/
                             transaction.Commit();
                             return true;
                         }

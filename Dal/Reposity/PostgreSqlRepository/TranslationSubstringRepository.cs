@@ -695,8 +695,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId)
         {
             var query = "SELECT * " +
-                        "FROM \"Translations\" AS T " +
-                        "WHERE T.\"ID_String\" = @TranslationSubstringId;";
+                        "FROM translations AS T " +
+                        "WHERE T.id_string = @translationSubstringId;";
 
             try
             {
