@@ -55,10 +55,10 @@ export class UserService {
   // }
 
   getProfile() {
-      return this.httpClient.get(this.url + "Profile", {
+      return this.httpClient.post(this.url + "Profile", null, {
         headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
     });
-  }
+  }  
 
   toSaveEditedProfile(user: UserProfile): Observable<Object> {
     return this.httpClient.post(this.url + "toSaveEdited", user);

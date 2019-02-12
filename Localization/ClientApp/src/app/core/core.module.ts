@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule} from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
+import { AuthenticationService } from '../services/authentication.service';
+
 import { CoreRoutingModule } from './core-routing.model';
 import { HeaderComponent } from './header/header.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -31,7 +33,7 @@ import {
   MatSortModule,
   MatMenuModule} from '@angular/material';
 
-  import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -72,8 +74,11 @@ import {
    // DeleteProjectComponent
     ],
     exports: [
-        RouterModule,
-        HeaderComponent
+      RouterModule,
+      HeaderComponent
+    ],
+    providers: [
+      AuthenticationService
     ]
 })
 export class CoreModule {}

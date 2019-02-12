@@ -55,11 +55,23 @@
     </ul>
 
     <ul class="navbar-nav mr-auto">
-      <a class="nav-link disabled"> Проект: {{name}}</a>
+      <li>
+        <a class="nav-link disabled"> Проект: {{name}}</a>
+      </li>
+      
+      <li class="nav-item dropdown">
+        <a (click)="checkAuthorization()"  class="nav-link dropdown-toggle" id="userDropdown" role="button" aria-haspopup="true" href="#" data-toggle="dropdown" aria-expanded="false" >
+          <img src="../assets/images/user-picture.png" width="30" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <div class="dropdown-menu" aria-labelledby="userDropdown">
+          <a class="dropdown-item" routerLink='account'>Профиль</a>
 
-      <a class="nav-link" id="userDropdown" role="button" aria-haspopup="true" routerLink='/Profile'>
-        <img src="../assets/images/user-picture.png" width="30" height="30" class="d-inline-block align-top" alt="">
-      </a>
+          <div *ngIf="userAuthorized">
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" (click)="logOut()" style="cursor:pointer;">Выйти из профиля</a>
+          </div>          
+        </div>
+      </li>
     </ul>
   </div>
 

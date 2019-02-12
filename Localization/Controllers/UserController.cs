@@ -70,36 +70,7 @@ namespace Localization.Controllers
         public async Task<int?> CreateUser(User user)
         {
             return await userRepository.CreateUser(user);
-        }
-
-        public async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
-        {
-            User user = new User
-            {
-                Name_text = username,
-                Email = username,
-                Password_text = password,
-            };
-
-            user = await userRepository.LoginAsync(user);
-            user.Role = "Переводчик";
-
-            if (user != null)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Name_text),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role)
-                };
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
-            }
-
-            // если пользователя не найдено
-            return null;        
-        }
+        }        
 
         //[HttpPost("Profile:{id}")]
         //public async Task<UserProfileForEditingDTO> GetProfile(int id)
@@ -108,10 +79,10 @@ namespace Localization.Controllers
         //}
 
         [Authorize]
-        [HttpGet("Profile")]
+        [HttpPost("Profile")]
         public async Task<UserProfileForEditingDTO> GetProfile()
         {
-            // лезь в бд теперь по username пользователя, а не по id 
+            // лезь в бд теперь по username пользователя, а не по id
             var username = User.Identity.Name;
             return await userRepository.GetProfileAsync(301); // сюда посылай username 
         }
@@ -138,7 +109,6 @@ namespace Localization.Controllers
             if (identity == null)
             {
                 Response.StatusCode = 400;
-                //await Response.WriteAsync("Invalid username or password.");
                 return BadRequest();
             }
 
@@ -159,12 +129,51 @@ namespace Localization.Controllers
                 username = identity.Name
             };
 
-            return Ok(response);
-
-            // сериализация ответа
-            //Response.ContentType = "application/json";
-            //await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+            return Ok(response);            
         }
-       
+
+        private async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
+        {
+            User user = new User
+            {
+                Name_text = username,
+                Email = username,
+                Password_text = password,
+            };
+
+            user = await userRepository.LoginAsync(user);
+            user.Role = "Переводчик";
+
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Name_text),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role)
+                };
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+                return claimsIdentity;
+            }
+
+            // если пользователя не найдено
+            return null;
+        }
+
+        [HttpPost("checkUserAuthorisation")]
+        public IActionResult CheckUserAuthorisation()
+        {
+            var username = User.Identity.Name;
+            if (username != null)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
+        }
+
     }
 }
