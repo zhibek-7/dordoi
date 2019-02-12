@@ -179,12 +179,12 @@ export class FilesComponent implements OnInit {
       );
   }
 
-  addFolder(newFolder: File, parentNode?: TreeNode): void {
+  addFolder(newFolder: FileData, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
     this.fileService
       .addFolder(
-        newFolder.name,
+        newFolder.name_text,
         this.projectsService.currentProjectId,
         parentId
       )
