@@ -22,6 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 
 import { DataImportService } from '../services/dataImport.service';
+import { DataImportSignalRService } from '../services/dataImportSignalR.service';
 
 import { AdministrationRoutingModule } from './administration-routing.module';
 
@@ -68,6 +69,7 @@ import { DataImportComponent } from './components/data-import/data-import.compon
   ],
   providers: [
     DataImportService,
+    DataImportSignalRService,
   ]
 })
 export class AdministrationModule { }

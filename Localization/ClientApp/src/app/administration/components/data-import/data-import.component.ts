@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import * as signalR from "@aspnet/signalr";
 
 import { DataType } from '../../models/dataType.type';
-import { LogEntry } from 'src/app/models/data-import/logEntry.type';
 
 import { DataImportService } from 'src/app/services/dataImport.service';
+import { DataImportSignalRService } from 'src/app/services/dataImportSignalR.service';
 
 @Component({
   selector: 'app-data-import',
@@ -23,10 +22,9 @@ export class DataImportComponent implements OnInit {
 
   log: string = '';
 
-  connection: signalR.HubConnection = null;
-
   constructor(
     private dataImportService: DataImportService,
+    private dataImportSignalRService: DataImportSignalRService,
   ) {
     this.dataTypes = [
       new DataType('Локали', 'locales'),
@@ -34,14 +32,8 @@ export class DataImportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("/dataimport/hub")
-      .configureLogging(signalR.LogLevel.Information)
-      .build();
-    this.connection.on("LogUpdated",
-      (logEntry: LogEntry) => {
-        this.log += `${logEntry.date.toLocaleString()} ${logEntry.message}\n`;
-      });
+    this.dataImportSignalRService.logUpdated
+      .asObservable().subscribe(logEntry => this.log += `${logEntry.date.toLocaleString()} ${logEntry.message}\n`);
   }
 
   fileSelected(fileInputChangeArgs: any) {
@@ -52,21 +44,14 @@ export class DataImportComponent implements OnInit {
   }
 
   beginImport() {
-    this.connection.start()
-      .catch(error => {
-        console.log(error);
-        alert(error);
-      })
-      .then(() => {
-        this.connection.invoke<string>("GetConnectionId")
-          .then(connectionId => {
-            this.dataImportService.importData(
-                this.selectedFile,
-                this.selectedDataType.entityName,
-                connectionId,
-                this.cleanTableBeforeImportFlag)
-              .subscribe();
-          });
+    this.dataImportSignalRService.getConnectionId()
+      .then(signalrConnectionId => {
+        this.dataImportService.importData(
+          this.selectedFile,
+          this.selectedDataType.entityName,
+          signalrConnectionId,
+          this.cleanTableBeforeImportFlag)
+          .subscribe();
       });
   }
 
