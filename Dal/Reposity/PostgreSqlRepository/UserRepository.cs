@@ -370,19 +370,18 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<User> Login(User user)
+        public async Task<User> LoginAsync(User user)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
-                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
-                    User existUser = null;
+                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";               
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);
-                    existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
-                    return existUser;
+                    var existedUser = await dbConnection.QuerySingleOrDefaultAsync<User>(SQLQuery, param);
+                    return existedUser;
 
                     //var password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
                     //var query = new Query("Users")
@@ -404,12 +403,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Login)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.LoginAsync)} {nameof(NpgsqlException)} ", exception);
                 return null;
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Login)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.LoginAsync)} {nameof(Exception)} ", exception);
                 return null;
             }
         }

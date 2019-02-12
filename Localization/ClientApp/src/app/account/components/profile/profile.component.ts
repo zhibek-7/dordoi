@@ -34,15 +34,15 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.initTimeZones();
-    this.userService.getProfile()
-      .subscribe(user =>
-      {
-        this.user = user;  
-        this.initForm();
-        this.loadAvailableLanguages();
-        console.log(this.user);
-      },
-      error => console.error(error));
+    // this.userService.getProfile()
+    //   .subscribe(user =>
+    //   {
+    //     // this.user = user;  
+    //     this.initForm();
+    //     this.loadAvailableLanguages();
+    //     console.log(this.user);
+    //   },
+    //   error => console.error(error));
   
   }
 

@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Diagnostics;
 using Utilities.Logs;
 using System.Net;
 using Models.Migration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Localization.Authentication;
 
 namespace Localization
 {
@@ -78,7 +81,32 @@ namespace Localization
             {
                 options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
             });
-            //////////////Данный блок заканчивается
+            //////////////Данный блок заканчивается           
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        // укзывает, будет ли валидироваться издатель при валидации токена
+                        ValidateIssuer = true,
+                        // строка, представляющая издателя
+                        ValidIssuer = AuthenticationOptions.ISSUER,
+
+                        // будет ли валидироваться потребитель токена
+                        ValidateAudience = true,
+                        // установка потребителя токена
+                        ValidAudience = AuthenticationOptions.AUDIENCE,
+                        // будет ли валидироваться время существования
+                        ValidateLifetime = true,
+
+                        // установка ключа безопасности
+                        IssuerSigningKey = AuthenticationOptions.GetSymmetricSecurityKey(),
+                        // валидация ключа безопасности
+                        ValidateIssuerSigningKey = true,
+                    };
+                });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             ///TODO
@@ -118,6 +146,8 @@ namespace Localization
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+
+            app.UseAuthentication(); // система аутентификации
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -37,9 +37,16 @@ export class LoginComponent implements OnInit {
       let user = this.getUser();
       this.userService
         .login(user)
-        .subscribe(
-          user => this.checkExistUser(<User>user),
-          error => console.error(error)
+        .subscribe( response => {    
+            sessionStorage.setItem('userToken', response.token);       
+            this.userService.getProfile().subscribe();     
+          },
+          error => {
+            alert("Авторизация не пройдена");
+          }
+          
+          // user => this.checkExistUser(<User>user),
+          // error => console.error(error)
         );
     }
   }

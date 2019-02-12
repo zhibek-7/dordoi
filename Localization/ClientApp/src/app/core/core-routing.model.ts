@@ -61,7 +61,7 @@ const routes: Routes = [
     loadChildren: "../files/files.module#FilesModule"
   },
   {
-    path: "Project/:projectId/LanguageFiles/:localeId",
+    path: "Translation_project/:projectId/LanguageFiles/:localeId",
     loadChildren: "../files/files.module#FilesModule"
   },
   {
@@ -73,7 +73,7 @@ const routes: Routes = [
     loadChildren: "../strings/strings.module#StringsModule"
   },
   {
-    path: "Project/:id",
+    path: "Translation_project/:id",
     component: ProjectPageComponent
   },
   //{

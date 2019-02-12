@@ -17,5 +17,7 @@ namespace Models.DatabaseEntities
         public string Email { get; set; }
 
         public bool Joined { get; set; }
+
+        public string Role { get; set; }
     }
 }
