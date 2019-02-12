@@ -3,6 +3,8 @@ import { FormControl, Validators, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { UserService } from "src/app/services/user.service";
+import { AuthenticationService } from "src/app/services/authentication.service";
+
 import { User } from "src/app/models/database-entities/user.type";
 
 @Component({
@@ -11,7 +13,9 @@ import { User } from "src/app/models/database-entities/user.type";
   styleUrls: ["./login.component.css"]
 })
 export class LoginComponent implements OnInit {
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(private router: Router, 
+              private userService: UserService,
+              private authenticationService: AuthenticationService) {}
 
   hide: boolean;
   formGroup: FormGroup;
@@ -38,8 +42,8 @@ export class LoginComponent implements OnInit {
       this.userService
         .login(user)
         .subscribe( response => {    
-            sessionStorage.setItem('userToken', response.token);       
-            this.userService.getProfile().subscribe();     
+            this.authenticationService.saveToken(response.token);     
+            // this.userService.getProfile().subscribe();     
           },
           error => {
             alert("Авторизация не пройдена");
@@ -49,6 +53,14 @@ export class LoginComponent implements OnInit {
           // error => console.error(error)
         );
     }
+  }
+
+  logOut(){
+    this.authenticationService.deleteToken();
+  }
+
+  getUserInfo(){
+    this.userService.getProfile().subscribe();
   }
 
   getUser(): User {

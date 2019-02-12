@@ -1,19 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ProjectsService } from '../services/projects.service';
+import { UserService } from '../services/user.service';
+import { AuthenticationService } from '../services/authentication.service';
+
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ProjectsService]
+  providers: [ProjectsService, AuthenticationService]
 })
 export class AppComponent implements OnInit {
   projects: LocalizationProject[];
   currentProject: LocalizationProject;
   name = '';
-  constructor(private projectService: ProjectsService) { }
+  constructor(private projectService: ProjectsService,
+              private authenticationService: AuthenticationService) { }
 
   ngOnInit() {
     this.projectService.getProjects()
@@ -41,6 +47,22 @@ export class AppComponent implements OnInit {
 
     sessionStorage.setItem('ProjectName', currentProject.name_text);
     sessionStorage.setItem('ProjecID', currentProject.id.toString());
-
   }
+
+  logOut(){
+    this.authenticationService.deleteToken();
+  }
+
+  // userAuthorized(): Observable<boolean> {
+
+  //   var responseToForm: boolean;
+
+  //   this.authenticationService.checkUserAuthorisation().pipe(map(res => console.log(res)));
+  //     // .subscribe(
+  //     //   response => {
+  //     //     responseToForm = response;
+  //     //     return responseToForm;
+  //     //   }
+  //     // );
+  // }  
 }
