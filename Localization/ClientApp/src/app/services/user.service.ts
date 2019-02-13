@@ -4,6 +4,7 @@ import { User } from '../models/database-entities/user.type';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserProfile } from '../models/DTO/userProfile.type';
+import { userPasswordChange } from '../account/models/userPasswordChange.model';
 
 @Injectable()
 export class UserService {
@@ -34,7 +35,11 @@ export class UserService {
 
   //
   isUniqueEmail(email: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email, email);
+    return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email, email, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
+    //let id = sessionStorage.getItem('currentUserID');
+    //return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email + ":" + id, { email, id });
   }
   
   isUniqueLogin(login: string): Observable<boolean> {
@@ -49,28 +54,28 @@ export class UserService {
     return this.httpClient.post(this.url + "Login", user);
   }
 
-  // getProfile(): Observable<UserProfile> {
-  //   let id = sessionStorage.getItem('currentUserID');
-  //   return this.httpClient.post<UserProfile>(this.url + "Profile:" + id, id);
-  // }
-
-  getProfile() {
-      return this.httpClient.post(this.url + "Profile", null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+  passwordChange(user: userPasswordChange): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.url + "passwordChange", user, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    }); 
+  }
+  
+  getProfile(): Observable<UserProfile> {
+    return this.httpClient.post<UserProfile>(this.url + "Profile", null, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
     });
-  }  
+  }
 
   toSaveEditedProfile(user: UserProfile): Observable<Object> {
-    return this.httpClient.post(this.url + "toSaveEdited", user);
+    return this.httpClient.post(this.url + "toSaveEdited", user, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
-  delete(): Observable<Object> {
+  delete(): Observable<boolean> {
     let id = sessionStorage.getItem('currentUserID');
-    return this.httpClient.delete(this.url + "delete/" + id);
+    return this.httpClient.delete<boolean>(this.url + "delete", {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
-//
-//sessionStorage.setItem('currentUserName', 'Иван Иванов');
-//sessionStorage.setItem('currentUserID', '300');
-//this.currentUserName = sessionStorage.getItem('currentUserName');
-//
 }

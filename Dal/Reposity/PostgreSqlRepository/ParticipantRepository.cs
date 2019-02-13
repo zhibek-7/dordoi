@@ -410,5 +410,39 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
+
+        public async Task<bool?> IsOwnerInAnyProject(string userName)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("participants")
+                        .LeftJoin("roles", "roles.id", "participants.id_role")
+                        .LeftJoin("users", "users.id", "participants.id_user")
+                        //.Where("id_user", userId)
+                        .Where("users.name_text", userName)
+                        .Where("roles.short", "owner")
+                        .AsCount();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    return count > 0;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.IsOwnerInAnyProject)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.IsOwnerInAnyProject)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
     }
 }

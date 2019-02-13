@@ -1,17 +1,13 @@
 export class UserProfile {
-  id: number;
-  name: string;
-  //password: string;
+  name_text: string;
   photo: Blob;
   email: string;
   //joined: boolean;
-  fullName: string;
-  timeZone?: number;
-  aboutMe: string;
+  full_name: string;
+  id_time_zones?: number;
+  about_me: string;
   gender?: boolean;
-  //localeId?: number;
-  //localeIsNative?: boolean;
 
-  localesIds: number[];
-  localesIdIsNative: Array<[number, boolean]>;
+  locales_ids: number[];
+  locales_id_is_native: Array<[number, boolean]>;
 }

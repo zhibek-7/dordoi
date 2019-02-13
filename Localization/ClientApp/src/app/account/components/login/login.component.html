@@ -4,7 +4,7 @@
   <h3>Авторизация</h3>
 
   <div class="alert alert-danger"
-       *ngIf="formGroup.invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['passwordFormControl'].touched && formGroup.errors?.login">
+       *ngIf="formGroup.invalid && formGroup.errors?.login">
     Вы ввели неверный email или неверное имя пользователя, или неверный пароль
   </div>
 
@@ -41,6 +41,7 @@
       <button class="btn"
               [class.btn-success]="formGroup.valid"
               [class.btn-secondary]="formGroup.invalid"
+              type="submit"
               [disabled]="formGroup.invalid">
         ВХОД
       </button>
@@ -53,10 +54,10 @@
     </button>
   </div> 
 
-  <div class="form-group">
+  <!--<div class="form-group">
     <button class="btn btn-secondary" (click)="getUserInfo()">
       ПОЛУЧИТЬ ИНФОРМАЦИЮ ПОЛЬЗОВАТЕЛЯ
     </button>
-  </div>
+  </div>-->
 
 </form>

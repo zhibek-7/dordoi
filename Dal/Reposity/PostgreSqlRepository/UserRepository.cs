@@ -16,9 +16,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 {
     public class UserRepository : BaseRepository, IRepository<User>
     {
+        private readonly ParticipantRepository _participantsRepository;
 
         public UserRepository(string connectionStr) : base(connectionStr)
         {
+            _participantsRepository = new ParticipantRepository(connectionStr);
         }
 
         public void Add(User user)
@@ -270,15 +272,17 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         //
-        public async Task<bool?> IsUniqueEmail(string email)
+        public async Task<bool?> IsUniqueEmail(string email, string name_text = null)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("users")
-                        .Where("email", email)
-                        .AsCount();
+                        .Where("email", email);
+                    if (name_text != null)
+                        query = query.WhereNot("name_text", name_text);
+                    query = query.AsCount();
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var count = await dbConnection.ExecuteScalarAsync<int>(
@@ -330,6 +334,54 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+
+        public async Task<bool> PasswordChange(UserPasswordChangeDTO user)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    user.PasswordCurrent = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.PasswordCurrent);
+
+                    var query = new Query("users")
+                        .Where("name_text", user.Name_text)
+                        .Where("password_text", user.PasswordCurrent)
+                        .AsCount();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    if (count == 0)
+                        return false;
+
+
+                    user.PasswordNew = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.PasswordNew);
+                    var queryChange = new Query("users")
+                        .Where("name_text", user.Name_text)
+                        .AsUpdate(new { password_text = user.PasswordNew });
+                    var compiledQueryChange = _compiler.Compile(queryChange);
+                    LogQuery(compiledQueryChange);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQueryChange.Sql,
+                        param: compiledQueryChange.NamedBindings);
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.PasswordChange)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.PasswordChange)} {nameof(Exception)} ", exception);
+                return false;
+            }
+
+        }
+
         public async Task<int?> CreateUser(User user)
         {
             try
@@ -377,7 +429,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
-                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";               
+                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);
                     var existedUser = await dbConnection.QuerySingleOrDefaultAsync<User>(SQLQuery, param);
@@ -413,14 +465,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<UserProfileForEditingDTO> GetProfileAsync(int id)
+        public async Task<UserProfileForEditingDTO> GetProfileAsync(string name)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("users")
-                        .Where("users.id", id)
+                        .Where("users.name_text", name)
                         .LeftJoin("users_locales", "users_locales.id_user", "users.id")
                         .Select(
                         "users.*",
@@ -436,14 +488,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Создание пользователя с вложенными списками идентификаторов связанных данных.
                     var resultDTO = new UserProfileForEditingDTO
                     {
-                        id = temp.FirstOrDefault().id,
-                        name = temp.FirstOrDefault().Name,
-                        email = temp.FirstOrDefault().Email,
-                        photo = temp.FirstOrDefault().Photo,
-                        full_name = temp.FirstOrDefault().FullName,
-                        about_me = temp.FirstOrDefault().AboutMe,
-                        gender = temp.FirstOrDefault().Gender,
-                        time_zone = temp.FirstOrDefault().TimeZone,
+                        //id = temp.FirstOrDefault().id,
+                        name_text = temp.FirstOrDefault().name_text,
+                        email = temp.FirstOrDefault().email,
+                        photo = temp.FirstOrDefault().photo,
+                        full_name = temp.FirstOrDefault().full_name,
+                        about_me = temp.FirstOrDefault().about_me,
+                        gender = temp.FirstOrDefault().gender,
+                        id_time_zones = temp.FirstOrDefault().id_time_zones,
 
                         locales_ids = temp.Select(t => t.LocaleId).Distinct(),
                         locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
@@ -474,15 +526,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var edited = new
                     {
-                        photo = user.photo,
-                        email = user.email,
-                        //joined = user.joined,
-                        full_name = user.full_name,
-                        time_zone = user.time_zone,
-                        about_me = user.about_me,
-                        gender = user.gender
+                        user.photo,
+                        user.email,
+                        //user.joined,
+                        user.full_name,
+                        user.id_time_zones,
+                        user.about_me,
+                        user.gender
                     };
-                    var query = new Query("users").Where("id", user.id).AsUpdate(edited);
+                    var query = new Query("users")
+                        .Where("users.name_text", user.name_text)
+                        .AsUpdate(edited);
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(
@@ -577,27 +631,40 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task RemoveAsync(int id)
+        public async Task<bool?> RemoveAsync(string name)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("users").Where("id", id).AsDelete();
-                    var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
-                    await dbConnection.ExecuteAsync(
-                        sql: compiledQuery.Sql,
-                        param: compiledQuery.NamedBindings);
+                    //Удаление аккаунта возможно, если пользователь не является владельцем ни одного проекта
+                    var isOwner = await _participantsRepository.IsOwnerInAnyProject(name);
+
+                    if (isOwner == false) 
+                    {
+                        var query = new Query("users")
+                            .Where("users.name_text", name)
+                            .AsDelete();
+                        var compiledQuery = _compiler.Compile(query);
+                        LogQuery(compiledQuery);
+                        await dbConnection.ExecuteAsync(
+                            sql: compiledQuery.Sql,
+                            param: compiledQuery.NamedBindings);
+                        return true;
+                    }
+
+                    return false;
                 }
             }
             catch (NpgsqlException exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.RemoveAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
             }
             catch (Exception exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.RemoveAsync)} {nameof(Exception)} ", exception);
+                return null;
             }
         }
     }

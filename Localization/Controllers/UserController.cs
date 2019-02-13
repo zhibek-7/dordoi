@@ -54,14 +54,15 @@ namespace Localization.Controllers
         }
 
         //
-        [HttpPost("isUniqueEmail:{email}")]
-        public async Task<bool?> IsUniqueEmail(string email)//[FromBody]
+        [HttpPost("isUniqueEmail:{email}")] //:{id}
+        public async Task<bool?> IsUniqueEmail(string email)//, int? id = null
         {
-            return await userRepository.IsUniqueEmail(email);
+            var name_text = User.Identity.Name; // != null ? User.Identity.Name : null;
+            return await userRepository.IsUniqueEmail(email, name_text);
         }
 
         [HttpPost("isUniqueLogin:{login}")]
-        public async Task<bool?> IsUniqueLogin(string login)//[FromBody]
+        public async Task<bool?> IsUniqueLogin(string login)
         {
             return await userRepository.IsUniqueLogin(login);
         }
@@ -70,34 +71,37 @@ namespace Localization.Controllers
         public async Task<int?> CreateUser(User user)
         {
             return await userRepository.CreateUser(user);
-        }        
-
-        //[HttpPost("Profile:{id}")]
-        //public async Task<UserProfileForEditingDTO> GetProfile(int id)
-        //{
-        //    return await userRepository.GetProfileAsync(id);
-        //}
+        }
 
         [Authorize]
         [HttpPost("Profile")]
         public async Task<UserProfileForEditingDTO> GetProfile()
         {
-            // лезь в бд теперь по username пользователя, а не по id
             var username = User.Identity.Name;
-            return await userRepository.GetProfileAsync(301); // сюда посылай username 
+            return await userRepository.GetProfileAsync(username);
         }
-
+        [Authorize]
+        [HttpPost("passwordChange")]
+        public async Task<bool> PasswordChange(UserPasswordChangeDTO user)
+        {
+            user.Name_text = User.Identity.Name;
+            return await userRepository.PasswordChange(user);
+        }
+        [Authorize]
         [HttpPost("toSaveEdited")]
         public async Task EditGlossaryAsync(UserProfileForEditingDTO user)
         {
+            user.name_text = User.Identity.Name;
             await userRepository.UpdateAsync(user);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task RemoveAsync(int id)
+        [Authorize]
+        [HttpDelete("delete")]
+        public async Task<bool?> RemoveAsync()
         {
-            await userRepository.RemoveAsync(id);
-        }   
+            var name_text = User.Identity.Name;
+            return await userRepository.RemoveAsync(name_text);
+        }
 
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody]User user)
@@ -110,7 +114,7 @@ namespace Localization.Controllers
             {
                 Response.StatusCode = 400;
                 return BadRequest();
-            }
+    }
 
             var now = DateTime.UtcNow;
             // создаем JWT-токен
@@ -130,7 +134,7 @@ namespace Localization.Controllers
             };
 
             return Ok(response);            
-        }
+}
 
         private async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
         {
@@ -165,7 +169,7 @@ namespace Localization.Controllers
         public IActionResult CheckUserAuthorisation()
         {
             var username = User.Identity.Name;
-            if (username != null)
+            if(username != null)
             {
                 return Ok(true);
             }

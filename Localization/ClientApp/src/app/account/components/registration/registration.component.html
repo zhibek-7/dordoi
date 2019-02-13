@@ -86,7 +86,11 @@
 
 
   <div class="form-group">
-    <button class="btn" [class.btn-success]="formGroup.valid" [class.btn-secondary]="formGroup.invalid" [disabled]="formGroup.invalid">
+    <button class="btn"
+            [class.btn-success]="formGroup.valid"
+            [class.btn-secondary]="formGroup.invalid"
+            type="submit"
+            [disabled]="formGroup.invalid">
       СОЗДАТЬ УЧЁТНУЮ ЗАПИСЬ
     </button>
   </div>
