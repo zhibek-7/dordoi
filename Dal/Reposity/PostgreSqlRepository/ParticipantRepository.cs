@@ -378,7 +378,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     query = query
                         .WhereExists(
-                            new Query("userslocales")
+                            new Query("users_locales")
                             .HavingRaw("COUNT(*)=?", localeIds.Length)
                             .WhereRaw("users_locales.id_user=participants.id_user")
                             .WhereIn("users_locales.id_locale", localeIds));
