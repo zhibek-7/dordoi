@@ -1,15 +1,8 @@
 <div class="reportParamHolder">
   <p class="daterangePicker">
     <span>Диапазон дат </span>
-    <input type="text" matInput
-           ngxDaterangepickerMd
-           [locale]="{cancelLabel: ' Отмена ', applyLabel: ' ОК ', format: 'DD-MM-YYYY'}"
-           startKey="from"
-           endKey="to"
-           [(ngModel)]="selected"
-           name="daterange"
-           class="daterangePicker"
-           value="{{getReportPeriod()}}" />
+    <input type="text" matInput ngxDaterangepickerMd [locale]="{cancelLabel: ' Отмена ', applyLabel: ' ОК ', format: 'DD-MM-YYYY'}"
+      startKey="from" endKey="to" [(ngModel)]="selected" name="daterange" class="daterangePicker" value="{{getReportPeriod()}}" />
   </p>
   <div>
     <div classs="div_bg">
@@ -63,6 +56,7 @@
           <mat-option value="true">Язык перевода</mat-option>
         </mat-select>
       </mat-form-field>
+      <!--
       <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
         <mat-label>Начальная папка</mat-label>
         <mat-select [(value)]="initialFolderId" placeholder="Начальная папка">
@@ -70,6 +64,7 @@
           <mat-option *ngFor="let folder of Folders" value="{{folder.id}}">"{{folder.name_text}}"</mat-option>
         </mat-select>
       </mat-form-field>
+      -->
     </div>
     <div>
       <button (click)="clickEvent()" class="btn  btn-outline-dark">
