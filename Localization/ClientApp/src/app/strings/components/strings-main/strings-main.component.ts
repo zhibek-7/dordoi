@@ -117,7 +117,7 @@ export class StringsMainComponent implements OnInit {
     fileTreeNode: TreeNode
   ): FileViewModel[] {
     let pathForCurrentNode = path + "/" + fileTreeNode.data.name_text;
-    if (!fileTreeNode.data.is_Folder) {
+    if (!fileTreeNode.data.is_folder) {
       return [new FileViewModel(pathForCurrentNode, fileTreeNode.data.id)];
     } else {
       return fileTreeNode.children
