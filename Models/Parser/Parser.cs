@@ -37,8 +37,8 @@ namespace Models.Parser
             {
                 {"po", ParseAsPo_Pot },
                 {"pot", ParseAsPo_Pot },
-                {"properties", ParseAsProperties_Ini },
-                {"ini", ParseAsProperties_Ini },
+                {"properties", ParseAsProperties },
+                {"ini", ParseAsIni },
                 {"json", ParseAsJson },
                 {"strings", ParseAsStrings },
                 {"csv", ParseAsCsv },
@@ -84,7 +84,7 @@ namespace Models.Parser
         }
 
         /// <summary>
-        /// Функция-парсер файлов с расширением 'po'
+        /// Функция-парсер файлов с расширением 'po/pot'
         /// </summary>
         /// <param name="file">Файл для распарсивания</param>
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
@@ -95,16 +95,14 @@ namespace Models.Parser
             string pattern = "(?:msgctxt\\s+\"([^\"]*)\"\\s+)?msgid\\s+\"([^\"]*)\"\\s+(msgid_plural\\s+\"([^\"]*)\"\\s+)?((?:msgstr(?:\\[\\d+\\])?\\s+\"[^\"]*\"\\s*)+)";
             string subpattern = "msgstr(?:\\[\\d+\\])?\\s+\"([^\"]*)\"";
             var matches = Regex.Matches(file.original_full_text, pattern);
-            int count = matches.Count;
             foreach (Match m in matches)
             {
                 var context = m.Groups[1].Value;
                 var original = m.Groups[string.IsNullOrEmpty(m.Groups[3].Value) ? 2 : 4].Value;
                 var matches_trans = Regex.Matches(m.Groups[5].Value, subpattern);
                 foreach (Match m_t in matches_trans) ts.Add(new TranslationSubstring(original, context, file.id, m_t.Groups[1].Value, m.Groups[5].Index + m_t.Groups[1].Index));
-                count += matches_trans.Count - 1;
             }
-            _logger.WriteLn(string.Format("Парсер 'po'-файлов обнаружил в файле {0} записей: {1}", file.name_text, count));
+            _logger.WriteLn(string.Format("Парсер 'po/pot'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
@@ -113,17 +111,40 @@ namespace Models.Parser
         /// </summary>
         /// <param name="file">Файл для распарсивания</param>
         /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
-        private List<TranslationSubstring> ParseAsProperties_Ini(File file)
+        private List<TranslationSubstring> ParseAsProperties(File file)
         {
-            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'properties/ini'", file.name_text));
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'properties'", file.name_text));
             var ts = new List<TranslationSubstring>();
-            string pattern = "(.*)=(.*)\\s";
-            var matches = Regex.Matches(file.original_full_text, pattern);
+            string pattern = "^\\s*(?!#)(?:.|(?<=\\\\)\\n)+";
+            string subpattern = "([^=\\n]+)=(.*)";
+            var matches = Regex.Matches(file.original_full_text, pattern, RegexOptions.Multiline);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
+                var m_sp = Regex.Match(m.Value, subpattern, RegexOptions.Singleline);
+                ts.Add(new TranslationSubstring(m_sp.Groups[2].Value, m_sp.Groups[1].Value, file.id, m_sp.Groups[2].Value, m.Index + m_sp.Groups[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'properties'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
+            return ts;
+        }
+
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'ini'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
+        private List<TranslationSubstring> ParseAsIni(File file)
+        {
+            _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'ini'", file.name_text));
+            var ts = new List<TranslationSubstring>();
+            string pattern = "^\\s*(?!;)(?:.|(?<=\\\\)\\n)+";
+            string subpattern = "([^=\\n]+)=\\s*\"((?:[^\"]|(?<=\\\\)\")+)\"";
+            var matches = Regex.Matches(file.original_full_text, pattern, RegexOptions.Multiline);
+            foreach (Match m in matches)
+            {
+                var m_sp = Regex.Match(m.Value, subpattern, RegexOptions.Singleline);
+                ts.Add(new TranslationSubstring(m_sp.Groups[2].Value, m_sp.Groups[1].Value, file.id, m_sp.Groups[2].Value, m.Index + m_sp.Groups[2].Index));
+            }
+            _logger.WriteLn(string.Format("Парсер 'ini'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
