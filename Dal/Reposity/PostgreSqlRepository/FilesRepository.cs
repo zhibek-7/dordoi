@@ -532,8 +532,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     new Query("files_locales")
                     .Select(
                         "id_locale as LocaleId",
-                        "percent_of_translation",
-                        "percent_of_confirmed"
+                        "percent_of_translation as PercentOfTranslation",
+                        "percent_of_confirmed as PercentOfConfirmed"
                         )
                     .Where("id_file", fileId);
 
