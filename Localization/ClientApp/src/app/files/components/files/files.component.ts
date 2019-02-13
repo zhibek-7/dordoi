@@ -331,6 +331,7 @@ export class FilesComponent implements OnInit {
   }
 
   requestFileDownload(node: TreeNode) {
+    this.ngxSpinnerService.show();
     this.fileService.downloadFile(node.data).subscribe(
       data => {
         let fileName = node.data.name_text;
@@ -340,6 +341,7 @@ export class FilesComponent implements OnInit {
           fileName = node.data.download_name;
         }
         saveAs(data, fileName);
+        this.ngxSpinnerService.hide();
       },
       error => alert(error)
     );
