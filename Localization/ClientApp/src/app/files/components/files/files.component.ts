@@ -335,10 +335,11 @@ export class FilesComponent implements OnInit {
     this.fileService.downloadFile(node.data).subscribe(
       data => {
         let fileName = node.data.name_text;
+        if (node.data.download_name && node.data.download_name != "") {
+          fileName = node.data.download_name;
+        }
         if (node.data.is_folder) {
           fileName = fileName + ".zip";
-        } else if (node.data.download_name && node.data.download_name != "") {
-          fileName = node.data.download_name;
         }
         saveAs(data, fileName);
         this.ngxSpinnerService.hide();
