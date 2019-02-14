@@ -29,18 +29,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var _sql = "INSERT INTO user_actions" +
                                " (id_user, id_work_type, description, id_locale, id_file, id_string, id_translation, id_project, datetime) " +
-                               "VALUES (@ID_User, @ID_work_type, @Description, @ID_Locale, @ID_File, @ID_String, @ID_Translation, @ID_Project, @Datetime)";
+                               "VALUES (@id_user, @id_work_type, @description, @id_locale, @id_file, @id_string, @id_translation, @id_project, @datetime)";
                     var _params = new
                     {
-                        action.ID_User,
-                        action.ID_work_type,
-                        action.Description,
-                        action.ID_Locale,
-                        action.ID_File,
-                        action.ID_String,
-                        action.ID_Translation,
-                        action.ID_Project,
-                        action.Datetime
+                        action.id_user,
+                        action.id_work_type,
+                        action.description,
+                        action.id_locale,
+                        action.id_file,
+                        action.id_string,
+                        action.id_translation,
+                        action.id_project,
+                        action.datetime
                     };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
@@ -255,8 +255,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddCreateProjectActionAsync(int userId, string userName, int projectId, int localeId, string comment = "")
         {// Authorize = 1, //1	Авторизация пользователя    
             UserAction act = new UserAction(userId, userName, "Создание проекта. " + comment, (int)WorkTypes.CreateProject, WorkTypes.CreateProject.ToString());
-            act.ID_Project = projectId;
-            act.ID_Locale = localeId;
+            act.id_project = projectId;
+            act.id_locale = localeId;
             return await AddAsync(act);
         }
 
@@ -270,8 +270,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddAddFileActionAsync(int userId, string userName, int projectId, int fileId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Добавлен файл. " + comment, (int)WorkTypes.AddFile, WorkTypes.AddFile.ToString());
-            act.ID_Project = projectId;
-            act.ID_File = fileId;
+            act.id_project = projectId;
+            act.id_file = fileId;
             return await AddAsync(act);
         }
 
@@ -282,11 +282,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddAddFileActionAsync(File item, int? idTranslit, WorkTypes wt)
         {
             UserAction action = new UserAction();
-            action.Datetime = item.date_of_change;
-            action.ID_Project = item.id_localization_project;
-            action.ID_File = idTranslit;
-            action.File = item.name_text;
-            action.ID_work_type = (int)wt;
+            action.datetime = item.date_of_change;
+            action.id_project = item.id_localization_project;
+            action.id_file = idTranslit;
+            action.file_name = item.name_text;
+            action.id_work_type = (int)wt;
             return await AddAsync(action);
         }
 
@@ -301,8 +301,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddUpdateFileActionAsync(int userId, string userName, int projectId, int fileId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Обновление файла. " + comment, (int)WorkTypes.UpdateFile, WorkTypes.UpdateFile.ToString());
-            act.ID_Project = projectId;
-            act.ID_File = fileId;
+            act.id_project = projectId;
+            act.id_file = fileId;
             return await AddAsync(act);
         }
 
@@ -316,8 +316,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddAddStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Добавление строки. " + comment, (int)WorkTypes.AddString, WorkTypes.AddString.ToString());
-            act.ID_Project = projectId;
-            act.ID_String = stringId;
+            act.id_project = projectId;
+            act.id_string = stringId;
             return await AddAsync(act);
         }
 
@@ -331,8 +331,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddUpdateStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Редактирование строки. " + comment, (int)WorkTypes.UpdateString, WorkTypes.UpdateString.ToString());
-            act.ID_Project = projectId;
-            act.ID_String = stringId;
+            act.id_project = projectId;
+            act.id_string = stringId;
             return await AddAsync(act);
         }
 
@@ -346,8 +346,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddDeleteStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Удаление строки. " + comment, (int)WorkTypes.DeleteString, WorkTypes.DeleteString.ToString());
-            act.ID_Project = projectId;
-            act.ID_String = stringId;
+            act.id_project = projectId;
+            act.id_string = stringId;
             return await AddAsync(act);
         }
 
@@ -361,9 +361,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddAddTraslationActionAsync(int userId, string userName, int projectId, int translationId, int stringId, int localeId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Добавление перевода. " + comment, (int)WorkTypes.AddTraslation, WorkTypes.AddTraslation.ToString());
-            act.ID_Project = projectId;
-            act.ID_Translation = translationId;
-            act.ID_String = stringId;
+            act.id_project = projectId;
+            act.id_translation = translationId;
+            act.id_string = stringId;
             return await AddAsync(act);
         }
 
@@ -375,13 +375,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             UserAction action = new UserAction();
 
-            action.ID_String = item.ID_String;
-            action.ID_Translation = idTranslit;
-            action.Translation = item.Translated;
-            action.ID_work_type = (int)wt;
-            action.ID_User = item.ID_User;
-            action.Datetime = item.DateTime;
-            action.ID_Locale = item.ID_Locale;
+            action.id_string = item.ID_String;
+            action.id_translation = idTranslit;
+            action.translation = item.Translated;
+            action.id_work_type = (int)wt;
+            action.id_user = item.ID_User;
+            action.datetime = item.DateTime;
+            action.id_locale = item.ID_Locale;
 
             //TODO нехватает данных, нужно вычислять.
             //action.ID_Project = projectId;
@@ -399,8 +399,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddDeleteTranslationActionAsync(int userId, string userName, int projectId, int translationId, string comment = "")
         {// Authorize = 1, //1	Авторизация пользователя    
             UserAction act = new UserAction(userId, userName, "Удаление перевода. " + comment, (int)WorkTypes.DeleteTranslation, WorkTypes.DeleteTranslation.ToString());
-            act.ID_Project = projectId;
-            act.ID_Translation = translationId;
+            act.id_project = projectId;
+            act.id_translation = translationId;
             return await AddAsync(act);
         }
 
@@ -414,10 +414,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddUpdateTranslationActionAsync(int userId, string userName, int projectId, int translationId, int stringId, int localeId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Редактирование перевода. " + comment, (int)WorkTypes.UpdateTranslation, WorkTypes.UpdateTranslation.ToString());
-            act.ID_Project = projectId;
-            act.ID_Translation = translationId;
-            act.ID_String = stringId;
-            act.ID_Locale = localeId;
+            act.id_project = projectId;
+            act.id_translation = translationId;
+            act.id_string = stringId;
+            act.id_locale = localeId;
             return await AddAsync(act);
         }
 
@@ -431,8 +431,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddConfirmTranslationActionAsync(int userId, string userName, int projectId, int translationId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Утвержденеи перевода. " + comment, (int)WorkTypes.ConfirmTranslation, WorkTypes.ConfirmTranslation.ToString());
-            act.ID_Project = projectId;
-            act.ID_Translation = translationId;
+            act.id_project = projectId;
+            act.id_translation = translationId;
             return await AddAsync(act);
         }
 
@@ -446,8 +446,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddChoseTranslationActionAsync(int userId, string userName, int projectId, int translationId, string comment = "")
         {
             UserAction act = new UserAction(userId, userName, "Выбор перевода. " + comment, (int)WorkTypes.ChoseTranslation, WorkTypes.ChoseTranslation.ToString());
-            act.ID_Project = projectId;
-            act.ID_Translation = translationId;
+            act.id_project = projectId;
+            act.id_translation = translationId;
             return await AddAsync(act);
         }
     }

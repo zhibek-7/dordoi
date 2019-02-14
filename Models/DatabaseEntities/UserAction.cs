@@ -9,87 +9,51 @@ namespace Models.DatabaseEntities
     [Serializable]
     public class UserAction : BaseEntity
     {
-        /// <summary>
-        /// ИД пользователя совершившего действие
-        /// </summary>
         [Required]
-        public int ID_User { get; set; }
-        /// <summary>
-        /// Имя пользователя совершившего действие
-        /// </summary>
+        public int id_user { get; set; }
+
+        public string user_name { get; set; }
+
         [Required]
-        public string User { get; set; }
-        /// <summary>
-        /// ИД вида деятельности 
-        /// </summary>
+        public int id_work_type { get; set; }
+
+        public string work_type_name { get; set; }
+
         [Required]
-        public int ID_work_type { get; set; }
-        /// <summary>
-        /// Вид деятельности в виде строки
-        /// </summary>
-        [Required]
-        public string Work_type { get; set; }
-        /// <summary>
-        /// Время активности. Устанавливается в БД автоматически
-        /// </summary>
-        [Required]
-        public DateTime Datetime { get; set; }
-        /// <summary>
-        /// Описание
-        /// </summary>
-        [Required]
-        public string Description { get; set; }
-        /// <summary>
-        /// Ссылка на язык
-        /// </summary>
-        public int? ID_Locale { get; set; }
-        /// <summary>
-        /// Язык
-        /// </summary>
-        public string Locale { get; set; }
-        /// <summary>
-        /// Ссылка на файл (для регистрации активности по добавлению, удалению и редактированию файлов
-        /// </summary>
-        public int? ID_File { get; set; }
-        /// <summary>
-        /// Название файла (для регистрации активности по добавлению, удалению и редактированию файлов
-        /// </summary>
-        public string File { get; set; }
-        /// <summary>
-        /// Ссылка на строку (для регистрации активности по добавлению, удалению и редактированию строк
-        /// </summary>
-        public int? ID_String { get; set; }
-        /// <summary>
-        /// Содержимое строки (для регистрации активности по добавлению, удалению и редактированию строк
-        /// </summary>
-        public string String { get; set; }
-        /// <summary>
-        /// Ссылка на перевод (для регистрации активности по добавлению, удалению и редактированию переводов
-        /// </summary>
-        public int? ID_Translation { get; set; }
-        /// <summary>
-        /// Содержимое перевода (для регистрации активности по добавлению, удалению и редактированию переводов
-        /// </summary>
-        public string Translation { get; set; }
-        /// <summary>
-        /// Ссылка на проект (для регистрации активности по добавлению, удалению и редактированию проектов локализации
-        /// </summary>
-        public int? ID_Project { get; set; }
-        /// <summary>
-        /// Название проекта (для регистрации активности по добавлению, удалению и редактированию проектов локализации
-        /// </summary>
-        public string Project { get; set; }
+        public DateTime datetime { get; set; }
+
+        public string description { get; set; }
+
+        public int? id_locale { get; set; }
+
+        public string locale_name { get; set; }
+
+        public int? id_file { get; set; }
+
+        public string file_name { get; set; }
+
+        public int? id_string { get; set; }
+
+        public string translation_substring_name { get; set; }
+
+        public int? id_translation { get; set; }
+
+        public string translation { get; set; }
+
+        public int? id_project { get; set; }
+
+        public string project_name { get; set; }
 
         public UserAction() { }
 
         public UserAction(int userId, string userName, string descript, int actionTypeID, string actionName)
         {
-            ID_User = userId;
-            User = userName;
-            ID_work_type = actionTypeID;
-            Work_type = actionName;
-            Description = descript;
-            Datetime = DateTime.Now;
+            this.id_user = userId;
+            this.user_name = userName;
+            this.id_work_type = actionTypeID;
+            this.work_type_name = actionName;
+            this.description = descript;
+            this.datetime = DateTime.Now;
         }
 
 
