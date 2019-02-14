@@ -7,6 +7,7 @@ using DAL.Context;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
 using Npgsql;
+using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -107,27 +108,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "SELECT a.id, " +
-                               "u.name_text as user, " +
-                               "w.name_text as worktype, " +
-                               "a.datetime, " +
-                               "a.description, " +
-                               "l.name_text as locale, " +
-                               "f.name_text as fileName, " +
-                               "s.value as string, " +
-                               "t.translated as translation, " +
-                               "p.name_text as project " +
-                               "FROM public.user_actions a " +
-                               "join public.users u on a.id_user = u.id " +
-                               "join public.work_types w on a.id_work_type = w.id " +
-                               "left join public.locales l on a.id_locale = l.id " +
-                               "left join public.files f on a.id_file = f.id " +
-                               "left join public.translation_substrings s on a.id_string = s.id " +
-                               "left join public.translations t on a.id_translation= s.id " +
-                               "left join public.localization_projects p on a.id_project = p.id";
-                    LogQuery(_sql);
-                    var actions = await dbConnection.QueryAsync<UserAction>(_sql);
-                    return actions;
+                    var query = new Query("user_actions").Select();
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var userActions = await dbConnection.QueryAsync<UserAction>(compiledQuery.Sql, compiledQuery.NamedBindings);
+                    return userActions;
                 }
             }
             catch (NpgsqlException exception)
@@ -157,11 +142,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "SELECT * FROM user_actions WHERE id_project = @projectId LIMIT 1";
-                    var _params = new { projectId };
-                    LogQuery(_sql, _params);
-                    var actions = await dbConnection.QueryAsync<UserAction>(_sql, _params);
-                    return actions;
+                    var query = new Query("user_actions")
+                        .Where("id_project", projectId)
+                        .Select();
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var userActions = await dbConnection.QueryAsync<UserAction>(compiledQuery.Sql, compiledQuery.NamedBindings);
+                    return userActions;
                 }
             }
             catch (NpgsqlException exception)
