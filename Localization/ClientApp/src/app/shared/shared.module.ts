@@ -8,7 +8,9 @@ import { ModalComponent } from 'src/app/shared/components/modal/modal.component'
 
 import { FilterSelectableLocalesPipe } from 'src/app/shared/pipes/filterSelectableLocales.pipe';
 import { OrderByPipe } from 'src/app/shared/pipes/orderBy.pipe';
+
 import { SetTimeZoneComponent } from './components/set-time-zone/set-time-zone.component';
+import { TimeZoneService } from 'src/app/services/time-zone.service';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,10 @@ import { SetTimeZoneComponent } from './components/set-time-zone/set-time-zone.c
   imports: [
     CommonModule,
     FormsModule,
+  ],
+  providers:
+  [
+    TimeZoneService
   ],
   exports: [
     PaginationComponent,

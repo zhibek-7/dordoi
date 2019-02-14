@@ -13,6 +13,7 @@
         </div>
         <div class="col-8">
           <mat-progress-bar mode="determinate" [value]="fileTranslationInfo.percentOfTranslation"></mat-progress-bar>
+          {{fileTranslationInfo.percentOfTranslation | percent }}
         </div>
       </div>
     </div>

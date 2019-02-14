@@ -352,11 +352,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sortBy: sortBy,
                         sortAscending: sortAscending);
 
-                    var getGlossaryTermsCompiledQuery = this._compiler.Compile(query);
-                    this.LogQuery(getGlossaryTermsCompiledQuery);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
                     var assotiatedTerms = await dbConnection.QueryAsync<Term>(
-                        sql: getGlossaryTermsCompiledQuery.Sql,
-                        param: getGlossaryTermsCompiledQuery.NamedBindings
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
                         );
                     return assotiatedTerms;
                 }
@@ -385,11 +385,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = this.GetAssotiatedTermsQuery(glossaryId, termPart).AsCount();
-                    var getGlossaryTermsCountCompiledQuery = this._compiler.Compile(query);
-                    this.LogQuery(getGlossaryTermsCountCompiledQuery);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
                     var assotiatedTermsCount = await dbConnection.ExecuteScalarAsync<int>(
-                        sql: getGlossaryTermsCountCompiledQuery.Sql,
-                        param: getGlossaryTermsCountCompiledQuery.NamedBindings
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
                         );
                     return assotiatedTermsCount;
 
@@ -413,53 +413,37 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private Query GetAssotiatedTermsQuery(int glossaryId, string termPart)
         {
-            try
-            {
-                var query =
-            new Query("glossaries_strings")
-                .LeftJoin("translation_substrings", "translation_substrings.id", "glossaries_strings.id_string")
-                .Where("glossaries_strings.id_glossary", glossaryId)
-                .Select(
-                    "translation_substrings.id",
-                    "translation_substrings.substring_to_translate",
-                    "translation_substrings.description",
-                    "translation_substrings.context",
-                    "translation_substrings.translation_max_length",
-                    "translation_substrings.id_file_owner",
-                    "translation_substrings.value",
-                    "translation_substrings.position_in_text",
-                    "glossaries_strings.id_part_of_speech as part_of_speech_id")
-                .Select(
-                    new Query("translation_substrings_locales")
-                        .LeftJoin("translations", join =>
-                            join.On("translations.id_string", "translation_substrings_locales.id_translation_substrings")
-                                .On("translations.id_locale", "translation_substrings_locales.id_locale"))
-                        .SelectRaw("COUNT(translations.translated) = 0")
-                        .Where("translations.translated", "<>", "''")
-                        .WhereRaw("translation_substrings_locales.id_translation_substrings=translation_substrings.id"),
-                    "is_editable");
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-                if (!string.IsNullOrEmpty(termPart))
-                {
-                    var patternString = $"%{termPart}%";
-                    query = query.WhereLike("translation_substrings.substring_to_translate", patternString);
-                }
-                return query;
+            var query =
+                new Query("glossaries_strings")
+                    .LeftJoin("translation_substrings", "translation_substrings.id", "glossaries_strings.id_string")
+                    .Where("glossaries_strings.id_glossary", glossaryId)
+                    .Select(
+                        "translation_substrings.id",
+                        "translation_substrings.substring_to_translate",
+                        "translation_substrings.description",
+                        "translation_substrings.context",
+                        "translation_substrings.translation_max_length",
+                        "translation_substrings.id_file_owner",
+                        "translation_substrings.value",
+                        "translation_substrings.position_in_text",
+                        "glossaries_strings.id_part_of_speech as part_of_speech_id")
+                    .Select(
+                        new Query("translation_substrings_locales")
+                            .LeftJoin("translations", join =>
+                                join.On("translations.id_string", "translation_substrings_locales.id_translation_substrings")
+                                    .On("translations.id_locale", "translation_substrings_locales.id_locale"))
+                            .SelectRaw("COUNT(translations.translated) = 0")
+                            .Where("translations.translated", "<>", "''")
+                            .WhereRaw("translation_substrings_locales.id_translation_substrings=translation_substrings.id"),
+                        alias: "is_editable");
 
-            }
-            catch (NpgsqlException exception)
+            if (!string.IsNullOrEmpty(termPart))
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsQuery)} {nameof(NpgsqlException)} ", exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsQuery)} {nameof(Exception)} ", exception);
-                return null;
+                var patternString = $"%{termPart}%";
+                query = query.WhereLike("translation_substrings.substring_to_translate", patternString);
             }
 
-
+            return query;
         }
 
         public async Task<Locale> GetLocaleByIdAsync(int glossaryId)

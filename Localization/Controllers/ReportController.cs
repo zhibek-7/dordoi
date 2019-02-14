@@ -99,10 +99,10 @@ namespace Localization.WebApi
                 foreach (var row in reportRows)
                 {
                     rowNum++;
-                    sheet.Cells[rowNum, 1].Value = row.Name_text;
-                    sheet.Cells[rowNum, 2].Value = row.Language;
+                    sheet.Cells[rowNum, 1].Value = row.name_text;
+                    sheet.Cells[rowNum, 2].Value = row.language;
                     sheet.Cells[rowNum, 3].Value = row.work_Type;
-                    sheet.Cells[rowNum, 4].Value = row.Translations;
+                    sheet.Cells[rowNum, 4].Value = row.translations;
 
                     // указываем что в этой ячейке число
                     //sheet.Cells[row, 3].Style.Numberformat.Format = @"#,##0.00_ ;\-#,##0.00_ ;0.00_ ;";

@@ -43,10 +43,12 @@ export class LoginComponent implements OnInit {
         .login(user)
         .subscribe( response => {    
             this.authenticationService.saveToken(response.token);     
-            this.userService.getProfile().subscribe();     
+          // this.userService.getProfile().subscribe(); 
+            this.router.navigate(["/account/" + user.name_text]);
           },
-          error => {
-            alert("Авторизация не пройдена");
+        error => {
+          this.formGroup.setErrors({ login: true });
+            //alert("Авторизация не пройдена");
           }
           
           // user => this.checkExistUser(<User>user),
@@ -59,9 +61,9 @@ export class LoginComponent implements OnInit {
     this.authenticationService.deleteToken();
   }
 
-  getUserInfo(){
-    this.userService.getProfile().subscribe();
-  }
+  //getUserInfo(){
+  //  this.userService.getProfile().subscribe();
+  //}
 
   getUser(): User {
     let user: User = new User();
@@ -71,13 +73,11 @@ export class LoginComponent implements OnInit {
     return user;
   }
 
-  checkExistUser(user: User) {
-    if (user == null) {
-      this.formGroup.setErrors({ login: true });
-      return;
-    }
-    sessionStorage.setItem("currentUserID", user.id.toString());
-    sessionStorage.setItem("currentUserName", user.name_text);
-    this.router.navigate(["/account/" + user.id]);
-  }
+  //checkExistUser(user: User) {
+  //  if (user == null) {
+  //    this.formGroup.setErrors({ login: true });
+  //    return;
+  //  }
+  //  this.router.navigate(["/account/" + user.id]);
+  //}
 }

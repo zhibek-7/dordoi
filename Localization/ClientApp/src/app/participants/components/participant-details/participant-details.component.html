@@ -1,15 +1,12 @@
 <app-modal [isWide]="true" [(visible)]="visible">
   <div class="app-modal-header d-flex m-2">
-    <h4 *ngIf="participant" class="modal-title">{{participant.userName}}</h4>
+    <h4 *ngIf="participant" class="modal-title">{{participant.user_Name}}</h4>
     <button type="button" class="close" (click)="hide()">&times;</button>
   </div>
   <div class="app-modal-body">
     <div class="row">
       <div class="col-4">
-        <img class="width-to-parent"
-             [src]="participantPhoto"
-             alt="Participant avatar"
-             *ngIf="participantPhoto && !isPhotoLoading; else noImageFound">
+        <img class="width-to-parent" [src]="participantPhoto" alt="Participant avatar" *ngIf="participantPhoto && !isPhotoLoading; else noImageFound">
         <ng-template #noImageFound>
           <img class="width-to-parent" src="../../../../assets/images/user-picture.png" alt="Participant avatar was not loaded">
         </ng-template>
@@ -26,14 +23,13 @@
             <h6>Роль</h6>
           </div>
           <div *ngIf="participant">
-            {{participant.roleName}}
+            {{participant.role_Name}}
           </div>
         </div>
         <table class="table m-2">
           <thead>
             <tr>
               <th>Вклад в проект</th>
-              <th>Строки</th>
               <th>Слов</th>
             </tr>
           </thead>
@@ -41,16 +37,13 @@
             <tr>
               <td>Переведено</td>
               <td></td>
-              <td></td>
             </tr>
             <tr>
               <td>С подтверждённым переводом</td>
               <td></td>
-              <td></td>
             </tr>
             <tr>
               <td>Комментарии</td>
-              <td></td>
               <td></td>
             </tr>
           </tbody>

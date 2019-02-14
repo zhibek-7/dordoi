@@ -282,10 +282,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> AddAddFileActionAsync(File item, int? idTranslit, WorkTypes wt)
         {
             UserAction action = new UserAction();
-            action.Datetime = item.Date_Of_Change;
-            action.ID_Project = item.ID_Localization_Project;
+            action.Datetime = item.date_of_change;
+            action.ID_Project = item.id_localization_project;
             action.ID_File = idTranslit;
-            action.File = item.Name_text;
+            action.File = item.name_text;
             action.ID_work_type = (int)wt;
             return await AddAsync(action);
         }

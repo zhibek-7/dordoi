@@ -7,6 +7,7 @@ import { TreeNode } from "primeng/api";
 import { File as FileData } from '../models/database-entities/file.type';
 import { Locale } from '../models/database-entities/locale.type';
 import { FileTranslationInfo } from '../models/database-entities/fileTranslationInfo.type';
+import { FolderModel } from '../models/DTO/folder.type';
 
 @Injectable({
   providedIn: 'root'
@@ -80,8 +81,8 @@ export class FileService {
 
   addFolder(name: string, projectId: number, parentId?: number): Observable<TreeNode> {
     const url = `${this._url}/add/folderByProjectId/${projectId}`;
-
-    return this.http.post<TreeNode>(url, { name, parentId })
+    const folderModel = new FolderModel(name, projectId, parentId);
+    return this.http.post<TreeNode>(url, folderModel)
       .pipe(catchError(this.handleError('addFolder')));
   }
 

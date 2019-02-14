@@ -13,15 +13,23 @@ export class FileSettingsModalComponent extends ModalComponent implements OnInit
   @Output()
   changesApplied = new EventEmitter<File>();
 
+  translator_name: string = '';
+
+  download_name: string = '';
+
   file: File;
 
   showForFile(file: File) {
     this.file = file;
+    this.translator_name = this.file.translator_name;
+    this.download_name = this.file.download_name;
     this.show();
   }
 
   applyChages() {
     this.hide();
+    this.file.translator_name = this.translator_name;
+    this.file.download_name = this.download_name;
     this.changesApplied.emit(this.file);
   }
 

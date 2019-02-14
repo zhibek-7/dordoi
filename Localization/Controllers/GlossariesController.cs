@@ -14,16 +14,11 @@ namespace Localization.Controllers
     public class GlossariesController : ControllerBase
     {
         private readonly GlossariesService _glossariesService;
-        private readonly ILocaleRepository _localeRepository;
-        private readonly ILocalizationProjectRepository _localizationProjectRepository;
 
 
         public GlossariesController(GlossariesService glossariesService)
         {
             _glossariesService = glossariesService;
-
-            _localeRepository = new LocaleRepository(Settings.GetStringDB());
-            _localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
         }
 
 

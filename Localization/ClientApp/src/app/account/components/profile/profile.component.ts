@@ -1,14 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
 import { Validators, FormGroup, FormControl, AbstractControl } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { Selectable } from 'src/app/shared/models/selectable.model';
 
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { LanguageService } from 'src/app/services/languages.service';
 
+import { TimeZone } from 'src/app/models/database-entities/timeZone.type';
+
+import { UserService } from 'src/app/services/user.service';
 
 import { UserProfile } from 'src/app/models/DTO/userProfile.type';
-import { Selectable } from 'src/app/shared/models/selectable.model';
-import { Router } from '@angular/router';
+import { userPasswordChange } from '../../models/userPasswordChange.model';
+
 
 @Component({
   selector: 'app-profile',
@@ -23,43 +28,51 @@ export class ProfileComponent implements OnInit {
 
   hide: boolean;
   isUniqueEmailConfirmed: boolean;
+  isPasswordChanged: boolean;
+  isDeleteUserError: boolean;
   profileFormGroup: FormGroup;
   passwordChangeFormGroup: FormGroup;
 
   availableLocales: Selectable<Locale>[] = [];
 
   user: UserProfile;
+  imageUrl;
 
   timeZones: [number, string];
 
+
   ngOnInit() {
-    this.initTimeZones();
-    // this.userService.getProfile()
-    //   .subscribe(user =>
-    //   {
-    //     // this.user = user;  
-    //     this.initForm();
-    //     this.loadAvailableLanguages();
-    //     console.log(this.user);
-    //   },
-    //   error => console.error(error));
-  
-  }
-
-  initTimeZones() {
-
+    this.userService.getProfile()
+      .subscribe(user =>
+      {
+        this.user = user;
+        this.initForm();
+        this.loadAvailableLanguages();
+        //this.initTimeZones();
+        //
+        console.log(this.user);
+        //
+      },
+      error => console.error(error));
   }
 
   initForm() {
     this.hide = true;
     this.isUniqueEmailConfirmed = false;
+    this.isPasswordChanged = false;
+    this.isDeleteUserError = false;
+    this.imageUrl = this.user.photo ? this.user.photo.toString() : "../../assets/images/user-picture.png";
+    console.log("this.imageUrl:" + this.imageUrl);
 
     this.passwordChangeFormGroup = new FormGroup(
       {
-        "passwordCurrentFormControl": new FormControl(""),
+        "passwordCurrentFormControl": new FormControl("", Validators.required),
         "passwordNewFormControl": new FormControl("",
-          Validators.pattern("(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}")),
-        "passwordNewConfirmFormControl": new FormControl("")
+          [
+            Validators.required,
+            Validators.pattern("(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}")
+          ]),
+        "passwordNewConfirmFormControl": new FormControl("", Validators.required)
       });
 
     this.profileFormGroup = new FormGroup(
@@ -69,26 +82,34 @@ export class ProfileComponent implements OnInit {
             Validators.required,
             Validators.email
           ]),
-        "fullNameFormControl": new FormControl(this.user.fullName),
+        "fullNameFormControl": new FormControl(this.user.full_name),
         "photoFormControl": new FormControl(this.user.photo),
-        "timeZoneFormControl": new FormControl(this.user.timeZone),
-        "aboutMeFormControl": new FormControl(this.user.aboutMe),
-        "genderFormControl": new FormControl(this.user.gender == true ? "true" : this.user.gender == false ? "false" : "null"),
-
-        
-        //"localesIdsFormControl": new FormControl(""),
-        //"localesIdIsNativeFormControl": new FormControl("")
+        //"timeZoneFormControl": new FormControl(this.user.id_time_zones),
+        "aboutMeFormControl": new FormControl(this.user.about_me),
+        "genderFormControl": new FormControl(this.user.gender == true ? "true" : this.user.gender == false ? "false" : "null")
       });
   }
 
   deleteUser() {
     this.userService.delete()
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      },
-        error => console.error(error));
+      .subscribe(result => {
+        result
+          ? this.router.navigate(['/'])
+          : this.isDeleteUserError = true;
+        },
+      error => {
+        this.isDeleteUserError = true;
+        console.error(error);
+      });
   }
 
+  //initTimeZones() { }
+
+  setSelectedTimeZone(setTimeZoneId: number) {
+    this.user.id_time_zones = setTimeZoneId;
+    console.log("ProfileComponent. setSelectedTimeZone: ");
+    console.log(this.user.id_time_zones);
+  }
 
   //#region Работа с Locales
 
@@ -97,12 +118,11 @@ export class ProfileComponent implements OnInit {
     this.languageService.getLanguageList()
       .subscribe(locale =>
       {
-        console.log(locale);
         this.availableLocales = locale
           .map(local =>
             new Selectable<Locale>(
               local,
-              this.user.localesIds.some(selectedLocaleId => selectedLocaleId == local.id)
+              this.user.locales_ids ? this.user.locales_ids.some(selectedLocaleId => selectedLocaleId == local.id) : false
               //userLocalesIdIsNative.some(selectedLocaleId => selectedLocaleId == local.id)
             ));
       },
@@ -110,7 +130,7 @@ export class ProfileComponent implements OnInit {
   }
 
   setSelectedLocales(newSelection: Locale[]) {
-    this.user.localesIds = newSelection.map(t => t.id);
+    this.user.locales_ids = newSelection.map(t => t.id);
   }
 
   //#endregion
@@ -125,6 +145,10 @@ export class ProfileComponent implements OnInit {
     if (this.profileFormGroup.valid)// && this.isUniqueEmailConfirmed
     {
       let user = this.getUser();
+      //
+      console.log("submit():");
+      console.log(this.user);
+      //
       this.userService.toSaveEditedProfile(user)
         .subscribe(() => { console.log("Save"); }, error => console.error(error));
     }
@@ -144,42 +168,69 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  deleteImage() {
+    //this.profileFormGroup.controls.photoFormControl.setValue = null;
+    this.user.photo = null;
+  }
 
   getUser(): UserProfile {
-    let user: UserProfile = new UserProfile();
-    user.id = this.user.id;
+    this.user.email = this.profileFormGroup.controls.emailFormControl.value;
+    this.user.full_name = this.profileFormGroup.controls.fullNameFormControl.value;
+    this.user.gender = this.profileFormGroup.controls.genderFormControl.value;
+    this.user.about_me = this.profileFormGroup.controls.aboutMeFormControl.value;
 
-    user.email = this.profileFormGroup.controls.emailFormControl.value;
-    user.fullName = this.profileFormGroup.controls.fullNameFormControl.value;
-    user.aboutMe = this.profileFormGroup.controls.aboutMeFormControl.value;
+    //this.user.id_time_zones = this.profileFormGroup.controls.timeZoneFormControl.value;
 
-    user.timeZone = this.profileFormGroup.controls.timeZoneFormControl.value;
 
-    //user.gender = this.formGroup.value;
-    return user;
+    return this.user;
   }
 
   //#region Смена пароля
   passwordChange()
   {
-    this.passwordsValidation();
+    //this.passwordsValidation();
 
     if (this.passwordChangeFormGroup.invalid)
       return;
+
+
+    if (this.passwordChangeFormGroup.valid) {
+
+      let passwordCurrent = <AbstractControl>this.passwordChangeFormGroup.controls.passwordCurrentFormControl;
+      let passwordNew = <AbstractControl>this.passwordChangeFormGroup.controls.passwordNewFormControl;
+      let user = new userPasswordChange();
+      user.passwordCurrent = passwordCurrent.value;
+      user.passwordNew = passwordNew.value;
+
+      this.userService.passwordChange(user)
+        .subscribe(result => {
+          if (result)
+          {
+            this.isPasswordChanged = result;
+            this.passwordChangeFormGroup.reset();
+          }
+          else
+          {
+            passwordCurrent.setErrors({ "passwordCurrentInvalid": !result });
+          }
+        },
+        error => console.error(error));
+
+    }
   }
 
 
-  passwordsValidation()//event: any
+  confirmPassword(event: any) //passwordsValidation()
   {
-    let passwordCurrent = <AbstractControl>this.passwordChangeFormGroup.controls.passwordCurrentFormControl;
-    passwordCurrent.value ? null : passwordCurrent.setErrors({ "required": true });
+    //let passwordCurrent = <AbstractControl>this.passwordChangeFormGroup.controls.passwordCurrentFormControl;
+    //passwordCurrent.value ? null : passwordCurrent.setErrors({ "required": true });
 
     let passwordNew = <AbstractControl>this.passwordChangeFormGroup.controls.passwordNewFormControl;
-    passwordNew.value ? null : passwordNew.setErrors({ "required": true });
+    //passwordNew.value ? null : passwordNew.setErrors({ "required": true });
 
     let passwordNewConfirm = <AbstractControl>this.passwordChangeFormGroup.controls.passwordNewConfirmFormControl;
-    passwordNewConfirm.value ? null : passwordNewConfirm.setErrors({ "required": true });    
-    return passwordNew.value === passwordNewConfirm.value ? null : passwordNewConfirm.setErrors({ "passwordNewConfirm": true });
+    //passwordNewConfirm.value ? null : passwordNewConfirm.setErrors({ "required": true });
+    passwordNew.value === passwordNewConfirm.value ? null : passwordNewConfirm.setErrors({ "passwordNewConfirm": true });
   }
   //#endregion
 }

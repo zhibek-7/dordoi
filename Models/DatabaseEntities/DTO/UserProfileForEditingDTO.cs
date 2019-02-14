@@ -9,11 +9,9 @@ namespace Models.DatabaseEntities.DTO
     /// Для модификации, например создание, редактирование.
     /// </summary>
     [Serializable]
-    public class UserProfileForEditingDTO : BaseEntity
+    public class UserProfileForEditingDTO //: BaseEntity
     {
-        public string name { get; set; }
-
-        //public string Password { get; set; }
+        public string name_text { get; set; }
 
         public Byte[] photo { get; set; }
 
@@ -23,7 +21,7 @@ namespace Models.DatabaseEntities.DTO
 
         public string full_name { get; set; }
 
-        public int? time_zone { get; set; }
+        public int? id_time_zones { get; set; }
 
         public string about_me { get; set; }
 

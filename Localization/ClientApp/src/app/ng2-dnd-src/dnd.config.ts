@@ -11,7 +11,7 @@ export class DataTransferEffect {
   static MOVE = new DataTransferEffect('move');
   static NONE = new DataTransferEffect('none');
 
-  constructor(public name_text: string) { }
+    constructor(public name: string) { }
 }
 
 export class DragImage {

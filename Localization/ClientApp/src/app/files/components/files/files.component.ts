@@ -23,8 +23,6 @@ export class FilesComponent implements OnInit {
 
   searchFilesNamesString: string = "";
 
-  selectedNode: TreeNode;
-
   cuttedNode: TreeNode;
 
   isLoading: boolean;
@@ -54,7 +52,7 @@ export class FilesComponent implements OnInit {
 
       this.cols = [
         { field: "name_text", header: "Имя" },
-        { field: "date_Of_Change", header: "Дата изменения" },
+        { field: "date_of_change", header: "Дата изменения" },
         {
           field: "strings_Count",
           header: "Строки",
@@ -78,7 +76,7 @@ export class FilesComponent implements OnInit {
     } else {
       this.cols = [
         { field: "name_text", header: "Имя" },
-        { field: "date_Of_Change", header: "Дата изменения" },
+        { field: "date_of_change", header: "Дата изменения" },
         {
           field: "strings_Count",
           header: "Строки",
@@ -113,7 +111,7 @@ export class FilesComponent implements OnInit {
 
   moveCurrentlyCutted(selectedNode: TreeNode): void {
     this.fileService
-      .changeParentFolder(this.cuttedNode.data, this.selectedNode.data.id)
+      .changeParentFolder(this.cuttedNode.data, selectedNode.data.id)
       .subscribe(
         () => {
           this.deleteNode(this.cuttedNode);
@@ -140,9 +138,9 @@ export class FilesComponent implements OnInit {
   }
 
   canDrop(node: any) {
-    const nodeIsFolder: boolean = node.data.isFolder;
-    return unused => {
-      return nodeIsFolder;
+    const nodeIsFolder: boolean = node.data.is_folder;
+    return droppedNode => {
+      return nodeIsFolder && droppedNode.data.id != node.data.id;
     };
   }
 
@@ -164,9 +162,9 @@ export class FilesComponent implements OnInit {
                 .subscribe(translations => {
                   translations.forEach(translation => {
                     if (translation.locale_Id == this.selectedLanguageId) {
-                      file.data.percent_Of_Translation =
+                      file.data.percent_of_translation =
                         translation.percent_Of_Translation;
-                      file.data.percent_Of_Confirmed =
+                      file.data.percent_of_confirmed =
                         translation.percent_Of_Confirmed;
                     }
                   });
@@ -179,12 +177,12 @@ export class FilesComponent implements OnInit {
       );
   }
 
-  addFolder(newFolder: File, parentNode?: TreeNode): void {
+  addFolder(newFolder: FileData, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
     this.fileService
       .addFolder(
-        newFolder.name,
+        newFolder.name_text,
         this.projectsService.currentProjectId,
         parentId
       )
@@ -227,7 +225,7 @@ export class FilesComponent implements OnInit {
       this.fileService
         .updateFileVersion(
           file,
-          oldNode.data.name,
+          oldNode.data.name_text,
           this.projectsService.currentProjectId,
           parentId
         )
@@ -248,7 +246,7 @@ export class FilesComponent implements OnInit {
     // Find last index in nodes list
     const lastIndex = this.findLastIndex(
       nodes,
-      node => node.data.is_Folder == addedNode.data.is_Folder
+      node => node.data.is_folder == addedNode.data.is_folder
     );
 
     addedNode.parent = parent;
@@ -323,7 +321,7 @@ export class FilesComponent implements OnInit {
   }
 
   renameNode(node: TreeNode, updatedFile: FileData) {
-    node.data.name = updatedFile.name_text;
+    node.data.name_text = updatedFile.name_text;
     this.fileService.updateNode(node.data).subscribe(
       () => {
         this.reloadView();
@@ -333,15 +331,18 @@ export class FilesComponent implements OnInit {
   }
 
   requestFileDownload(node: TreeNode) {
+    this.ngxSpinnerService.show();
     this.fileService.downloadFile(node.data).subscribe(
       data => {
-        let fileName = node.data.name;
-        if (node.data.isFolder) {
+        let fileName = node.data.name_text;
+        if (node.data.download_name && node.data.download_name != "") {
+          fileName = node.data.download_name;
+        }
+        if (node.data.is_folder) {
           fileName = fileName + ".zip";
-        } else if (node.data.downloadName && node.data.downloadName != "") {
-          fileName = node.data.downloadName;
         }
         saveAs(data, fileName);
+        this.ngxSpinnerService.hide();
       },
       error => alert(error)
     );

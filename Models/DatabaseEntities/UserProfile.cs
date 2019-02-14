@@ -11,23 +11,21 @@ namespace Models.DatabaseEntities
     [Serializable]
     public class UserProfile : BaseEntity
     {
-        public string Name { get; set; }
+        public string name_text { get; set; }
+        
+        public Byte[] photo { get; set; }
 
-        //public string Password { get; set; }
+        public string email { get; set; }
 
-        public Byte[] Photo { get; set; }
+        //public bool joined { get; set; }
 
-        public string Email { get; set; }
+        public string full_name { get; set; }
+        
+        public int? id_time_zones { get; set; }
 
-        //public bool Joined { get; set; }
+        public string about_me { get; set; }
 
-        public string FullName { get; set; }
-
-        public int? TimeZone { get; set; }
-
-        public string AboutMe { get; set; }
-
-        public bool? Gender { get; set; }
+        public bool? gender { get; set; }
 
         public int? LocaleId { get; set; }
         public bool LocaleIsNative { get; set; }
