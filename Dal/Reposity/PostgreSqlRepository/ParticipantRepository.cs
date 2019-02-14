@@ -410,7 +410,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
-
+        /// <summary>
+        /// Возвращает true если пользователь является владельцем хотя бы одного проекта.
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public async Task<bool?> IsOwnerInAnyProject(string userName)
         {
             try
@@ -420,7 +424,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var query = new Query("participants")
                         .LeftJoin("roles", "roles.id", "participants.id_role")
                         .LeftJoin("users", "users.id", "participants.id_user")
-                        //.Where("id_user", userId)
                         .Where("users.name_text", userName)
                         .Where("roles.short", "owner")
                         .AsCount();

@@ -3,6 +3,7 @@ export class Locale {
   name_text: string;
   description: string;
   flag: string;
+  isNative?: boolean;
   public constructor(
     id: number,
     name: string,

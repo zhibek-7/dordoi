@@ -80,10 +80,10 @@
               <br />
               <input type="radio"
                      formControlName="genderFormControl"
-                     value="false"/> Мужчина
+                     value="false" /> Мужчина
               <input type="radio"
                      formControlName="genderFormControl"
-                     value="true"/> Женщина
+                     value="true" /> Женщина
             </div>
 
             <div class="form-group">
@@ -94,12 +94,13 @@
             </div>
             <div class="form-group">
               <label>Часовой пояс:</label>
-              <app-set-time-zone [availableTimeZone] ="user.id_time_zones" (selectedTimeZoneChanged)="setSelectedTimeZone($event)"></app-set-time-zone>
-              
+              <app-set-time-zone [availableTimeZone]="user.id_time_zones" (selectedTimeZoneChanged)="setSelectedTimeZone($event)"></app-set-time-zone>
+
             </div>
-            <div class="border-top">
+            <div class="border-top"
+                 *ngIf="availableLocales.length > 0">
               <label>Мои языки:</label>
-              <app-set-languages [availableLocales]="availableLocales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
+              <app-set-languages-with-native [availableLocales]="availableLocales" (selectedLocalesWithNativeChanged)="setSelectedLocales($event)"></app-set-languages-with-native>
             </div>
             <br />
             <div class="form-group">

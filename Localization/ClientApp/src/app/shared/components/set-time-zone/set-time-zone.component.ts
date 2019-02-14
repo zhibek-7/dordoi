@@ -23,18 +23,12 @@ export class SetTimeZoneComponent implements OnInit {
     this.timeZoneService.getAll()
       .subscribe(timeZones => {
         this.timeZones = timeZones;
-          //
-          console.log("SetTimeZoneComponent ngOnInit. this.timeZones:");
-          console.log(this.timeZones);
-          //
         },
         error => console.error(error));
   }
 
   raiseSelectionChanged(event: any) {
-    let selected: any = event.target.value;
-    console.log("SetTimeZoneComponent. selected timeZone: " + event.target.value + " " + event.target.textContent + ".");
-    this.selectedTimeZoneChanged.emit(selected);
+    this.selectedTimeZoneChanged.emit(event);
   }
 
 }
