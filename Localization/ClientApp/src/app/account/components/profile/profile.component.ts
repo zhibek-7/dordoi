@@ -40,6 +40,7 @@ export class ProfileComponent implements OnInit {
 
   timeZones: [number, string];
 
+  //#region init
 
   ngOnInit() {
     this.userService.getProfile()
@@ -48,7 +49,6 @@ export class ProfileComponent implements OnInit {
         this.user = user;
         this.initForm();
         this.loadAvailableLanguages();
-        //this.initTimeZones();
         //
         console.log(this.user);
         //
@@ -84,61 +84,25 @@ export class ProfileComponent implements OnInit {
           ]),
         "fullNameFormControl": new FormControl(this.user.full_name),
         "photoFormControl": new FormControl(this.user.photo),
-        //"timeZoneFormControl": new FormControl(this.user.id_time_zones),
         "aboutMeFormControl": new FormControl(this.user.about_me),
         "genderFormControl": new FormControl(this.user.gender == true ? "true" : this.user.gender == false ? "false" : "null")
       });
   }
 
-  deleteUser() {
-    this.userService.delete()
-      .subscribe(result => {
-        result
-          ? this.router.navigate(['/'])
-          : this.isDeleteUserError = true;
-        },
-      error => {
-        this.isDeleteUserError = true;
-        console.error(error);
-      });
-  }
-
-  //initTimeZones() { }
-
-  setSelectedTimeZone(setTimeZoneId: number) {
-    this.user.id_time_zones = setTimeZoneId;
-    console.log("ProfileComponent. setSelectedTimeZone: ");
-    console.log(this.user.id_time_zones);
-  }
-
-  //#region Работа с Locales
-
-  loadAvailableLanguages() {
-    //let userLocalesIdIsNative: number[] = this.user.localesIdIsNative.map(([item1, item2]): number => { return item1; });
-    this.languageService.getLanguageList()
-      .subscribe(locale =>
-      {
-        this.availableLocales = locale
-          .map(local =>
-            new Selectable<Locale>(
-              local,
-              this.user.locales_ids ? this.user.locales_ids.some(selectedLocaleId => selectedLocaleId == local.id) : false
-              //userLocalesIdIsNative.some(selectedLocaleId => selectedLocaleId == local.id)
-            ));
-      },
-        error => console.error(error));
-  }
-
-  setSelectedLocales(newSelection: Locale[]) {
-    this.user.locales_ids = newSelection.map(t => t.id);
-  }
-
   //#endregion
 
-  submit()
-  {
-    if (this.profileFormGroup.invalid)
-    {
+  getUser(): UserProfile {
+    this.user.email = this.profileFormGroup.controls.emailFormControl.value;
+    this.user.full_name = this.profileFormGroup.controls.fullNameFormControl.value;
+    this.user.gender = this.profileFormGroup.controls.genderFormControl.value;
+    this.user.about_me = this.profileFormGroup.controls.aboutMeFormControl.value;
+
+    return this.user;
+  }
+
+  /** Сохранение изменений в учетной записи */
+  submit() {
+    if (this.profileFormGroup.invalid) {
       return;
     }
 
@@ -154,6 +118,56 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  /** Удаление учетной записи */
+  deleteUser() {
+    this.userService.delete()
+      .subscribe(result => {
+        result
+          ? this.router.navigate(['/'])
+          : this.isDeleteUserError = true;
+        },
+      error => {
+        this.isDeleteUserError = true;
+        console.error(error);
+      });
+  }
+  
+
+  setSelectedTimeZone(setTimeZoneId: number) {
+    this.user.id_time_zones = setTimeZoneId;
+  }
+
+  //#region Работа с Locales
+
+  loadAvailableLanguages() {
+    this.languageService.getLanguageList()
+      .subscribe(locale => {
+
+        locale.forEach(local =>
+          local.isNative = this.user.locales_id_is_native ? this.user.locales_id_is_native.some(t => t.item1 == local.id && t.item2) : false
+        );
+
+        this.availableLocales = locale
+          .map(local =>
+            new Selectable<Locale>(
+              local,
+              this.user.locales_id_is_native ? this.user.locales_id_is_native.some(selectedLocale => selectedLocale.item1 == local.id) : false
+            ));
+
+      },
+        error => console.error(error));
+  }
+
+  setSelectedLocales(newSelection: Locale[]) {
+    this.user.locales_id_is_native = newSelection.map((t): { item1: number, item2: boolean } => { return { item1: t.id, item2: t.isNative}; });
+  }
+
+  //#endregion
+
+  /**
+   * Проверка уникальности введенного email
+   * @param event
+   */
   isUniqueEmail(event: any) {
     let controlEmail = <AbstractControl>this.profileFormGroup.controls.emailFormControl;
     if (controlEmail.errors == null) {
@@ -168,31 +182,18 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+
   deleteImage() {
     //this.profileFormGroup.controls.photoFormControl.setValue = null;
     this.user.photo = null;
   }
 
-  getUser(): UserProfile {
-    this.user.email = this.profileFormGroup.controls.emailFormControl.value;
-    this.user.full_name = this.profileFormGroup.controls.fullNameFormControl.value;
-    this.user.gender = this.profileFormGroup.controls.genderFormControl.value;
-    this.user.about_me = this.profileFormGroup.controls.aboutMeFormControl.value;
-
-    //this.user.id_time_zones = this.profileFormGroup.controls.timeZoneFormControl.value;
-
-
-    return this.user;
-  }
-
   //#region Смена пароля
+
   passwordChange()
   {
-    //this.passwordsValidation();
-
     if (this.passwordChangeFormGroup.invalid)
       return;
-
 
     if (this.passwordChangeFormGroup.valid) {
 
@@ -215,22 +216,17 @@ export class ProfileComponent implements OnInit {
           }
         },
         error => console.error(error));
-
     }
   }
 
 
-  confirmPassword(event: any) //passwordsValidation()
+  confirmPassword(event: any) 
   {
-    //let passwordCurrent = <AbstractControl>this.passwordChangeFormGroup.controls.passwordCurrentFormControl;
-    //passwordCurrent.value ? null : passwordCurrent.setErrors({ "required": true });
-
     let passwordNew = <AbstractControl>this.passwordChangeFormGroup.controls.passwordNewFormControl;
-    //passwordNew.value ? null : passwordNew.setErrors({ "required": true });
-
     let passwordNewConfirm = <AbstractControl>this.passwordChangeFormGroup.controls.passwordNewConfirmFormControl;
-    //passwordNewConfirm.value ? null : passwordNewConfirm.setErrors({ "required": true });
+
     passwordNew.value === passwordNewConfirm.value ? null : passwordNewConfirm.setErrors({ "passwordNewConfirm": true });
   }
+
   //#endregion
 }

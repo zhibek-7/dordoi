@@ -488,7 +488,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Создание пользователя с вложенными списками идентификаторов связанных данных.
                     var resultDTO = new UserProfileForEditingDTO
                     {
-                        //id = temp.FirstOrDefault().id,
+                        id = temp.FirstOrDefault().id,
                         name_text = temp.FirstOrDefault().name_text,
                         email = temp.FirstOrDefault().email,
                         photo = temp.FirstOrDefault().photo,
@@ -497,7 +497,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                         gender = temp.FirstOrDefault().gender,
                         id_time_zones = temp.FirstOrDefault().id_time_zones,
 
-                        locales_ids = temp.Select(t => t.LocaleId).Distinct(),
                         locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
                             ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
                             : null
@@ -545,7 +544,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
                     //Пересоздание связей пользователя с языками перевода (Users с Locales)
-                    //await UpdateUsersLocalesAsync(user.ID, user.LocalesIds, user.LocalesIdIsNative);
+                    await UpdateUsersLocalesAsync(user.id, user.locales_id_is_native);
                 }
             }
             catch (NpgsqlException exception)
@@ -564,7 +563,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="localesIds">Выбранные языки перевода.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task UpdateUsersLocalesAsync(int userId, IEnumerable<int?> localesIds, IEnumerable<Tuple<int, bool>> localesIdIsNative, bool isDeleteOldRecords = true)
+        public async Task UpdateUsersLocalesAsync(int userId, IEnumerable<Tuple<int, bool>> localesIdIsNative, bool isDeleteOldRecords = true)
         {
             try
             {
@@ -572,7 +571,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     if (isDeleteOldRecords)
                     {
-                        var queryDelete = new Query("users_locales").Where("id_user", userId).AsDelete();
+                        var queryDelete = new Query("users_locales")
+                            .Where("id_user", userId)
+                            .AsDelete();
                         var compiledQueryDelete = _compiler.Compile(queryDelete);
                         LogQuery(compiledQueryDelete);
                         await dbConnection.ExecuteAsync(
@@ -581,44 +582,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
 
 
-
                     var usersLocalesIsNative = localesIdIsNative.Select(t => new
                     {
                         id_user = userId,
                         id_locale = t.Item1,
                         is_native = t.Item2
                     }).ToList();
-
-                    if (usersLocalesIsNative != null && usersLocalesIsNative.Count > 0)
+                    
+                    foreach (var element in usersLocalesIsNative)
                     {
-                        foreach (var element in usersLocalesIsNative)
-                        {
-                            var queryInsert = new Query("users_locales").AsInsert(element);
-                            var compiledQueryInsert = _compiler.Compile(queryInsert);
-                            LogQuery(compiledQueryInsert);
-                            await dbConnection.ExecuteAsync(
-                                    sql: compiledQueryInsert.Sql,
-                                    param: compiledQueryInsert.NamedBindings);
-                        }
+                        var queryInsert = new Query("users_locales").AsInsert(element);
+                        var compiledQueryInsert = _compiler.Compile(queryInsert);
+                        LogQuery(compiledQueryInsert);
+                        await dbConnection.ExecuteAsync(
+                            sql: compiledQueryInsert.Sql,
+                            param: compiledQueryInsert.NamedBindings);
                     }
-                    else
-                    {
-                        var usersLocales = localesIds.Select(t => new
-                        {
-                            id_user = userId,
-                            id_locale = t
-                        }).ToList();
 
-                        foreach (var element in usersLocales)
-                        {
-                            var queryInsert = new Query("users_locales").AsInsert(element);
-                            var compiledQueryInsert = _compiler.Compile(queryInsert);
-                            LogQuery(compiledQueryInsert);
-                            await dbConnection.ExecuteAsync(
-                                    sql: compiledQueryInsert.Sql,
-                                    param: compiledQueryInsert.NamedBindings);
-                        }
-                    }
                 }
             }
             catch (NpgsqlException exception)

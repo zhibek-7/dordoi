@@ -11,6 +11,9 @@ namespace Models.DatabaseEntities
     [Serializable]
     public class UserProfile : BaseEntity
     {
+        /// <summary>
+        /// Имя пользователя (логин/ник)
+        /// </summary>
         public string name_text { get; set; }
         
         public Byte[] photo { get; set; }
@@ -19,6 +22,9 @@ namespace Models.DatabaseEntities
 
         //public bool joined { get; set; }
 
+        /// <summary>
+        /// ФИО
+        /// </summary>
         public string full_name { get; set; }
         
         public int? id_time_zones { get; set; }
@@ -27,7 +33,11 @@ namespace Models.DatabaseEntities
 
         public bool? gender { get; set; }
 
+        //Выбранный язык:
         public int? LocaleId { get; set; }
+        /// <summary>
+        /// Выбранный язык перевода является родным
+        /// </summary>
         public bool LocaleIsNative { get; set; }
     }
 }
