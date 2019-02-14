@@ -39,15 +39,14 @@ namespace Models.Services
 
         public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
         {
+            var files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch);
             if (string.IsNullOrEmpty(fileNamesSearch))
             {
-                var files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId);
                 return files.ToTree((file, icon) => new Node<File>(file, icon), (file) => this.GetIconByFile(file));
             }
             else
             {
-                var idsToFiles = (await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch))
-                    .ToDictionary(keySelector: value => value.id);
+                var idsToFiles = files.ToDictionary(keySelector: value => value.id);
                 var parentsIds = idsToFiles.Where(x => x.Value.id_folder_owner != null
                                                     && !idsToFiles.ContainsKey(x.Value.id_folder_owner.Value))
                                            .Select(x => (int)x.Value.id_folder_owner)

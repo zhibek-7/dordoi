@@ -400,32 +400,19 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId)
+        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch = null)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 var query = new Query("files")
                     .Where("id_localization_project", projectId)
                     .Where("is_last_version", true);
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
 
-                return await dbConnection.QueryAsync<File>(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings
-                    );
-            }
-        }
-
-        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
-        {
-            var fileNamesSearchPattern = $"%{fileNamesSearch}%";
-            using (var dbConnection = new NpgsqlConnection(connectionString))
-            {
-                var query = new Query("files")
-                    .Where("id_localization_project", projectId)
-                    .Where("is_last_version", true)
-                    .WhereLike("name_text", fileNamesSearchPattern);
+                if(!string.IsNullOrEmpty(fileNamesSearch))
+                {
+                    var fileNamesSearchPattern = $"%{fileNamesSearch}%";
+                    query = query.WhereLike("name_text", fileNamesSearchPattern);
+                }
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);
