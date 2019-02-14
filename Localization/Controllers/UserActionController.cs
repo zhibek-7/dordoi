@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
+using Models.Interfaces.Repository;
 
 namespace Localization.Controllers
 {
@@ -14,11 +12,11 @@ namespace Localization.Controllers
     [ApiController]
     public class UserActionController : ControllerBase
     {
-        private readonly UserActionRepository userActionRepository;
+        private readonly IUserActionRepository _userActionRepository;
 
-        public UserActionController()
+        public UserActionController(IUserActionRepository userActionRepository)
         {
-            userActionRepository = new UserActionRepository(Settings.GetStringDB());
+            this._userActionRepository = userActionRepository;
         }
 
         /// <summary>
@@ -29,7 +27,7 @@ namespace Localization.Controllers
         [Route("List")]
         public async Task<IEnumerable<UserAction>> GetAll()
         {
-            return await userActionRepository.GetAllAsync();
+            return await this._userActionRepository.GetAllAsync();
         }
 
         /// <summary>
@@ -41,7 +39,7 @@ namespace Localization.Controllers
         [Route("onProject/{projectId}")]
         public async Task<IEnumerable<UserAction>> GetAllByProjectID(int projectId)
         {
-            return await userActionRepository.GetAllByProjectIdAsync(projectId);
+            return await this._userActionRepository.GetAllByProjectIdAsync(projectId);
         }
     }
 }

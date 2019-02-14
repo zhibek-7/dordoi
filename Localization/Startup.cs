@@ -54,6 +54,7 @@ namespace Localization
             services.AddScoped<ITranslationSubstringRepository>(provider => new TranslationSubstringRepository(connectionString));
             services.AddScoped<ITranslationTroubleRepository>(provider => new TranslationTroubleRepository(connectionString));
             services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
+            services.AddScoped<IUserActionRepository>(provider => new UserActionRepository(connectionString));
 
             services.AddScoped<FromExcel>();
 

@@ -10,7 +10,7 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class UserActionRepository : BaseRepository, IRepositoryAsync<UserAction>
+    public class UserActionRepository : BaseRepository, IUserActionRepository
     {
         public UserActionRepository(string connectionStr) : base(connectionStr)
         {
@@ -231,7 +231,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddAuthorizeActionAsync(int userId, string userName, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Авторизация", (int)WorkTypes.Authorize, WorkTypes.Authorize.ToString());
+            var act = new UserAction(userId, userName, "Авторизация", (int)WorkTypes.Authorize, WorkTypes.Authorize.ToString());
             return await AddAsync(act);
         }
 
@@ -242,7 +242,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddLoginActionAsync(int userId, string userName, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Вход в систему. " + comment, (int)WorkTypes.Login, WorkTypes.Login.ToString());
+            var act = new UserAction(userId, userName, "Вход в систему. " + comment, (int)WorkTypes.Login, WorkTypes.Login.ToString());
             return await AddAsync(act);
         }
 
@@ -254,9 +254,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddCreateProjectActionAsync(int userId, string userName, int projectId, int localeId, string comment = "")
         {// Authorize = 1, //1	Авторизация пользователя    
-            UserAction act = new UserAction(userId, userName, "Создание проекта. " + comment, (int)WorkTypes.CreateProject, WorkTypes.CreateProject.ToString());
-            act.id_project = projectId;
-            act.id_locale = localeId;
+            var act = new UserAction(userId, userName, "Создание проекта. " + comment, (int)WorkTypes.CreateProject, WorkTypes.CreateProject.ToString())
+            {
+                id_project = projectId,
+                id_locale = localeId
+            };
             return await AddAsync(act);
         }
 
@@ -269,9 +271,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddAddFileActionAsync(int userId, string userName, int projectId, int fileId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Добавлен файл. " + comment, (int)WorkTypes.AddFile, WorkTypes.AddFile.ToString());
-            act.id_project = projectId;
-            act.id_file = fileId;
+            var act = new UserAction(userId, userName, "Добавлен файл. " + comment, (int)WorkTypes.AddFile, WorkTypes.AddFile.ToString())
+            {
+                id_project = projectId,
+                id_file = fileId
+            };
             return await AddAsync(act);
         }
 
@@ -281,12 +285,14 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="item"></param>
         public async Task<int> AddAddFileActionAsync(File item, int? idTranslit, WorkTypes wt)
         {
-            UserAction action = new UserAction();
-            action.datetime = item.date_of_change;
-            action.id_project = item.id_localization_project;
-            action.id_file = idTranslit;
-            action.file_name = item.name_text;
-            action.id_work_type = (int)wt;
+            var action = new UserAction
+            {
+                datetime = item.date_of_change,
+                id_project = item.id_localization_project,
+                id_file = idTranslit,
+                file_name = item.name_text,
+                id_work_type = (int)wt
+            };
             return await AddAsync(action);
         }
 
@@ -300,9 +306,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddUpdateFileActionAsync(int userId, string userName, int projectId, int fileId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Обновление файла. " + comment, (int)WorkTypes.UpdateFile, WorkTypes.UpdateFile.ToString());
-            act.id_project = projectId;
-            act.id_file = fileId;
+            var act = new UserAction(userId, userName, "Обновление файла. " + comment, (int)WorkTypes.UpdateFile, WorkTypes.UpdateFile.ToString())
+            {
+                id_project = projectId,
+                id_file = fileId
+            };
             return await AddAsync(act);
         }
 
@@ -315,9 +323,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddAddStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Добавление строки. " + comment, (int)WorkTypes.AddString, WorkTypes.AddString.ToString());
-            act.id_project = projectId;
-            act.id_string = stringId;
+            var act = new UserAction(userId, userName, "Добавление строки. " + comment, (int)WorkTypes.AddString, WorkTypes.AddString.ToString())
+            {
+                id_project = projectId,
+                id_string = stringId
+            };
             return await AddAsync(act);
         }
 
@@ -330,9 +340,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddUpdateStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Редактирование строки. " + comment, (int)WorkTypes.UpdateString, WorkTypes.UpdateString.ToString());
-            act.id_project = projectId;
-            act.id_string = stringId;
+            var act = new UserAction(userId, userName, "Редактирование строки. " + comment, (int)WorkTypes.UpdateString, WorkTypes.UpdateString.ToString())
+            {
+                id_project = projectId,
+                id_string = stringId
+            };
             return await AddAsync(act);
         }
 
@@ -345,9 +357,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddDeleteStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Удаление строки. " + comment, (int)WorkTypes.DeleteString, WorkTypes.DeleteString.ToString());
-            act.id_project = projectId;
-            act.id_string = stringId;
+            var act = new UserAction(userId, userName, "Удаление строки. " + comment, (int)WorkTypes.DeleteString, WorkTypes.DeleteString.ToString())
+            {
+                id_project = projectId,
+                id_string = stringId
+            };
             return await AddAsync(act);
         }
 
@@ -360,10 +374,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddAddTraslationActionAsync(int userId, string userName, int projectId, int translationId, int stringId, int localeId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Добавление перевода. " + comment, (int)WorkTypes.AddTraslation, WorkTypes.AddTraslation.ToString());
-            act.id_project = projectId;
-            act.id_translation = translationId;
-            act.id_string = stringId;
+            var act = new UserAction(userId, userName, "Добавление перевода. " + comment, (int)WorkTypes.AddTraslation, WorkTypes.AddTraslation.ToString())
+            {
+                id_project = projectId,
+                id_translation = translationId,
+                id_string = stringId
+            };
             return await AddAsync(act);
         }
 
@@ -373,15 +389,16 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="item"></param>
         public async Task<int> AddAddTraslationActionAsync(Translation item, int? idTranslit, WorkTypes wt)
         {
-            UserAction action = new UserAction();
-
-            action.id_string = item.ID_String;
-            action.id_translation = idTranslit;
-            action.translation = item.Translated;
-            action.id_work_type = (int)wt;
-            action.id_user = item.ID_User;
-            action.datetime = item.DateTime;
-            action.id_locale = item.ID_Locale;
+            var action = new UserAction
+            {
+                id_string = item.ID_String,
+                id_translation = idTranslit,
+                translation = item.Translated,
+                id_work_type = (int)wt,
+                id_user = item.ID_User,
+                datetime = item.DateTime,
+                id_locale = item.ID_Locale
+            };
 
             //TODO нехватает данных, нужно вычислять.
             //action.ID_Project = projectId;
@@ -398,9 +415,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddDeleteTranslationActionAsync(int userId, string userName, int projectId, int translationId, string comment = "")
         {// Authorize = 1, //1	Авторизация пользователя    
-            UserAction act = new UserAction(userId, userName, "Удаление перевода. " + comment, (int)WorkTypes.DeleteTranslation, WorkTypes.DeleteTranslation.ToString());
-            act.id_project = projectId;
-            act.id_translation = translationId;
+            var act = new UserAction(userId, userName, "Удаление перевода. " + comment, (int)WorkTypes.DeleteTranslation, WorkTypes.DeleteTranslation.ToString())
+            {
+                id_project = projectId,
+                id_translation = translationId
+            };
             return await AddAsync(act);
         }
 
@@ -413,11 +432,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddUpdateTranslationActionAsync(int userId, string userName, int projectId, int translationId, int stringId, int localeId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Редактирование перевода. " + comment, (int)WorkTypes.UpdateTranslation, WorkTypes.UpdateTranslation.ToString());
-            act.id_project = projectId;
-            act.id_translation = translationId;
-            act.id_string = stringId;
-            act.id_locale = localeId;
+            var act = new UserAction(userId, userName, "Редактирование перевода. " + comment, (int)WorkTypes.UpdateTranslation, WorkTypes.UpdateTranslation.ToString())
+            {
+                id_project = projectId,
+                id_translation = translationId,
+                id_string = stringId,
+                id_locale = localeId
+            };
             return await AddAsync(act);
         }
 
@@ -430,9 +451,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddConfirmTranslationActionAsync(int userId, string userName, int projectId, int translationId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Утвержденеи перевода. " + comment, (int)WorkTypes.ConfirmTranslation, WorkTypes.ConfirmTranslation.ToString());
-            act.id_project = projectId;
-            act.id_translation = translationId;
+            var act = new UserAction(userId, userName, "Утвержденеи перевода. " + comment, (int)WorkTypes.ConfirmTranslation, WorkTypes.ConfirmTranslation.ToString())
+            {
+                id_project = projectId,
+                id_translation = translationId
+            };
             return await AddAsync(act);
         }
 
@@ -445,9 +468,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Идентификатор добавленого действия</returns>
         public async Task<int> AddChoseTranslationActionAsync(int userId, string userName, int projectId, int translationId, string comment = "")
         {
-            UserAction act = new UserAction(userId, userName, "Выбор перевода. " + comment, (int)WorkTypes.ChoseTranslation, WorkTypes.ChoseTranslation.ToString());
-            act.id_project = projectId;
-            act.id_translation = translationId;
+            var act = new UserAction(userId, userName, "Выбор перевода. " + comment, (int)WorkTypes.ChoseTranslation, WorkTypes.ChoseTranslation.ToString())
+            {
+                id_project = projectId,
+                id_translation = translationId
+            };
             return await AddAsync(act);
         }
     }
