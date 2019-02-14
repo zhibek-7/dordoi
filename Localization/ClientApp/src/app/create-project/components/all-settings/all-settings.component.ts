@@ -261,6 +261,9 @@ export class AllSettingsComponent implements OnInit {
     });
     //передает массив языков
     this.projectsService.addProjectLocales(projectLocales);
+
+
+
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,//id
       this.currentProjectName,//name

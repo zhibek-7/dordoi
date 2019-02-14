@@ -55,6 +55,18 @@ namespace Localization.Controllers
             return await _localizationProjectRepository.GetWithDetailsById(id);
         }
 
+
+        //[HttpPost]
+        //[Route("add/{project}")]
+        [HttpPost]
+        [Route("newProject")]
+        public async Task<int> newProject([FromBody] LocalizationProject project)
+        {
+          int idProj= await _localizationProjectRepository.AddAsyncInsertProject(project);
+            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            return idProj;
+        }
+
         //[HttpPost]
         //[Route("add/{project}")]
         [HttpPost]

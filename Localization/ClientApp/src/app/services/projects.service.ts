@@ -42,6 +42,18 @@ export class ProjectsService {
     return this.httpClient.post<LocalizationProject>(this.controllerUrl + "details", id);
   }
 
+  /**
+   * /добавление проекта
+   * @param project
+   */
+  newProject(project: LocalizationProject): Observable<LocalizationProject> {
+    return this.httpClient.post<LocalizationProject>(this.controllerUrl + "newProject", project);
+  }
+
+    /**
+   * /добавление проекта
+   * @param project
+   */
   async addProject(project: LocalizationProject, ) {
     console.log("addProject-->");
     console.log(project);
@@ -67,7 +79,7 @@ export class ProjectsService {
   //updateProject(Id: number, project: LocalizationProject) {
   //  console.log("updateProject-->" + Id);
   //  return this.httpClient.get<LocalizationProject>(this.controllerUrl + "edit/" + Id);
-  //  }
+  //}
   deleteProject(Id: number) {
     console.log("deleteProject-->" + Id);
     return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id);

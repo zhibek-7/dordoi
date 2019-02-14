@@ -4,10 +4,10 @@ import { ActivatedRoute } from "@angular/router";
 import { ProjectsService } from "../services/projects.service";
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-import { Router } from "@angular/router";
+
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
 import { Locale } from "src/app/models/database-entities/locale.type";
-
+import { Router } from "@angular/router";
 import { forEach } from "@angular/router/src/utils/collection";
 import { promise } from "protractor";
 import { Promise } from "q";
@@ -62,9 +62,9 @@ export class CreateProjectComponent implements OnInit {
   ];
 
   //////////////////////////////////////////////////
-  constructor(private projectsService: ProjectsService) { }
+  constructor(private router: Router,private projectsService: ProjectsService) { }
   currentProjectName = "";
-  currentProjectId = Math.floor(Math.random() * 10000) + 1;
+  currentProjectId = 1;
   currentProjectDescription = "";
   currentProjectPublic = true;
   currentProjectFileTrue = false;
@@ -210,20 +210,29 @@ export class CreateProjectComponent implements OnInit {
 
       //
     ); // поменять на id реального пользователя, когда появится
-    this.projectsService.addProject(project);
+
+    this.projectsService.newProject(project).subscribe(pr => {
+      
+
+      let projectLocales: LocalizationProjectsLocales[] = [];
+      this.selectedItems.forEach(lang => {
+        projectLocales.push({
+          id_Localization_Project: Number(pr),
+          id_Locale: lang.id,
+          percent_Of_Translation: 0,
+          Percent_Of_Confirmed: 0
+        });
+      });
+
+
+      //передает массив языков
+      this.projectsService.addProjectLocales(projectLocales);
+
+    });
     //собирает добавленные языки в один массив
 
-    let projectLocales: LocalizationProjectsLocales[] = [];
-    this.selectedItems.forEach(lang => {
-      projectLocales.push({
-        id_Localization_Project: this.currentProjectId,
-        id_Locale: lang.id,
-        percent_Of_Translation: 0,
-        Percent_Of_Confirmed: 0
-      });
-    });
+  
 
-    //передает массив языков
-    this.projectsService.addProjectLocales(projectLocales);
+    this.router.navigate(["/Projects/" + this.currentProjectId]);
   }
 }

@@ -94,7 +94,7 @@
     </div>
     <div>
       <select class="form-control" [(ngModel)]="selectedLang" [ngModelOptions]="{standalone: true}">
-        <option id='{{lang.id}}' *ngFor="let lang of dropdownList" [selected]="selectedLang" value='{{lang.id}}'> {{lang.itemName}}</option>
+        <option id='{{lang.id}}' *ngFor="let lang of dropdownList" value='{{lang.id}}'> {{lang.itemName}}</option>
       </select>
     </div>
     <div class="row">
@@ -160,7 +160,7 @@
       </div>
     </div>
   </div>
-  <div>
+  <div> 
     <button mat-raised-button color="primary" style="width: 15rem;" (click)="addProject()">Сохранить проект</button>
 
 
