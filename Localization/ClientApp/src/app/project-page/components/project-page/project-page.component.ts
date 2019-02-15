@@ -1,21 +1,21 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-import { ProjectsService } from "../services/projects.service";
+import { LocalizationProject } from "src/app/models/database-entities/localizationProject.type";
+import { ProjectsService } from "src/app/services/projects.service";
 import { MatTableDataSource, MatSort } from "@angular/material";
 
-import { LanguageService } from "../services/languages.service";
-import { UserService } from "../services/user.service";
-import { WorkTypeService } from "../services/workType.service";
-import { UserActionsService } from "../services/userActions.service";
-import { ParticipantsService } from "../services/participants.service";
+import { LanguageService } from "src/app/services/languages.service";
+import { UserService } from "src/app/services/user.service";
+import { WorkTypeService } from "src/app/services/workType.service";
+import { UserActionsService } from "src/app/services/userActions.service";
+import { ParticipantsService } from "src/app/services/participants.service";
 
-import { Locale } from "../models/database-entities/locale.type";
-import { User } from "../models/database-entities/user.type";
-import { WorkType } from "../models/database-entities/workType.type";
-import { UserAction } from "../models/database-entities/userAction.type";
-import { LocalizationProjectsLocalesDTO } from "../models/DTO/localizationProjectsLocalesDTO";
-import { Participant } from "../models/Participants/participant.type";
+import { Locale } from "src/app/models/database-entities/locale.type";
+import { User } from "src/app/models/database-entities/user.type";
+import { WorkType } from "src/app/models/database-entities/workType.type";
+import { UserAction } from "src/app/models/database-entities/userAction.type";
+import { LocalizationProjectsLocalesDTO } from "src/app/models/DTO/localizationProjectsLocalesDTO";
+import { Participant } from "src/app/models/Participants/participant.type";
 
 @Component({
   selector: "app-project-page",
@@ -187,7 +187,7 @@ export class ProjectPageComponent implements OnInit {
       this.dataSource = new MatTableDataSource(this.userActionsList);
     } else {
       const filtredLangArr = this.userActionsList.filter(function(i) {
-        return filtredArr(i.Locale);
+        return filtredArr(i.locale_name);
       });
       this.dataSource = new MatTableDataSource(filtredLangArr);
     }

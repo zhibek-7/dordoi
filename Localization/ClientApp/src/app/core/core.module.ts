@@ -13,7 +13,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { CurrentProjectSettingsComponent } from '../current-project-settings/current-project-settings.component';
 import { NewProjectComponent } from '../new-project/new-project.component';
 import { UserAccountComponent } from '../user-account/user-account.component';
-import { ProjectPageComponent } from '../project-page/project-page.component';
 import { UserRegistrationComponent } from '../user-registration/user-registration.component';
 //import { DeleteProjectComponent } from '../create-project/components/delete-project/delete-project.component';
 
@@ -69,7 +68,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CurrentProjectSettingsComponent,
     NewProjectComponent,
     UserAccountComponent,
-    ProjectPageComponent,
     UserRegistrationComponent,
    // DeleteProjectComponent
     ],
