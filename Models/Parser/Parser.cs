@@ -157,13 +157,29 @@ namespace Models.Parser
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'json'", file.name_text));
             var ts = new List<TranslationSubstring>();
-            string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*:\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
+            string pattern = "(,|\\{|\\[|:)\\s*\"((?:[^\r\n\"]|(?<=\\\\)[\r\n\"]|(?<=\r)\n)*)\"(\\s*[\\}\\]])*";
             var matches = Regex.Matches(file.original_full_text, pattern);
-            foreach (Match m in matches)
+            List<string> context_parts = new List<string>();
+            for (int i = 0; i < matches.Count; i++)
             {
-                bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
-                ts.Add(new TranslationSubstring(m.Groups[isLatin ? 2 : 1].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
+                bool isContextPart = false;
+                if (matches[i].Groups[1].Value == "{") context_parts.Add(matches[i].Groups[2].Value);
+                if (matches[i].Groups[1].Value == "," && Regex.IsMatch(matches[i + 1].Groups[1].Value, "[:\\{\\[]")) { context_parts.RemoveAt(context_parts.Count - 1); context_parts.Add(matches[i].Groups[2].Value); isContextPart = true; }
+                if (!isContextPart && Regex.IsMatch(matches[i].Groups[1].Value, "[:\\[,]"))
+                {
+                    string context = string.Empty;
+                    for (int j = 0; j < context_parts.Count; j++) context += context_parts[j] + "->";
+                    ts.Add(new TranslationSubstring(matches[i].Groups[2].Value, context, file.id, matches[i].Groups[2].Value, matches[i].Groups[2].Index));
+                }
+                foreach (var m in Regex.Matches(matches[i].Groups[3].Value, "[\\}\\]]")) context_parts.RemoveAt(context_parts.Count - 1);
             }
+            //string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*:\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
+            //var matches = Regex.Matches(file.original_full_text, pattern);
+            //foreach (Match m in matches)
+            //{
+            //    bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
+            //    ts.Add(new TranslationSubstring(m.Groups[isLatin ? 2 : 1].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
+            //}
             _logger.WriteLn(string.Format("Парсер 'json'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
