@@ -173,13 +173,6 @@ namespace Models.Parser
                 }
                 foreach (var m in Regex.Matches(matches[i].Groups[3].Value, "[\\}\\]]")) context_parts.RemoveAt(context_parts.Count - 1);
             }
-            //string pattern = "(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"\\s*:\\s*(?<!\\\\)\"((?:(?<=\\\\)\"|[^\"])*)(?<!\\\\)\"";
-            //var matches = Regex.Matches(file.original_full_text, pattern);
-            //foreach (Match m in matches)
-            //{
-            //    bool isLatin = !Regex.IsMatch(m.Groups[1].Value, @"\p{IsCyrillic}", RegexOptions.IgnoreCase);
-            //    ts.Add(new TranslationSubstring(m.Groups[isLatin ? 2 : 1].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
-            //}
             _logger.WriteLn(string.Format("Парсер 'json'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
@@ -212,11 +205,14 @@ namespace Models.Parser
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'csv'", file.name_text));
             var ts = new List<TranslationSubstring>();
-            string pattern = "(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"((?:(?<=\")\"|[^\"])*)(?<!\")\";(?<!\")\"(?:(?<=\")\"|[^\"])*(?<!\")\"";
-            var matches = Regex.Matches(file.original_full_text, pattern);
+            string pattern = "^\\s*(?!#)(\"(?:\"\"|[^\"])*\"[,;]*)+";
+            string subpattern = "\"(?:\"\"|[^\"])*\"";
+            var matches = Regex.Matches(file.original_full_text, pattern, RegexOptions.Multiline);
             foreach (Match m in matches)
             {
-                ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[3].Value, m.Groups[3].Index));
+                var matches_sp = Regex.Matches(m.Value, subpattern);
+                if (matches_sp.Count == 2) ts.Add(new TranslationSubstring(matches_sp[0].Value, string.Empty, file.id, matches_sp[1].Value, m.Index + matches_sp[1].Index));
+                if (matches_sp.Count >= 3) ts.Add(new TranslationSubstring(matches_sp[1].Value, matches_sp[0].Value, file.id, matches_sp[2].Value, m.Index + matches_sp[2].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'csv'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
