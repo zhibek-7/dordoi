@@ -36,14 +36,14 @@ export class ProjectPageComponent implements OnInit {
   userList = new Array<User>();
   workTypeList: Array<WorkType>;
   userActionsList: Array<UserAction>;
-  dataSource = new MatTableDataSource(this.userActionsList);
+  userActionsDataSource = new MatTableDataSource(this.userActionsList);
 
   panelOpenState = false;
   selectedUser = "none";
   selectedLang = "none";
   selectedWorkType = "none";
 
-  filtredUsers = [];
+  filtredUsers = new Array<User>();
 
   displayedColumns: string[] = ["variant", "file", "language", "time"];
 
@@ -154,7 +154,7 @@ export class ProjectPageComponent implements OnInit {
     this.userActionsService.getActionsList().subscribe(
       actions => {
         this.userActionsList = actions;
-        this.dataSource = new MatTableDataSource(this.userActionsList);
+        this.userActionsDataSource = new MatTableDataSource(this.userActionsList);
       },
       error => console.error(error)
     );
@@ -184,12 +184,12 @@ export class ProjectPageComponent implements OnInit {
     let currentLang = filterValue.source.triggerValue;
 
     if (currentLang === "Все языки") {
-      this.dataSource = new MatTableDataSource(this.userActionsList);
+      this.userActionsDataSource = new MatTableDataSource(this.userActionsList);
     } else {
       const filtredLangArr = this.userActionsList.filter(function(i) {
         return filtredArr(i.locale_name);
       });
-      this.dataSource = new MatTableDataSource(filtredLangArr);
+      this.userActionsDataSource = new MatTableDataSource(filtredLangArr);
     }
 
     function filtredArr(language) {
