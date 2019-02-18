@@ -88,7 +88,13 @@ namespace Localization.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
+        [Route("deleteLocales/{Id}")]
+        public void deleteLocalesById(int Id)
+        {
+            _localizationProjectsLocalesRepository.DeleteProjectLocalesById(Id);
+        }
+        [HttpPost]
         [Route("delete/{Id}")]
         public void DeleteProject(int Id)
         {

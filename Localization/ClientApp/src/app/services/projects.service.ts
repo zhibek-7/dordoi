@@ -76,13 +76,19 @@ export class ProjectsService {
   }
 
 
-  //updateProject(Id: number, project: LocalizationProject) {
-  //  console.log("updateProject-->" + Id);
-  //  return this.httpClient.get<LocalizationProject>(this.controllerUrl + "edit/" + Id);
-  //}
-  deleteProject(Id: number) {
-    console.log("deleteProject-->" + Id);
-    return this.httpClient.get<LocalizationProject>(this.controllerUrl + "delete/" + Id);
+
+   //удаление проекта 
+  async  deleteProject(Id: number) {
+    console.log("updateProject-->" + Id);
+    let asyncResult = await this.httpClient.post<LocalizationProject>(this.controllerUrl + "delete/" + Id, Id).toPromise();
+    return asyncResult;
+  }
+
+  //удаление языков 
+  deleteProjectLocalesById(Id: number): Observable<LocalizationProjectsLocales> {
+    console.log("updateProject-->" + Id);
+    let asyncResult = this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "deleteLocales/" + Id, Id);
+    return asyncResult;
   }
 
 

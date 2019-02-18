@@ -15,9 +15,17 @@ export class DeleteProjectComponent implements OnInit {
     console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
   }
 
-  deleteProject(Id: number): void {
-    Id = this.currentProjectId;
-    this.projectService.deleteProject(Id).subscribe(response => console.log(response));
-    this.router.navigate(["/Projects/" + Id]);
+  deleteProject(): void {
+    let Id = this.currentProjectId;
+    //удаляет проекта
+
+    //удаляет языки с проекта
+    this.projectService.deleteProjectLocalesById(Id).subscribe(loc => {
+
+    });
+    this.projectService.deleteProject(Id);
+
+
+    this.router.navigate(["/Projects/"]);
   }
 }
