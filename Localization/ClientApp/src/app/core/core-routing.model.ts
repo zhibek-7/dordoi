@@ -7,16 +7,15 @@ import { NewProjectComponent } from "../new-project/new-project.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
 
 import { UserRegistrationComponent } from "../user-registration/user-registration.component";
-//import { DeleteProjectComponent } from '../create-project/components/delete-project/delete-project.component';
 
 const routes: Routes = [
   {
-    path: 'administration',
-    loadChildren: '../administration/administration.module#AdministrationModule',
+    path: "administration",
+    loadChildren: "../administration/administration.module#AdministrationModule"
   },
   {
-    path: 'Translation/:fileId',
-    loadChildren: '../work-panel/work-panel.module#WorkPanelModule'
+    path: "Translation/:fileId",
+    loadChildren: "../work-panel/work-panel.module#WorkPanelModule"
   },
   {
     path: "Projects/:id/reports",
@@ -48,14 +47,6 @@ const routes: Routes = [
       "../glossary-list/module/list-glossaries.module#ListGlossariesModule"
   },
   {
-    path: "example",
-    loadChildren: "../example/example.model#ExampleModule"
-  },
-  {
-    path: "example2",
-    loadChildren: "../example2/example2.model#Example2Module"
-  },
-  {
     path: "Files",
     loadChildren: "../files/files.module#FilesModule"
   },
@@ -75,10 +66,6 @@ const routes: Routes = [
     path: "Translation_project/:id",
     loadChildren: "../project-page/project-page.module#ProjectPageModule"
   },
-  //{
-  //  path: 'delete/:id',
-  //  component: DeleteProjectComponent
-  //},
   {
     path: "account",
     loadChildren: "../account/module/account.module#AccountModule"
@@ -88,11 +75,9 @@ const routes: Routes = [
     component: UserRegistrationComponent
     /*loadChildren: '../user-registration/user-registration.modele.ts#UserRegistrationModule'*/
   },
-
   {
     path: "**",
     component: UserAccountComponent
-    //component: NotFoundComponent
   }
 ];
 
