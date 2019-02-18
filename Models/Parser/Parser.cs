@@ -255,9 +255,14 @@ namespace Models.Parser
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'php'", file.name_text));
             var ts = new List<TranslationSubstring>();
-            string arrayElementPattern = "(array\\s*[(]|[[]|=>|(?:[)]|[]])?\\s*,)\\s*((?<!\\\\)'((?:(?<=\\\\)'|[^'])*)(?<!\\\\)'|\\d+)";
-            string arrayEndPattern = "(?:[)]|[]])\\s*,\\s*$";
-            var matches = Regex.Matches(file.original_full_text, arrayElementPattern);
+            string pattern_array = "(array\\s*[(]|[[]|=>|(?:[)]|[]])?\\s*,)\\s*('((?:(?<=\\\\)'|[^'])*)'|\\d+)";
+            string pattern_array_subpattern = "(?:[)]|[]])\\s*,\\s*$";
+            string pattern_define = "DEFINE\\s*[(]\\s*\"((?:(?<=\\\\)\"|[^\"])*)\"\\s*,\\s*\"((?:(?<=\\\\)\"|[^\"])*)\"\\s*[)]\\s*;";
+            string pattern_array2 = "([$]\\w+)\\s*=\\s*array\\s*[(]\\s*((?:\"(?:(?<=\\\\)\"|[^\"])*\"\\s*=>\\s*\"(?:(?<=\\\\)\"|[^\"])*\"\\s*,*\\s*)*)\\s*[)]\\s*;";
+            string pattern_array2_subpattern = "\"((?:(?<=\\\\)\"|[^\"])*)\"\\s*=>\\s*\"((?:(?<=\\\\)\"|[^\"])*)\"";
+            string pattern_array2_alt = "([$]\\w+)\\s*[[]\\s*[\"']((?:(?<=\\\\)[\"']|[^\"'])*)[\"']\\s*[]]\\s*=\\s*[\"']((?:(?<=\\\\)[\"']|[^\"'])*)[\"']";
+
+            var matches = Regex.Matches(file.original_full_text, pattern_array);
             var contextParts = new List<string>();
             for (int i = 0; i < matches.Count; i++)
             {
@@ -270,10 +275,24 @@ namespace Models.Parser
                 }
                 else
                 {
-                    if (contextParts.Count > 0 && Regex.IsMatch(matches[i].Groups[1].Value, arrayEndPattern)) contextParts.RemoveAt(contextParts.Count - 1);
+                    if (contextParts.Count > 0 && Regex.IsMatch(matches[i].Groups[1].Value, pattern_array_subpattern)) contextParts.RemoveAt(contextParts.Count - 1);
                     contextParts.Add(matches[i].Groups[2].Value);
                 }
             }
+
+            matches = Regex.Matches(file.original_full_text, pattern_define);
+            foreach (Match m in matches) ts.Add(new TranslationSubstring(m.Groups[1].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
+
+            matches = Regex.Matches(file.original_full_text, pattern_array2);
+            foreach (Match m in matches)
+            {
+                var matches_sp = Regex.Matches(m.Groups[2].Value, pattern_array2_subpattern);
+                foreach (Match m_sp in matches_sp) ts.Add(new TranslationSubstring(m_sp.Groups[1].Value,string.Format("{0}[{1}]", m.Groups[1].Value, m_sp.Groups[1].Value), file.id, m_sp.Groups[2].Value, m.Groups[2].Index + m_sp.Groups[2].Index));
+            }
+
+            matches = Regex.Matches(file.original_full_text, pattern_array2_alt);
+            foreach (Match m in matches) ts.Add(new TranslationSubstring(m.Groups[2].Value, string.Format("{0}[{1}]", m.Groups[1].Value, m.Groups[2].Value), file.id, m.Groups[3].Value, m.Groups[3].Index));
+
             _logger.WriteLn(string.Format("Парсер 'php'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
