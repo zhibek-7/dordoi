@@ -391,13 +391,13 @@ namespace Models.Services
 
         private string GetIconByFile(File file)
         {
-            var pathPrefix = "assets/fileIcons/";
+            var pathPrefix = "assets/svg/";
             if (file.is_folder)
             {
-                return $"{pathPrefix}folder.png";
+                return $"{pathPrefix}067-folder.svg";
             }
 
-            return $"{pathPrefix}defaultFile.png";
+            return $"{pathPrefix}022-write.svg";
         }
 
         public async Task ChangeParentFolderAsync(int fileId, int? newParentId)

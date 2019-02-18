@@ -61,7 +61,7 @@ export class ProfileComponent implements OnInit {
     this.isUniqueEmailConfirmed = false;
     this.isPasswordChanged = false;
     this.isDeleteUserError = false;
-    this.imageUrl = this.user.photo ? this.user.photo.toString() : "../../assets/images/user-picture.png";
+    this.imageUrl = this.user.photo ? this.user.photo.toString() : "../../assets/svg/011-user.svg";
     console.log("this.imageUrl:" + this.imageUrl);
 
     this.passwordChangeFormGroup = new FormGroup(

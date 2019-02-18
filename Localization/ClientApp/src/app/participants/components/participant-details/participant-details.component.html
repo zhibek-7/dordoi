@@ -8,7 +8,7 @@
       <div class="col-4">
         <img class="width-to-parent" [src]="participantPhoto" alt="Participant avatar" *ngIf="participantPhoto && !isPhotoLoading; else noImageFound">
         <ng-template #noImageFound>
-          <img class="width-to-parent" src="../../../../assets/images/user-picture.png" alt="Participant avatar was not loaded">
+          <img class="width-to-parent" src="../../../../assets/svg/011-user.svg" alt="Participant avatar was not loaded">
         </ng-template>
         <div>
           <h6>Предпочитаемые языки</h6>
