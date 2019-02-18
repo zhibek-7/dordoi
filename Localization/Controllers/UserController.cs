@@ -153,7 +153,7 @@ namespace Localization.Controllers
         public async Task<IActionResult> LoginAsync([FromBody]User user)
         {
             var username = user.Name_text;
-            var password = user.Password_text;           
+            var password = user.Password_text;
 
             var identity = await this.GetUserWithIdentity(username, password);
             if (identity == null)
@@ -179,8 +179,8 @@ namespace Localization.Controllers
                 username = identity.Name
             };
 
-            return Ok(response);            
-}
+            return Ok(response);
+        }
 
         private async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
         {
@@ -215,7 +215,7 @@ namespace Localization.Controllers
         public IActionResult CheckUserAuthorisation()
         {
             var username = User.Identity.Name;
-            if(username != null)
+            if (username != null)
             {
                 return Ok(true);
             }
