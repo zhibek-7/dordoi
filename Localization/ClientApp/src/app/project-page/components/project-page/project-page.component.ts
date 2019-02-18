@@ -1,18 +1,16 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LocalizationProject } from "src/app/models/database-entities/localizationProject.type";
 import { ProjectsService } from "src/app/services/projects.service";
 import { MatTableDataSource, MatSort } from "@angular/material";
 
 import { LanguageService } from "src/app/services/languages.service";
 import { UserService } from "src/app/services/user.service";
-import { WorkTypeService } from "src/app/services/workType.service";
 import { UserActionsService } from "src/app/services/userActions.service";
 import { ParticipantsService } from "src/app/services/participants.service";
 
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { User } from "src/app/models/database-entities/user.type";
-import { WorkType } from "src/app/models/database-entities/workType.type";
 import { UserAction } from "src/app/models/database-entities/userAction.type";
 import { LocalizationProjectsLocalesDTO } from "src/app/models/DTO/localizationProjectsLocalesDTO";
 import { Participant } from "src/app/models/Participants/participant.type";
@@ -24,7 +22,6 @@ import { Participant } from "src/app/models/Participants/participant.type";
   providers: [
     LanguageService,
     UserService,
-    WorkTypeService,
     UserActionsService,
     ParticipantsService
   ]
@@ -34,14 +31,12 @@ export class ProjectPageComponent implements OnInit {
 
   langList: Array<Locale>;
   userList = new Array<User>();
-  workTypeList: Array<WorkType>;
   userActionsList: Array<UserAction>;
   userActionsDataSource = new MatTableDataSource(this.userActionsList);
 
   panelOpenState = false;
   selectedUser = "none";
   selectedLang = "none";
-  selectedWorkType = "none";
 
   filtredUsers = new Array<User>();
 
@@ -74,7 +69,6 @@ export class ProjectPageComponent implements OnInit {
     private projectService: ProjectsService,
     private languagesService: LanguageService,
     private userService: UserService,
-    private workTypeService: WorkTypeService,
     private userActionsService: UserActionsService,
     private participantsService: ParticipantsService
   ) {}
@@ -82,13 +76,6 @@ export class ProjectPageComponent implements OnInit {
   ngOnInit() {
     this.currentUserName = this.userService.currentUserName;
     //this.currentUserName = sessionStorage.getItem("currentUserName");
-
-    this.workTypeService.getWorkTypes().subscribe(
-      workTypes => {
-        this.workTypeList = workTypes;
-      },
-      error => console.error(error)
-    );
 
     var projectId = this.projectService.currentProjectId;
     //var projectId = Number(sessionStorage.getItem("ProjecID"));
@@ -195,12 +182,6 @@ export class ProjectPageComponent implements OnInit {
     function filtredArr(language) {
       return language === currentLang;
     }
-  }
-
-  applyActionsFilter() {
-    console.log(this.selectedWorkType);
-    console.log(this.selectedUser);
-    console.log(this.selectedLang);
   }
 
   openLanguageFiles(selectedLanguage: any) {

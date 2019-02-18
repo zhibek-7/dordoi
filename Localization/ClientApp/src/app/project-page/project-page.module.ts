@@ -24,6 +24,7 @@ import {
 import { ProjectPageRoutingModule } from './project-page-routing.module';
 
 import { ProjectPageComponent } from 'src/app/project-page/components/project-page/project-page.component';
+import { ActivityListComponent } from './components/activity-list/activity-list.component';
 
 import { LanguageService } from "../services/languages.service";
 import { UserService } from "../services/user.service";
@@ -56,6 +57,7 @@ import { ParticipantsService } from "../services/participants.service";
   ],
   declarations: [
     ProjectPageComponent,
+    ActivityListComponent,
   ],
   providers: [
     LanguageService,
