@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Models.DatabaseEntities;
 using Dapper;
-using System.Data;
 using System.Linq;
-using DAL.Context;
 using System.Threading.Tasks;
 using SqlKata;
 using Models.Interfaces.Repository;
@@ -272,6 +269,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         //
+        /// <summary>
+        /// Проверка уникальности email.
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="name_text"></param>
+        /// <returns></returns>
         public async Task<bool?> IsUniqueEmail(string email, string name_text = null)
         {
             try
@@ -304,6 +307,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Проверка уникальности имени пользователя (логина).
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         public async Task<bool?> IsUniqueLogin(string login)
         {
             try
@@ -334,7 +342,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-
+        /// <summary>
+        /// Смена пароля.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<bool> PasswordChange(UserPasswordChangeDTO user)
         {
             try
@@ -382,6 +394,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
+        /// <summary>
+        /// Регистрация. Создание пользователя.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<int?> CreateUser(User user)
         {
             try
@@ -398,11 +415,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var query = new Query("users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
-
-                    //await dbConnection.ExecuteAsync(
-                    //    sql: compiledQuery.Sql,
-                    //    param: compiledQuery.NamedBindings);
-                    //После выполнение запроса получаем сгенерированный id нового объекта
+                    
                     var idOfNewUser = await dbConnection
                         .ExecuteScalarAsync<int>(
                             sql: compiledQuery.Sql,
@@ -422,6 +435,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Авторизация.
+        /// </summary>
+        /// <param name="user">логин и пароль.</param>
+        /// <returns></returns>
         public async Task<User> LoginAsync(User user)
         {
             try
@@ -434,23 +452,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     this.LogQuery(SQLQuery, param);
                     var existedUser = await dbConnection.QuerySingleOrDefaultAsync<User>(SQLQuery, param);
                     return existedUser;
-
-                    //var password = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password);
-                    //var query = new Query("Users")
-                    //    .Where("Password", password)
-                    //    .Where("Name", user.Name)
-                    //    .Or()
-                    //    .Where("Password", password)
-                    //    .Where("Email", user.Name)
-                    //    .Select("*");
-                    //var compiledQuery = _compiler.Compile(query);
-                    //LogQuery(compiledQuery);
-
-                    //var result = await dbConnection
-                    //    .QueryFirstOrDefaultAsync<User>(
-                    //        sql: compiledQuery.Sql,
-                    //        param: compiledQuery.NamedBindings);
-                    //return result;
                 }
             }
             catch (NpgsqlException exception)
@@ -465,6 +466,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Получение профиля пользователя.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<UserProfileForEditingDTO> GetProfileAsync(string name)
         {
             try
@@ -488,7 +494,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Создание пользователя с вложенными списками идентификаторов связанных данных.
                     var resultDTO = new UserProfileForEditingDTO
                     {
-                        id = temp.FirstOrDefault().id,
+                        //id = temp.FirstOrDefault().id,
                         name_text = temp.FirstOrDefault().name_text,
                         email = temp.FirstOrDefault().email,
                         photo = temp.FirstOrDefault().photo,
@@ -516,7 +522,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
-
+        
+        /// <summary>
+        /// Сохранение изменений в профиле пользователя.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task UpdateAsync(UserProfileForEditingDTO user)
         {
             try
@@ -525,13 +536,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var edited = new
                     {
-                        user.photo,
+                        //user.photo,
                         user.email,
                         //user.joined,
                         user.full_name,
                         user.id_time_zones,
                         user.about_me,
-                        user.gender
+                        user.gender,
+                        date_change = DateTime.Now
                     };
                     var query = new Query("users")
                         .Where("users.name_text", user.name_text)
@@ -542,9 +554,22 @@ namespace DAL.Reposity.PostgreSqlRepository
                             sql: compiledQuery.Sql,
                             param: compiledQuery.NamedBindings);
 
+                    var queryPhoto = "UPDATE users SET photo = @photo WHERE users.name_text = @name_text";
+                    LogQuery(queryPhoto, new { photo = user.photo, name_text = user.name_text });
+                    await dbConnection.ExecuteAsync(queryPhoto, new { photo = user.photo, name_text = user.name_text });
+
+
+                    var queryId = new Query("users")
+                        .Where("users.name_text", user.name_text)
+                        .Select("users.id");
+                    var compiledQueryId = _compiler.Compile(queryId);
+                    LogQuery(compiledQueryId);
+                    var id = await dbConnection.QueryFirstOrDefaultAsync<int>(
+                        sql: compiledQueryId.Sql,
+                        param: compiledQueryId.NamedBindings);
 
                     //Пересоздание связей пользователя с языками перевода (Users с Locales)
-                    await UpdateUsersLocalesAsync(user.id, user.locales_id_is_native);
+                    await UpdateUsersLocalesAsync(id, user.locales_id_is_native);
                 }
             }
             catch (NpgsqlException exception)
@@ -556,6 +581,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.UpdateAsync)} {nameof(Exception)} ", exception);
             }
         }
+
         /// <summary>
         /// Пересоздание связей пользователя с языками перевода (Users с Locales).
         /// </summary>
@@ -611,6 +637,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Удаление пользователя.
+        /// </summary>
+        /// <param name="name">логин авторизованного пользователя.</param>
+        /// <returns></returns>
         public async Task<bool?> RemoveAsync(string name)
         {
             try

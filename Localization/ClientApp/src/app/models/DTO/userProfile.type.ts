@@ -4,7 +4,7 @@ export class UserProfile {
    */
   name_text: string;
 
-  photo: Blob;
+  photo: any;
 
   email: string;
 

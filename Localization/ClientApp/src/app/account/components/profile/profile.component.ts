@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpHeaders } from '@angular/common/http';
+
+import { DropzoneComponent, DropzoneDirective, DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 import { Selectable } from 'src/app/shared/models/selectable.model';
 
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { LanguageService } from 'src/app/services/languages.service';
-
-import { TimeZone } from 'src/app/models/database-entities/timeZone.type';
 
 import { UserService } from 'src/app/services/user.service';
 
@@ -26,7 +27,8 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private languageService: LanguageService) { }
 
-  hide: boolean;
+
+  hidePassword: boolean;
   isUniqueEmailConfirmed: boolean;
   isPasswordChanged: boolean;
   isDeleteUserError: boolean;
@@ -37,8 +39,24 @@ export class ProfileComponent implements OnInit {
 
   user: UserProfile;
   imageUrl;
+  imageBody;
 
   timeZones: [number, string];
+
+  public config: DropzoneConfigInterface = {
+    url: 'http://localhost:62184/api/User/Photo',
+    paramName: 'file',
+    headers: null, // new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken")),
+    method: 'post',
+    maxFiles: 1,
+    maxFilesize: 1,
+    acceptedFiles: 'image/*',
+    clickable: true,
+    autoReset: 1,
+    errorReset: 10,
+    cancelReset: 10,
+    previewsContainer: false
+  };
 
   //#region init
 
@@ -49,20 +67,16 @@ export class ProfileComponent implements OnInit {
         this.user = user;
         this.initForm();
         this.loadAvailableLanguages();
-        //
-        console.log(this.user);
-        //
       },
       error => console.error(error));
   }
 
   initForm() {
-    this.hide = true;
+    this.hidePassword = true;
     this.isUniqueEmailConfirmed = false;
     this.isPasswordChanged = false;
     this.isDeleteUserError = false;
-    this.imageUrl = this.user.photo ? this.user.photo.toString() : "../../assets/svg/011-user.svg";
-    console.log("this.imageUrl:" + this.imageUrl);
+    this.imageUrl = "../../assets/images/user-picture.png";
 
     this.passwordChangeFormGroup = new FormGroup(
       {
@@ -91,10 +105,11 @@ export class ProfileComponent implements OnInit {
 
   //#endregion
 
+  /** Получение введенных данных с формы */
   getUser(): UserProfile {
     this.user.email = this.profileFormGroup.controls.emailFormControl.value;
     this.user.full_name = this.profileFormGroup.controls.fullNameFormControl.value;
-    this.user.gender = this.profileFormGroup.controls.genderFormControl.value;
+    this.user.gender = this.profileFormGroup.controls.genderFormControl.value == "null" ? null : this.profileFormGroup.controls.genderFormControl.value;
     this.user.about_me = this.profileFormGroup.controls.aboutMeFormControl.value;
 
     return this.user;
@@ -109,12 +124,8 @@ export class ProfileComponent implements OnInit {
     if (this.profileFormGroup.valid)// && this.isUniqueEmailConfirmed
     {
       let user = this.getUser();
-      //
-      console.log("submit():");
-      console.log(this.user);
-      //
       this.userService.toSaveEditedProfile(user)
-        .subscribe(() => { console.log("Save"); }, error => console.error(error));
+        .subscribe(error => console.error(error));
     }
   }
 
@@ -131,8 +142,11 @@ export class ProfileComponent implements OnInit {
         console.error(error);
       });
   }
-  
 
+  /**
+   * Получение выбранного часового пояса
+   * @param setTimeZoneId идентификатор выбранного часового пояса
+   */
   setSelectedTimeZone(setTimeZoneId: number) {
     this.user.id_time_zones = setTimeZoneId;
   }
@@ -158,6 +172,10 @@ export class ProfileComponent implements OnInit {
         error => console.error(error));
   }
 
+  /**
+   * Получение выбранных языков переводов с отмечеными родными языками
+   * @param newSelection
+   */
   setSelectedLocales(newSelection: Locale[]) {
     this.user.locales_id_is_native = newSelection.map((t): { item1: number, item2: boolean } => { return { item1: t.id, item2: t.isNative}; });
   }
@@ -182,14 +200,48 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  //#region Работа с фото
 
-  deleteImage() {
-    //this.profileFormGroup.controls.photoFormControl.setValue = null;
-    this.user.photo = null;
+  /**
+   * Инициализация dropzone.
+   * @param args
+   */
+  public onUploadInit(args: any): void {
+    //console.log('onUploadInit:', args);
   }
+
+  /**
+   * Ошибка загрузки изображения.
+   * @param args
+   */
+  public onUploadError(args: any): void {
+    //console.log('onUploadError:', args);
+    let messageError = "Ошибка загрузки изображения. Попробуйте заново. Вы можете загрузить " + this.config.maxFiles + " изображение размером до " + this.config.maxFilesize + " Мб. ";    
+    alert(messageError);
+  }
+
+  /**
+   * Изображение загружено.
+   * @param args
+   */
+  public onUploadSuccess(args: any): void {
+    //console.log('onUploadSuccess:', args);
+    this.imageUrl = args[0].dataURL;
+    //обрезаем дополнительную информацию о изображении и оставляем только byte[]
+    this.user.photo = args[0].dataURL.match(".*base64,(.*)")[1];
+  }
+
+  /** Удаление фотографии. */
+  deleteImage() {
+    this.user.photo = null;
+    this.imageUrl = "../../assets/images/user-picture.png";
+  }
+
+  //#endregion
 
   //#region Смена пароля
 
+  /** Проверка введеного текущего пароля. Сохранение нового пароля. */
   passwordChange()
   {
     if (this.passwordChangeFormGroup.invalid)
@@ -212,6 +264,7 @@ export class ProfileComponent implements OnInit {
           }
           else
           {
+            // Введен неверный текущий пароль.
             passwordCurrent.setErrors({ "passwordCurrentInvalid": !result });
           }
         },
@@ -219,8 +272,11 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-
-  confirmPassword(event: any) 
+  /**
+   * Проверка совпадения введенного пароля и введеного подтверждения пароля.
+   * @param event
+   */
+  confirmPassword(event: any)
   {
     let passwordNew = <AbstractControl>this.passwordChangeFormGroup.controls.passwordNewFormControl;
     let passwordNewConfirm = <AbstractControl>this.passwordChangeFormGroup.controls.passwordNewConfirmFormControl;

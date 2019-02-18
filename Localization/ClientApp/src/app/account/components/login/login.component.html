@@ -5,7 +5,7 @@
 
   <div class="alert alert-danger"
        *ngIf="formGroup.invalid && formGroup.errors?.login">
-    Вы ввели неверный email или неверное имя пользователя, или неверный пароль
+    Вы ввели неверное имя пользователя/email или неверный пароль
   </div>
 
   <div class="form-group">
@@ -13,7 +13,7 @@
     <input class="form-control"
            name="login"
            formControlName="nameFormControl"
-           [class.ng-touched.ng-invalid]="formGroup.invalid"/>
+           [class.ng-touched.ng-invalid]="formGroup.invalid" />
 
     <div class="alert alert-danger"
          *ngIf="formGroup.controls['nameFormControl'].invalid && formGroup.controls['nameFormControl'].touched && formGroup.controls['nameFormControl'].errors?.required">
@@ -21,38 +21,52 @@
     </div>
   </div>
 
-    <div class="form-group">
-      <label>
-        Пароль
-        <mat-icon (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-      </label>
-      <input class="form-control"
-             [type]="hide ? 'password' : 'text'"
-             name="password"
-             formControlName="passwordFormControl"/>
+  <div class="form-group">
+    <label>
+      Пароль
+      <mat-icon (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </label>
+    <input class="form-control"
+           [type]="hidePassword ? 'password' : 'text'"
+           name="password"
+           formControlName="passwordFormControl" />
 
-      <div class="alert alert-danger"
-           *ngIf="formGroup.controls['passwordFormControl'].invalid && formGroup.controls['passwordFormControl'].touched && formGroup.controls['passwordFormControl'].errors?.required">
-        Поле обязательно для заполнения
-      </div>
+    <div class="alert alert-danger"
+         *ngIf="formGroup.controls['passwordFormControl'].invalid && formGroup.controls['passwordFormControl'].touched && formGroup.controls['passwordFormControl'].errors?.required">
+      Поле обязательно для заполнения
     </div>
+  </div>
 
-    <div class="form-group">
-      <button class="btn"
-              [class.btn-success]="formGroup.valid"
-              [class.btn-secondary]="formGroup.invalid"
-              type="submit"
-              [disabled]="formGroup.invalid">
-        ВХОД
-      </button>
-    </div>
+  <div class="form-group">
+    <button class="btn"
+            [class.btn-success]="formGroup.valid"
+            [class.btn-secondary]="formGroup.invalid"
+            type="submit"
+            [disabled]="formGroup.invalid">
+      ВХОД
+    </button>
+  </div>
+
+  <div class="form-group">
+    <button class="btn btn-info"
+            routerLink='/account/recover_password'>
+      ЗАБЫЛИ ПАРОЛЬ?
+    </button>
+  </div>
+
+  <div class="form-group">
+    <button class="btn btn-success"
+            routerLink='/account/registration'>
+      РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ
+    </button>
+  </div>
 
   <div class="form-group">
     <button class="btn btn-secondary"
             routerLink=''>
       ОТМЕНА
     </button>
-  </div> 
+  </div>
 
   <!--<div class="form-group">
     <button class="btn btn-secondary" (click)="getUserInfo()">
