@@ -22,6 +22,8 @@ export class UserActionsService {
     localeId: number,
     limit: number,
     offset: number,
+    sortBy?: string[],
+    sortAscending?: boolean,
   ): Observable<HttpResponse<UserAction[]>> {
     const url = `${this.url}/List/byProjectId/${projectId}`;
     let body: any = {};
@@ -39,6 +41,12 @@ export class UserActionsService {
     }
     if (offset) {
       body.offset = offset;
+    }
+    if (sortBy && sortBy.length > 0) {
+      body.sortBy = sortBy;
+      if (sortAscending !== undefined) {
+        body.sortAscending = sortAscending;
+      }
     }
     return this.httpClient
       .post<UserAction[]>(

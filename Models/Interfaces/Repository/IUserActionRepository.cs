@@ -26,7 +26,9 @@ namespace Models.Interfaces.Repository
             int limit,
             int workTypeId,
             int userId,
-            int localeId);
+            int localeId,
+            string[] sortBy,
+            bool sortAscending);
         Task<int> GetAllByProjectIdCountAsync(
             int projectId,
             int workTypeId,

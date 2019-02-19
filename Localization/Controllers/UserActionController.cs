@@ -37,6 +37,8 @@ namespace Localization.Controllers
             public int? workTypeId { get; set; }
             public int? userId { get; set; }
             public int? localeId { get; set; }
+            public string[] sortBy { get; set; }
+            public bool? sortAscending { get; set; }
         }
         /// <summary>
         /// Получить список действий пользователей на определеном проекте
@@ -60,7 +62,9 @@ namespace Localization.Controllers
                 limit: param.limit ?? 25,
                 workTypeId: param.workTypeId ?? -1,
                 userId: param.userId ?? -1,
-                localeId: param.localeId ?? -1
+                localeId: param.localeId ?? -1,
+                sortBy: param.sortBy,
+                sortAscending: param.sortAscending ?? true
                 );
         }
     }

@@ -131,6 +131,26 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        private static readonly Dictionary<string, string> UserActionsSortColumnNamesMapping = new Dictionary<string, string>()
+        {
+            { "id", "id" },
+            { "id_user", "id_user" },
+            { "user_name", "user_name" },
+            { "id_work_type", "id_work_type" },
+            { "work_type_name", "work_type_name" },
+            { "datetime", "datetime" },
+            { "description", "description" },
+            { "id_locale", "id_locale" },
+            { "locale_name", "locale_name" },
+            { "id_file", "id_file" },
+            { "file_name", "file_name" },
+            { "id_string", "id_string" },
+            { "translation_substring_name", "translation_substring_name" },
+            { "id_translation", "id_translation" },
+            { "translation", "translation" },
+            { "id_project", "id_project" },
+            { "project_name", "project_name" },
+        };
         /// <summary>
         /// Получить список действий пользователей на определенно проекте
         /// </summary>
@@ -142,9 +162,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             int limit,
             int workTypeId,
             int userId,
-            int localeId
+            int localeId,
+            string[] sortBy,
+            bool sortAscending
             )
         {
+            if (sortBy == null)
+            {
+                sortBy = new[] { "id" };
+            }
+
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -157,6 +184,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                         );
 
                     query = this.ApplyPagination(query, offset, limit);
+
+                    query = this.ApplySorting(
+                        query: query,
+                        columnNamesMappings: UserActionRepository.UserActionsSortColumnNamesMapping,
+                        sortBy: sortBy,
+                        sortAscending: sortAscending);
 
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);

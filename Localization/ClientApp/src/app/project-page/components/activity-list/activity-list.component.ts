@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { MatTableDataSource, PageEvent } from "@angular/material";
+import { MatTableDataSource, PageEvent, Sort } from "@angular/material";
 
 import { WorkTypeService } from "src/app/services/workType.service";
 import { UserActionsService } from "src/app/services/userActions.service";
@@ -39,6 +39,9 @@ export class ActivityListComponent implements OnInit {
   userActionsPageSize = 10;
   userActionsPageSizeOptions = [10, 25, 50];
 
+  userActionsSortBy = '';
+  userActionsSortAscending = true;
+
   constructor(
     private workTypeService: WorkTypeService,
     private userActionsService: UserActionsService,
@@ -75,7 +78,9 @@ export class ActivityListComponent implements OnInit {
       this.selectedUserId,
       this.selectedLocaleId,
       this.userActionsPageSize,
-      offset
+      offset,
+      [this.userActionsSortBy],
+      this.userActionsSortAscending
     ).subscribe(
       response => {
         this.userActionsTotalLength = +response.headers.get("totalCount");
@@ -84,6 +89,18 @@ export class ActivityListComponent implements OnInit {
       },
       error => console.error(error)
     );
+  }
+
+  onSortingChanged(args: Sort) {
+    if (args.direction === '') {
+      this.userActionsSortBy = null;
+      this.userActionsSortAscending = true;
+    }
+    else {
+      this.userActionsSortBy = args.active;
+      this.userActionsSortAscending = (args.direction == 'asc');
+    }
+    this.loadUserActions();
   }
 
 }
