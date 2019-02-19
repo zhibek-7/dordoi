@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
     this.isUniqueEmailConfirmed = false;
     this.isPasswordChanged = false;
     this.isDeleteUserError = false;
-    this.imageUrl = "../../assets/images/user-picture.png";
+    this.imageUrl = "../../assets/svg/011-user.svg";
 
     this.passwordChangeFormGroup = new FormGroup(
       {
@@ -125,7 +125,7 @@ export class ProfileComponent implements OnInit {
     {
       let user = this.getUser();
       this.userService.toSaveEditedProfile(user)
-        .subscribe(error => console.error(error));
+        .subscribe(() => {}, error => console.error(error));
     }
   }
 

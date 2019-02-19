@@ -44,9 +44,9 @@ export class LoginComponent implements OnInit {
         .subscribe( response => {    
             this.authenticationService.saveToken(response.token);     
           // this.userService.getProfile().subscribe(); 
+          this.router.navigate(["/account/profile"]);
             this.userService.setUserRole(response.role);
             this.userService.setUserName(response.username);
-            this.router.navigate(["/account/userProfile"]);
           },
         error => {
           this.formGroup.setErrors({ login: true });
@@ -80,6 +80,6 @@ export class LoginComponent implements OnInit {
   //    this.formGroup.setErrors({ login: true });
   //    return;
   //  }
-  //  this.router.navigate(["/account/" + user.id]);
+  //  this.router.navigate(["/account/profile"]);
   //}
 }
