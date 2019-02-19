@@ -6,9 +6,9 @@ namespace Models.DatabaseEntities
     public class Term : DatabaseEntities.TranslationSubstring
     {
 
-        public int? Part_Of_Speech_Id { get; set; }
+        public int? part_of_speech_id { get; set; }
 
-        public bool Is_Editable { get; set; }
+        public bool is_editable { get; set; }
 
     }
 }
