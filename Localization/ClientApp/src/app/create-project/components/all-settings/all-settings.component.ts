@@ -56,7 +56,7 @@ export class AllSettingsComponent implements OnInit {
     pjExportTrue: new FormControl(),
     pjSkipUntranslStrTrue: new FormControl(),
     pjNotificationTrue: new FormControl(),
-    selectedLang: new FormControl()
+   // selectedLang: new FormControl()
   });
 
   searchText = "";
