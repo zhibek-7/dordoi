@@ -45,6 +45,8 @@ export class LoginComponent implements OnInit {
             this.authenticationService.saveToken(response.token);     
           // this.userService.getProfile().subscribe(); 
           this.router.navigate(["/account/profile"]);
+            this.userService.setUserRole(response.role);
+            this.userService.setUserName(response.username);
           },
         error => {
           this.formGroup.setErrors({ login: true });

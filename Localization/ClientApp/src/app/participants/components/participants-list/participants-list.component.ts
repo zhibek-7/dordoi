@@ -89,7 +89,9 @@ export class ParticipantsListComponent implements OnInit {
   loadRoles() {
     this.rolesService.getAllRoles()
       .subscribe(
-        roles => this.roles = roles,
+        roles => {this.roles = roles;
+          console.log(roles);
+        },
         error => console.log(error));
   }
 
