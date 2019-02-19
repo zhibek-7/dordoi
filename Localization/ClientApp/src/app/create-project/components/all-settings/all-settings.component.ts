@@ -74,6 +74,8 @@ export class AllSettingsComponent implements OnInit {
     this.currentProjectId = this.projectsService.currentProjectId;
 
     let allLangsPr = [];
+    let selectedLangs = [];
+
     let allLocales = this.projectsService.getLocales().subscribe(
       projects => {
         this.allLocale = projects;
@@ -86,39 +88,46 @@ export class AllSettingsComponent implements OnInit {
         });
 
         this.dropdownList = allLangsPr;
+
+
+        let allPrLocales = this.projectsService
+          .getProjectLocales(this.currentProjectId)
+          .subscribe(
+            projectsL => {
+              this.allProjLocales = projectsL;
+
+              this.dropdownList.forEach(lang => {
+                const index = projectsL.findIndex(
+                  list => list["iD_Locale"] == lang.id
+                );
+
+                if (index != -1) {
+                  selectedLangs.push({
+                    itemName: lang.itemName,
+                    selected: true,
+                    id: lang.id
+                  });
+
+                  lang.checked = true;
+                  this.selectedL = true;
+                } else {
+                  lang.checked = false;
+                  this.selectedL = false;
+                }
+              });
+            },
+            error => console.error(error)
+          );
+
+
+
+
+
       },
       error => console.error(error)
     );
 
-    let selectedLangs = [];
-    let allPrLocales = this.projectsService
-      .getProjectLocales(this.currentProjectId)
-      .subscribe(
-        projectsL => {
-          this.allProjLocales = projectsL;
 
-          this.dropdownList.forEach(lang => {
-            const index = projectsL.findIndex(
-              list => list["iD_Locale"] == lang.id
-            );
-
-            if (index != -1) {
-              selectedLangs.push({
-                itemName: lang.itemName,
-                selected: true,
-                id: lang.id
-              });
-
-              lang.checked = true;
-              this.selectedL = true;
-            } else {
-              lang.checked = false;
-              this.selectedL = false;
-            }
-          });
-        },
-        error => console.error(error)
-      );
 
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
