@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Localization.Hubs
+namespace Localization.Hubs.DataImport
 {
     public class LogEntry
     {

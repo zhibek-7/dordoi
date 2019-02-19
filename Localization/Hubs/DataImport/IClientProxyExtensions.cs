@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Localization.Hubs
+namespace Localization.Hubs.DataImport
 {
     public static class IClientProxyExtensions
     {

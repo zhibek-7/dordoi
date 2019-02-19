@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Localization.Hubs;
+using Localization.Hubs.DataImport;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
