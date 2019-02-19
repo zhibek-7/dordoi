@@ -34,44 +34,68 @@ export class UserService {
   }
 
   //
+  /**
+   * Проверка уникальности email.
+   * @param email введенный email.
+   */
   isUniqueEmail(email: string): Observable<boolean> {
     return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email, email, {
       headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
     });
-    //let id = sessionStorage.getItem('currentUserID');
-    //return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email + ":" + id, { email, id });
   }
-  
+
+  /**
+   * Проверка уникальности имени пользователя (логина).
+   * @param login введенное имя пользователя (логин).
+   */
   isUniqueLogin(login: string): Observable<boolean> {
     return this.httpClient.post<boolean>(this.url + "isUniqueLogin:" + login, login);
   }
 
+  /**
+   * Регистрация. Создание пользователя.
+   * @param user
+   */
   createUser(user: User): Observable<Object> {
     return this.httpClient.post<number>(this.url + "registration", user);    
   }
 
+  /**
+   * Авторизация.
+   * @param user логин и пароль.
+   */
   login(user: User): any {
     return this.httpClient.post(this.url + "login", user);
   }
 
+  /**
+   * Смена пароля. 
+   * @param user текущий и новый пароли.
+   */
   passwordChange(user: userPasswordChange): Observable<boolean> {
     return this.httpClient.post<boolean>(this.url + "passwordChange", user, {
       headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
     }); 
   }
-  
+
+  /** Получение профиля пользователя. */
   getProfile(): Observable<UserProfile> {
     return this.httpClient.post<UserProfile>(this.url + "profile", null, {
       headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
     });
   }
 
+  /**
+   * Сохранение изменений в профиле пользователя.
+   * @param user
+   */
   toSaveEditedProfile(user: UserProfile): Observable<Object> {
     return this.httpClient.post(this.url + "toSaveEdited", user, {
       headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
     });
   }
 
+  /** Удаление пользователя. */
   delete(): Observable<boolean> {
     let id = sessionStorage.getItem('currentUserID');
     return this.httpClient.delete<boolean>(this.url + "delete", {

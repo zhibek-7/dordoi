@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Models.DatabaseEntities.DTO
 {
@@ -9,14 +8,14 @@ namespace Models.DatabaseEntities.DTO
     /// Для модификации, например создание, редактирование.
     /// </summary>
     [Serializable]
-    public class UserProfileForEditingDTO : BaseEntity
+    public class UserProfileForEditingDTO //: BaseEntity
     {
         /// <summary>
         /// Имя пользователя (логин/ник)
         /// </summary>
         public string name_text { get; set; }
 
-        public Byte[] photo { get; set; }
+        public byte[] photo { get; set; }
 
         public string email { get; set; }
 

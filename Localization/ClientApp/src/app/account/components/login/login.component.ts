@@ -16,8 +16,8 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router, 
               private userService: UserService,
               private authenticationService: AuthenticationService) {}
-
-  hide: boolean;
+  
+  hidePassword: boolean;
   formGroup: FormGroup;
 
   ngOnInit() {
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   }
 
   initForm() {
-    this.hide = true;
+    this.hidePassword = true;
     this.formGroup = new FormGroup({
       nameFormControl: new FormControl("", Validators.required),
       passwordFormControl: new FormControl("", Validators.required)

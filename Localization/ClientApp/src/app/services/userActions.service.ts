@@ -18,7 +18,7 @@ export class UserActionsService {
   getProjectActionsList(project: string): Observable<UserAction[]> {
     return this.getActionsList()
       .pipe(
-        map(actions => actions.filter(action => action.Project === project))
+        map(actions => actions.filter(action => action.project_name === project))
       );
   }
 

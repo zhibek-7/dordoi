@@ -1,10 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  FormControl,
-  Validators,
-  AbstractControl,
-  FormGroup
-} from "@angular/forms";
+import { FormControl, Validators, AbstractControl, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { UserService } from "src/app/services/user.service";
@@ -18,7 +13,7 @@ import { User } from "src/app/models/database-entities/user.type";
 export class RegistrationComponent implements OnInit {
   constructor(private router: Router, private userService: UserService) {}
 
-  hide: boolean;
+  hidePassword: boolean;
   formGroup: FormGroup;
   isUniqueEmailConfirmed: boolean;
   isUniqueLoginConfirmed: boolean;
@@ -31,7 +26,7 @@ export class RegistrationComponent implements OnInit {
     this.isUniqueEmailConfirmed = false;
     this.isUniqueLoginConfirmed = false;
 
-    this.hide = true;
+    this.hidePassword = true;
     this.formGroup = new FormGroup({
       emailFormControl: new FormControl("", [
         Validators.required,
@@ -43,15 +38,13 @@ export class RegistrationComponent implements OnInit {
       ]),
       passwordFormControl: new FormControl("", [
         Validators.required,
-        Validators.pattern(
-          "(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}"
-        )
+        Validators.pattern("(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}")
       ]),
       passwordConfirmFormControl: new FormControl("", Validators.required),
       agreeFormControl: new FormControl("", Validators.requiredTrue)
     });
   }
-
+  
   submit() {
     if (this.formGroup.invalid) {
       return;
@@ -72,6 +65,10 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
+  /**
+   * Проверка уникальности email.
+   * @param event
+   */
   isUniqueEmail(event: any) {
     let controlEmail = <AbstractControl>(
       this.formGroup.controls.emailFormControl
@@ -93,6 +90,10 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
+  /**
+   * Проверка уникальности имени пользователя (логина).
+   * @param event
+   */
   isUniqueLogin(event: any) {
     let controlLogin = <AbstractControl>this.formGroup.controls.nameFormControl;
     console.log(controlLogin);
@@ -113,6 +114,10 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
+  /**
+   * Проверка совпадения введенного пароля и введеного подтверждения пароля.
+   * @param event
+   */
   confirm(event: any) {
     let password = this.formGroup.controls.passwordFormControl.value;
     let passwordConfirm = this.formGroup.controls.passwordConfirmFormControl
@@ -125,6 +130,7 @@ export class RegistrationComponent implements OnInit {
       : controlPasswordConfirm.setErrors({ passwordConfirmFormControl: true });
   }
 
+  /** Получение введенных данных с формы. */
   getUser(): User {
     let user: User = new User();
     user.name_text = this.formGroup.controls.nameFormControl.value;

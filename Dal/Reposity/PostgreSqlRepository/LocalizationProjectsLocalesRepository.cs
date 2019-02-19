@@ -80,7 +80,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Удалить языки в проекте
+        /// </summary>
 
+        public void DeleteProjectLocalesById(int Id)
+        {
+            var sqlQuery = "DELETE FROM localization_projects_locales " +
+                           "WHERE id_localization_project=@Id";
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id };
+                    this.LogQuery(sqlQuery, param);
+                    dbConnection.Execute(sqlQuery, param);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                        $"Ошибка в {nameof(LocalizationProjectsLocalesRepository)}.{nameof(LocalizationProjectsLocalesRepository.DeleteProjectLocalesById)} {nameof(NpgsqlException)} ",
+                        exception);
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectsLocalesRepository)}.{nameof(LocalizationProjectsLocalesRepository.DeleteProjectLocalesById)} {nameof(Exception)} ",
+                    exception);
+            }
+        }
 
 
         /// <summary>

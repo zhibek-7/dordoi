@@ -28,14 +28,19 @@
 
           <div class="row">
             <div class="col-sm-2">
-              <img [src]="imageUrl" alt="" class="img-thumbnail mx-auto d-block">
-              <!--<img [src]="user.photo ? user.aboutMe : '../../assets/images/user-picture.png'" alt="" class="img-thumbnail mx-auto d-block">-->
+              <img *ngIf="user.photo == null" [src]="imageUrl" alt="" class="img-thumbnail mx-auto d-block">
+              <img *ngIf="user.photo != null" src="data:image/JPEG;base64,{{user.photo}}" class="img-thumbnail mx-auto d-block"/>
             </div>
-            <div class="col-sm-9">
-              <div class="table-border dropzone" dropzone="copy">
-                <label style="font-weight:600">Перетяните картинку сюда или </label>
-                <button class="btn btn-secondary">Выберите файл</button>
-              </div>
+            <div class="col-sm-10">
+              <dropzone class="dropzone-container"
+                        [config]="config"
+                        [message]="'Перетяните картинку сюда или нажмите на эту область для выбора файла'"
+                        (init)="onUploadInit($event)"
+                        (error)="onUploadError($event)"
+                        (success)="onUploadSuccess($event)">
+
+
+              </dropzone>
               <button class="btn btn-secondary"
                       (click)="deleteImage()">
                 Удалить
@@ -123,7 +128,6 @@
               Не удалось удалить профиль, т.к. Вы являетесь владельцом проекта(ов)
             </div>
 
-            <!--<br />-->
             <label>
               <span class="badge badge-outline-danger">Важно </span>
               Проекты, созданные под Вашей учётной записью и сама учётная запись будут удалены навсегда,
@@ -163,10 +167,10 @@
               <div class="form-group">
                 <label>
                   Текущий пароль
-                  <mat-icon (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  <mat-icon (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </label>
                 <input class="form-control"
-                       [type]="hide ? 'password' : 'text'"
+                       [type]="hidePassword ? 'password' : 'text'"
                        name="passwordCurrent"
                        formControlName="passwordCurrentFormControl" />
                 <div class="alert alert-danger"
@@ -184,7 +188,7 @@
                   Новый пароль
                 </label>
                 <input class="form-control"
-                       [type]="hide ? 'password' : 'text'"
+                       [type]="hidePassword ? 'password' : 'text'"
                        name="password"
                        formControlName="passwordNewFormControl" />
                 <div class="alert alert-danger"
@@ -196,7 +200,7 @@
               <div class="form-group">
                 <label>Подтвердите новый пароль</label>
                 <input class="form-control"
-                       [type]="hide ? 'password' : 'text'"
+                       [type]="hidePassword ? 'password' : 'text'"
                        (keyup)="confirmPassword($event)"
                        name="passwordConfirm"
                        formControlName="passwordNewConfirmFormControl" />
@@ -212,7 +216,6 @@
                         [class.btn-secondary]="passwordChangeFormGroup.invalid"
                         [disabled]="passwordChangeFormGroup.invalid"
                         type="submit">
-                  <!--(click)="passwordChange()"-->
                   Смена пароля
                 </button>
               </div>

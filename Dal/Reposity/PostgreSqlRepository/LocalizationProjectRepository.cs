@@ -247,14 +247,16 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Удалить  проект
         /// </summary>
         /// <param name="id"></param>
-        public void DeleteProject(int id)
+        public void DeleteProject(int Id)
         {
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlQuery = "DELETE FROM  localization_projects  WHERE id= " + id + "";
-                    connection.Execute(sqlQuery, new { id });
+                    var sqlQuery = "DELETE FROM  localization_projects  WHERE id= " + Id + "";
+                    var param = new { Id };
+
+                    connection.Execute(sqlQuery, param);
 
                     this.LogQuery(sqlQuery);
                 }

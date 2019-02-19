@@ -1,51 +1,30 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-//import { FormControl, Validators, AbstractControl, FormGroup } from '@angular/forms';
-//import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material';
 
-import { LanguageService } from 'src/app/services/languages.service';
 
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatDialogModule,
-  MatExpansionModule,
-  MatGridListModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatNativeDateModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatRadioModule,
-  MatRippleModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSliderModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-  MatSortModule,
-  MatTableModule,
-  MatTabsModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatStepperModule
-} from '@angular/material';
+////// Import the library Dropzone;
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
-import { AccountRoutingModule } from './account-routing.module';
+const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
+  // Change this to your upload POST address:
+  //url: '',
+  //maxFilesize: 1,
+  //acceptedFiles: 'image/*'
+};
+//////
+
 
 import { SharedModule } from 'src/app/shared/shared.module';
 
+import { LanguageService } from 'src/app/services/languages.service';
+
 import { UserService } from 'src/app/services/user.service';
+
+import { AccountRoutingModule } from './account-routing.module';
 
 import { RegistrationComponent } from '../components/registration/registration.component';
 import { LoginComponent } from '../components/login/login.component';
@@ -55,57 +34,26 @@ import { ProfileComponent } from '../components/profile/profile.component';
   declarations: [RegistrationComponent, LoginComponent, ProfileComponent],
   imports: [
     CommonModule,
-    
     FormsModule,
     ReactiveFormsModule,
-
-    //FormControl,
-    //Validators,
-    //AbstractControl,
-    //FormGroup,
-
-    //MaterialModule,
-
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatExpansionModule,
-    MatGridListModule,
     MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatStepperModule,
+    
+    SharedModule,
 
     AccountRoutingModule,
 
-    SharedModule
+    // Import the library Dropzone
+    DropzoneModule,
   ],
   providers:
     [
       UserService,
-      LanguageService
+      LanguageService,
+      // Import the library Dropzone
+      {
+        provide: DROPZONE_CONFIG,
+        useValue: DEFAULT_DROPZONE_CONFIG
+      }
     ]
 })
 export class AccountModule { }
