@@ -78,6 +78,14 @@ export class UserService {
     }); 
   }
 
+  /**
+   * Восстановление пароля.
+   * @param name имя пользователя (логин) или email
+   */
+  recoverPassword(name: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.url + "recoverPassword:" + name, name);
+  }
+
   /** Получение профиля пользователя. */
   getProfile(): Observable<UserProfile> {
     return this.httpClient.post<UserProfile>(this.url + "profile", null, {

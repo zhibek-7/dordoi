@@ -395,6 +395,49 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
+        /// Восстановление пароля.
+        /// </summary>
+        /// <param name="name">имя пользователя (логин) или email</param>
+        /// <returns></returns>
+        public async Task<bool> RecoverPassword(string name)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("users")
+                        .Where("name_text", name)
+                        .OrWhere("email", name)
+                        .Select("name_text", "email");
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var user = await dbConnection.QueryFirstOrDefaultAsync<User>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    if (user == null)
+                        return false;
+
+
+                    //Отправка инструкции по email для восстановления пароля.
+
+
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.RecoverPassword)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.RecoverPassword)} {nameof(Exception)} ", exception);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Регистрация. Создание пользователя.
         /// </summary>
         /// <param name="user"></param>

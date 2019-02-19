@@ -57,8 +57,8 @@ export class RegistrationComponent implements OnInit {
     ) {
       let user = this.getUser();
       this.userService.createUser(user).subscribe(
-        newId => {          
-          this.router.navigate(["/account/" + newId]);
+        newId => {
+          this.router.navigate(["/account"]);
         },
         error => console.error(error)
       );
@@ -96,7 +96,6 @@ export class RegistrationComponent implements OnInit {
    */
   isUniqueLogin(event: any) {
     let controlLogin = <AbstractControl>this.formGroup.controls.nameFormControl;
-    console.log(controlLogin);
     if (controlLogin.errors == null) {
       this.userService
         .isUniqueLogin(this.formGroup.controls.nameFormControl.value)
