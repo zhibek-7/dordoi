@@ -208,11 +208,14 @@ export class FilesComponent implements OnInit {
 
   addFile(file: File, parentNode: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
-
+    this.ngxSpinnerService.show();
     this.fileService
       .addFile(file, this.projectsService.currentProjectId, parentId)
       .subscribe(
-        node => this.addNode(node, parentNode),
+        node => {
+          this.addNode(node, parentNode);
+          this.ngxSpinnerService.hide();
+        },
         error => alert(error.error)
       );
   }
