@@ -30,16 +30,38 @@ namespace Localization.Controllers
             return await this._userActionRepository.GetAllAsync();
         }
 
+        public class GetAllByProjectIdArgs
+        {
+            public int? offset { get; set; }
+            public int? limit { get; set; }
+            public int? workTypeId { get; set; }
+            public int? userId { get; set; }
+            public int? localeId { get; set; }
+        }
         /// <summary>
         /// Получить список действий пользователей на определеном проекте
         /// </summary>
         /// <param name="projectId">Идентификатор пользователя</param>
         /// <returns>Список действий</returns>
         [HttpPost]
-        [Route("onProject/{projectId}")]
-        public async Task<IEnumerable<UserAction>> GetAllByProjectID(int projectId)
+        [Route("List/byProjectId/{projectId}")]
+        public async Task<IEnumerable<UserAction>> GetAllByProjectId(int projectId, [FromBody] GetAllByProjectIdArgs param)
         {
-            return await this._userActionRepository.GetAllByProjectIdAsync(projectId);
+            this.Response.Headers.Add(
+                key: "totalCount",
+                value: (await this._userActionRepository.GetAllByProjectIdCountAsync(
+                    projectId: projectId,
+                    workTypeId: param.workTypeId ?? -1,
+                    userId: param.userId ?? -1,
+                    localeId: param.localeId ?? -1)).ToString());
+            return await this._userActionRepository.GetAllByProjectIdAsync(
+                projectId: projectId,
+                offset: param.offset ?? 0,
+                limit: param.limit ?? 25,
+                workTypeId: param.workTypeId ?? -1,
+                userId: param.userId ?? -1,
+                localeId: param.localeId ?? -1
+                );
         }
     }
 }

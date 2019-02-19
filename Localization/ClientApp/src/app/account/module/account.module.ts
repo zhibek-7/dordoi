@@ -29,15 +29,21 @@ import { AccountRoutingModule } from './account-routing.module';
 import { RegistrationComponent } from '../components/registration/registration.component';
 import { LoginComponent } from '../components/login/login.component';
 import { ProfileComponent } from '../components/profile/profile.component';
+import { RecoverPasswordComponent } from '../components/recover-password/recover-password.component';
 
 @NgModule({
-  declarations: [RegistrationComponent, LoginComponent, ProfileComponent],
+  declarations: [
+    RegistrationComponent,
+    LoginComponent,
+    ProfileComponent,
+    RecoverPasswordComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
-    
+
     SharedModule,
 
     AccountRoutingModule,

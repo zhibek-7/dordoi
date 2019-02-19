@@ -66,7 +66,8 @@
               <input class="form-control"
                      name="email"
                      formControlName="emailFormControl"
-                     (keyup)="isUniqueEmail($event)" />
+                     (keyup)="isUniqueEmail($event)"
+                     (blur)="isUniqueEmail($event)"/>
               <div class="alert alert-danger"
                    *ngIf="profileFormGroup.controls['emailFormControl'].invalid && profileFormGroup.controls['emailFormControl'].touched && profileFormGroup.controls['emailFormControl'].errors?.required">
                 Поле "Email" обязательно для заполнения

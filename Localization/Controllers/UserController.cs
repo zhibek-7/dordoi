@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,13 +9,10 @@ using DAL.Reposity.PostgreSqlRepository;
 using Localization.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
-using Newtonsoft.Json;
 
 namespace Localization.Controllers
 {
@@ -102,7 +98,7 @@ namespace Localization.Controllers
         [HttpPost("profile")]
         public async Task<UserProfileForEditingDTO> GetProfile()
         {
-            var username = User.Identity.Name;            
+            var username = User.Identity.Name;
 
             //var role = User.Claims.Where(claim => claim.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
             return await userRepository.GetProfileAsync(username);
@@ -119,6 +115,17 @@ namespace Localization.Controllers
         {
             user.Name_text = User.Identity.Name;
             return await userRepository.PasswordChange(user);
+        }
+
+        /// <summary>
+        /// Восстановление пароля.
+        /// </summary>
+        /// <param name="name">имя пользователя (логин) или email</param>
+        /// <returns></returns>
+        [HttpPost("recoverPassword:{name}")]
+        public async Task<bool> RecoverPassword(string name)
+        {
+            return await userRepository.RecoverPassword(name);
         }
 
         /// <summary>
@@ -146,6 +153,11 @@ namespace Localization.Controllers
             return await userRepository.RemoveAsync(name_text);
         }
 
+        /// <summary>
+        /// Авторизация.
+        /// </summary>
+        /// <param name="user">логин и пароль.</param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody]User user)
         {
@@ -170,26 +182,28 @@ namespace Localization.Controllers
                     signingCredentials: new SigningCredentials(AuthenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
+            var claimsOfUser = identity.Claims;
+            var roleClaimType = identity.RoleClaimType;
+            var roles = claimsOfUser.Where(c => c.Type == ClaimTypes.Role).ToList();
+            var roleValue = roles[0].Value;
+
             var response = new
             {
                 token = encodedJwt,
-                username = identity.Name
+                username = identity.Name,
+                role = roleValue
             };
 
-            return Ok(response);            
+            return Ok(response);
         }
 
         [HttpPost("refreshToken")]
         public IActionResult RefreshToken()
         {
-            //var username = User.Identity.Name;
+            var username2 = User.Identity.Name;
             var username = "tip";
 
-            //var userIdentity = (ClaimsIdentity)User.Identity;
-            //var claimsOfUser = userIdentity.Claims;
-            //var roleClaimType = userIdentity.RoleClaimType;
-            //var roles = claimsOfUser.Where(c => c.Type == ClaimTypes.Role).ToList();
-            //var roleValue = roles[0].Value;
+            
             var roleValue = "Переводчик";
 
             var claims = new List<Claim>
@@ -238,7 +252,6 @@ namespace Localization.Controllers
             };
 
             user = await userRepository.LoginAsync(user);
-            user.Role = "Переводчик";
 
             if (user != null)
             {

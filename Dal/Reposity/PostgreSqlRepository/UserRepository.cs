@@ -395,6 +395,49 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
+        /// Восстановление пароля.
+        /// </summary>
+        /// <param name="name">имя пользователя (логин) или email</param>
+        /// <returns></returns>
+        public async Task<bool> RecoverPassword(string name)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("users")
+                        .Where("name_text", name)
+                        .OrWhere("email", name)
+                        .Select("name_text", "email");
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var user = await dbConnection.QueryFirstOrDefaultAsync<User>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    if (user == null)
+                        return false;
+
+
+                    //Отправка инструкции по email для восстановления пароля.
+
+
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.RecoverPassword)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.RecoverPassword)} {nameof(Exception)} ", exception);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Регистрация. Создание пользователя.
         /// </summary>
         /// <param name="user"></param>
@@ -447,13 +490,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
-                    //string SQLQuery = "SELECT  " +
-                    //                  "FROM users as u" +
-                    //                  "INNER JOIN participants ON participants.id_user = users.id " +
-                    //                  "INNER JOIN roles ON roles.id = participants.id_role " +
-                    //                  "WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
+                    string SQLQuery = "SELECT users.id as id, " +
+                                      "users.name_text as Name_text, " +
+                                      "users.password_text as Password_text, " +
+                                      "users.photo as Photo, " +
+                                      "users.email as Email, " +
+                                      "users.joined as Joined, " +
+                                      "roles.name_text as Role " +
+                                      "FROM users " +
+                                      "INNER JOIN participants ON participants.id_user = users.id " +
+                                      "INNER JOIN roles ON roles.id = participants.id_role " +
+                                      "WHERE (users.name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
 
-                    string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);
                     var existedUser = await dbConnection.QuerySingleOrDefaultAsync<User>(SQLQuery, param);
