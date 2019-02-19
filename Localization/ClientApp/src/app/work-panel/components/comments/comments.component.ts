@@ -279,11 +279,4 @@ export class CommentsComponent implements OnInit {
     }
   }
 
-  // changeTermClick(termWithGlossary: TermWithGlossary){
-  //     console.log(termWithGlossary);
-  // }
-
-  // updateTermClick(){
-
-  // }
 }

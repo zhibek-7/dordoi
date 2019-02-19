@@ -170,10 +170,16 @@ namespace Localization.Controllers
                     signingCredentials: new SigningCredentials(AuthenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
+            var claimsOfUser = identity.Claims;
+            var roleClaimType = identity.RoleClaimType;
+            var roles = claimsOfUser.Where(c => c.Type == ClaimTypes.Role).ToList();
+            var roleValue = roles[0].Value;
+
             var response = new
             {
                 token = encodedJwt,
-                username = identity.Name
+                username = identity.Name,
+                role = roleValue
             };
 
             return Ok(response);            
@@ -182,14 +188,10 @@ namespace Localization.Controllers
         [HttpPost("refreshToken")]
         public IActionResult RefreshToken()
         {
-            //var username = User.Identity.Name;
+            var username2 = User.Identity.Name;
             var username = "tip";
 
-            //var userIdentity = (ClaimsIdentity)User.Identity;
-            //var claimsOfUser = userIdentity.Claims;
-            //var roleClaimType = userIdentity.RoleClaimType;
-            //var roles = claimsOfUser.Where(c => c.Type == ClaimTypes.Role).ToList();
-            //var roleValue = roles[0].Value;
+            
             var roleValue = "Переводчик";
 
             var claims = new List<Claim>
@@ -238,7 +240,6 @@ namespace Localization.Controllers
             };
 
             user = await userRepository.LoginAsync(user);
-            user.Role = "Переводчик";
 
             if (user != null)
             {

@@ -44,6 +44,8 @@ export class LoginComponent implements OnInit {
         .subscribe( response => {    
             this.authenticationService.saveToken(response.token);     
           // this.userService.getProfile().subscribe(); 
+            this.userService.setUserRole(response.role);
+            this.userService.setUserName(response.username);
             this.router.navigate(["/account/userProfile"]);
           },
         error => {

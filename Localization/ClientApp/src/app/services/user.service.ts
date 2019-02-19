@@ -11,6 +11,8 @@ export class UserService {
 
   private url: string = 'api/User/';
 
+  private userName: string = null;
+
   constructor(private httpClient: HttpClient) { }
 
   get currentUserId(): number {
@@ -102,4 +104,22 @@ export class UserService {
       headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
     });
   }
+
+  getUserName(): string {
+    return this.userName;
+  }
+
+  setUserName(userName: string) {
+    this.userName = userName;
+  }
+
+  getUserRole(): string {
+     return sessionStorage.getItem('userRole');
+  }
+
+  setUserRole(userRole: string) {
+    sessionStorage.setItem('userRole', userRole);
+  }
+
+
 }
