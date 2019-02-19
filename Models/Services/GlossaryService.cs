@@ -23,8 +23,6 @@ namespace Models.Services
 
         public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
-
-
             try
             {
                 return await this._stringsRepository.GetLocalesForStringAsync(translationSubstringId: termId);
@@ -33,13 +31,10 @@ namespace Models.Services
             {
                 throw new Exception($"Error  \"{termId}\" ", exception);
             }
-
         }
 
         public async Task<bool> UpdateAsync(Glossary updatedGlossary)
         {
-
-
             try
             {
                 return await this._glossaryRepository.UpdateAsync(item: updatedGlossary);
@@ -52,8 +47,6 @@ namespace Models.Services
 
         public async Task<Glossary> GetByIDAsync(int glossaryId)
         {
-
-
             try
             {
                 return await this._glossaryRepository.GetByIDAsync(id: glossaryId);
@@ -66,8 +59,6 @@ namespace Models.Services
 
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
-
-
             try
             {
                 return await this._glossaryRepository.GetAllAsync();
@@ -76,12 +67,10 @@ namespace Models.Services
             {
                 throw new Exception($"Error", exception);
             }
-
         }
 
         public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
         {
-
             try
             {
                 return await this._glossaryRepository.GetLocaleByIdAsync(glossaryId: glossaryId);
@@ -94,9 +83,6 @@ namespace Models.Services
 
         public async Task UpdateTranslationLocalesForTermAsync(int glossaryId, int termId, IEnumerable<int> localesIds)
         {
-
-
-
             try
             {
                 await this._stringsRepository.DeleteTranslationLocalesAsync(translationSubstringId: termId);
@@ -106,7 +92,6 @@ namespace Models.Services
             {
                 throw new Exception($"Error  \"{glossaryId}\"    \"{termId}\"   \"{localesIds}\" ", exception);
             }
-
         }
 
         public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
@@ -117,9 +102,6 @@ namespace Models.Services
             string[] sortBy = null,
             bool? sortAscending = true)
         {
-
-
-
             try
             {
                 return await this._glossaryRepository.GetAssotiatedTermsByGlossaryIdAsync(
@@ -135,7 +117,6 @@ namespace Models.Services
             {
                 throw new Exception($"Error  \"{glossaryId}\" ", exception);
             }
-
         }
 
         public async Task AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
@@ -145,8 +126,6 @@ namespace Models.Services
                 newTerm: newTerm,
                 partOfSpeechId: partOfSpeechId);
             var glossaryLocales = await this._glossaryRepository.GetTranslationLocalesAsync(glossaryId: glossaryId);
-
-
 
             try
             {
@@ -158,13 +137,10 @@ namespace Models.Services
             {
                 throw new Exception($"Error", exception);
             }
-
         }
 
         public async Task DeleteTermAsync(int glossaryId, int termId)
         {
-
-
             try
             {
                 await this._glossaryRepository.DeleteTermAsync(glossaryId: glossaryId, termId: termId);
@@ -173,13 +149,10 @@ namespace Models.Services
             {
                 throw new Exception($"Error", exception);
             }
-
         }
 
         public async Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart)
         {
-
-
             try
             {
                 return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
@@ -189,13 +162,10 @@ namespace Models.Services
             {
                 throw new Exception($"Error", exception);
             }
-
         }
 
         public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)
         {
-
-
             try
             {
                 await this._glossaryRepository.UpdateTermAsync(
@@ -212,7 +182,6 @@ namespace Models.Services
 
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
         {
-
             try
             {
                 return await _glossaryRepository.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);
@@ -221,7 +190,6 @@ namespace Models.Services
             {
                 throw new Exception($"Error", exception);
             }
-
         }
 
         /// <summary>
