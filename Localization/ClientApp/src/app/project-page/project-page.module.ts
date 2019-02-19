@@ -20,6 +20,7 @@ import {
   MatSortModule,
   MatMenuModule,
 } from '@angular/material';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { ProjectPageRoutingModule } from './project-page-routing.module';
 
@@ -54,6 +55,7 @@ import { ParticipantsService } from "../services/participants.service";
     MatMenuModule,
     RouterModule,
     HttpClientModule,
+    MatPaginatorModule,
   ],
   declarations: [
     ProjectPageComponent,

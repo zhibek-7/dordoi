@@ -20,6 +20,17 @@ namespace Models.Interfaces.Repository
         Task<int> AddUpdateFileActionAsync(int userId, string userName, int projectId, int fileId, string comment = "");
         Task<int> AddUpdateStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "");
         Task<int> AddUpdateTranslationActionAsync(int userId, string userName, int projectId, int translationId, int stringId, int localeId, string comment = "");
-        Task<IEnumerable<UserAction>> GetAllByProjectIdAsync(int projectId);
+        Task<IEnumerable<UserAction>> GetAllByProjectIdAsync(
+            int projectId,
+            int offset,
+            int limit,
+            int workTypeId,
+            int userId,
+            int localeId);
+        Task<int> GetAllByProjectIdCountAsync(
+            int projectId,
+            int workTypeId,
+            int userId,
+            int localeId);
     }
 }

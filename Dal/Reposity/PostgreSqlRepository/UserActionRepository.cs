@@ -136,15 +136,28 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="projectId">Идентификатор проекта</param>
         /// <returns>Список действий</returns>
-        public async Task<IEnumerable<UserAction>> GetAllByProjectIdAsync(int projectId)
+        public async Task<IEnumerable<UserAction>> GetAllByProjectIdAsync(
+            int projectId,
+            int offset,
+            int limit,
+            int workTypeId,
+            int userId,
+            int localeId
+            )
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("user_actions")
-                        .Where("id_project", projectId)
-                        .Select();
+                    var query = this.GetAllByProjectIdQuery(
+                        projectId: projectId,
+                        workTypeId: workTypeId,
+                        userId: userId,
+                        localeId: localeId
+                        );
+
+                    query = this.ApplyPagination(query, offset, limit);
+
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var userActions = await dbConnection.QueryAsync<UserAction>(compiledQuery.Sql, compiledQuery.NamedBindings);
@@ -165,6 +178,76 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
                 return null;
             }
+        }
+
+        public async Task<int> GetAllByProjectIdCountAsync(
+            int projectId,
+            int workTypeId,
+            int userId,
+            int localeId
+            )
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = this.GetAllByProjectIdQuery(
+                        projectId: projectId,
+                        workTypeId: workTypeId,
+                        userId: userId,
+                        localeId: localeId
+                        );
+
+                    query = query.AsCount();
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    return await dbConnection.ExecuteScalarAsync<int>(compiledQuery.Sql, compiledQuery.NamedBindings);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetAllByProjectIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return -1;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(UserActionRepository)}.{nameof(UserActionRepository.GetAllByProjectIdAsync)} {nameof(Exception)} ",
+                    exception);
+                return -1;
+            }
+        }
+
+        private Query GetAllByProjectIdQuery(
+            int projectId,
+            int workTypeId,
+            int userId,
+            int localeId
+            )
+        {
+            var query = new Query("user_actions")
+                .Where("id_project", projectId)
+                .Select();
+
+            if (workTypeId > 0)
+            {
+                query = query.Where("id_work_type", workTypeId);
+            }
+
+            if (userId > 0)
+            {
+                query = query.Where("id_user", userId);
+            }
+
+            if (localeId > 0)
+            {
+                query = query.Where("id_locale", localeId);
+            }
+
+            return query;
         }
 
         /// <summary>

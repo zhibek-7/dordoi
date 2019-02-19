@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { UserAction } from '../models/database-entities/userAction.type';
 import { Observable, from } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -13,6 +13,40 @@ export class UserActionsService {
 
   getActionsList(): Observable<UserAction[]> {
     return this.httpClient.post<UserAction[]>(this.url + "List", null);
+  }
+
+  getUserActionsByProjectId(
+    projectId: number,
+    workTypeId: number,
+    userId: number,
+    localeId: number,
+    limit: number,
+    offset: number,
+  ): Observable<HttpResponse<UserAction[]>> {
+    const url = `${this.url}/List/byProjectId/${projectId}`;
+    let body: any = {};
+    if (workTypeId) {
+      body.workTypeId = workTypeId;
+    }
+    if (userId) {
+      body.userId = userId;
+    }
+    if (localeId) {
+      body.localeId = localeId;
+    }
+    if (limit) {
+      body.limit = limit;
+    }
+    if (offset) {
+      body.offset = offset;
+    }
+    return this.httpClient
+      .post<UserAction[]>(
+        url,
+        body,
+        {
+          observe: 'response',
+        });
   }
 
   getProjectActionsList(project: string): Observable<UserAction[]> {
