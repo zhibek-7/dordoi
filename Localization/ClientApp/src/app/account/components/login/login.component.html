@@ -24,8 +24,12 @@
   <div class="form-group">
     <label>
       Пароль
-      <mat-icon (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
     </label>
+    <mat-icon (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+    <a class="float-right green"
+       routerLink='/account/recover-password'>
+      Забыли пароль?
+    </a>
     <input class="form-control"
            [type]="hidePassword ? 'password' : 'text'"
            name="password"
@@ -46,14 +50,7 @@
       ВХОД
     </button>
   </div>
-
-  <div class="form-group">
-    <button class="btn btn-info"
-            routerLink='/account/recover_password'>
-      ЗАБЫЛИ ПАРОЛЬ?
-    </button>
-  </div>
-
+  
   <div class="form-group">
     <button class="btn btn-success"
             routerLink='/account/registration'>
