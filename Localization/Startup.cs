@@ -19,6 +19,7 @@ using Models.Migration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Localization.Authentication;
+using System;
 
 namespace Localization
 {
@@ -44,7 +45,7 @@ namespace Localization
             ///Как идея использовать класс, который видно во всех методах.
             //var connectionString = Configuration.GetConnectionString("db_connection");
             var connectionString = Settings.GetStringDB();
-            services.AddScoped<ISetttings>(provider => new Settings(connectionString));
+            services.AddScoped<ISettings>(provider => new Settings(connectionString));
 
 
             // TODO нужно будет переделать все классы под этот вариант
@@ -85,8 +86,9 @@ namespace Localization
             {
                 options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
             });
-            //////////////Данный блок заканчивается           
+            //////////////Данный блок заканчивается    
 
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -109,6 +111,7 @@ namespace Localization
                         IssuerSigningKey = AuthenticationOptions.GetSymmetricSecurityKey(),
                         // валидация ключа безопасности
                         ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
 

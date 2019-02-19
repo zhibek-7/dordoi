@@ -74,10 +74,12 @@ namespace Localization.Controllers
         }
 
         [Authorize]
-        [HttpPost("Profile")]
+        [HttpPost("profile")]
         public async Task<UserProfileForEditingDTO> GetProfile()
         {
-            var username = User.Identity.Name;
+            var username = User.Identity.Name;            
+
+            //var role = User.Claims.Where(claim => claim.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
             return await userRepository.GetProfileAsync(username);
         }
         [Authorize]
@@ -103,7 +105,7 @@ namespace Localization.Controllers
             return await userRepository.RemoveAsync(name_text);
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody]User user)
         {
             var username = user.Name_text;
@@ -114,7 +116,7 @@ namespace Localization.Controllers
             {
                 Response.StatusCode = 400;
                 return BadRequest();
-    }
+            }
 
             var now = DateTime.UtcNow;
             // создаем JWT-токен
@@ -134,7 +136,56 @@ namespace Localization.Controllers
             };
 
             return Ok(response);            
-}
+        }
+
+        [HttpPost("refreshToken")]
+        public IActionResult RefreshToken()
+        {
+            //var username = User.Identity.Name;
+            var username = "tip";
+
+            //var userIdentity = (ClaimsIdentity)User.Identity;
+            //var claimsOfUser = userIdentity.Claims;
+            //var roleClaimType = userIdentity.RoleClaimType;
+            //var roles = claimsOfUser.Where(c => c.Type == ClaimTypes.Role).ToList();
+            //var roleValue = roles[0].Value;
+            var roleValue = "Переводчик";
+
+            var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, username),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, roleValue)
+                };
+            ClaimsIdentity identity =
+            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                ClaimsIdentity.DefaultRoleClaimType);
+
+            //var identity = await this.IdentifyAuthorizedUser(username);
+            //if (identity == null)
+            //{
+            //    Response.StatusCode = 400;
+            //    return BadRequest();
+            //}
+
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthenticationOptions.ISSUER,
+                    audience: AuthenticationOptions.AUDIENCE,
+                    notBefore: now,
+                    claims: identity.Claims,
+                    expires: now.Add(TimeSpan.FromMinutes(AuthenticationOptions.LIFETIME)),
+                    signingCredentials: new SigningCredentials(AuthenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            var response = new
+            {
+                token = encodedJwt,
+                username = identity.Name,
+            };
+
+            return Ok(response);
+        }        
 
         private async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
         {
@@ -165,6 +216,7 @@ namespace Localization.Controllers
             return null;
         }
 
+        [Authorize]
         [HttpPost("checkUserAuthorisation")]
         public IActionResult CheckUserAuthorisation()
         {

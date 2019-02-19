@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Localization
 {
-    public interface ISetttings
+    public interface ISettings
     {
         // string GetStringDB();
     }

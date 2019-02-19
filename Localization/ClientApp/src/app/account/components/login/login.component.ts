@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
         .subscribe( response => {    
             this.authenticationService.saveToken(response.token);     
           // this.userService.getProfile().subscribe(); 
-            this.router.navigate(["/account/" + user.name_text]);
+            this.router.navigate(["/account/userProfile"]);
           },
         error => {
           this.formGroup.setErrors({ login: true });

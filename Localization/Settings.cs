@@ -9,7 +9,7 @@ namespace Localization
     /// <summary>
     /// Классы где будут храниться настройки.
     /// </summary>
-    public class Settings : ISetttings
+    public class Settings : ISettings
     {
         private string _connectionString;
 

@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ProjectsService } from '../services/projects.service';
-import { UserService } from '../services/user.service';
 import { AuthenticationService } from '../services/authentication.service';
 
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,23 +18,29 @@ export class AppComponent implements OnInit {
   currentProject: LocalizationProject;
   name = '';
 
-  userAuthorized: boolean;
+  userAuthorized: boolean = false;
 
   constructor(private projectService: ProjectsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private router: Router) { }
 
-  ngOnInit() {
-    this.projectService.getProjects()
-      .subscribe(projects => { this.projects = projects; },
-        error => console.error(error));
+  ngOnInit() {    
+
+    // this.getProjects();
     console.log('app ngOnInit ---!!!!!!!!!');
     console.log('ProjectName ==' + sessionStorage.getItem('ProjectName'));
     this.name = sessionStorage.getItem('ProjectName');
   }
 
   createNewProject() {
-
     console.log('app createNewProject ---!!!!!!!!!');
+  }
+
+  getProjects() {
+
+    this.projectService.getProjects()
+    .subscribe(projects => { this.projects = projects; },
+      error => console.error(error));
   }
 
   getCurrentProject(currentProject: LocalizationProject) {
@@ -59,18 +64,5 @@ export class AppComponent implements OnInit {
   async checkAuthorization() {
     this.userAuthorized = await this.authenticationService.checkUserAuthorisation();  
   }
-
-  // userAuthorized(): boolean {
-
-    
-
-  //   return this.userAuthorize;
-  //   // return this.authenticationService.checkUserAuthorisation().subscribe();
-  //     // .subscribe(
-  //     //   response => {
-  //     //     responseToForm = response;
-  //     //     return responseToForm;
-  //     //   }
-  //     // );
-  // }  
+ 
 }

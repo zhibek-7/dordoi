@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
@@ -29,8 +30,9 @@ namespace Localization.Controllers
             _userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
+        //[Authorize]
         [HttpGet]
-        [Route("List")]
+        [Route("List")]    
         public List<LocalizationProject> GetProjects()
         {
             return _localizationProjectRepository.GetAll()?.ToList();

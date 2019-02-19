@@ -429,6 +429,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
+                    //string SQLQuery = "SELECT  " +
+                    //                  "FROM users as u" +
+                    //                  "INNER JOIN participants ON participants.id_user = users.id " +
+                    //                  "INNER JOIN roles ON roles.id = participants.id_role " +
+                    //                  "WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
+
                     string SQLQuery = "SELECT * FROM users WHERE (name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);

@@ -79,10 +79,7 @@ export class ProjectPageComponent implements OnInit {
     private participantsService: ParticipantsService
   ) {}
 
-  ngOnInit() {
-    this.currentUserName = this.userService.currentUserName;
-    //this.currentUserName = sessionStorage.getItem("currentUserName");
-
+  ngOnInit() {    
     this.workTypeService.getWorkTypes().subscribe(
       workTypes => {
         this.workTypeList = workTypes;

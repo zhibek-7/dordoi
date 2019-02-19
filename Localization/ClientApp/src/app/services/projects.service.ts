@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
 import { Observable, of } from 'rxjs';
 import { LocalizationProjectForSelectDTO } from '../models/DTO/localizationProjectForSelectDTO.type';
@@ -25,7 +25,9 @@ export class ProjectsService {
 
   getProjects(): Observable<LocalizationProject[]> {
     console.log("getProject-->");
-    return this.httpClient.get<LocalizationProject[]>(this.controllerUrl + "List");
+    return this.httpClient.get<LocalizationProject[]>(this.controllerUrl + "List", {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
   getProject(id: number): Observable<LocalizationProject> {

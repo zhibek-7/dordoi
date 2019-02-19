@@ -92,7 +92,7 @@ const routes: Routes = [
 
   {
     path: "**",
-    component: UserAccountComponent
+    loadChildren: "../account/module/account.module#AccountModule"
     //component: NotFoundComponent
   }
 ];

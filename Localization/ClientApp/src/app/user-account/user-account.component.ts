@@ -22,8 +22,8 @@ export class UserAccountComponent implements OnInit {
   ngOnInit() {
 
 
-    sessionStorage.setItem('currentUserName', 'Иван Иванов');
-    sessionStorage.setItem('currentUserID', '300');
+    // sessionStorage.setItem('currentUserName', 'Иван Иванов');
+    // sessionStorage.setItem('currentUserID', '300');
     this.currentUserName = sessionStorage.getItem('currentUserName');
 
 

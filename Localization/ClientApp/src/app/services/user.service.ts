@@ -51,7 +51,7 @@ export class UserService {
   }
 
   login(user: User): any {
-    return this.httpClient.post(this.url + "Login", user);
+    return this.httpClient.post(this.url + "login", user);
   }
 
   passwordChange(user: userPasswordChange): Observable<boolean> {
@@ -61,7 +61,7 @@ export class UserService {
   }
   
   getProfile(): Observable<UserProfile> {
-    return this.httpClient.post<UserProfile>(this.url + "Profile", null, {
+    return this.httpClient.post<UserProfile>(this.url + "profile", null, {
       headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
     });
   }
