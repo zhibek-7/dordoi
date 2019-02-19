@@ -1,6 +1,6 @@
 <div>
   <section>
-    <mat-checkbox [(value)]="cleanTableBeforeImportFlag">Очистить таблицу</mat-checkbox>
+    <mat-checkbox [(ngModel)]="cleanTableBeforeImportFlag">Очистить таблицу</mat-checkbox>
     <button mat-raised-button (click)="selectFile.click()">
       Выбрать файл
       <input #selectFile type="file" style="display: none;" (change)="fileSelected($event)">
