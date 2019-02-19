@@ -246,30 +246,34 @@ export class AllSettingsComponent implements OnInit {
     });
 
     //передает массив языков
-    this.projectsService.deleteProjectLocales(DeleteprojectLocales);
+    this.projectsService.deleteProjectLocales(DeleteprojectLocales).subscribe(pr => {
 
 
+      //собирает добавленные языки в один массив
+      let projectLocales: LocalizationProjectsLocales[] = [];
+      this.selectedItems.forEach(lang => {
+        const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
 
-    //собирает добавленные языки в один массив
-    let projectLocales: LocalizationProjectsLocales[] = [];
-    this.selectedItems.forEach(lang => {
-      const index = this.allProjLocales.findIndex(list => list["iD_Locale"] == lang.id);
+        //if (index == -1) {
+        projectLocales.push({
+          id_Localization_Project: this.currentProjectId,
+          id_Locale: lang.id,
+          percent_Of_Translation: 0,
+          Percent_Of_Confirmed: 0
+        });
+        //} else {
 
-      //if (index == -1) {
-      projectLocales.push({
-        id_Localization_Project: this.currentProjectId,
-        id_Locale: lang.id,
-        percent_Of_Translation: 0,
-        Percent_Of_Confirmed: 0
+        //}
+
+
       });
-      //} else {
-
-      //}
+      //передает массив языков
+      this.projectsService.addProjectLocales(projectLocales);
 
 
     });
-    //передает массив языков
-    this.projectsService.addProjectLocales(projectLocales);
+
+
 
 
 
