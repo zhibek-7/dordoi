@@ -99,7 +99,7 @@
     </div>
     <div>
       <select class="form-control" [(ngModel)]="selectedLang" [ngModelOptions]="{standalone: true}">
-        <option  id='{{lang.id}}' *ngFor="let lang of dropdownList"  [selected]="selectedLang" value='{{lang.id}}'> {{lang.itemName}}</option>
+        <option  id='{{lang.id}}' *ngFor="let lang of dropdownList"  value='{{lang.id}}'> {{lang.itemName}}</option>
       </select>
     </div>
 
