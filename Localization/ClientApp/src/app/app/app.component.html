@@ -60,10 +60,12 @@
         <div class="dropdown-menu" aria-labelledby="userDropdown">
           <div *ngIf="!userAuthorized">
               <a class="dropdown-item" routerLink='account'>Профиль</a>
+              <a class="dropdown-item" routerLink='account'>Настройки</a>
           </div>
 
           <div *ngIf="userAuthorized">
-              <a class="dropdown-item" routerLink='account/profile'>Профиль</a>
+            <a class="dropdown-item" routerLink='Profile'>Профиль</a>
+              <a class="dropdown-item" routerLink='account/profile'>Настройки</a>
 
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" (click)="logOut()" style="cursor:pointer;" routerLink='account' >Выйти из профиля</a>

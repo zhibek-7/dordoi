@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-namespace Localization
+﻿namespace Utilities
 {
     /// <summary>
     /// Классы где будут храниться настройки.
@@ -12,6 +6,13 @@ namespace Localization
     public class Settings : ISettings
     {
         private string _connectionString;
+
+        // Настройки для email рассылки
+        public const string EMailLogin = "qcoderitest@gmail.com";
+        public const string EMailPassword = "NGY69Zrme4MFAT4";
+        public const string EMailHost = "smtp.gmail.com";
+        public const int EMailPort = 465; //587;
+        //
 
         public static string GetStringDB()
         {
