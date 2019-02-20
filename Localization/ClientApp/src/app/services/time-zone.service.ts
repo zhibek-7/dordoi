@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TimeZone } from '../models/database-entities/timeZone.type';
 
@@ -12,7 +12,9 @@ export class TimeZoneService {
 
   /** Возвращает список часовых поясов */
   getAll(): Observable<TimeZone[]> {
-    return this.httpClient.post<TimeZone[]>(this.url, null);
+    return this.httpClient.post<TimeZone[]>(this.url, null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
 }
