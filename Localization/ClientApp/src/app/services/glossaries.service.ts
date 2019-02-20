@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse, HttpHeaders  } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -22,12 +22,16 @@ export class GlossariesService {
   }
 
   public get(id: number): Observable<Glossary> {
-    return this.httpClient.post<Glossary>(GlossariesService.connectionUrl + id + '/get', null)
+    return this.httpClient.post<Glossary>(GlossariesService.connectionUrl + id + '/get', null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    })
       .pipe(catchError(this.handleError));
   }
 
   getGlossaries(): Observable<Glossary[]> {
-    return this.httpClient.post<Glossary[]>(GlossariesService.connectionUrl + 'list', null)
+    return this.httpClient.post<Glossary[]>(GlossariesService.connectionUrl + 'list', null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    })
       .pipe(catchError(this.handleError));
   }
 
@@ -72,13 +76,15 @@ export class GlossariesService {
     }
     return this.httpClient.post(GlossariesService.connectionUrl + glossaryId + '/terms', newTerm,
       {
-        params: params
-      })
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")), params: params
+    })
       .pipe(catchError(this.handleError));
   }
 
   deleteTerm(glossaryId: number, termId: number): Observable<Object> {
-    return this.httpClient.delete(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId)
+    return this.httpClient.delete(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    })
       .pipe(catchError(this.handleError));
   }
 
@@ -89,29 +95,37 @@ export class GlossariesService {
     }
     return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + updatedTerm.id, updatedTerm,
       {
-        params: params
-      })
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")), params: params
+    })
       .pipe(catchError(this.handleError));
   }
 
   getGlossaryLocale(glossaryId: number): Observable<Locale> {
-    return this.httpClient.post<Locale>(GlossariesService.connectionUrl + glossaryId + '/locale/get', null)
+    return this.httpClient.post<Locale>(GlossariesService.connectionUrl + glossaryId + '/locale/get', null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    })
       .pipe(catchError(this.handleError));
   }
 
   getTranslationLocalesForTerm(glossaryId: number, termId: number): Observable<Locale[]> {
-    return this.httpClient.post<Locale[]>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales/list', null)
+    return this.httpClient.post<Locale[]>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales/list', null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    })
       .pipe(catchError(this.handleError));
   }
 
   setTranslationLocalesForTerm(glossaryId: number, termId: number, localesIds: number[]): Observable<Object> {
-    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales', localesIds)
+    return this.httpClient.put(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales', localesIds, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    })
       .pipe(catchError(this.handleError));
   }
 
   // Получить все термины из всех глоссариев присоедененных к проекту локализации, по id необходимого проекта локализации
   getAllTermsFromAllGlossarisInProject(projectId: number): Observable<TermWithGlossary[]> {
-    return this.httpClient.post<TermWithGlossary[]>(GlossariesService.connectionUrl + 'FindAllTermsInProjects/', projectId)
+    return this.httpClient.post<TermWithGlossary[]>(GlossariesService.connectionUrl + 'FindAllTermsInProjects/', projectId, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    })
       .pipe(catchError(this.handleError));
   }
 

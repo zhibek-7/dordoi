@@ -24,15 +24,21 @@ export class UserService {
   }
 
   getUserList(): Observable<User[]> {
-    return this.httpClient.post<User[]>(this.url + "List", null);
+    return this.httpClient.post<User[]>(this.url + "List", null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   getProjectParticipantList(projectId: number): Observable < User[] > {
-    return this.httpClient.post<User[]>(this.url + "List/projectId:" + projectId, null);
+    return this.httpClient.post<User[]>(this.url + "List/projectId:" + projectId, null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   getPhotoById(userId: number): Observable<Blob> {
-    return this.httpClient.post(this.url + userId.toString() + '/getPhoto/', null, { responseType: 'blob' });
+    return this.httpClient.post(this.url + userId.toString() + '/getPhoto/', null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")),
+    responseType: 'blob' });
   }
 
   //
@@ -51,7 +57,9 @@ export class UserService {
    * @param login введенное имя пользователя (логин).
    */
   isUniqueLogin(login: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + "isUniqueLogin:" + login, login);
+    return this.httpClient.post<boolean>(this.url + "isUniqueLogin:" + login, login, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   /**
@@ -59,7 +67,9 @@ export class UserService {
    * @param user
    */
   createUser(user: User): Observable<Object> {
-    return this.httpClient.post<number>(this.url + "registration", user);    
+    return this.httpClient.post<number>(this.url + "registration", user, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });    
   }
 
   /**
@@ -85,7 +95,9 @@ export class UserService {
    * @param name имя пользователя (логин) или email
    */
   recoverPassword(name: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + "recoverPassword:" + name, name);
+    return this.httpClient.post<boolean>(this.url + "recoverPassword:" + name, name, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   /** Получение профиля пользователя. */

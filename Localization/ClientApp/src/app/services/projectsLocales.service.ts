@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders  } from '@angular/common/http';
 
 import { HttpClientModule } from '@angular/common/http';
 import { LocalizationProjectsLocales } from '../models/database-entities/localizationProjectLocales.type';
@@ -24,7 +24,9 @@ export class ProjectsLocalesService {
 
 
   getProjectLocales(): Observable<LocalizationProjectsLocales[]> {
-    return this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + 'list', null);
+    return this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + 'list', null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
   async addProjectLocales(project: LocalizationProjectsLocales) {
     console.log("addProject-->");
@@ -34,7 +36,9 @@ export class ProjectsLocalesService {
     console.log(this.controllerUrl + "AddProject");
     //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
-    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "AddProject", project).toPromise();
+    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "AddProject", project, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    }).toPromise();
     return asyncResult;
 
 
@@ -47,7 +51,9 @@ export class ProjectsLocalesService {
     console.log("updateProject-->" + Id);
     console.log(projectLocale);
    // projectLocale.id_Localization_Project = Id;
-    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "edit/" + Id, projectLocale).toPromise();
+    let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "edit/" + Id, projectLocale, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    }).toPromise();
 
     return asyncResult;
   }
