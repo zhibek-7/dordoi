@@ -17,15 +17,13 @@ export abstract class SignalRService {
   }
 
   async checkStartConnection() {
-    let startPromise: Promise<void> = new Promise<void>(resolve => resolve());
     if (this.connection.state === signalR.HubConnectionState.Disconnected) {
-      startPromise = this.connection.start()
+      await this.connection.start()
         .catch(error => {
           console.log(error);
           alert(error);
         });
     }
-    await startPromise;
   }
 
 }
