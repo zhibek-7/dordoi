@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Localization.Authentication;
 using System;
+using Utilities;
+using Utilities.Mail;
 
 namespace Localization
 {
@@ -56,6 +58,7 @@ namespace Localization
             services.AddScoped<ITranslationTroubleRepository>(provider => new TranslationTroubleRepository(connectionString));
             services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
             services.AddScoped<IUserActionRepository>(provider => new UserActionRepository(connectionString));
+            services.AddScoped<IMail>(provider => new EMail());
 
             services.AddScoped<FromExcel>();
 

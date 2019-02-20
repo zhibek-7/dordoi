@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders  } from '@angular/common/http';
 import { TranslatedWordsReportRow } from "../models/Reports/TranslatedWordsReportRow";
 import { Observable } from 'rxjs';
 
@@ -28,7 +28,9 @@ export class ReportService {
       volumeCalcType: volumeCalcType, calcBasisType: calcBasisType, workType: workType,
       userId: userId, localeId: localeId, initialFolderId: initialFolderId
     };
-    return this.httpClient.post<TranslatedWordsReportRow[]>(this.url + "TranslatedWords", body); 
+    return this.httpClient.post<TranslatedWordsReportRow[]>(this.url + "TranslatedWords", body, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    }); 
   }
 
   async getTranslatedWordsReportExcel(

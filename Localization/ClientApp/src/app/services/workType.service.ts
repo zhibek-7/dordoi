@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse, HttpHeaders  } from '@angular/common/http';
 import { WorkType } from "../models/database-entities/workType.type";
 import { Observable } from 'rxjs';
 
@@ -11,10 +11,14 @@ export class WorkTypeService {
   constructor(private httpClient: HttpClient) { }
 
   getWorkTypes(): Observable<WorkType[]> {
-    return this.httpClient.get<WorkType[]>(this.url + 'list');
+    return this.httpClient.get<WorkType[]>(this.url + 'list', {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   getWorkTypeByID(id: number): Observable<WorkType> {
-    return this.httpClient.get<WorkType>(this.url + id.toString());
+    return this.httpClient.get<WorkType>(this.url + id.toString(), {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 }

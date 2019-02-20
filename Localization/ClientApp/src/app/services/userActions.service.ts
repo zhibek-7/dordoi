@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpHeaders  } from '@angular/common/http';
 import { UserAction } from '../models/database-entities/userAction.type';
 import { Observable, from } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -12,7 +12,9 @@ export class UserActionsService {
   constructor(private httpClient: HttpClient) { }
 
   getActionsList(): Observable<UserAction[]> {
-    return this.httpClient.post<UserAction[]>(this.url + "List", null);
+    return this.httpClient.post<UserAction[]>(this.url + "List", null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   getUserActionsByProjectId(

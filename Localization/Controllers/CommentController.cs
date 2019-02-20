@@ -10,6 +10,7 @@ using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Comment;
 using System.Net.Http;
 using System.IO;
+using Utilities;
 
 namespace Localization.WebApi
 {

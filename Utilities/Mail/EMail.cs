@@ -3,23 +3,18 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using System.Threading.Tasks;
 
-namespace Utilities.SendMail 
+namespace Utilities.Mail 
 {
-    public class EMail
+    public class EMail : IMail
     {
-        public const string EMailLogin = "qcoderitest@gmail.com";
-        public const string EMailPassword = "NGY69Zrme4MFAT4";
-        public const string EMailHost = "smtp.gmail.com";
-        public const int EMailPort = 465; //587;
-
-
         /// <summary>
-        /// Метод для отправки
+        /// Отправка сообщения
         /// </summary>
         /// <param name="msg">текст сообщения</param>
-        /// <param name="subject">заголовок</param>
-        /// <param name="emails">список емейлов для отправки</param>
-        public static async Task PostMail(String msg, String subject, String[] emails)
+        /// <param name="subject">тема сообщения</param>
+        /// <param name="emails">список получателей</param>
+        /// <returns></returns>
+        public /*static*/ async Task PostMail(String msg, String subject, String[] emails)
         {
             if (emails != null && emails.Length > 0)
             {
@@ -54,7 +49,7 @@ namespace Utilities.SendMail
 
                     var emailMessage = new MimeMessage();
 
-                    emailMessage.From.Add(new MailboxAddress("Администрация сайта", EMailLogin));
+                    emailMessage.From.Add(new MailboxAddress("Администрация сайта", Settings.EMailLogin));
 
                     foreach (var email in emails)
                         emailMessage.To.Add(new MailboxAddress("", email));
@@ -68,8 +63,8 @@ namespace Utilities.SendMail
 
                     using (var client = new SmtpClient())
                     {
-                        await client.ConnectAsync(EMailHost, EMailPort, true);
-                        await client.AuthenticateAsync(EMailLogin, EMailPassword);
+                        await client.ConnectAsync(Settings.EMailHost, Settings.EMailPort, true);
+                        await client.AuthenticateAsync(Settings.EMailLogin, Settings.EMailPassword);
                         await client.SendAsync(emailMessage);
 
                         await client.DisconnectAsync(true);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse, HttpHeaders  } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Participant } from 'src/app/models/Participants/participant.type';
 
@@ -49,16 +49,20 @@ export class ParticipantsService {
     return this.httpClient.post<Participant[]>(this.url + 'byProjectId/' + projectId + '/list',
       body,
       {
-        observe: 'response'
-      });
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")), observe: 'response'
+    });
   }
 
   deleteParticipant(projectId: number, participantUserId: number): Observable<Object> {
-    return this.httpClient.delete(this.url + 'byProjectId/' + projectId + '/' + participantUserId);
+    return this.httpClient.delete(this.url + 'byProjectId/' + projectId + '/' + participantUserId, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   addParticipant(projectId: number, userId: number, roleId: number): Observable<Object> {
-    return this.httpClient.post(this.url + projectId + '/' + userId + '/' + roleId, null);
+    return this.httpClient.post(this.url + projectId + '/' + userId + '/' + roleId, null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
 }
