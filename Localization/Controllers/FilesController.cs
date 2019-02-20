@@ -1,7 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Localization.Hubs.Files;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Models.DatabaseEntities;
 
 using Models.Models;
@@ -15,9 +17,23 @@ namespace Localization.WebApi
     {
         private readonly FilesService _filesService;
 
-        public FilesController(FilesService filesService)
+        private readonly IHubContext<FilesHub> _hubContext;
+
+        public FilesController(
+            FilesService filesService,
+            IHubContext<FilesHub> hubContext)
         {
             this._filesService = filesService;
+            this._hubContext = hubContext;
+
+            this._filesService.FileParsingFailed += OnFileParsingFailedAsync;
+        }
+
+        private async Task OnFileParsingFailedAsync(string signalrClientId, FailedFileParsingModel failedParsingInfoModel)
+        {
+            await this._hubContext.Clients.Client(signalrClientId).SendAsync(
+                FilesHub.ParsingFailedEventName,
+                failedParsingInfoModel);
         }
 
         // GET api/files
@@ -97,12 +113,17 @@ namespace Localization.WebApi
         }
 
         [HttpPost("upload/folderByProjectId/{projectId}")]
-        public async Task UploadFolderWithContentsAsync(IFormFileCollection files, [FromForm] int? parentId, int projectId)
+        public async Task UploadFolderWithContentsAsync(
+            int projectId,
+            IFormFileCollection files,
+            [FromForm] int? parentId,
+            [FromForm] string signalrClientId)
         {
             await this._filesService.AddFolderWithContentsAsync(
                 files: files,
                 parentId: parentId,
-                projectId: projectId
+                projectId: projectId,
+                signalrClientId: signalrClientId
                 );
         }
 

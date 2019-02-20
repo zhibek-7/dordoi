@@ -26,6 +26,7 @@ import { FileSettingsModalComponent } from 'src/app/files/components/file-settin
 
 import { FileService } from 'src/app/services/file.service';
 import { LanguageService } from 'src/app/services/languages.service';
+import { FilesSignalRService } from 'src/app/services/filesSignalR.service';
 import { FileInputWrapper } from './components/file-input-wrapper/file-input-wrapper.component';
 
 @NgModule({
@@ -56,6 +57,7 @@ import { FileInputWrapper } from './components/file-input-wrapper/file-input-wra
   providers: [
     FileService,
     LanguageService,
+    FilesSignalRService,
   ]
 })
 export class FilesModule { }

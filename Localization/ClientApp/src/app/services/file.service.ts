@@ -86,7 +86,7 @@ export class FileService {
       .pipe(catchError(this.handleError('addFolder')));
   }
 
-  uploadFolder(files, projectId: number, parentId?: number): Observable<any> {
+  uploadFolder(files, projectId: number, signalrClientId: string, parentId?: number): Observable<any> {
     const url = `${this._url}/upload/folderByProjectId/${projectId}`;
 
     const formData = new FormData();
@@ -100,6 +100,7 @@ export class FileService {
       // null is not valid, eliding parameter is not valid
       formData.append('parentId', '');
     }
+    formData.append('signalrClientId', signalrClientId);
 
     return this.http.post<TreeNode>(url, formData)
       .pipe(catchError(this.handleError('Upload folder')));

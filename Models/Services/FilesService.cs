@@ -20,6 +20,8 @@ namespace Models.Services
         private readonly IGlossaryRepository _glossaryRepository;
         private readonly ILocaleRepository _localeRepository;
 
+        public event Func<string, FailedFileParsingModel, Task> FileParsingFailed;
+
         public FilesService(
             IFilesRepository filesRepository,
             IGlossaryRepository glossaryRepository,
@@ -253,7 +255,7 @@ namespace Models.Services
             return await AddNodeAsync(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
         }
 
-        public async Task AddFolderWithContentsAsync(IFormFileCollection files, int? parentId, int projectId)
+        public async Task AddFolderWithContentsAsync(IFormFileCollection files, int? parentId, int projectId, string signalrClientId)
         {
             foreach (var file in files)
             {
@@ -290,7 +292,21 @@ namespace Models.Services
                 newFile.name_text = fileName;
                 newFile.id_folder_owner = lastParentId;
                 newFile.id_localization_project = projectId;
-                await this.InsertFileToDbAsync(newFile);
+
+                try
+                {
+                    await this.InsertFileToDbAsync(newFile);
+                }
+                catch (Parser.ParserException parserException)
+                {
+                    await this.FileParsingFailed?.Invoke(
+                        signalrClientId,
+                        new FailedFileParsingModel()
+                        {
+                            FileName = relativePathToFile,
+                            ParserMessage = parserException.Message,
+                        });
+                }
             }
         }
 

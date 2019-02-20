@@ -7,8 +7,10 @@ import { saveAs } from "file-saver";
 
 import { FileService } from "src/app/services/file.service";
 import { ProjectsService } from "src/app/services/projects.service";
+import { FilesSignalRService } from 'src/app/services/filesSignalR.service';
 
 import { File as FileData } from "src/app/models/database-entities/file.type";
+import { FailedFileParsingModel } from "src/app/models/files/failedFileParsing.type";
 
 @Component({
   selector: "app-files",
@@ -37,13 +39,21 @@ export class FilesComponent implements OnInit {
     private router: Router,
     private fileService: FileService,
     private projectsService: ProjectsService,
-    private ngxSpinnerService: NgxSpinnerService
+    private ngxSpinnerService: NgxSpinnerService,
+    private filesSignalRService: FilesSignalRService,
   ) {}
 
   ngOnInit(): void {
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
     console.log("Projec=" + sessionStorage.getItem("Projec"));
+
+    this.filesSignalRService.errorReported.subscribe(
+      (parsingFailInfo: FailedFileParsingModel) => {
+        const message = `Не удалось добавить файл ${parsingFailInfo.fileName}, ошибка – ${parsingFailInfo.parserMessage}.`;
+        console.log(message);
+        alert(message);
+      });
 
     if (this.router.url.indexOf("LanguageFiles") != -1) {
       this.isSelectionFileForTranslation = true;
@@ -192,17 +202,19 @@ export class FilesComponent implements OnInit {
       );
   }
 
-  uploadFolder(files, parentNode?: TreeNode): void {
+  async uploadFolder(files, parentNode?: TreeNode): Promise<void> {
     const parentId = parentNode ? parentNode.data.id : null;
     this.ngxSpinnerService.show();
+    const signalrConnectionId = await this.filesSignalRService.getConnectionId();
     this.fileService
-      .uploadFolder(files, this.projectsService.currentProjectId, parentId)
+      .uploadFolder(files, this.projectsService.currentProjectId, signalrConnectionId, parentId)
       .subscribe(
+        null,
+        error => alert(error),
         () => {
           this.getFiles();
           this.ngxSpinnerService.hide();
-        },
-        error => alert(error)
+        }
       );
   }
 
