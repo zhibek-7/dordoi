@@ -3,7 +3,7 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using System.Threading.Tasks;
 
-namespace Utilities.Mail 
+namespace Utilities.Mail
 {
     public class EMail : IMail
     {
@@ -47,9 +47,13 @@ namespace Utilities.Mail
                     //    }
                     //}
 
+
+                    Settings st = new Settings();
+
+
                     var emailMessage = new MimeMessage();
 
-                    emailMessage.From.Add(new MailboxAddress("Администрация сайта", Settings.EMailLogin));
+                    emailMessage.From.Add(new MailboxAddress("Администрация сайта", st.GetString("Email_Login")));
 
                     foreach (var email in emails)
                         emailMessage.To.Add(new MailboxAddress("", email));
@@ -63,8 +67,8 @@ namespace Utilities.Mail
 
                     using (var client = new SmtpClient())
                     {
-                        await client.ConnectAsync(Settings.EMailHost, Settings.EMailPort, true);
-                        await client.AuthenticateAsync(Settings.EMailLogin, Settings.EMailPassword);
+                        await client.ConnectAsync(st.GetString("Email_Host"), Int32.Parse(st.GetString("Email_Port")), true);
+                        await client.AuthenticateAsync(st.GetString("Email_Login"), st.GetString("Email_Password"));
                         await client.SendAsync(emailMessage);
 
                         await client.DisconnectAsync(true);

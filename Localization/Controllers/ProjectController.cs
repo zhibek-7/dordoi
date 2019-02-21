@@ -108,6 +108,8 @@ namespace Localization.Controllers
         public LocalizationProject EditProject(LocalizationProject project, int Id)
         {
             _localizationProjectRepository.UpdateProject(project);
+            _userActionRepository.AddEditProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация           
+
             return project;
         }
 
