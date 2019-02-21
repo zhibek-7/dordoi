@@ -273,7 +273,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                         if (file.is_folder)
                         {
-                            /*Логироание*/
+                            /*Логирование*/
                             _action.AddAddFileActionAsync(file, file.id, WorkTypes.AddFile);
                             /**/
                             transaction.Commit();

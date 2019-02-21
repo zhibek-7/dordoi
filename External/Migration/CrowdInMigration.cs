@@ -68,6 +68,7 @@ namespace TestParseConsoleApp
                         }
                     }
                 }
+                File.Delete(tempFileName);
                 _logger.WriteLn("xliff-файл успешно распарсен");
             }
             catch (Exception ex)
@@ -103,6 +104,7 @@ namespace TestParseConsoleApp
                     }
                 }
                 _logger.WriteLn("tbx-файл успешно распарсен");
+                File.Delete(tempFileName);
             }
             catch (Exception ex)
             {
