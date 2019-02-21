@@ -365,6 +365,26 @@ namespace DAL.Reposity.PostgreSqlRepository
             return await AddAsync(act);
         }
 
+
+
+
+        /// <summary>
+        /// Добавить запись о редактировании проекта
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddEditProjectActionAsync(int userId, string userName, int projectId, int localeId, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, userName, "Редактирование проекта. " + comment, (int)WorkTypes.EditProject, WorkTypes.EditProject.ToString())
+            {
+                id_project = projectId,
+                id_locale = localeId
+            };
+            return await AddAsync(act);
+        }
+
+
         /// <summary>
         /// Добавить запись о добавлении файла
         /// </summary>
@@ -578,5 +598,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             };
             return await AddAsync(act);
         }
+
+
+
+        
+
+
+
+
+
     }
 }
