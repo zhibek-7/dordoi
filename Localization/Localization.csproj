@@ -41,6 +41,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ClientApp\src\app\models\database-entities\workType.type.ts" />
     <None Remove="ClientApp\src\app\models\DTO\glossariesDTO.type.ts" />
     <None Remove="ClientApp\src\app\models\DTO\localizationProjectForSelectDTO.type.ts" />
@@ -53,6 +57,12 @@
     <None Remove="ClientApp\src\app\user-registration\user-registration.component.ts" />
     <None Remove="ClientApp\src\app\user-registration\user-registration.model.ts" />
     <None Remove="ClientApp\src\app\user-registration\user-registration.module.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
