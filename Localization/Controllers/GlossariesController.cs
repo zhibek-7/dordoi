@@ -1,8 +1,5 @@
-﻿using DAL.Reposity.PostgreSqlRepository;
-using Microsoft.AspNetCore.Mvc;
-using Models.DatabaseEntities;
+﻿using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities.DTO;
-using Models.Interfaces.Repository;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;

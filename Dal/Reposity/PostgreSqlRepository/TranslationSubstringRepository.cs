@@ -738,5 +738,48 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
+
+
+        //
+        /// <summary>
+        /// Удаление всех строк связанных с памятью переводов.
+        /// </summary>
+        /// <param name="translationMemoryId"></param>
+        /// <returns></returns>
+        public async Task<bool> RemoveByTranslationMemoryAsync(int translationMemoryId)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var queryIds = new Query("translation_substrings")
+                        .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                        .Where("translation_memories_strings.id_translation_memory", translationMemoryId)
+                        .Select("translation_substrings.id");
+
+                    var queryDelete = new Query("translation_substrings")
+                        .WhereIn("id", queryIds).AsDelete();
+
+                    var compiledQuery = _compiler.Compile(queryDelete);
+                    LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveAsync)} {nameof(Exception)} ", exception);
+                return false;
+            }
+        }
     }
 }

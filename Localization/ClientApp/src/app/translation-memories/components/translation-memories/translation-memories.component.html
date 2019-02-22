@@ -1,0 +1,117 @@
+<h1>Ресурсы</h1>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb nav-border">
+    <li class="breadcrumb-item active nav-element-gray" aria-current="page"> Память переводов </li>
+  </ol>
+</nav>
+
+<nav class="navbar navbar-expand nav">
+  <ul class="navbar-nav nav">
+
+    <li class="nav-item">
+      <button class="btn nav-element" (click)="addFormModal.show()"> Создать память переводов </button>
+      <app-add-translation-memory-form-modal #addFormModal
+                                             (newSubmitted)="add($event)">
+      </app-add-translation-memory-form-modal>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element" (click)="getEditing()" [disabled]="!isSelectedTranslationMemory">
+        Редактировать память переводов
+      </button>
+      <app-edit-translation-memory-form-modal #editFormModal
+                                              *ngIf="isVisibleEditFormModal"
+                                              [translationMemory]="translationMemory"
+                                              (editedSubmitted)="edited($event)"
+                                              (error)="getAllDTO()">
+      </app-edit-translation-memory-form-modal>
+    </li>
+
+    <li class="nav-item">
+      <button type="button" class="btn nav-element" (click)="getConfirmClear()" [disabled]="!isSelectedTranslationMemory">
+        Очистить
+      </button>
+      <app-confirm-clear-translation-memory-of-string #confirmClearFormModal
+                                                     *ngIf="isSelectedTranslationMemory"
+                                                     [translationMemory]="translationMemory"
+                                                     (confirmedClear)="clear($event)">
+      </app-confirm-clear-translation-memory-of-string>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element" (click)="getConfirmDelete()" [disabled]="!isSelectedTranslationMemory">
+        <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
+      </button>
+      <app-confirm-delete-translation-memory #confirmDeleteFormModal
+                                             *ngIf="isSelectedTranslationMemory"
+                                             [translationMemory]="translationMemory"
+                                             (confirmedDelete)="delete($event)">
+      </app-confirm-delete-translation-memory>
+    </li>
+
+  </ul>
+</nav>
+
+
+<div class="table-border">
+
+  <mat-table [dataSource]="dataSource" matSort>
+
+
+    <ng-container matColumnDef="name_text">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        <label class="table-cell align-center"> Имя </label>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.name_text}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="string_count">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        <label class="table-cell align-center"> Строки </label>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.string_count}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="localesName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Языки </label> </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.locales_name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="localizationProjectsName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> Проекты </label> </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.localization_projects_name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="additionalButtons">
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+
+        <button mat-button [matMenuTriggerFor]="menu">
+          <mat-icon>drag_indicator</mat-icon>
+        </button>
+
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{selected: row.isSelected}" (click)="selected(row)">
+    </mat-row>
+
+  </mat-table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+</div>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="unload()"> Загрузить </button>
+  <button mat-menu-item (click)="load()"> Скачать </button>
+  <button mat-menu-item (click)="getEditing()"> Изменить </button>
+  <div class="dropdown-divider"></div>
+  <button mat-menu-item (click)="getConfirmClear()"> Очистить </button>
+  <button mat-menu-item (click)="getConfirmDelete()"> Удалить </button>
+</mat-menu>
+
+
+<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

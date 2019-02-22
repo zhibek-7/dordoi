@@ -30,5 +30,13 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<Locale>> GetLocalesForStringAsync(int translationSubstringId);
         Task AddTranslationLocalesAsync(int translationSubstringId, IEnumerable<int> localesIds);
         Task DeleteTranslationLocalesAsync(int translationSubstringId);
+
+
+        /// <summary>
+        /// Удаление всех строк связанных с памятью переводов.
+        /// </summary>
+        /// <param name="translationMemoryId"></param>
+        /// <returns></returns>
+        Task<bool> RemoveByTranslationMemoryAsync(int translationMemoryId);
     }
 }

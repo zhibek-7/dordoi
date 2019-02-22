@@ -1,13 +1,13 @@
 <app-modal [(visible)]="visible">
   <div class="app-modal-header d-flex m-2">
-    <h4 class="modal-title">Очистить глоссарий</h4>
+    <h4 class="modal-title">Удалить память переводов</h4>
     <button type="button" class="close" (click)="hide()">&times;</button>
   </div>
   <div class="app-modal-body">
-    <p>Вы действительно хотите очистить от терминов выбранный глоссарий "{{glossary.name_text}}"?</p>
+    <p>Вы действительно хотите удалить память переводов "{{translationMemory.name_text}}"?</p>
   </div>
   <div class="app-modal-footer">
-    <button class="btn btn-default m-2" (click)="clear()">Очистить</button>
+    <button class="btn btn-default m-2" (click)="delete()">Удалить</button>
     <button class="btn btn-default m-2" (click)="hide()">Отмена</button>
   </div>
 </app-modal>

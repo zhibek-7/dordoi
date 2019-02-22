@@ -59,6 +59,7 @@ namespace Localization
             services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
             services.AddScoped<IUserActionRepository>(provider => new UserActionRepository(connectionString));
             services.AddScoped<IMail>(provider => new EMail());
+            services.AddScoped<ITranslationMemoryRepository>(provider => new TranslationMemoryRepository(connectionString));
 
             services.AddScoped<FromExcel>();
 
@@ -67,6 +68,7 @@ namespace Localization
             services.AddScoped<GlossaryService>();
             services.AddScoped<GlossariesService>();
             services.AddScoped<UserAction>();
+            services.AddScoped<TranslationMemoryService>();
 
             /*
             services.AddScoped<IFilesRepository, FilesRepository>();
@@ -168,7 +170,6 @@ namespace Localization
             app.UseSignalR(routes =>
             {
                 routes.MapHub<Hubs.DataImport.DataImportHub>("/dataimport/hub");
-                routes.MapHub<Hubs.Files.FilesHub>("/files/hub");
             });
 
             app.UseCors("SiteCorsPolicy"); // это тоже для нескольких портов(см. выше)

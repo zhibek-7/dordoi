@@ -67,6 +67,11 @@ const routes: Routes = [
     loadChildren: "../project-page/project-page.module#ProjectPageModule"
   },
   {
+    path: "translation-memories",
+    loadChildren:
+      "../translation-memories/module/translation-memories.module#TranslationMemoriesModule"
+  },
+  {
     path: "account",
     loadChildren: "../account/module/account.module#AccountModule"
   },

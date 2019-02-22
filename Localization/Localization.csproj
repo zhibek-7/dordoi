@@ -48,8 +48,10 @@
     <None Remove="ClientApp\src\app\models\database-entities\workType.type.ts" />
     <None Remove="ClientApp\src\app\models\DTO\glossariesDTO.type.ts" />
     <None Remove="ClientApp\src\app\models\DTO\localizationProjectForSelectDTO.type.ts" />
+    <None Remove="ClientApp\src\app\models\DTO\translationMemoryDTO.type.ts" />
     <None Remove="ClientApp\src\app\services\glossary.service.ts" />
     <None Remove="ClientApp\src\app\services\reports.service.ts" />
+    <None Remove="ClientApp\src\app\services\translation-memory.service.ts" />
     <None Remove="ClientApp\src\app\services\user-registration.service.ts" />
     <None Remove="ClientApp\src\app\user-account\user.ts" />
     <None Remove="ClientApp\src\app\user-registration\example.ts" />
@@ -76,8 +78,10 @@
     <TypeScriptCompile Include="ClientApp\src\app\models\database-entities\workType.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\models\DTO\glossariesDTO.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\models\DTO\localizationProjectForSelectDTO.type.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\DTO\translationMemoryDTO.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\glossary.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\reports.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\services\translation-memory.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\user-registration.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-account\user.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-registration\example.ts" />
