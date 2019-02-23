@@ -458,7 +458,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var query = new Query("users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
-                    
+
                     var idOfNewUser = await dbConnection
                         .ExecuteScalarAsync<int>(
                             sql: compiledQuery.Sql,
@@ -556,10 +556,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                         about_me = temp.FirstOrDefault().about_me,
                         gender = temp.FirstOrDefault().gender,
                         id_time_zones = temp.FirstOrDefault().id_time_zones,
+                        id = temp.FirstOrDefault().id,
 
                         locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
-                            ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
-                            : null
+                        ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
+                        : null
                     };
 
                     return resultDTO;
@@ -576,7 +577,50 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
-        
+
+        /// <summary>
+        /// Получение профиля пользователя.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public BaseEntity GetID(string name)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("users")
+                        .Where("users.name_text", name)
+                        .LeftJoin("users_locales", "users_locales.id_user", "users.id")
+                        .Select(
+                        "users.id"
+                        );
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var temp = dbConnection.Query<BaseEntity>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    //Создание пользователя с вложенными списками идентификаторов связанных данных.
+                    var resultDTO = new UserProfileForEditingDTO
+                    {
+                        id = temp.FirstOrDefault().id,
+                    };
+                    return resultDTO;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetProfileAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetProfileAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
         /// <summary>
         /// Сохранение изменений в профиле пользователя.
         /// </summary>
@@ -668,7 +712,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         id_locale = t.Item1,
                         is_native = t.Item2
                     }).ToList();
-                    
+
                     foreach (var element in usersLocalesIsNative)
                     {
                         var queryInsert = new Query("users_locales").AsInsert(element);
@@ -705,7 +749,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Удаление аккаунта возможно, если пользователь не является владельцем ни одного проекта
                     var isOwner = await _participantsRepository.IsOwnerInAnyProject(name);
 
-                    if (isOwner == false) 
+                    if (isOwner == false)
                     {
                         var query = new Query("users")
                             .Where("users.name_text", name)

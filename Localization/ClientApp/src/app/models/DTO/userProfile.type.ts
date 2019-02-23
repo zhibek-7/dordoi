@@ -1,4 +1,5 @@
 export class UserProfile {
+  id: number;
   /**
    * Имя пользователя (логин/ник)
    */
@@ -24,5 +25,5 @@ export class UserProfile {
   /**
    * Выбранные языки перевода (item1: идентификатор языка перевода, item2: язык перевода является родным)
    */
-  locales_id_is_native: Array<{ item1: number, item2: boolean }>;
+  locales_id_is_native: Array<{ item1: number; item2: boolean }>;
 }

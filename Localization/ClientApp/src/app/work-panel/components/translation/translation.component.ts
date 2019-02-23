@@ -12,6 +12,7 @@ import { TranslationSubstringService } from "src/app/services/translationSubstri
 import { TranslationSubstring } from "../../../models/database-entities/translationSubstring.type";
 import { Translation } from "../../../models/database-entities/translation.type";
 import { Image } from "src/app/models/database-entities/image.type";
+import { UserService } from "src/app/services/user.service";
 
 declare var $: any;
 
@@ -19,7 +20,7 @@ declare var $: any;
   selector: "translation-component",
   templateUrl: "./translation.component.html",
   styleUrls: ["./translation.component.css"],
-  providers: [TranslationSubstringService]
+  providers: [TranslationSubstringService, UserService]
 })
 export class TranslationComponent implements OnInit {
   showContextBlock: boolean = true;
@@ -31,6 +32,7 @@ export class TranslationComponent implements OnInit {
   translatedText: string;
   phraseForTranslate: TranslationSubstring;
   translatedPhrase: Translation;
+  currentUserID = -1;
 
   constructor(
     private sharePhraseService: SharePhraseService,
@@ -38,7 +40,8 @@ export class TranslationComponent implements OnInit {
     private translationService: TranslationService,
     private translationSubstringService: TranslationSubstringService,
     private selectionDialog: MatDialog,
-    private showImageDialog: MatDialog
+    private showImageDialog: MatDialog,
+    private userService: UserService
   ) {
     this.images = [];
 
@@ -82,7 +85,9 @@ export class TranslationComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentUserID = this.userService.currentUserId;
+  }
 
   // Скрывает левый блок (Блок с фразами)
   hideLeftBlock() {
@@ -146,8 +151,8 @@ export class TranslationComponent implements OnInit {
       this.translatedText,
       this.phraseForTranslate.id,
       10123,
-      300
-    ); //поменять потом на реальный id пользователя и id языка
+      this.currentUserID //300
+    ); //TODO поменять потом на реальный id пользователя и id языка
     let insertedTranslationId = await this.translationService.createTranslate(
       this.translatedPhrase
     );
