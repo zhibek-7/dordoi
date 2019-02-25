@@ -601,7 +601,54 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        
+        /// <summary>
+        /// Добавить запись о создании глоссария
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddCreateGlossaryActionAsync(int userId, string userName, int projectId, int localeId, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, userName, "Создание глоссария" + comment, (int)WorkTypes.CreateGlossary, WorkTypes.CreateGlossary.ToString())
+            {
+                id_project = projectId,
+                id_locale = localeId
+            };
+            return await AddAsync(act);
+        }
+        /// <summary>
+        /// Добавить запись о редактировании глоссария
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddEditGlossaryActionAsync(int userId, string userName, int projectId, int localeId, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, userName, "Редактирование глоссария" + comment, (int)WorkTypes.EditGlossary, WorkTypes.EditGlossary.ToString())
+            {
+                id_project = projectId,
+                id_locale = localeId
+            };
+            return await AddAsync(act);
+        }
+
+
+        /// <summary>
+        /// Добавить запись о удалении глоссария
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddDeleteGlossaryActionAsync(int userId, string userName, int projectId, int localeId, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, userName, "Удаление глоссария" + comment, (int)WorkTypes.DeleteGlossary, WorkTypes.DeleteGlossary.ToString())
+            {
+                id_project = projectId,
+                id_locale = localeId
+            };
+            return await AddAsync(act);
+        }
+
 
 
 

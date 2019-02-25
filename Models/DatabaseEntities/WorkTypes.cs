@@ -15,6 +15,9 @@
         UpdateTranslation, //11	Изменение перевода                                                                                  
         ConfirmTranslation, //12	Подтверждение перевода                                                                              
         ChoseTranslation, //13	Выбор перевода менеджером
-        EditProject //14	Редактирование проекта
+        EditProject, //14	Редактирование проекта
+        CreateGlossary, //15	Создание глоссария
+        EditGlossary, //16	Редактирование глоссария
+        DeleteGlossary //17	Создание глоссария
     }
 }
