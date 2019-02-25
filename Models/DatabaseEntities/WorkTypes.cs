@@ -18,6 +18,8 @@
         EditProject, //14	Редактирование проекта
         CreateGlossary, //15	Создание глоссария
         EditGlossary, //16	Редактирование глоссария
-        DeleteGlossary //17	Создание глоссария
+        DeleteGlossary, //17	Удаление глоссария
+        CreateParticipant, //18	Создание участника
+        DeleteParticipant //19	Удаление участника
     }
 }

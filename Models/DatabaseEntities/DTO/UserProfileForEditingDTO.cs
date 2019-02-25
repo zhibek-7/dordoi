@@ -8,7 +8,7 @@ namespace Models.DatabaseEntities.DTO
     /// Для модификации, например создание, редактирование.
     /// </summary>
     [Serializable]
-    public class UserProfileForEditingDTO// : BaseEntity
+    public class UserProfileForEditingDTO : BaseEntity
     {
         /// <summary>
         /// Имя пользователя (логин/ник)

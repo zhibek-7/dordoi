@@ -22,6 +22,7 @@ namespace Localization.Controllers
         private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
         private readonly LocaleRepository _localeRepository;
         private readonly UserActionRepository _userActionRepository;
+        private readonly UserRepository _userRepository;
 
         public ProjectController()
         {
@@ -29,6 +30,7 @@ namespace Localization.Controllers
             _localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(Settings.GetStringDB());
             _localeRepository = new LocaleRepository(Settings.GetStringDB());
             _userActionRepository = new UserActionRepository(Settings.GetStringDB());
+            _userRepository = new UserRepository(Settings.GetStringDB());
         }
 
         //[Authorize]
@@ -59,8 +61,8 @@ namespace Localization.Controllers
         }
 
 
-        //[HttpPost]
-        //[Route("add/{project}")]
+  
+
         [HttpPost]
         [Route("newProject")]
         public async Task<int> newProject([FromBody] LocalizationProject project)
@@ -70,8 +72,7 @@ namespace Localization.Controllers
             return idProj;
         }
 
-        //[HttpPost]
-        //[Route("add/{project}")]
+  
         [HttpPost]
         [Route("AddProject")]
         public LocalizationProject AddProject([FromBody] LocalizationProject project)

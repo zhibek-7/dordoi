@@ -651,8 +651,37 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
+        /// <summary>
+        /// Добавить запись о создании приглашенного переводчика
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddOrActivateParticipantAsync(int userId, string userName, int projectId, int localeId, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, projectId.ToString(), "Создание приглашенного пользователя. " + comment, (int)WorkTypes.CreateParticipant, WorkTypes.CreateParticipant.ToString())
+            {
+                id_project = projectId,
+                id_locale = userId
+            };
+            return await AddAsync(act);
+        }
 
-
+        /// <summary>
+        /// Добавить запись о создании приглашенного переводчика
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> DeleteParticipantAsync(int userId, string userName, int projectId, int localeId, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, projectId.ToString(), "Удаление приглашенного пользователя. " + comment, (int)WorkTypes.DeleteParticipant, WorkTypes.DeleteParticipant.ToString())
+            {
+                id_project = projectId,
+                id_locale = userId
+            };
+            return await AddAsync(act);
+        }
 
     }
 }
