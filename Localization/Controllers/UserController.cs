@@ -199,29 +199,27 @@ namespace Localization.Controllers
         }
 
         [HttpPost("refreshToken")]
-        public IActionResult RefreshToken()
+        public async Task<IActionResult> RefreshToken()
         {
-            var username2 = User.Identity.Name;
-            var username = "tip";
+            var userName = Request.Form["userName"].ToString();
+            var userRole = Request.Form["userRole"].ToString();
 
-            
-            var roleValue = "Переводчик";
+
+            if (userName == null)
+            {
+                return null;
+            }
+
+            //var roleUser = await this.userRepository.GetRoleAsync(userName);
 
             var claims = new List<Claim>
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, username),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, roleValue)
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, userRole)
                 };
             ClaimsIdentity identity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                ClaimsIdentity.DefaultRoleClaimType);
-
-            //var identity = await this.IdentifyAuthorizedUser(username);
-            //if (identity == null)
-            //{
-            //    Response.StatusCode = 400;
-            //    return BadRequest();
-            //}
+                ClaimsIdentity.DefaultRoleClaimType);          
 
             var now = DateTime.UtcNow;
             // создаем JWT-токен

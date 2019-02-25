@@ -5,6 +5,7 @@ import { RouterModule } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
 
 import { AuthenticationService } from "../services/authentication.service";
+import { UserService } from 'src/app/services/user.service';
 
 import { CoreRoutingModule } from "./core-routing.model";
 import { HeaderComponent } from "./header/header.component";
@@ -69,6 +70,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     UserRegistrationComponent
   ],
   exports: [RouterModule, HeaderComponent],
-  providers: [AuthenticationService]
+  providers: [AuthenticationService,
+              UserService]
 })
 export class CoreModule {}

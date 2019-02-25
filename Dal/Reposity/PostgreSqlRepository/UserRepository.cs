@@ -478,6 +478,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<String> GetRoleAsync(string userName)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    string SQLQuery = "SELECT roles.name_text " +                                      
+                                      "FROM users " +
+                                      "INNER JOIN participants ON participants.id_user = users.id " +
+                                      "INNER JOIN roles ON roles.id = participants.id_role " +
+                                      "WHERE users.name_text = @userName";
+
+                    var param = new { userName };
+                    this.LogQuery(SQLQuery, param);
+                    var userRole = await dbConnection.QuerySingleOrDefaultAsync<string>(SQLQuery, param);
+                    return userRole;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.LoginAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.LoginAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
         /// <summary>
         /// Авторизация.
         /// </summary>

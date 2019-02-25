@@ -22,8 +22,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 import { LanguageService } from 'src/app/services/languages.service';
 
-import { UserService } from 'src/app/services/user.service';
-
 import { AccountRoutingModule } from './account-routing.module';
 
 import { RegistrationComponent } from '../components/registration/registration.component';
@@ -53,7 +51,6 @@ import { RecoverPasswordComponent } from '../components/recover-password/recover
   ],
   providers:
     [
-      UserService,
       LanguageService,
       // Import the library Dropzone
       {

@@ -156,7 +156,7 @@
       <tr [ttSelectableRow]="rowNode" (dblclick)="fileRowMenuTrigger.openMenu()" dnd-droppable [allowDrop]="canDrop(rowNode.node)"
         (onDropSuccess)="moveNode($event.dragData, rowNode.node)" dnd-draggable [dragEnabled]="true" [dragData]="rowNode.node">
         <td [ttEditableColumn]="rowData" class="col-xs-6">
-          <div (click)="nodeExpandToggler.onClick($event)">
+          <div (click)="nodeExpandToggler.onClick($event)" (click)="translateFileClick(rowData)">
             <p-treeTableToggler #nodeExpandToggler [rowNode]="rowNode"></p-treeTableToggler>
             <img [style.width]="16+'px'" [src]="rowNode.node.icon" />
             {{rowData.name_text}}
