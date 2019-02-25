@@ -8,7 +8,7 @@ namespace Models.DatabaseEntities.DTO
     /// Для модификации, например создание, редактирование.
     /// </summary>
     [Serializable]
-    public class UserProfileForEditingDTO //: BaseEntity
+    public class UserProfileForEditingDTO : BaseEntity
     {
         /// <summary>
         /// Имя пользователя (логин/ник)
@@ -31,7 +31,7 @@ namespace Models.DatabaseEntities.DTO
         public string about_me { get; set; }
 
         public bool? gender { get; set; }
-        
+
         /// <summary>
         /// Выбранные языки перевода (идентификатор языка перевода, язык перевода является родным)
         /// </summary>
