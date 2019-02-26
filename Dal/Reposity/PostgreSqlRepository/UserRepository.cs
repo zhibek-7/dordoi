@@ -581,7 +581,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         about_me = temp.FirstOrDefault().about_me,
                         gender = temp.FirstOrDefault().gender,
                         id_time_zones = temp.FirstOrDefault().id_time_zones,
-                        id = temp.FirstOrDefault().id,
+                        //id = temp.FirstOrDefault().id,
 
                         locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
                         ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
@@ -608,7 +608,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public BaseEntity GetID(string name)
+        public int? GetID(string name)
         {
             try
             {
@@ -626,12 +626,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings);
 
-                    //Создание пользователя с вложенными списками идентификаторов связанных данных.
-                    var resultDTO = new UserProfileForEditingDTO
-                    {
-                        id = temp.FirstOrDefault().id,
-                    };
-                    return resultDTO;
+                    return temp.FirstOrDefault().id;
                 }
             }
             catch (NpgsqlException exception)

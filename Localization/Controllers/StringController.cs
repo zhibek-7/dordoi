@@ -8,26 +8,33 @@ using Models.DatabaseEntities;
 using Microsoft.AspNetCore.Cors;
 using Models.Interfaces.Repository;
 using System.IO;
-using Localization.Controllers;
+using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
+using Utilities;
 
 namespace Localization.WebApi
 {
     [EnableCors("SiteCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class StringController : BaseController
+    public class StringController : ControllerBase
     {
         private readonly ITranslationSubstringRepository stringRepository;
+        private UserRepository ur;
+
 
         public StringController(ITranslationSubstringRepository translationSubstringRepository)
         {
             this.stringRepository = translationSubstringRepository;
+            string connectionString = Settings.GetStringDB();
+            ur = new UserRepository(connectionString);
         }
 
-        /// <summary>
-        /// GET api/strings       
-        /// </summary>
-        /// <returns>Список всех фраз</returns>
+        /// <summary> 
+        /// GET api/strings        
+        /// </summary> 
+        /// <returns>Список всех фраз</returns> 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStrings()
         {
@@ -41,11 +48,12 @@ namespace Localization.WebApi
             return Ok(strings);
         }
 
-        /// <summary>
-        /// Получить все фразы для перевода из файла
-        /// </summary>
-        /// <param name="idFile">id файла в котором производится поиск фраз для перевода</param>
-        /// <returns>список фраз для перевода из файла</returns>
+        /// <summary> 
+        /// Получить все фразы для перевода из файла 
+        /// </summary> 
+        /// <param name="idFile">id файла в котором производится поиск фраз для перевода</param> 
+        /// <returns>список фраз для перевода из файла</returns> 
+        [Authorize]
         [HttpGet("InFile/{idFile}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStringsInFile(int idFile)
         {
@@ -59,11 +67,12 @@ namespace Localization.WebApi
             return Ok(strings);
         }
 
-        /// <summary>
-        /// // GET api/files/:id
-        /// </summary>
-        /// <param name="id">id фразы</param>
-        /// <returns>Фраза с необходимым id</returns>
+        /// <summary> 
+        /// // GET api/files/:id 
+        /// </summary> 
+        /// <param name="id">id фразы</param> 
+        /// <returns>Фраза с необходимым id</returns> 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<TranslationSubstring>> GetStringById(int id)
         {
@@ -77,11 +86,12 @@ namespace Localization.WebApi
             return Ok(foundedString);
         }
 
-        /// <summary>
-        /// Получить изображения строки для перевода
-        /// </summary>
-        /// <param name="translationSubstringId">id Строки для перевода</param>
-        /// <returns>Список изображений</returns>
+        /// <summary> 
+        /// Получить изображения строки для перевода 
+        /// </summary> 
+        /// <param name="translationSubstringId">id Строки для перевода</param> 
+        /// <returns>Список изображений</returns> 
+        [Authorize]
         [HttpPost("GetImagesByStringId/{translationSubstringId}")]
         public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(int translationSubstringId)
         {
@@ -97,11 +107,12 @@ namespace Localization.WebApi
             return Ok(images);
         }
 
-        /// <summary>
-        /// Получить статус перевода строки (перевод не предложен, перевод предложен, перевод одобрен)
-        /// </summary>
-        /// <param name="translationSubstringId">id Строки для перевода</param>
-        /// <returns>Статус перевода</returns>
+        /// <summary> 
+        /// Получить статус перевода строки (перевод не предложен, перевод предложен, перевод одобрен) 
+        /// </summary> 
+        /// <param name="translationSubstringId">id Строки для перевода</param> 
+        /// <returns>Статус перевода</returns> 
+        [Authorize]
         [HttpPost("Status/{translationSubstringId}")]
         public async Task<ActionResult<string>> GetStatusOfTranslationSubstring(int translationSubstringId)
         {
@@ -117,11 +128,12 @@ namespace Localization.WebApi
             return "";
         }
 
-        /// <summary>
-        /// Загружает картинку прикрепленную к комментарию
-        /// </summary>
-        /// <param name="TranslationSubstringId">id строки для перевода к которому приложена картинка</param>
-        /// <returns></returns>
+        /// <summary> 
+        /// Загружает картинку прикрепленную к комментарию 
+        /// </summary> 
+        /// <param name="TranslationSubstringId">id строки для перевода к которому приложена картинка</param> 
+        /// <returns></returns> 
+        [Authorize]
         [HttpPost("UploadImageToTranslationSubstring")]
         public async Task<IActionResult> UploadImage()
         {
@@ -129,20 +141,20 @@ namespace Localization.WebApi
             var translationSubstringId = Request.Form["TranslationSubstringId"];
             string fileName = content.FileName;
             long fileLength = content.Length;
-            //Stream file = content.OpenReadStream;
+            //Stream file = content.OpenReadStream; 
 
             if (content != null && fileLength > 0)
             {
                 using (var readStream = content.OpenReadStream())
                 {
                     byte[] imageData = null;
-                    // считываем переданный файл в массив байтов
+                    // считываем переданный файл в массив байтов 
                     using (var binaryReader = new BinaryReader(content.OpenReadStream()))
                     {
                         imageData = binaryReader.ReadBytes((int)fileLength);
 
                         Image img = new Image();
-                        img.ID_User = 301;
+                        img.ID_User = (int)ur.GetID(User.Identity.Name);
                         img.Name_text = fileName;
                         img.Date_Time_Added = DateTime.Now;
                         img.body = imageData;
@@ -156,6 +168,7 @@ namespace Localization.WebApi
             return Ok();
         }
 
+        [Authorize]
         [HttpGet("ByProjectId/{projectId}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetByProjectId(
             int projectId,
@@ -192,12 +205,14 @@ namespace Localization.WebApi
             return Ok(strings);
         }
 
+        [Authorize]
         [HttpDelete("{translationSubstringId}")]
         public async Task DeleteTranslationSubstring(int translationSubstringId)
         {
             await this.stringRepository.RemoveAsync(id: translationSubstringId);
         }
 
+        [Authorize]
         [HttpPut("{translationSubstringId}")]
         public async Task UpdateTranslationSubstring(int translationSubstringId, [FromBody] TranslationSubstring updatedTranslationSubstring)
         {
@@ -205,12 +220,14 @@ namespace Localization.WebApi
             await this.stringRepository.UpdateAsync(item: updatedTranslationSubstring);
         }
 
+        [Authorize]
         [HttpGet("{translationSubstringId}/locales")]
         public async Task<IEnumerable<Locale>> GetLocalesIdsForStringAsync(int translationSubstringId)
         {
             return await this.stringRepository.GetLocalesForStringAsync(translationSubstringId: translationSubstringId);
         }
 
+        [Authorize]
         [HttpPut("{translationSubstringId}/locales")]
         public async Task UpdateLocalesForStringAsync(int translationSubstringId, [FromBody] IEnumerable<int> localesIds)
         {

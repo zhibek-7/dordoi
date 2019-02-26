@@ -4,6 +4,7 @@ using Models.DatabaseEntities.DTO;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Utilities;
 
 namespace Localization.Controllers
@@ -14,11 +15,16 @@ namespace Localization.Controllers
     {
         private readonly GlossariesService _glossariesService;
         private readonly UserActionRepository _userActionRepository;
+        private UserRepository ur;
 
         public GlossariesController(GlossariesService glossariesService)
         {
             _glossariesService = glossariesService;
-            _userActionRepository = new UserActionRepository(Settings.GetStringDB());
+            var connectionString = Settings.GetStringDB();
+            _userActionRepository = new UserActionRepository(connectionString);
+
+            ur = new UserRepository(connectionString);
+
         }
 
 
@@ -37,10 +43,13 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("newGlossary")]
         public async Task AddGlossaryAsync(GlossariesForEditingDTO glossary)
         {
-            _userActionRepository.AddCreateGlossaryActionAsync(300, "Test user", glossary.id, glossary.id);//TODO поменять на пользователя когда будет реализована авторизация
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            // _userActionRepository.AddCreateGlossaryActionAsync(userId, identityName, glossary.id, glossary.id);//TODO поменять на пользователя когда будет реализована авторизация
             await _glossariesService.AddNewGlossaryAsync(glossary);
         }
 
@@ -60,10 +69,13 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("editSaveGlossary")]
         public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
         {
-            _userActionRepository.AddEditGlossaryActionAsync(300, "Test user", glossary.id, glossary.id);//TODO поменять на пользователя когда будет реализована авторизация
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            // _userActionRepository.AddEditGlossaryActionAsync(userId, identityName, glossary.id, glossary.id);//TODO поменять на пользователя когда будет реализована авторизация
             await _glossariesService.EditGlossaryAsync(glossary);
         }
 
@@ -72,10 +84,13 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="id">Идентификатор глоссария.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("deleteGlossary/{glossaryId}")]
         public async Task DeleteGlossaryAsync(int glossaryId)
         {
-            _userActionRepository.AddDeleteGlossaryActionAsync(300, "Test user", glossaryId, glossaryId);//TODO поменять на пользователя когда будет реализована авторизация
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            //_userActionRepository.AddDeleteGlossaryActionAsync(userId, identityName, glossaryId, glossaryId);//TODO поменять на пользователя когда будет реализована авторизация
             await _glossariesService.DeleteGlossaryAsync(glossaryId);
         }
 

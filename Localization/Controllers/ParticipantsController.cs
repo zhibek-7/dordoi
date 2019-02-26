@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO.Participants;
@@ -17,10 +18,13 @@ namespace Localization.Controllers
 
         private readonly ParticipantRepository _participantsRepository;
         private readonly UserActionRepository _userActionRepository;
+        private UserRepository ur;
         public ParticipantsController()
         {
-            this._participantsRepository = new ParticipantRepository(Settings.GetStringDB());
-            _userActionRepository = new UserActionRepository(Settings.GetStringDB());
+            var connectionStr = Settings.GetStringDB();
+            this._participantsRepository = new ParticipantRepository(connectionStr);
+            _userActionRepository = new UserActionRepository(connectionStr);
+            ur = new UserRepository(connectionStr);
         }
 
         public class GetParticipantsByProjectIdParam
@@ -61,18 +65,23 @@ namespace Localization.Controllers
                 roleShort: param.roleShort
                 );
         }
-
+        [Authorize]
         [HttpDelete("byProjectId/{projectId}/{userId}")]
         public async Task DeleteParticipant(int projectId, int userId)
         {
-            _userActionRepository.AddOrActivateParticipantAsync(300, "Test user", projectId, userId);//TODO поменять на пользователя когда будет реализована авторизация
+            var name_text = User.Identity.Name;
+            int? user_Id = (int)ur.GetID(name_text);
+            //_userActionRepository.DeleteParticipantAsync(user_Id, name_text, projectId, userId);//TODO поменять на пользователя когда будет реализована авторизация
             await this._participantsRepository.SetInactiveAsync(projectId: projectId, userId: userId);
         }
 
+        [Authorize]
         [HttpPost("{projectId}/{userId}/{roleId}")]
         public async Task AddOrActivateParticipant(int projectId, int userId, int roleId)
         {
-            _userActionRepository.DeleteParticipantAsync(300, "Test user", projectId, userId);//TODO поменять на пользователя когда будет реализована авторизация
+            var name_text = User.Identity.Name;
+            int? user_Id = (int)ur.GetID(name_text);
+            //_userActionRepository.AddOrActivateParticipantAsync(user_Id, name_text, projectId, userId);//TODO поменять на пользователя когда будет реализована авторизация
             await this._participantsRepository.AddOrActivateParticipant(projectId: projectId, userId: userId, roleId: roleId);
         }
 

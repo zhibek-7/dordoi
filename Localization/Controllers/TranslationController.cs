@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
-using Localization.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Translations;
@@ -16,14 +16,17 @@ namespace Localization.WebApi
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class TranslationController : BaseController
+    public class TranslationController : ControllerBase
     {
         private readonly TranslationRepository translationRepository;
         private readonly UserActionRepository _userActionRepository;
+        private UserRepository ur;
 
         public TranslationController()
         {
-            translationRepository = new TranslationRepository(Settings.GetStringDB());
+            var connectionString = Settings.GetStringDB();
+            translationRepository = new TranslationRepository(connectionString);
+            ur = new UserRepository(connectionString);
         }
 
         /// <summary>
@@ -31,6 +34,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="translation">вариант перевода который необходимо добавить</param>
         /// <returns>Статус ответа</returns>
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Translation translation)
         {
@@ -52,6 +56,7 @@ namespace Localization.WebApi
         /// Получить все варианты перевода всех фраз
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Translation>>> GetTranslations()
         {
@@ -64,6 +69,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idString">id фразы, переводы которой необходимы</param>
         /// <returns>Список вариантов перевода</returns>
+        [Authorize]
         [HttpGet]
         [Route("InString/{idString}")]
         public async Task<ActionResult<IEnumerable<Translation>>> GetTranslationsInString(int idString)
@@ -85,6 +91,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idTranslation">id варианта перевода, который необходимо удалить</param>
         /// <returns>Статус ответа</returns>
+        [Authorize]
         [HttpDelete]
         [Route("DeleteTranslation/{idTranslation}")]
         public async Task<IActionResult> DeleteTranslate(int idTranslation)
@@ -105,7 +112,8 @@ namespace Localization.WebApi
                 return BadRequest($"Failed to remove translation with id \"{ idTranslation }\" from database");
             }
 
-            //_userActionRepository.AddDeleteTranslationActionAsync(300, 0, idTranslation);//TODO поменять на пользователя когда будет реализована авторизация
+
+            _userActionRepository.AddDeleteTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
 
             return Ok();
         }
@@ -115,6 +123,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idTranslation">id варианта перевода</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut]
         [Route("AcceptTranslation/{idTranslation}")]
         public async Task<IActionResult> AcceptTranslate(int idTranslation)
@@ -134,7 +143,7 @@ namespace Localization.WebApi
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
 
-            //_userActionRepository.AddConfirmTranslationActionAsync(300, 0, idTranslation);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddConfirmTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
             return Ok();
         }
 
@@ -143,6 +152,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idTranslation">id варианта перевода, который нужно отклонить</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut]
         [Route("RejectTranslation/{idTranslation}")]
         public async Task<IActionResult> RejectTranslate(int idTranslation)
@@ -161,7 +171,9 @@ namespace Localization.WebApi
             {
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
-            //_userActionRepository.AddUpdateTranslationActionAsync(300, 0, foundedTranslation.ID, foundedTranslation.ID_String, foundedTranslation.ID_Locale, "Убрали галочку");
+
+            int? pk = null;
+            _userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, pk, idTranslation, foundedTranslation.ID_String, foundedTranslation.ID_Locale, "Убрали галочку");
             return Ok();
         }
 
@@ -171,6 +183,7 @@ namespace Localization.WebApi
         /// <param name="translationId">id варианта перевода, который нужно обновить</param>
         /// <param name="updatedTranslation">вариант перевода с обновленными данными</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("{translationId}")]
         public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
         {
@@ -178,7 +191,7 @@ namespace Localization.WebApi
             var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation);
             if (!updatedSuccessfuly)
                 return this.BadRequest();
-            //_userActionRepository.AddUpdateTranslationActionAsync(300, 0, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return this.Ok();
         }
 
@@ -188,6 +201,7 @@ namespace Localization.WebApi
         /// <param name="currentProjectId">id проекта в котором ведется работа в данный момент</param>
         /// <param name="translationText">фраза по которой производится поиск вариантов перевода</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("FindTranslationByMemory/{currentProjectId}/{translationText}")]
         public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(int currentProjectId, string translationText)
@@ -214,6 +228,7 @@ namespace Localization.WebApi
         /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("FindSimilarTranslations/{currentProjectId}")]
         public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, [FromBody] TranslationSubstring translationSubstring)
