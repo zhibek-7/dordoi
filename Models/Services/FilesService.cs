@@ -383,7 +383,9 @@ namespace Models.Services
             var fileUploaded = await this._filesRepository.UploadAsync(file);
             if (!fileUploaded)
             {
-                throw new Exception(WriteLn($"Не удалось добавить файл \"{file.name_text}\" в базу данных."));
+                Exception e = new Exception(($"Не удалось добавить файл \"{file.name_text}\" в базу данных."));
+                WriteLn($"Не удалось добавить файл \"{file.name_text}\" в базу данных.", e);
+                throw e;
             }
 
             var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.name_text, file.id_folder_owner)).id;
@@ -465,7 +467,7 @@ namespace Models.Services
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
             if (file == null)
             {
-                throw new Exception("Файл не найден.");
+                throw new Exception(WriteLn("Файл не найден.  " + fileId));
             }
 
             if (file.is_folder)

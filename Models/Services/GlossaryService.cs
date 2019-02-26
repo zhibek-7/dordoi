@@ -29,7 +29,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error  \"{termId}\" ", exception);
+                throw new Exception(WriteLn($"Error  \"{termId}\" ", exception), exception);
             }
         }
 
@@ -41,7 +41,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error  \"{updatedGlossary}\" ", exception);
+                throw new Exception(WriteLn($"Error  \"{updatedGlossary}\" ", exception), exception);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error  \"{glossaryId}\" ", exception);
+                throw new Exception(WriteLn($"Error  \"{glossaryId}\" ", exception), exception);
             }
         }
 
@@ -65,7 +65,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn($"Error", exception), exception);
             }
         }
 
@@ -77,7 +77,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error  \"{glossaryId}\" ", exception);
+                throw new Exception(WriteLn($"Error  \"{glossaryId}\" ", exception), exception);
             }
         }
 
@@ -90,7 +90,8 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error  \"{glossaryId}\"    \"{termId}\"   \"{localesIds}\" ", exception);
+
+                throw new Exception(WriteLn($"Error  \"{glossaryId}\"    \"{termId}\"   \"{localesIds}\" ", exception), exception);
             }
         }
 
@@ -115,7 +116,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error  \"{glossaryId}\" ", exception);
+                throw new Exception(WriteLn($"Error  \"{glossaryId}\" " + exception.Message, exception), exception);
             }
         }
 
@@ -135,7 +136,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn(exception.Message, exception), exception);
             }
         }
 
@@ -147,7 +148,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn(exception.Message, exception), exception);
             }
         }
 
@@ -160,7 +161,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn(exception.Message, exception), exception);
             }
         }
 
@@ -176,7 +177,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn(exception.Message, exception), exception);
             }
         }
 
@@ -188,7 +189,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn(exception.Message, exception), exception);
             }
         }
 
@@ -205,7 +206,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn(exception.Message, exception), exception);
             }
         }
     }

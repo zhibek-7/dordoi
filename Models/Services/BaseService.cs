@@ -16,12 +16,13 @@ namespace Models.Services
 
         public string WriteLn(Object str)
         {
-            _loggerError.WriteLn(str);
+            _logger.WriteLn(str);
             return str.ToString();
         }
 
         public string WriteLn(Object str, Exception err)
         {
+            WriteLn("ERROR: " + str);
             _loggerError.WriteLn(str, err);
             return str.ToString();
         }

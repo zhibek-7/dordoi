@@ -47,7 +47,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn($"Error", exception), exception);
             }
         }
 
@@ -73,7 +73,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn($"Error", exception), exception);
             }
         }
 
@@ -101,7 +101,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn($"Error", exception), exception);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn($"Error", exception), exception);
             }
         }
 
@@ -135,7 +135,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn($"Error", exception), exception);
             }
         }
 
@@ -152,7 +152,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception($"Error", exception);
+                throw new Exception(WriteLn($"Error", exception), exception);
             }
         }
 
