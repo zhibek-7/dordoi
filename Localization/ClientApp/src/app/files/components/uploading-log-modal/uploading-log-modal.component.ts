@@ -1,0 +1,31 @@
+import { Component, ViewEncapsulation, Inject } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
+
+import { FilesSignalRService } from "../../../services/filesSignalR.service";
+import { FailedFileParsingModel } from "../../../models/files/failedFileParsing.type";
+
+@Component({
+  selector: "app-uploading-log-modal",
+  templateUrl: "./uploading-log-modal.component.html",
+  styleUrls: ["./uploading-log-modal.component.css"],
+  encapsulation: ViewEncapsulation.None
+})
+export class UploadingLogModalComponent {
+
+  parsingFailInfos: FailedFileParsingModel[] = [];
+
+  constructor(
+    public dialogRef: MatDialogRef<UploadingLogModalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private filesSignalRService: FilesSignalRService,
+  ) {
+    this.filesSignalRService.errorReported.subscribe(
+      (parsingFailInfo: FailedFileParsingModel) => {
+        this.parsingFailInfos.push(parsingFailInfo);
+      });
+  }
+
+  close(): void {
+    this.dialogRef.close();
+  }
+}

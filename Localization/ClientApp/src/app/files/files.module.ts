@@ -12,6 +12,7 @@ import {
   MatButtonModule,
 } from '@angular/material';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 import { DndModule } from '../ng2-dnd-src/dnd.module';
 
 import { FilesRoutingModule } from 'src/app/files/files-routing.module';
@@ -23,6 +24,7 @@ import { SetLanguagesModalComponent } from 'src/app/files/components/set-languag
 import { RenameFileModalComponent } from 'src/app/files/components/rename-file-modal/rename-file-modal.component';
 import { TranslationProgressModalComponent } from 'src/app/files/components/translation-progress-modal/translation-progress-modal.component';
 import { FileSettingsModalComponent } from 'src/app/files/components/file-settings-modal/file-settings-modal.component';
+import { UploadingLogModalComponent } from './components/uploading-log-modal/uploading-log-modal.component';
 
 import { FileService } from 'src/app/services/file.service';
 import { LanguageService } from 'src/app/services/languages.service';
@@ -38,6 +40,7 @@ import { FileInputWrapper } from './components/file-input-wrapper/file-input-wra
     FileInputWrapper,
     TranslationProgressModalComponent,
     FileSettingsModalComponent,
+    UploadingLogModalComponent,
   ],
   imports: [
     FormsModule,
@@ -53,11 +56,15 @@ import { FileInputWrapper } from './components/file-input-wrapper/file-input-wra
     MatIconModule,
     MatButtonModule,
     MatProgressBarModule,
+    MatDialogModule,
   ],
   providers: [
     FileService,
     LanguageService,
     FilesSignalRService,
+  ],
+  entryComponents: [
+    UploadingLogModalComponent,
   ]
 })
 export class FilesModule { }

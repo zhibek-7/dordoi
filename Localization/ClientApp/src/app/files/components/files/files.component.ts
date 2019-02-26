@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Predicate } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material";
 
 import { TreeNode } from "primeng/api";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -9,8 +10,9 @@ import { FileService } from "src/app/services/file.service";
 import { ProjectsService } from "src/app/services/projects.service";
 import { FilesSignalRService } from 'src/app/services/filesSignalR.service';
 
+import { UploadingLogModalComponent } from "../uploading-log-modal/uploading-log-modal.component";
+
 import { File as FileData } from "src/app/models/database-entities/file.type";
-import { FailedFileParsingModel } from "src/app/models/files/failedFileParsing.type";
 
 @Component({
   selector: "app-files",
@@ -41,19 +43,13 @@ export class FilesComponent implements OnInit {
     private projectsService: ProjectsService,
     private ngxSpinnerService: NgxSpinnerService,
     private filesSignalRService: FilesSignalRService,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
     console.log("Projec=" + sessionStorage.getItem("Projec"));
-
-    this.filesSignalRService.errorReported.subscribe(
-      (parsingFailInfo: FailedFileParsingModel) => {
-        const message = `Не удалось добавить файл ${parsingFailInfo.fileName}, ошибка – ${parsingFailInfo.parserMessage}.`;
-        console.log(message);
-        alert(message);
-      });
 
     if (this.router.url.indexOf("LanguageFiles") != -1) {
       this.isSelectionFileForTranslation = true;
@@ -204,7 +200,13 @@ export class FilesComponent implements OnInit {
 
   async uploadFolder(files, parentNode?: TreeNode): Promise<void> {
     const parentId = parentNode ? parentNode.data.id : null;
+
     this.ngxSpinnerService.show();
+    const uploadedFolderName = files[0].webkitRelativePath.slice(0, files[0].webkitRelativePath.indexOf("/"));
+    this.dialog.open(UploadingLogModalComponent, {
+      data: { name: uploadedFolderName }
+    });
+
     const signalrConnectionId = await this.filesSignalRService.getConnectionId();
     this.fileService
       .uploadFolder(files, this.projectsService.currentProjectId, signalrConnectionId, parentId)
