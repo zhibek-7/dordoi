@@ -195,6 +195,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="projectLocales"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("deleteProjectLocale")]
         public LocalizationProjectsLocales[] DeleteProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)

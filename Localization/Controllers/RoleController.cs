@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Utilities;
@@ -16,6 +17,7 @@ namespace Localization.Controllers
 
         private RoleRepository _roleRepository = new RoleRepository(Settings.GetStringDB());
 
+        [Authorize]
         [HttpPost("list")]
         public async Task<IEnumerable<Role>> GetAllRoles()
         {

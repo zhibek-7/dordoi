@@ -38,6 +38,8 @@ namespace Localization.Controllers
             public bool? sortAscending { get; set; }
             public string[] roleShort { get; set; }
         }
+
+        [Authorize]
         [HttpPost("byProjectId/{projectId}/list")]
         public async Task<IEnumerable<ParticipantDTO>> GetParticipantsByProjectIdAsync(
             int projectId,
@@ -82,7 +84,7 @@ namespace Localization.Controllers
             var name_text = User.Identity.Name;
             int? user_Id = (int)ur.GetID(name_text);
             _userActionRepository.AddOrActivateParticipantAsync((int)user_Id, name_text, projectId, userId, roleId);
-          
+
             await this._participantsRepository.AddOrActivateParticipant(projectId: projectId, userId: userId, roleId: roleId);
         }
 

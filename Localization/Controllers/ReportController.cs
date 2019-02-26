@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DAL.Reposity.Report;
 using Localization.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities.Reports;
 using Utilities;
@@ -42,6 +43,7 @@ namespace Localization.WebApi
         /// <param name="workType">Тип работы - перевод и редактура</param>
         /// <param name="initialFolderId">ID начальной папки</param>
         /// <returns>Строки отчета</returns>
+        [Authorize]
         [HttpPost]
         [Route("TranslatedWords")]
         public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport([FromBody] reportParamsDTO _params)
@@ -64,6 +66,7 @@ namespace Localization.WebApi
         /// <param name="workType">Тип работы - перевод и редактура</param>
         /// <param name="initialFolderId">ID начальной папки</param>
         /// <returns>Файл Report.xlsx</returns>
+        [Authorize]
         [HttpPost]
         [Route("TranslatedWordsExcel")]
         public FileResult GetTranslatedWordsReportExcel(

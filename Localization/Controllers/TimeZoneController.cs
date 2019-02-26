@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
@@ -20,6 +21,7 @@ namespace Localization.Controllers
             _timeZoneRepository = new TimeZoneRepository(Settings.GetStringDB());
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IEnumerable<TimeZone>> GetAll()
         {

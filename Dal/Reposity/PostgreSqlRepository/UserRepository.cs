@@ -614,11 +614,20 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+
+                    var query = "SELECT users.id FROM users WHERE users.name_text = '" + name + "'";
+
+
+                    this.LogQuery(query);
+                    var idOfInsertedRow = dbConnection.ExecuteScalar<int>(query);
+                    return idOfInsertedRow;
+
+
+                    /*
                     var query = new Query("users")
                         .Where("users.name_text", name)
-                        .LeftJoin("users_locales", "users_locales.id_user", "users.id")
                         .Select(
-                        "users.id"
+                        "*"
                         );
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -627,6 +636,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         param: compiledQuery.NamedBindings);
 
                     return temp.FirstOrDefault().id;
+                    */
                 }
             }
             catch (NpgsqlException exception)

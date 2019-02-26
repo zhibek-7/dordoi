@@ -20,7 +20,7 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly UserRepository userRepository;
 
@@ -29,6 +29,7 @@ namespace Localization.Controllers
             userRepository = new UserRepository(Settings.GetStringDB());
         }
 
+        [Authorize]
         [HttpPost]
         [Route("List")]
         public List<User> GetAll()
@@ -38,12 +39,14 @@ namespace Localization.Controllers
             return userRepository.GetAll().ToList();
         }
 
+        [Authorize]
         [HttpPost("List/projectId:{projectId}")]
         public List<User> GetAll(int projectId)
         {
             return userRepository.GetByProjectID(projectId).ToList();
         }
 
+        [Authorize]
         [HttpPost("{userId}/getPhoto")]
         public async Task<byte[]> GetPhoto(int userId)
         {
@@ -53,6 +56,7 @@ namespace Localization.Controllers
 
         //
         //[Authorize]
+        [Authorize]
         [HttpPost("Photo")]
         public async Task PhotoAsync()
         {
@@ -126,6 +130,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="name">имя пользователя (логин) или email</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("recoverPassword:{name}")]
         public async Task<bool> RecoverPassword(string name)
         {
@@ -205,7 +210,7 @@ namespace Localization.Controllers
         public IActionResult RefreshToken()
         {
             var username2 = User.Identity.Name;
-            var username = "tip";
+            var username = "tip";///TODO проверить, работает ли
 
 
             var roleValue = "Переводчик";
