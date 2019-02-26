@@ -7,10 +7,10 @@ using Models.DatabaseEntities;
 namespace Models.Interfaces.Repository
 {
     /// <summary>
-    /// Базовый интерфейс репозиториев Async
+    /// Базовый интерфейс репозиториев Async c проверкой работы
     /// </summary>
     /// <typeparam name="T">Тип с которым работает репозиторий</typeparam>
-    public interface IRepositoryAsync<T> where T : BaseEntity
+    public interface IRepositoryAuthorizeAsync<T> where T : BaseEntity
     {
         Task<int> AddAsync(T item);
         Task<bool> RemoveAsync(int id);

@@ -15,7 +15,7 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class ProjectLocaleController : ControllerBase
+    public class ProjectLocaleController : BaseController
     {
 
         private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
@@ -31,7 +31,8 @@ namespace Localization.Controllers
         [Route("edit/{Id}")]
         public LocalizationProjectsLocales[] EditProject(LocalizationProjectsLocales[] projectLocales, int Id)
         {
-            foreach (LocalizationProjectsLocales projectLocale in projectLocales) {
+            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
+            {
                 _localizationProjectsLocalesRepository.UpdateProjectsLocales(projectLocale);
             }
             return projectLocales;

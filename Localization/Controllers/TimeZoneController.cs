@@ -11,7 +11,7 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class TimeZoneController : ControllerBase
+    public class TimeZoneController : BaseController
     {
         private readonly TimeZoneRepository _timeZoneRepository;
 

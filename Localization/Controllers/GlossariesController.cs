@@ -10,7 +10,7 @@ namespace Localization.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GlossariesController : ControllerBase
+    public class GlossariesController : BaseController
     {
         private readonly GlossariesService _glossariesService;
         private readonly UserActionRepository _userActionRepository;

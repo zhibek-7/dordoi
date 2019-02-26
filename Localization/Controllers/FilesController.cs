@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Localization.Controllers;
 using Localization.Hubs.Files;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilesController : Controller
+    public class FilesController : BaseController
     {
         private readonly FilesService _filesService;
 
