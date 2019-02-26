@@ -1,0 +1,17 @@
+<div class="row mb-2">
+  <div class="col">
+    <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
+  </div>
+</div>
+
+<div class="row mb-2">
+  <div class="col">
+    <input type="text" class="form-control" placeholder="Искать" [(ngModel)]="SearchString" (input)="load()" />
+  </div>
+  <div class="col">
+    <select class="form-control" [(ngModel)]="selectedFileId" (change)="load()">
+      <option [ngValue]="null">Все файлы</option>
+      <option *ngFor="let file of filesViewModels" [ngValue]="file.id">{{file.name_text}}</option>
+    </select>
+  </div>
+</div>

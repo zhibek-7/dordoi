@@ -61,3 +61,15 @@ table th {
 .mat-row.selected {
   background: #999;
 }
+
+/*////*/
+
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  /*border: 1px solid #ccc;*/
+  display: inline-block;
+  /*padding: 6px 12px;*/
+  cursor: pointer;
+}

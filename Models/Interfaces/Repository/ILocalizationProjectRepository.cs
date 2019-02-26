@@ -12,7 +12,7 @@ namespace Models.Interfaces.Repository
         void Add(LocalizationProject locale);
         LocalizationProject GetByID(int Id);
         IEnumerable<LocalizationProject> GetAll();
-        Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectDTOAsync();
+        Task<IEnumerable<LocalizationProjectForSelectDTO>> GetForSelectByUserAsync(string userName);
         bool Remove(int Id);
         void Update(LocalizationProject user);
 

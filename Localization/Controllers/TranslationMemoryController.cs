@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities.DTO;
 using Models.Services;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace Localization.Controllers
         /// Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync()
         {
@@ -34,6 +36,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="translationMemory">Новая память переводов.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("create")]
         public async Task AddAsync(TranslationMemoryForEditingDTO translationMemory)
         {
@@ -45,6 +48,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("edit")]
         public async Task<TranslationMemoryForEditingDTO> GetForEditAsync([FromBody] int id)
         {
@@ -56,6 +60,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="translationMemory">Отредактированная память переводов.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("editSave")]
         public async Task UpdateAsync(TranslationMemoryForEditingDTO translationMemory)
         {
@@ -67,6 +72,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<bool> DeleteAsync(int id)
         {
@@ -78,6 +84,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("clear/{id}")]
         public async Task<bool> ClearAsync(int id)
         {

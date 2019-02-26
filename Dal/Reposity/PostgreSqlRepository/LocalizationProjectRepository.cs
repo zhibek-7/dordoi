@@ -127,35 +127,45 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectDTOAsync()
+        /// <summary>
+        /// Возвращает список проектов локализации, назначенных на пользователя
+        /// </summary>
+        /// <param name="userName">логин пользователя</param>
+        /// <returns>LocalizationProjectForSelectDTO{ID, Name}</returns>
+        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetForSelectByUserAsync(string userName)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+                    //var sqlString = "SELECT id, name_text FROM localization_projects";
+                    //this.LogQuery(sqlString);
+                    //IEnumerable<LocalizationProjectForSelectDTO> result =
+                    //    await dbConnection.QueryAsync<LocalizationProjectForSelectDTO>
+                    //    (sqlString);
 
+                    var query = new Query("localization_projects")
+                        .LeftJoin("participants", "participants.id_localization_project", "localization_projects.id")
+                        .LeftJoin("users", "users.id", "participants.id_user")
+                        .Where("users.name_text", userName)
+                        .Select("localization_projects.id", "localization_projects.name_text");
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var result = await dbConnection.QueryAsync<LocalizationProjectForSelectDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
 
-                    var sqlString = "SELECT id, name_text FROM localization_projects";
-                    this.LogQuery(sqlString);
-
-                    IEnumerable<LocalizationProjectForSelectDTO> result =
-                        await dbConnection.QueryAsync<LocalizationProjectForSelectDTO>
-                        (sqlString);
                     return result;
                 }
             }
             catch (NpgsqlException exception)
             {
-                this._loggerError.WriteLn(
-                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetAllForSelectDTOAsync)} {nameof(NpgsqlException)} ",
-                        exception);
+                this._loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetForSelectByUserAsync)} {nameof(NpgsqlException)} ", exception);
                 return null;
             }
             catch (Exception exception)
             {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetAllForSelectDTOAsync)} {nameof(Exception)} ",
-                    exception);
+                this._loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetForSelectByUserAsync)} {nameof(Exception)} ", exception);
                 return null;
             }
         }

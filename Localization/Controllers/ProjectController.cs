@@ -115,13 +115,15 @@ namespace Localization.Controllers
         }
 
         /// <summary>
-        /// Возвращает список проектов локализации 
+        /// Возвращает список проектов локализации, назначенных на пользователя
         /// </summary>
         /// <returns>LocalizationProjectForSelectDTO{ID, Name}</returns>
-        [HttpPost("forSelect")]
-        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectAsync()
+        [Authorize]
+        [HttpPost("forSelectByUser")]
+        public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetForSelectByUserAsync()
         {
-            return await _localizationProjectRepository.GetAllForSelectDTOAsync();
+            var userName = User.Identity.Name;
+            return await _localizationProjectRepository.GetForSelectByUserAsync(userName);
         }
 
         /// <summary>

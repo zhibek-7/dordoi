@@ -33,9 +33,9 @@
         Очистить
       </button>
       <app-confirm-clear-translation-memory-of-string #confirmClearFormModal
-                                                     *ngIf="isSelectedTranslationMemory"
-                                                     [translationMemory]="translationMemory"
-                                                     (confirmedClear)="clear($event)">
+                                                      *ngIf="isSelectedTranslationMemory"
+                                                      [translationMemory]="translationMemory"
+                                                      (confirmedClear)="clear($event)">
       </app-confirm-clear-translation-memory-of-string>
     </li>
 
@@ -105,13 +105,24 @@
 </div>
 
 <mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="unload()"> Загрузить </button>
-  <button mat-menu-item (click)="load()"> Скачать </button>
+  <div>
+    <label for="file-upload" class="btn">
+      Загрузить
+    </label>
+    <input id="file-upload" (change)="unload($event.target.files)" type="file" [accept]="fileTypes">
+  </div>
+  <button mat-menu-item (click)="getLoad()"> Скачать </button>
   <button mat-menu-item (click)="getEditing()"> Изменить </button>
   <div class="dropdown-divider"></div>
   <button mat-menu-item (click)="getConfirmClear()"> Очистить </button>
   <button mat-menu-item (click)="getConfirmDelete()"> Удалить </button>
 </mat-menu>
 
+
+<app-load-translation-memory-form-modal #loadFormModal
+                                        (loadSubmitted)="load($event)"
+                                        *ngIf="translationMemory.id"
+                                        [id]="translationMemory.id">
+</app-load-translation-memory-form-modal>
 
 <h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

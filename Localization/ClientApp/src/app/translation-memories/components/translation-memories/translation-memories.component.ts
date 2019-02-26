@@ -8,9 +8,11 @@ import { TranslationMemoryForEditingDTO, TranslationMemoryTableViewDTO } from "s
 import { EditTranslationMemoryFormModalComponent } from '../edit-translation-memory-form-modal/edit-translation-memory-form-modal.component';
 import { ConfirmDeleteTranslationMemoryComponent } from '../confirm-delete-translation-memory/confirm-delete-translation-memory.component';
 import { ConfirmClearTranslationMemoryOfStringComponent } from '../confirm-clear-translation-memory-of-string/confirm-clear-translation-memory-of-string.component';
+import { LoadTranslationMemoryFormModalComponent } from "../load-translation-memory-form-modal/load-translation-memory-form-modal.component";
 
 import { Selectable } from "src/app/shared/models/selectable.model";
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
+import { settingFileLoad, fileType } from "../../models/settingFileLoad";
 
 @Component({
   selector: 'app-translation-memories',
@@ -42,6 +44,9 @@ export class TranslationMemoriesComponent implements OnInit {
 
   @ViewChild("editFormModal")
   public editFormModal: EditTranslationMemoryFormModalComponent;
+
+  @ViewChild("loadFormModal")
+  public loadFormModal: LoadTranslationMemoryFormModalComponent;
   //#endregion
 
   isVisibleEditFormModal: boolean = false;
@@ -51,6 +56,8 @@ export class TranslationMemoriesComponent implements OnInit {
   isDataSourceLoaded: boolean = true;
 
   translationMemory: TranslationMemoryForEditingDTO = new TranslationMemoryForEditingDTO();
+
+  fileTypes: string;
 
   private indexSelected: number;
 
@@ -65,6 +72,7 @@ export class TranslationMemoriesComponent implements OnInit {
 
   ngOnInit() {
     this.getAllDTO();
+    this.getFileTypes();
   }
 
   ngAfterViewInit() {
@@ -210,4 +218,45 @@ export class TranslationMemoriesComponent implements OnInit {
 
   //#endregion
 
+  //#region unload - Загрузить
+
+  getFileTypes() {
+    let types: string = ""; 
+    for (var type in fileType) {
+      if (isNaN(Number(type)))
+        types += "." + type.toString() + ",";
+    }
+    this.fileTypes = types.substring(0, types.length - 1);
+  }
+
+   unload(files: FileList) {
+    let file = files.item(0);
+
+    if ((file.size/1024/1024) > 200)
+      alert("Невозможно загрузить файл. Превышен допустимый объем - 200 Мб.");
+
+     let fileType = file.name.substring(file.name.lastIndexOf(".") + 1);
+     if (fileType != "csv" && fileType != "tmx")
+       alert("Невозможно загрузить файл. Выбранный файл не соответствует допустимым форматам - *.tmx, *.csv.");
+  }
+
+  //#endregion
+  
+  //#region load - Скачать
+
+  /**
+   * Отображает диалог для получения подтверждения.
+   */
+  getLoad() {
+    this.getSelectedTranslationMemoriesy();
+    setTimeout(() => {
+      this.loadFormModal.show();
+    });
+  }
+
+  load(setting: settingFileLoad) {
+    console.log("load Submitted: ", setting);
+  }
+
+  //#endregion
 }
