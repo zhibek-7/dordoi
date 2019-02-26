@@ -12,7 +12,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PartOfSpeechController : BaseController
+    public class PartOfSpeechController : ControllerBase
     {
 
         private readonly PartOfSpeechRepository _partOfSpeechRepository;

@@ -9,7 +9,7 @@ namespace Localization.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TranslationMemoryController : BaseController
+    public class TranslationMemoryController : ControllerBase
     {
         private readonly TranslationMemoryService _translationMemoriesService;
 

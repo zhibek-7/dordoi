@@ -11,7 +11,7 @@ namespace Localization.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : BaseController
+    public class RoleController : ControllerBase
     {
 
         private RoleRepository _roleRepository = new RoleRepository(Settings.GetStringDB());

@@ -15,7 +15,7 @@ namespace Localization.WebApi.work_panel
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WorkPanelController : BaseController
+    public class WorkPanelController : ControllerBase
     {
 
         public WorkPanelController(PostgreSqlEFContext context)

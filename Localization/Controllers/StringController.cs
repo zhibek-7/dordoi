@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Cors;
 using Models.Interfaces.Repository;
 using System.IO;
 using DAL.Reposity.PostgreSqlRepository;
+using Localization.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Utilities;
 

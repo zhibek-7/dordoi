@@ -14,7 +14,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilesController : BaseController
+    public class FilesController : ControllerBase
     {
         private readonly FilesService _filesService;
 

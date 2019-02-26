@@ -10,7 +10,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DefaultController : BaseController
+    public class DefaultController : ControllerBase
     {
     }
 }

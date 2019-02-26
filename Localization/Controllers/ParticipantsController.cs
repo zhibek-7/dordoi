@@ -13,7 +13,7 @@ namespace Localization.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ParticipantsController : BaseController
+    public class ParticipantsController : ControllerBase
     {
 
         private readonly ParticipantRepository _participantsRepository;

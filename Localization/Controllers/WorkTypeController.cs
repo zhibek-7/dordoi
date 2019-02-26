@@ -11,7 +11,7 @@ namespace Localization.Controllers
     [EnableCors("SiteCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class WorkTypeController : BaseController
+    public class WorkTypeController : ControllerBase
     {
         private readonly WorkTypeRepository workTypeRepository;
 

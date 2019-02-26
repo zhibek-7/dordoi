@@ -20,7 +20,7 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class UserController : BaseController
+    public class UserController : ControllerBase
     {
         private readonly UserRepository userRepository;
 

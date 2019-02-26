@@ -12,7 +12,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DataImportController : BaseController
+    public class DataImportController : ControllerBase
     {
 
         private readonly ILocaleRepository _localeRepository;

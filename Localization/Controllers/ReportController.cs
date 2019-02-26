@@ -13,7 +13,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportController : BaseController
+    public class ReportController : ControllerBase
     {
         public class reportParamsDTO
         {

@@ -14,7 +14,7 @@ namespace Localization.WebApi
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class LanguageController : BaseController
+    public class LanguageController : ControllerBase
     {
         private readonly LocaleRepository _localeRepository;
 
