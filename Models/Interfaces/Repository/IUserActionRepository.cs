@@ -4,7 +4,7 @@ using Models.DatabaseEntities;
 
 namespace Models.Interfaces.Repository
 {
-    public interface IUserActionRepository :  IRepositoryAsync<UserAction>
+    public interface IUserActionRepository : IRepositoryAsync<UserAction>
     {
         Task<int> AddAddFileActionAsync(File item, int? idTranslit, WorkTypes wt);
         Task<int> AddAddFileActionAsync(int userId, string userName, int projectId, int fileId, string comment = "");

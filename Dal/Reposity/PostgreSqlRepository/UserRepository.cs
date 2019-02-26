@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Models.DatabaseEntities;
 using Dapper;
 using System.Linq;
@@ -14,10 +15,14 @@ namespace DAL.Reposity.PostgreSqlRepository
     public class UserRepository : BaseRepository, IRepository<User>
     {
         private readonly ParticipantRepository _participantsRepository;
-
+        private RoleRepository roles;
+        private ParticipantRepository participant;
         public UserRepository(string connectionStr) : base(connectionStr)
         {
             _participantsRepository = new ParticipantRepository(connectionStr);
+
+            roles = new RoleRepository(connectionStr);
+            participant = new ParticipantRepository(connectionStr);
         }
 
         public void Add(User user)
@@ -448,6 +453,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+
+
                     var newUser = new
                     {
                         name_text = user.Name_text,
@@ -455,7 +462,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
                         data_create = DateTime.Now
                     };
-                    var query = new Query("users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
+                    var query = new Query("users").AsInsert(newUser,
+                        true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
 
@@ -463,8 +471,24 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .ExecuteScalarAsync<int>(
                             sql: compiledQuery.Sql,
                             param: compiledQuery.NamedBindings);
+
+
+                    ///создание записи в participants
+                    var id = roles.GetRoleId("observer");
+                    Participant newParticipant = new Participant();
+                    newParticipant.ID_Localization_Project = null;
+                    newParticipant.Active = true;
+                    newParticipant.ID_Role = (int)id;
+                    newParticipant.ID_User = idOfNewUser;
+
+                    participant.AddAsync(newParticipant);
+
+
+                    ////
+
                     return idOfNewUser;
                 }
+
             }
             catch (NpgsqlException exception)
             {
@@ -477,6 +501,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
+
 
         /// <summary>
         /// Авторизация.
