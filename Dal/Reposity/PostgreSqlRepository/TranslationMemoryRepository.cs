@@ -45,14 +45,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "translation_memories.name_text",
                             "locales.name_text as locale_name",
                             "localization_projects.name_text as localization_project_name"//,
-                            //"COUNT(translation_memories_strings.id_translation_memory) AS string_count"
+                                                                                          //"COUNT(translation_memories_strings.id_translation_memory) AS string_count"
                         )
                         .SelectRaw("COUNT(translation_memories_strings.id_translation_memory) AS string_count")
                         .GroupBy("translation_memories.id",
                             "translation_memories.name_text",
                             "locales.name_text",
                             "localization_projects.name_text");
-                        //.Select(countQuery, "string_count");
+                    //.Select(countQuery, "string_count");
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
@@ -313,13 +313,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-
-
-
-
-        /////
-        
-
         /// <summary>
         /// Удаление памяти переводов.
         /// </summary>
@@ -403,6 +396,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        
+
     }
 }

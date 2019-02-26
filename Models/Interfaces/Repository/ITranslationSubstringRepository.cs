@@ -7,9 +7,9 @@ namespace Models.Interfaces.Repository
     public interface ITranslationSubstringRepository : IRepositoryAsync<TranslationSubstring>
     {
         Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId);
-        Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId);
-        Task<IEnumerable<TranslationSubstring>> FilterByString(
-            string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings);
+        //Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId);
+        //Task<IEnumerable<TranslationSubstring>> FilterByString(
+        //    string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings);
         Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId);
         Task<int> UploadImageAsync(Image image, int translationSubstringId);
         Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId);

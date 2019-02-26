@@ -248,7 +248,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("locales")
-                        .WhereIn("id", 
+                        .WhereIn("id",
                             new Query("users")
                                 .LeftJoin("participants", "participants.id_user", "users.id")
                                 .LeftJoin("localization_projects_locales", "localization_projects_locales.id_localization_project", "participants.id_localization_project")
@@ -306,7 +306,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             .Where("translation_memories_locales.id_translation_memory", idTranslationMemory)
                             .Select("translation_memories_locales.id_locale")
                     )
-                    
+
                     .OrWhereIn("id",
                     new Query("localization_projects_translation_memories")
                         .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")

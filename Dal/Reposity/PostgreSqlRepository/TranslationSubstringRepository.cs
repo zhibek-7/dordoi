@@ -105,39 +105,39 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        /// <summary>
-        /// Фильтрует список строк по определенной фразе
-        /// </summary>
-        /// <param name="filtredString">фраза по которой происходит фильтрация</param>
-        /// <param name="filtredListOfStrings">список строк среди которых происходит фильтрация</param>
-        /// <returns>список строк содержащихся в списке строк </returns>
-        public async Task<IEnumerable<TranslationSubstring>> FilterByString(string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings)
-        {
-            var query = "";
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    this.LogQuery(query);
-                    IEnumerable<TranslationSubstring> filtredStrings = await dbConnection.QueryAsync<TranslationSubstring>(query);
-                    return filtredStrings;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.FilterByString)} {nameof(NpgsqlException)} ",
-                    exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.FilterByString)} {nameof(Exception)} ",
-                    exception);
-                return null;
-            }
-        }
+        ///// <summary>
+        ///// Фильтрует список строк по определенной фразе
+        ///// </summary>
+        ///// <param name="filtredString">фраза по которой происходит фильтрация</param>
+        ///// <param name="filtredListOfStrings">список строк среди которых происходит фильтрация</param>
+        ///// <returns>список строк содержащихся в списке строк </returns>
+        //public async Task<IEnumerable<TranslationSubstring>> FilterByString(string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings)
+        //{
+        //    var query = "";
+        //    try
+        //    {
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            this.LogQuery(query);
+        //            IEnumerable<TranslationSubstring> filtredStrings = await dbConnection.QueryAsync<TranslationSubstring>(query);
+        //            return filtredStrings;
+        //        }
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.FilterByString)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.FilterByString)} {nameof(Exception)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //}
 
 
         /// <summary>
@@ -305,14 +305,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return 0;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(Exception)} ",
                     exception);
                 return 0;
             }
@@ -507,9 +507,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return 0;
             }
 
-
-
         }
+
         /// <summary>
         /// ????????????????
         /// </summary>
@@ -726,21 +725,21 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStatusOfTranslationSubstringAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStatusOfTranslationSubstringAsync)} {nameof(Exception)} ",
                     exception);
                 return null;
             }
         }
 
 
-        //
+
         /// <summary>
         /// Удаление всех строк связанных с памятью переводов.
         /// </summary>
@@ -772,12 +771,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
             catch (NpgsqlException exception)
             {
-                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveAsync)} {nameof(NpgsqlException)} ", exception);
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveByTranslationMemoryAsync)} {nameof(NpgsqlException)} ", exception);
                 return false;
             }
             catch (Exception exception)
             {
-                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveAsync)} {nameof(Exception)} ", exception);
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.RemoveByTranslationMemoryAsync)} {nameof(Exception)} ", exception);
                 return false;
             }
         }

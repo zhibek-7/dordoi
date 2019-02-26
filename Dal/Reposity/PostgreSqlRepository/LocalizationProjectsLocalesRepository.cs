@@ -55,34 +55,34 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        public IEnumerable<LocalizationProjectsLocales> GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        //public IEnumerable<LocalizationProjectsLocales> GetAll()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public LocalizationProjectsLocales GetByID(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //public LocalizationProjectsLocales GetByID(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool Remove(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool Remove(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void Update(LocalizationProjectsLocales item)
-        {
-            throw new NotImplementedException();
-        }
+        //public void Update(LocalizationProjectsLocales item)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void Add(LocalizationProjectsLocales locale)
-        {
-            throw new NotImplementedException();
-        }
+        //public void Add(LocalizationProjectsLocales locale)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        /// <summary>
-        /// Удалить языки в проекте
-        /// </summary>
+        ///// <summary>
+        ///// Удалить языки в проекте
+        ///// </summary>
 
         public void DeleteProjectLocalesById(int Id)
         {

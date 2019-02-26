@@ -12,11 +12,11 @@ namespace Models.Interfaces.Repository
     /// <typeparam name="T">Тип с которым работает репозиторий</typeparam>
     public interface IRepository<T> where T : BaseEntity
     {
-        void Add(T item);
-        bool Remove(int id);
-        void Update(T item);
+        //void Add(T item);
+        //bool Remove(int id);
+        //void Update(T item);
 
-        T GetByID(int id);
-        IEnumerable<T> GetAll();
+        //T GetByID(int id);
+        //IEnumerable<T> GetAll();
     }
 }

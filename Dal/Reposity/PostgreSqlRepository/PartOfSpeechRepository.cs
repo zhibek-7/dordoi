@@ -17,30 +17,30 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public void Add(PartOfSpeech item)
-        {
-            throw new NotImplementedException();
-        }
+        //public void Add(PartOfSpeech item)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IEnumerable<PartOfSpeech> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public PartOfSpeech GetByID(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //public PartOfSpeech GetByID(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool Remove(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool Remove(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void Update(PartOfSpeech item)
-        {
-            throw new NotImplementedException();
-        }
+        //public void Update(PartOfSpeech item)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IEnumerable<PartOfSpeech> GetByGlossaryId(int glossaryId)
         {
