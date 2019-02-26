@@ -29,8 +29,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var _sql = "INSERT INTO user_actions" +
-                               " (id_user, id_work_type, description, id_locale, id_file, id_string, id_translation, id_project, datetime) " +
-                               "VALUES (@id_user, @id_work_type, @description, @id_locale, @id_file, @id_string, @id_translation, @id_project, @datetime)";
+                               " (id_user, id_work_type, description, id_locale, id_file, id_string, id_translation, id_project, datetime,project_name,id_user_participant,id_role_participant,id_glossary,glossary_name) " +
+                               "VALUES (@id_user, @id_work_type, @description, @id_locale, @id_file, @id_string, @id_translation, @id_project, @datetime,@project_name,@id_user_participant,@id_role_participant,@id_glossary,@glossary_name)";
                     var _params = new
                     {
                         action.id_user,
@@ -41,7 +41,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                         action.id_string,
                         action.id_translation,
                         action.id_project,
-                        action.datetime
+                        action.datetime,
+                        action.project_name,
+                        action.id_user_participant,
+                        action.id_role_participant,
+                        action.id_glossary,
+                        action.glossary_name
                     };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
@@ -598,6 +603,93 @@ namespace DAL.Reposity.PostgreSqlRepository
             };
             return await AddAsync(act);
         }
+
+
+
+        /// <summary>
+        /// Добавить запись о создании глоссария
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddCreateGlossaryActionAsync(int userId, string userName, int glossaryId, string name_text, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, userName, "Создание глоссария" + comment, (int)WorkTypes.CreateGlossary, WorkTypes.CreateGlossary.ToString())
+            {
+                id_glossary = glossaryId,
+                glossary_name = name_text
+            };
+            return await AddAsync(act);
+        }
+        /// <summary>
+        /// Добавить запись о редактировании глоссария
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddEditGlossaryActionAsync(int userId, string userName, int glossaryId, string name_text, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, userName, "Редактирование глоссария" + comment, (int)WorkTypes.EditGlossary, WorkTypes.EditGlossary.ToString())
+            {
+                id_glossary = glossaryId,
+                glossary_name = name_text
+            };
+            return await AddAsync(act);
+        }
+
+
+        /// <summary>
+        /// Добавить запись о удалении глоссария
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddDeleteGlossaryActionAsync(int userId, string userName, int glossaryId, string name_text, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, userName, "Удаление глоссария" + comment, (int)WorkTypes.DeleteGlossary, WorkTypes.DeleteGlossary.ToString())
+            {
+                id_glossary = glossaryId,
+                glossary_name = name_text
+            };
+            return await AddAsync(act);
+        }
+
+
+
+        /// <summary>
+        /// Добавить запись о создании приглашенного переводчика
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> AddOrActivateParticipantAsync(int userId, string userName, int projectId, int id_user_participant, int id_role_participant, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, projectId.ToString(), "Создание приглашенного пользователя. " + comment, (int)WorkTypes.CreateParticipant, WorkTypes.CreateParticipant.ToString())
+            {
+                id_user_participant = id_user_participant,
+                id_role_participant = id_role_participant
+            };
+            return await AddAsync(act);
+        }
+
+        /// <summary>
+        /// Добавить запись о создании приглашенного переводчика
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <param name="projectId"></param>
+        /// <returns>Идентификатор добавленого действия</returns>
+        public async Task<int> DeleteParticipantAsync(int userId, string userName, int projectId, int id_user_participant, string comment = "")
+        {// Authorize = 1, //1	Авторизация пользователя    
+            var act = new UserAction(userId, projectId.ToString(), "Удаление приглашенного пользователя. " + comment, (int)WorkTypes.DeleteParticipant, WorkTypes.DeleteParticipant.ToString())
+            {
+                id_project = projectId,
+                id_locale = userId
+            };
+            return await AddAsync(act);
+        }
+
+
+
 
     }
 }
