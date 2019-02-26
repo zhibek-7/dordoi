@@ -4,12 +4,13 @@ using Models.DatabaseEntities.PartialEntities.Glossaries;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Localization.Controllers;
 
 namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GlossaryController : ControllerBase
+    public class GlossaryController : BaseController
     {
 
         private readonly GlossaryService _glossaryService;

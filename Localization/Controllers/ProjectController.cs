@@ -16,7 +16,7 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class ProjectController : ControllerBase
+    public class ProjectController : BaseController
     {
         private readonly LocalizationProjectRepository _localizationProjectRepository;
         private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
@@ -35,7 +35,7 @@ namespace Localization.Controllers
 
         //[Authorize]
         [HttpGet]
-        [Route("List")]    
+        [Route("List")]
         public List<LocalizationProject> GetProjects()
         {
             return _localizationProjectRepository.GetAll()?.ToList();
@@ -61,18 +61,18 @@ namespace Localization.Controllers
         }
 
 
-  
+
 
         [HttpPost]
         [Route("newProject")]
         public async Task<int> newProject([FromBody] LocalizationProject project)
         {
-          int idProj= await _localizationProjectRepository.AddAsyncInsertProject(project);
+            int idProj = await _localizationProjectRepository.AddAsyncInsertProject(project);
             _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return idProj;
         }
 
-  
+
         [HttpPost]
         [Route("AddProject")]
         public LocalizationProject AddProject([FromBody] LocalizationProject project)

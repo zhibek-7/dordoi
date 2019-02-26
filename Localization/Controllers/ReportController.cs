@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DAL.Reposity.Report;
+using Localization.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities.Reports;
 using Utilities;
@@ -12,7 +13,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportController : ControllerBase
+    public class ReportController : BaseController
     {
         public class reportParamsDTO
         {

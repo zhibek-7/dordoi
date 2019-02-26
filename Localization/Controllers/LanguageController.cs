@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
+using Localization.Controllers;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Utilities;
@@ -12,7 +13,7 @@ namespace Localization.WebApi
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class LanguageController : ControllerBase
+    public class LanguageController : BaseController
     {
         private readonly LocaleRepository _localeRepository;
 

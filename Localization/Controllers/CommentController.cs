@@ -10,6 +10,7 @@ using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Comment;
 using System.Net.Http;
 using System.IO;
+using Localization.Controllers;
 using Utilities;
 
 namespace Localization.WebApi
@@ -17,7 +18,7 @@ namespace Localization.WebApi
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class CommentController : ControllerBase
+    public class CommentController : BaseController
     {
         private readonly CommentRepository commentRepository;
         private readonly TranslationSubstringRepository stringRepository;

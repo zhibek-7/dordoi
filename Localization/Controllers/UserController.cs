@@ -20,7 +20,7 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly UserRepository userRepository;
 
@@ -33,6 +33,8 @@ namespace Localization.Controllers
         [Route("List")]
         public List<User> GetAll()
         {
+            var name_text = User.Identity.Name;
+
             return userRepository.GetAll().ToList();
         }
 
@@ -45,6 +47,7 @@ namespace Localization.Controllers
         [HttpPost("{userId}/getPhoto")]
         public async Task<byte[]> GetPhoto(int userId)
         {
+
             return await this.userRepository.GetPhotoByIdAsync(id: userId);
         }
 
@@ -62,7 +65,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="email">введенный email.</param>
         /// <returns></returns>
-        [HttpPost("isUniqueEmail:{email}")] 
+        [HttpPost("isUniqueEmail:{email}")]
         public async Task<bool?> IsUniqueEmail(string email)
         {
             var name_text = User.Identity.Name;
@@ -204,7 +207,7 @@ namespace Localization.Controllers
             var username2 = User.Identity.Name;
             var username = "tip";
 
-            
+
             var roleValue = "Переводчик";
 
             var claims = new List<Claim>
@@ -241,7 +244,7 @@ namespace Localization.Controllers
             };
 
             return Ok(response);
-        }        
+        }
 
         private async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
         {

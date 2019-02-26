@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Localization.Controllers;
 using Localization.Hubs.DataImport;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DataImportController : Controller
+    public class DataImportController : BaseController
     {
 
         private readonly ILocaleRepository _localeRepository;

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
+using Localization.Controllers;
 using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Translations;
@@ -15,7 +16,7 @@ namespace Localization.WebApi
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class TranslationController : ControllerBase
+    public class TranslationController : BaseController
     {
         private readonly TranslationRepository translationRepository;
         private readonly UserActionRepository _userActionRepository;

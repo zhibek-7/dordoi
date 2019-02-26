@@ -8,13 +8,14 @@ using Models.DatabaseEntities;
 using Microsoft.AspNetCore.Cors;
 using Models.Interfaces.Repository;
 using System.IO;
+using Localization.Controllers;
 
 namespace Localization.WebApi
 {
     [EnableCors("SiteCorsPolicy")]
     [Route("api/[controller]")]
     [ApiController]
-    public class StringController : ControllerBase
+    public class StringController : BaseController
     {
         private readonly ITranslationSubstringRepository stringRepository;
 

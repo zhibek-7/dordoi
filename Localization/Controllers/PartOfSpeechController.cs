@@ -5,13 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Localization.Controllers;
 using Utilities;
 
 namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PartOfSpeechController : ControllerBase
+    public class PartOfSpeechController : BaseController
     {
 
         private readonly PartOfSpeechRepository _partOfSpeechRepository;
