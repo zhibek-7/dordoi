@@ -16,10 +16,11 @@ namespace Localization.Controllers
     {
 
         private readonly ParticipantRepository _participantsRepository;
-
+        private readonly UserActionRepository _userActionRepository;
         public ParticipantsController()
         {
             this._participantsRepository = new ParticipantRepository(Settings.GetStringDB());
+            _userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
         public class GetParticipantsByProjectIdParam
@@ -64,12 +65,14 @@ namespace Localization.Controllers
         [HttpDelete("byProjectId/{projectId}/{userId}")]
         public async Task DeleteParticipant(int projectId, int userId)
         {
+            _userActionRepository.AddOrActivateParticipantAsync(300, "Test user", projectId, userId);//TODO поменять на пользователя когда будет реализована авторизация
             await this._participantsRepository.SetInactiveAsync(projectId: projectId, userId: userId);
         }
 
         [HttpPost("{projectId}/{userId}/{roleId}")]
         public async Task AddOrActivateParticipant(int projectId, int userId, int roleId)
         {
+            _userActionRepository.DeleteParticipantAsync(300, "Test user", projectId, userId);//TODO поменять на пользователя когда будет реализована авторизация
             await this._participantsRepository.AddOrActivateParticipant(projectId: projectId, userId: userId, roleId: roleId);
         }
 

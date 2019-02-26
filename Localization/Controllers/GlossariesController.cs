@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities.DTO;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace Localization.Controllers
 {
@@ -11,11 +13,12 @@ namespace Localization.Controllers
     public class GlossariesController : ControllerBase
     {
         private readonly GlossariesService _glossariesService;
-
+        private readonly UserActionRepository _userActionRepository;
 
         public GlossariesController(GlossariesService glossariesService)
         {
             _glossariesService = glossariesService;
+            _userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
 
@@ -37,6 +40,7 @@ namespace Localization.Controllers
         [HttpPost("newGlossary")]
         public async Task AddGlossaryAsync(GlossariesForEditingDTO glossary)
         {
+            _userActionRepository.AddCreateGlossaryActionAsync(300, "Test user", glossary.id, glossary.id);//TODO поменять на пользователя когда будет реализована авторизация
             await _glossariesService.AddNewGlossaryAsync(glossary);
         }
 
@@ -59,6 +63,7 @@ namespace Localization.Controllers
         [HttpPost("editSaveGlossary")]
         public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
         {
+            _userActionRepository.AddEditGlossaryActionAsync(300, "Test user", glossary.id, glossary.id);//TODO поменять на пользователя когда будет реализована авторизация
             await _glossariesService.EditGlossaryAsync(glossary);
         }
 
@@ -70,6 +75,7 @@ namespace Localization.Controllers
         [HttpDelete("deleteGlossary/{glossaryId}")]
         public async Task DeleteGlossaryAsync(int glossaryId)
         {
+            _userActionRepository.AddDeleteGlossaryActionAsync(300, "Test user", glossaryId, glossaryId);//TODO поменять на пользователя когда будет реализована авторизация
             await _glossariesService.DeleteGlossaryAsync(glossaryId);
         }
 
