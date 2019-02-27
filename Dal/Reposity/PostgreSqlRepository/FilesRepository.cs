@@ -501,6 +501,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: sql,
                         param: param);
                 }
+
+                //вставить обновление локалей
+                var strings = _tsr.GetStringsByFileIdAsync(fileId);
+                foreach (var str in strings.Result)
+                {
+                    _tsr.AddTranslationLocalesTransactAsync(str.id, localesIds, dbConnection, null);
+                }
+
             }
         }
 

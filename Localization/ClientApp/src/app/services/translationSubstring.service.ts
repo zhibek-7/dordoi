@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
@@ -16,17 +16,23 @@ export class TranslationSubstringService {
     }
 
     async getStringById(){        
-      let asyncResult = await this.http.get<TranslationSubstring>(this.url).toPromise();
+      let asyncResult = await this.http.get<TranslationSubstring>(this.url, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    }).toPromise();
         return asyncResult;    
     }
 
     async getStrings(){
-      let strings: TranslationSubstring[] = await this.http.get<TranslationSubstring[]>(this.url).toPromise();
+      let strings: TranslationSubstring[] = await this.http.get<TranslationSubstring[]>(this.url, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    }).toPromise();
         return strings;
     }
 
     getImagesByTranslationSubstringId(translationSubstringId: number): Observable<Image[]>{
-      return this.http.post<Image[]>(this.url + "GetImagesByStringId/" + translationSubstringId, null);
+      return this.http.post<Image[]>(this.url + "GetImagesByStringId/" + translationSubstringId, null, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
     }
 
     uploadImageToTranslationSubstring(fileToUpload: File[], translationSubstringId: number) {
@@ -35,16 +41,22 @@ export class TranslationSubstringService {
         fileToUpload.forEach(element => {
             formData.set('Image', element); 
             formData.append('TranslationSubstringId', translationSubstringId.toString());
-            return this.http.post(this.url + "UploadImageToTranslationSubstring", formData).toPromise();
+            return this.http.post(this.url + "UploadImageToTranslationSubstring", formData, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    }).toPromise();
         });        
     }
 
     getStringsInFile(idFile: number): Observable<TranslationSubstring[]>{
-      return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile);
+      return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
     }
 
   getTranslationSubstringStatus(translationSubstringId: number): Observable<string>{
-    return this.http.post<string>(this.url + "Status/" + translationSubstringId, null);
+    return this.http.post<string>(this.url + "Status/" + translationSubstringId, null, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
   getStringsByProjectId(
@@ -76,26 +88,37 @@ export class TranslationSubstringService {
       }
     }
     return this.http.get<TranslationSubstring[]>(this.url + 'ByProjectId/' + projectId,
-      {
+       {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+,
         params: params,
         observe: 'response'
-      });
+    }
+);
   }
 
   deleteTranslationSubstring(id: number): Observable<Object> {
-    return this.http.delete(this.url + id.toString());
+    return this.http.delete(this.url + id.toString(), {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
   updateTranslationSubstring(translationSubstring: TranslationSubstring): Observable<Object> {
-    return this.http.put(this.url + translationSubstring.id.toString(), translationSubstring);
+    return this.http.put(this.url + translationSubstring.id.toString(), translationSubstring, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
   getTranslationLocalesForString(id: number): Observable<Locale[]> {
-    return this.http.get<Locale[]>(this.url + id + '/locales');
+    return this.http.get<Locale[]>(this.url + id + '/locales', {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
   setTranslationLocalesForString(id: number, localesIds: number[]): Observable<Object> {
-    return this.http.put(this.url + id + '/locales', localesIds);
+    return this.http.put(this.url + id + '/locales', localesIds, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
 }

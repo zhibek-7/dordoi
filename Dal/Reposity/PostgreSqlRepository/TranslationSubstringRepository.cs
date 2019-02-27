@@ -727,32 +727,81 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task AddTranslationLocalesTransactAsync(int translationSubstringId, IEnumerable<int> localesIds,
             NpgsqlConnection dbConnection, IDbTransaction transaction = null)
         {
+            //TODO нужно удаление локалей сделать.
+
+            Task<IEnumerable<Locale>> assignedLoc = GetLocalesForStringAsync(translationSubstringId);
+
+            List<int> idAssignetLoc = new List<int>();
+            List<int> idAssignetLocCopy = new List<int>();
+            foreach (var localeId in assignedLoc.Result)
+            {
+                idAssignetLoc.Add(localeId.id);
+            }
+
+            idAssignetLocCopy.AddRange(idAssignetLoc);
+
             foreach (var localeId in localesIds)
             {
-                var sql =
-                    "INSERT INTO translation_substrings_locales " +
-                    "(" +
-                    "id_translation_substrings, " +
-                    "id_locale" +
-                    ") VALUES " +
-                    "(" +
-                    "@Id_TranslationSubStrings, " +
-                    "@Id_Locales" +
-                    ")";
-                var param = new { Id_TranslationSubStrings = translationSubstringId, Id_Locales = localeId };
-                this.LogQuery(sql, param);
+                //Назначаем только назначенные локали
+                if (localeId != null && idAssignetLoc.Contains((int)localeId) == false)
+                {
+                    var sql =
+                        "INSERT INTO translation_substrings_locales " +
+                        "(" +
+                        "id_translation_substrings, " +
+                        "id_locale" +
+                        ") VALUES " +
+                        "(" +
+                        "@Id_TranslationSubStrings, " +
+                        "@Id_Locales" +
+                        ")";
+                    var param = new { Id_TranslationSubStrings = translationSubstringId, Id_Locales = localeId };
+                    this.LogQuery(sql, param);
+
+                    if (transaction != null)
+                    {
+                        dbConnection.Execute(
+                            sql: sql,
+                            param: param, transaction: transaction);
+                    }
+                    else
+                    {
+                        await dbConnection.ExecuteAsync(
+                            sql: sql,
+                            param: param);
+                    }
+
+                    if (localeId != null)
+                    {
+                        idAssignetLocCopy.Remove((int)localeId);
+                    }
+                }
+            }
+
+            //Удаляем не назначенные локали.
+            await DellTranslationLocalesTransact(translationSubstringId, dbConnection, transaction, idAssignetLocCopy);
+
+        }
+
+        private async Task DellTranslationLocalesTransact(int translationSubstringId, NpgsqlConnection dbConnection,
+            IDbTransaction transaction, List<int> idAssignetLocCopy)
+        {
+            foreach (var localeId in idAssignetLocCopy)
+            {
+                var sql = "DELETE FROM public.translation_substrings_locales WHERE id_translation_substrings=" +
+                          translationSubstringId + " and id_locale = " + localeId;
+                this.LogQuery(sql);
 
                 if (transaction != null)
                 {
                     dbConnection.Execute(
-                       sql: sql,
-                       param: param, transaction: transaction);
+                        sql: sql,
+                        transaction: transaction);
                 }
                 else
                 {
                     await dbConnection.ExecuteAsync(
-                        sql: sql,
-                        param: param);
+                        sql: sql);
                 }
             }
         }

@@ -106,7 +106,7 @@ namespace Models.Services
             {
                 if (lastVersionDbFile.is_folder)
                 {
-                    throw new Exception(WriteLn("Нельзя обновить папку."));
+                    throw new Exception(WriteLn("Нельзя обновить папку " + lastVersionDbFile.name_text));
                 }
 
                 lastVersionDbFile.is_last_version = false;
@@ -118,6 +118,7 @@ namespace Models.Services
 
                 // TODO: single transaction?
                 var updatedSuccessfully = await this._filesRepository.UpdateAsync(lastVersionDbFile);
+                //TODO нужно копировать переводы в новую версию
                 if (!updatedSuccessfully)
                 {
                     throw new Exception(WriteLn("Не удалось обновить старый файл."));

@@ -12,8 +12,8 @@ namespace Models.Services
     {
 
         private readonly IGlossaryRepository _glossaryRepository;
-
         private readonly ITranslationSubstringRepository _stringsRepository;
+        private readonly IFilesRepository _filesRepository;
 
         public GlossaryService(IGlossaryRepository glossaryRepository, ITranslationSubstringRepository translationSubstringRepository)
         {
@@ -87,6 +87,7 @@ namespace Models.Services
             {
                 await this._stringsRepository.DeleteTranslationLocalesAsync(translationSubstringId: termId);
                 await this._stringsRepository.AddTranslationLocalesAsync(translationSubstringId: termId, localesIds: localesIds);
+
             }
             catch (Exception exception)
             {

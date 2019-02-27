@@ -10,14 +10,18 @@ using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Npgsql;
 using System;
+using Utilities.Data;
+using Utilities.Mail;
 
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class GlossariesRepository : BaseRepository, IGlossariesRepository
     {
+        private FilesRepository fr;
         public GlossariesRepository(string connectionStr) : base(connectionStr)
         {
+            fr = new FilesRepository(connectionStr);
         }
 
         /// <summary>
@@ -90,7 +94,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                             param: compiledQuery.NamedBindings);
 
                     //Добавление в таблицу "GlossariesLocales" записей связи глоссария с языками перевода (Glossaries с Locales)
-                    await EditGlossariesLocalesAsync(idOfNewGlossary, glossary.Locales_Ids, false);
+                    var loc = ConvertData.ConverLocale(glossary.Locales_Ids);
+
+                    await EditGlossariesLocalesAsync(idOfNewGlossary, loc, glossary.ID_File, false);
 
                     //Добавление в таблицу "localization_projectsGlossaries" записей связи глоссария с проектами локализации (Glossaries с localization_projects)
                     await EditGlossarieslocalization_projectsAsync(idOfNewGlossary, glossary.Localization_Projects_Ids, false);
@@ -105,6 +111,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.AddNewGlossaryAsync)} {nameof(Exception)} ", exception);
             }
         }
+
 
         /// <summary>
         /// Возвращает глоссарий для редактирования (без группировки по объектам).
@@ -176,9 +183,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                             sql: compiledQuery.Sql,
                             param: compiledQuery.NamedBindings);
 
-
+                    var loc = ConvertData.ConverLocale(glossary.Locales_Ids);
                     //Пересоздание связей глоссария с языками перевода (Glossaries с Locales)
-                    await EditGlossariesLocalesAsync(glossary.id, glossary.Locales_Ids);
+                    await EditGlossariesLocalesAsync(glossary.id, loc, glossary.ID_File);
 
                     //Пересоздание связей глоссария с проектами локализации (Glossaries с localization_projects)
                     await EditGlossarieslocalization_projectsAsync(glossary.id, glossary.Localization_Projects_Ids);
@@ -201,7 +208,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="localesIds">Выбранные языки перевода.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task EditGlossariesLocalesAsync(int glossaryId, IEnumerable<int?> localesIds, bool isDeleteOldRecords = true)
+        public async Task EditGlossariesLocalesAsync(int glossaryId, IEnumerable<int> localesIds, int? filId, bool isDeleteOldRecords = true)
         {
             try
             {
@@ -232,6 +239,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                                 sql: compiledQueryGlossariesLocalesInsert.Sql,
                                 param: compiledQueryGlossariesLocalesInsert.NamedBindings);
                     }
+
+                    ///обновляем у  файла локали
+                    int? fileId = GetIdFile(glossaryId, dbConnection).Result;
+                    await this.fr.DeleteTranslationLocalesAsync(fileId: (int)fileId);
+                    await this.fr.AddTranslationLocalesAsync(fileId: (int)fileId, localesIds: localesIds);
+
 
                 }
             }
@@ -447,7 +460,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Удаление зависимостей
+        /// Получение ID file зависимостей
         /// </summary>
         /// <param name="id"></param>
         /// <param name="dbConnection"></param>
