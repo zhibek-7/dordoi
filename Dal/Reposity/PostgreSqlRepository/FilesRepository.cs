@@ -285,21 +285,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             return true;
                         }
 
-                        sqlString = "INSERT INTO translation_substrings " +
-                                    "(" +
-                                    "substring_to_translate, " +
-                                    "context, " +
-                                    "id_file_owner, " +
-                                    "value, " +
-                                    "position_in_text" +
-                                    ") " +
-                                    "VALUES (" +
-                                    "@substring_to_translate, " +
-                                    "@context, " +
-                                    "@id_file_owner, " +
-                                    "@value, " +
-                                    "@position_in_text" +
-                                    ") RETURNING  translation_substrings.id";
+
                         var translationSubstrings = new Parser().Parse(file);
                         var translationSubstringsCount = translationSubstrings.Count;
                         var n = translationSubstringsCount;
@@ -307,8 +293,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                         {
                             this.LogQuery(sqlString, translationSubstring.GetType(), translationSubstring);
                             //n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
-                            var idOfInsertedRow = await connection.ExecuteScalarAsync<int>(sqlString, translationSubstring, transaction);
+                            //var idOfInsertedRow = await connection.ExecuteScalarAsync<int>(sqlString, translationSubstring, transaction);
 
+                            var idOfInsertedRow = _tsr.AddAsync(translationSubstring, connection, transaction);
                             if (idOfInsertedRow != null)
                             {
                                 n--;

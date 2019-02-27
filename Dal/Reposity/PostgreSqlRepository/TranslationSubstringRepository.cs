@@ -22,15 +22,65 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        /// <summary>
-        /// Добавляет новую фразу
-        /// </summary>
-        /// <param name="item">Новая фраза</param>
-        /// <returns>Кол-во добавленных фраз</returns>
+        /// <summary> 
+        /// Добавляет новую фразу 
+        /// </summary> 
+        /// <param name="item">Новая фраза</param> 
+        /// <returns>Кол-во добавленных фраз</returns> 
         public Task<int> AddAsync(TranslationSubstring item)
         {
-            throw new NotImplementedException();
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    int t = AddAsync(item, connection, transaction);
+                    return Task.FromResult(t);
+                }
+            }
         }
+
+        public int AddAsync(TranslationSubstring translationSubstring, NpgsqlConnection connection, IDbTransaction transaction)
+        {
+            var sqlString = "INSERT INTO translation_substrings " +
+                            "(" +
+                            "substring_to_translate, " +
+                            "context, " +
+                            "id_file_owner, " +
+                            "value, " +
+                            "position_in_text" +
+                            ") " +
+                            "VALUES (" +
+                            "@substring_to_translate, " +
+                            "@context, " +
+                            "@id_file_owner, " +
+                            "@value, " +
+                            "@position_in_text" +
+                            ") RETURNING translation_substrings.id";
+            try
+            {
+                this.LogQuery(sqlString, translationSubstring.GetType(), translationSubstring);
+                var id = connection.ExecuteScalar(sqlString, translationSubstring, transaction);
+                return Int32.Parse(id + "");
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.AddAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                transaction.Rollback();
+                return -1;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.AddAsync)} {nameof(Exception)} ",
+                    exception);
+                transaction.Rollback();
+                return -1;
+            }
+        }
+
 
         /// <summary>
         /// Получает все фразы
@@ -694,9 +744,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                 if (transaction != null)
                 {
-                    await dbConnection.ExecuteAsync(
-                        sql: sql,
-                        param: param, transaction: transaction);
+                    dbConnection.Execute(
+                       sql: sql,
+                       param: param, transaction: transaction);
                 }
                 else
                 {
