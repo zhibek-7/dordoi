@@ -656,24 +656,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    foreach (var localeId in localesIds)
-                    {
-                        var sql =
-                            "INSERT INTO translation_substrings_locales " +
-                            "(" +
-                            "id_translation_substrings, " +
-                            "id_locale" +
-                            ") VALUES " +
-                            "(" +
-                            "@Id_TranslationSubStrings, " +
-                            "@Id_Locales" +
-                            ")";
-                        var param = new { Id_TranslationSubStrings = translationSubstringId, Id_Locales = localeId };
-                        this.LogQuery(sql, param);
-                        await dbConnection.ExecuteAsync(
-                            sql: sql,
-                            param: param);
-                    }
+                    await AddTranslationLocalesTransactAsync(translationSubstringId, localesIds, dbConnection);
                 }
             }
             catch (NpgsqlException exception)
@@ -688,6 +671,39 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.AddTranslationLocalesAsync)} {nameof(Exception)} ",
                     exception);
+            }
+        }
+
+        public async Task AddTranslationLocalesTransactAsync(int translationSubstringId, IEnumerable<int> localesIds,
+            NpgsqlConnection dbConnection, IDbTransaction transaction = null)
+        {
+            foreach (var localeId in localesIds)
+            {
+                var sql =
+                    "INSERT INTO translation_substrings_locales " +
+                    "(" +
+                    "id_translation_substrings, " +
+                    "id_locale" +
+                    ") VALUES " +
+                    "(" +
+                    "@Id_TranslationSubStrings, " +
+                    "@Id_Locales" +
+                    ")";
+                var param = new { Id_TranslationSubStrings = translationSubstringId, Id_Locales = localeId };
+                this.LogQuery(sql, param);
+
+                if (transaction != null)
+                {
+                    await dbConnection.ExecuteAsync(
+                        sql: sql,
+                        param: param, transaction: transaction);
+                }
+                else
+                {
+                    await dbConnection.ExecuteAsync(
+                        sql: sql,
+                        param: param);
+                }
             }
         }
 

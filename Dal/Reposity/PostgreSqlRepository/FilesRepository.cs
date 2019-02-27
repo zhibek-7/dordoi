@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -51,10 +52,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             ")";
 
         private UserActionRepository _action;
+        private TranslationSubstringRepository _tsr;
 
         public FilesRepository(string connectionStr) : base(connectionStr)
         {
             _action = new UserActionRepository(connectionStr);
+            _tsr = new TranslationSubstringRepository(connectionStr);
         }
 
         public async Task<IEnumerable<File>> GetAllAsync()
@@ -252,13 +255,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<bool> UploadAsync(File file)
+        public async Task<bool> UploadAsync(File file, IEnumerable<Locale> locales)
         {
             var sqlString = this._insertFileSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
-                using (IDbTransaction transaction = connection.BeginTransaction())
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
                 {
                     try
                     {
@@ -266,7 +269,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, file, transaction);
                         if (!insertedId.HasValue)
                         {
-                            this._loggerError.WriteLn("Insertion into files didn't return id.");
+                            this._loggerError.WriteLn("Не удалось загрузить файл в базу");
                             transaction.Rollback();
                             return false;
                         }
@@ -296,14 +299,29 @@ namespace DAL.Reposity.PostgreSqlRepository
                                     "@id_file_owner, " +
                                     "@value, " +
                                     "@position_in_text" +
-                                    ")";
+                                    ") RETURNING  translation_substrings.id";
                         var translationSubstrings = new Parser().Parse(file);
                         var translationSubstringsCount = translationSubstrings.Count;
                         var n = translationSubstringsCount;
                         foreach (var translationSubstring in translationSubstrings)
                         {
                             this.LogQuery(sqlString, translationSubstring.GetType(), translationSubstring);
-                            n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
+                            //n -= await connection.ExecuteAsync(sqlString, translationSubstring, transaction);
+                            var idOfInsertedRow = await connection.ExecuteScalarAsync<int>(sqlString, translationSubstring, transaction);
+
+                            if (idOfInsertedRow != null)
+                            {
+                                n--;
+                                //Мапим языки
+                                List<int> newLoc = new List<int>();
+                                foreach (var lc in locales)
+                                {
+                                    newLoc.Add(lc.id);
+                                }
+
+                                // _tsr.AddTranslationLocalesAsync(idOfInsertedRow, newLoc);
+                                _tsr.AddTranslationLocalesTransactAsync(idOfInsertedRow, newLoc, connection, transaction);
+                            }
                         }
 
                         if (n == 0)
