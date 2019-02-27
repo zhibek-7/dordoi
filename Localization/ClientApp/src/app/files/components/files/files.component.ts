@@ -242,7 +242,12 @@ export class FilesComponent implements OnInit {
           this.addNode(node, parentNode);
           this.ngxSpinnerService.hide();
         },
-        error => alert(error.error)
+        error => {
+          this.ngxSpinnerService.hide();
+          this.dialog.open(UploadingLogModalComponent, {
+            data: { name: file.name, errorMessage: error.error }
+          });
+        }
       );
   }
 
