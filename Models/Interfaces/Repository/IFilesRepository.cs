@@ -6,7 +6,7 @@ namespace Models.Interfaces.Repository
 {
     public interface IFilesRepository : IRepositoryAsync<File>
     {
-        Task<bool> UploadAsync(File item);
+        Task<bool> UploadAsync(File item, IEnumerable<Locale> locales);
         Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch);
         Task<File> GetLastVersionByNameAndParentIdAsync(string name, int? parentId);
         IEnumerable<File> GetInitialFolders(int projectId);

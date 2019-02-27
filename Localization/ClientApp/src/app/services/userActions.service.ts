@@ -54,9 +54,9 @@ export class UserActionsService {
       .post<UserAction[]>(
         url,
         body,
-        {
-          observe: 'response',
-        });
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")), observe: 'response'
+    });
   }
 
   getProjectActionsList(project: string): Observable<UserAction[]> {

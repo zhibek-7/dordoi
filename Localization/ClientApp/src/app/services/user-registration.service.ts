@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import { User } from '../user-account/user';
 
 @Injectable()
@@ -11,11 +11,17 @@ export class UserRegistrationService {
   }
 
   getUsers() {
-    return this.http.get(this.url);
+    return this.http.get(this.url,
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
   getUser(Id: number) {
-    return this.http.get(this.url)
+    return this.http.get(this.url,
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
+    })
   }
 
 
@@ -24,11 +30,17 @@ export class UserRegistrationService {
   }
 
   updateUsers(user: User) {
-    return this.http.post(this.url + '/' + user.id, user);
+    return this.http.post(this.url + '/' + user.id, user,
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
   deleteUser(id: number) {
-    return this.http.delete(this.url + '/' + id);
+    return this.http.delete(this.url + '/' + id,
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 }
 

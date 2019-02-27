@@ -8,7 +8,7 @@ import { saveAs } from "file-saver";
 
 import { FileService } from "src/app/services/file.service";
 import { ProjectsService } from "src/app/services/projects.service";
-import { FilesSignalRService } from 'src/app/services/filesSignalR.service';
+import { FilesSignalRService } from "src/app/services/filesSignalR.service";
 
 import { UploadingLogModalComponent } from "../uploading-log-modal/uploading-log-modal.component";
 
@@ -43,7 +43,7 @@ export class FilesComponent implements OnInit {
     private projectsService: ProjectsService,
     private ngxSpinnerService: NgxSpinnerService,
     private filesSignalRService: FilesSignalRService,
-    public dialog: MatDialog,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -186,6 +186,7 @@ export class FilesComponent implements OnInit {
   addFolder(newFolder: FileData, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
+    console.log(" ....addFolder");
     this.fileService
       .addFolder(
         newFolder.name_text,
@@ -202,14 +203,22 @@ export class FilesComponent implements OnInit {
     const parentId = parentNode ? parentNode.data.id : null;
 
     this.ngxSpinnerService.show();
-    const uploadedFolderName = files[0].webkitRelativePath.slice(0, files[0].webkitRelativePath.indexOf("/"));
+    const uploadedFolderName = files[0].webkitRelativePath.slice(
+      0,
+      files[0].webkitRelativePath.indexOf("/")
+    );
     this.dialog.open(UploadingLogModalComponent, {
       data: { name: uploadedFolderName }
     });
 
     const signalrConnectionId = await this.filesSignalRService.getConnectionId();
     this.fileService
-      .uploadFolder(files, this.projectsService.currentProjectId, signalrConnectionId, parentId)
+      .uploadFolder(
+        files,
+        this.projectsService.currentProjectId,
+        signalrConnectionId,
+        parentId
+      )
       .subscribe(
         null,
         error => alert(error),
@@ -221,7 +230,10 @@ export class FilesComponent implements OnInit {
   }
 
   addFile(file: File, parentNode: TreeNode): void {
+    console.log(" ....addFile");
+    console.log(" ....parentNode=" + parentNode);
     const parentId = parentNode ? parentNode.data.id : null;
+    console.log(" ....parentId=" + parentId);
     this.ngxSpinnerService.show();
     this.fileService
       .addFile(file, this.projectsService.currentProjectId, parentId)
@@ -257,6 +269,9 @@ export class FilesComponent implements OnInit {
   }
 
   addNode(addedNode: TreeNode, parent: TreeNode): void {
+    console.log("parent=" + parent);
+    console.log("addedNode=" + addedNode);
+    console.log("parent != null =" + parent.children);
     // Nodes (parent children or root)
     const nodes = parent ? [...parent.children] : [...this.files];
 

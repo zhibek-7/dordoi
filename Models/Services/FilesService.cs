@@ -194,6 +194,11 @@ namespace Models.Services
             }
         }
 
+        /// <summary>
+        /// Создаем StreamReader
+        /// </summary>
+        /// <param name="fileContentStream"></param>
+        /// <returns></returns>
         private File GetNewFileModel(System.IO.Stream fileContentStream)
         {
             var newFile = new File()
@@ -380,7 +385,9 @@ namespace Models.Services
 
         private async Task InsertFileToDbAsync(File file)
         {
-            var fileUploaded = await this._filesRepository.UploadAsync(file);
+            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.id_localization_project);
+
+            var fileUploaded = await this._filesRepository.UploadAsync(file, projectLocales);
             if (!fileUploaded)
             {
                 Exception e = new Exception(($"Не удалось добавить файл \"{file.name_text}\" в базу данных."));
@@ -389,7 +396,8 @@ namespace Models.Services
             }
 
             var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.name_text, file.id_folder_owner)).id;
-            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.id_localization_project);
+
+            //TODO тут брать в зависимости от того откуда это, глоссарийи и память переводов отельно
             await this._filesRepository.AddTranslationLocalesAsync(
                 fileId: addedFileId,
                 localesIds: projectLocales.Select(locale => locale.id));
