@@ -101,7 +101,7 @@ namespace Localization.WebApi
                     projectId: projectId);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("updateFileVersion/byProjectId/{projectId}")]
         public async Task<ActionResult<Node<File>>> UpdateFileVersionAsync(IFormFile file, [FromForm] int? parentId, int projectId)
         {
@@ -173,7 +173,7 @@ namespace Localization.WebApi
             return await this._filesService.GetTranslationLocalesForFileAsync(fileId: fileId);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut("{fileId}/locales")]
         public async Task SetTranslationLocalesForTermAsync(int fileId, [FromBody] IEnumerable<int> localesIds)
         {
