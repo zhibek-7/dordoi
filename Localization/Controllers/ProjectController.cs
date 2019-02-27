@@ -130,7 +130,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <returns>LocalizationProjectForSelectDTO{ID, Name}</returns>
         [Authorize]
-        [HttpPost("forSelect")]
+        [HttpPost("forSelectByUser")]
         public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectAsync()
         {
             var userName = User.Identity.Name;
