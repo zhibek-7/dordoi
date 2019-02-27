@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -31,7 +31,9 @@ export class DataImportService {
       formData.append('signalrConnectionId', '');
     }
 
-    return this.http.post<Object>(url, formData);
+    return this.http.post<Object>(url, formData, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 
 }
