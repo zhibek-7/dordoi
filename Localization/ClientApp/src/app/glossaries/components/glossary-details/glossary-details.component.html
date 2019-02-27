@@ -9,6 +9,7 @@
       <app-add-term-form-modal [glossary]="glossary" (newTermSubmitted)="addNewTerm($event)" #addTermFormModal></app-add-term-form-modal>
       <button [disabled]="selectedTerms.length == 0 ? true : null" class="btn btn-default m-1 btn-sm" (click)="deleteSelectedTermsConfirmationModal.show()">Удалить</button>
       <app-delete-terms-confirmation-modal #deleteSelectedTermsConfirmationModal (deleteTermsConfirmed)="deleteSelectedTerms()"></app-delete-terms-confirmation-modal>
+      <button class="btn btn-default m-1 btn-sm" (click)="openSetProjectsModal()">Назначить глоссарий</button>
     </div>
     <div class="col d-flex justify-content-end">
       <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>

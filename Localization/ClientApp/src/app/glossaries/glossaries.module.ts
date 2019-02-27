@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { GlossariesRoutingModule } from 'src/app/glossaries/glossaries-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -8,6 +10,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { GlossariesService } from 'src/app/services/glossaries.service';
 import { PartsOfSpeechService } from 'src/app/services/partsOfSpeech.service';
 import { TranslationService } from 'src/app/services/translationService.service';
+import { GlossaryService } from "src/app/services/glossary.service";
+import { ProjectsService } from "src/app/services/projects.service";
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
 import { GlossariesComponent } from 'src/app/glossaries/components/glossaries/glossaries.component';
@@ -20,6 +24,7 @@ import { EditTermFormComponent } from 'src/app/glossaries/components/edit-term-f
 import { SetLanguagesFormModalComponent } from 'src/app/glossaries/components/set-languages-form-modal/set-languages-form-modal.component';
 import { LanguageService } from 'src/app/services/languages.service';
 import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term-details-editable/term-details-editable.component';
+import { SetProjectsModalComponent } from "src/app/glossaries/components/set-projects-modal/set-projects-modal.component";
 
 
 @NgModule({
@@ -28,6 +33,8 @@ import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term
     GlossariesRoutingModule,
     FormsModule,
     SharedModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
   declarations: [
     GlossariesComponent,
@@ -39,6 +46,7 @@ import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term
     EditTermFormComponent,
     SetLanguagesFormModalComponent,
     TermDetailsEditableComponent,
+    SetProjectsModalComponent,
   ],
   providers: [
     RequestDataReloadService,
@@ -46,6 +54,11 @@ import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term
     PartsOfSpeechService,
     LanguageService,
     TranslationService,
-  ]
+    GlossaryService,
+    ProjectsService,
+  ],
+  entryComponents: [
+    SetProjectsModalComponent,
+  ],
 })
 export class GlossariesModule { }
