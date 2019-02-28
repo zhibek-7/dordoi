@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -32,6 +32,7 @@ import { UserService } from "../services/user.service";
 import { WorkTypeService } from "../services/workType.service";
 import { UserActionsService } from "../services/userActions.service";
 import { ParticipantsService } from "../services/participants.service";
+import { RequestInterceptorService } from '../services/requestInterceptor.service';
 
 @NgModule({
   imports: [
@@ -67,6 +68,7 @@ import { ParticipantsService } from "../services/participants.service";
     WorkTypeService,
     UserActionsService,
     ParticipantsService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true }
   ],
 })
 export class ProjectPageModule { }

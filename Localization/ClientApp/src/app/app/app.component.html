@@ -21,11 +21,13 @@
           Проекты
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a *ngFor="let project of projects" class="dropdown-item" (click)="getCurrentProject(project)" href='/Translation_project/{{ project.id }}'>
-            {{ project.name_text }}
-            <a (click)="getCurrentProject(project)" href='/Projects/{{ project.id }}'><img src="../assets/icons/main/settings.jpg"
-                width="20" height="20" class="d-inline-block align-top" alt=""></a>
-          </a>
+          <div *ngIf="userAuthorized">
+            <a *ngFor="let project of projects" class="dropdown-item" (click)="getCurrentProject(project)" href='/Translation_project/{{ project.id }}'>
+              {{ project.name_text }}
+              <a (click)="getCurrentProject(project)" href='/Projects/{{ project.id }}'><img src="../assets/icons/main/settings.jpg"
+                  width="20" height="20" class="d-inline-block align-top" alt=""></a>
+            </a>
+          </div>  
 
           <a class="dropdown-item" routerLink='/Profile'>Все проекты</a>
           <div class="dropdown-divider"></div>

@@ -19,9 +19,7 @@ export class GlossaryService
    */
   getGlossariesDTO(): Observable<GlossariesTableViewDTO[]>
   {
-    return this.httpClient.post<GlossariesTableViewDTO[]>(GlossaryService.connectionUrl, null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<GlossariesTableViewDTO[]>(GlossaryService.connectionUrl, null);
   }  
   
   /**
@@ -30,9 +28,7 @@ export class GlossaryService
    */
   addNewGlossary(glossary: GlossariesForEditing): Observable<Object>
   {
-    return this.httpClient.post(GlossaryService.connectionUrl + "newGlossary", glossary, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post(GlossaryService.connectionUrl + "newGlossary", glossary);
   }
   
   /**
@@ -41,9 +37,7 @@ export class GlossaryService
    */
   async getGlossaryForEditing(glossaryId: number): Promise<GlossariesForEditing>
   {
-    let result = await this.httpClient.post<GlossariesForEditing>(GlossaryService.connectionUrl + "edit", glossaryId, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    })
+    let result = await this.httpClient.post<GlossariesForEditing>(GlossaryService.connectionUrl + "edit", glossaryId)
       .pipe(catchError(this.handleError('getGlossaryForEditing', null))).toPromise();
     return result;
   }
@@ -54,9 +48,7 @@ export class GlossaryService
    */
   editSaveGlossary(glossary: GlossariesForEditing): Observable<Object>
   {
-    return this.httpClient.post(GlossaryService.connectionUrl + "editSaveGlossary", glossary, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post(GlossaryService.connectionUrl + "editSaveGlossary", glossary);
   }
   
   /**
@@ -65,9 +57,7 @@ export class GlossaryService
    */
   deleteGlossary(glossaryId: number): Observable<Object>
   {
-    return this.httpClient.delete(GlossaryService.connectionUrl + "deleteGlossary/" + glossaryId, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.delete(GlossaryService.connectionUrl + "deleteGlossary/" + glossaryId);
   }
 
   // 
@@ -77,9 +67,7 @@ export class GlossaryService
    */
   clearGlossary(glossaryId: number): Observable<Object>
   {
-    return this.httpClient.delete(GlossaryService.connectionUrl + "clearGlossary/" + glossaryId, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.delete(GlossaryService.connectionUrl + "clearGlossary/" + glossaryId);
   }
 
 

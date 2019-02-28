@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Glossaries;
 using Models.Services;
@@ -128,6 +129,7 @@ namespace Localization.WebApi
         /// <param name="projectId">id проекта локализации в котором необходимо найти все термины</param>
         /// <returns>Список терминов</returns>
         [HttpPost("FindAllTermsInProjects")]
+        [Authorize]
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync([FromBody] int projectId)
         {
             var allTerms = await _glossaryService.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);

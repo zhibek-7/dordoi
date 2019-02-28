@@ -85,7 +85,7 @@
               <form class="col-11">
                 <div class="mb-1">
                   <input type="text" name="searchByMemoryText" [(ngModel)]="searchByMemoryText" class="form-control input-lg"
-                    placeholder="Поиск по памяти переводов ..." (keyup)="onEnterPress($event)">
+                    placeholder="Поиск по памяти переводов ..." (keyup)="onEnterPressByMemory($event)">
                 </div>
               </form>
               <div class="col-1 float-right align-center arrowIcon">
@@ -97,9 +97,9 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item list-group-item-action" *ngFor="let translation of listOfTranslationsByMemory">
                 <div>
-                  <div>{{translation.translation_Text}}</div>
-                  <div>{{translation.translation_Variant}}</div>
-                  <div class="fileDescription">{{translation.file_Owner_Name}}</div>
+                  <div>{{translation.translation_text}}</div>
+                  <div>{{translation.translation_variant}}</div>
+                  <div class="fileDescription">{{translation.file_owner_name}}</div>
                 </div>
               </li>
             </ul>

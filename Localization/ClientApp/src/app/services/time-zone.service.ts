@@ -12,9 +12,7 @@ export class TimeZoneService {
 
   /** Возвращает список часовых поясов */
   getAll(): Observable<TimeZone[]> {
-    return this.httpClient.post<TimeZone[]>(this.url, null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<TimeZone[]>(this.url, null);
   }
 
 }

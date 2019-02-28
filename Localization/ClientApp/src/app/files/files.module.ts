@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { TreeTableModule } from 'primeng/treetable';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -27,6 +27,7 @@ import { FileSettingsModalComponent } from 'src/app/files/components/file-settin
 import { FileService } from 'src/app/services/file.service';
 import { LanguageService } from 'src/app/services/languages.service';
 import { FilesSignalRService } from 'src/app/services/filesSignalR.service';
+import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 import { FileInputWrapper } from './components/file-input-wrapper/file-input-wrapper.component';
 
 @NgModule({
@@ -58,6 +59,7 @@ import { FileInputWrapper } from './components/file-input-wrapper/file-input-wra
     FileService,
     LanguageService,
     FilesSignalRService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ]
 })
 export class FilesModule { }

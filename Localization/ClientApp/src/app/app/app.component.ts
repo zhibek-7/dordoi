@@ -47,6 +47,7 @@ export class AppComponent implements OnInit {
   }
 
   getProjects() {
+    this.checkAuthorization();
     this.projectService.getProjects().subscribe(
       projects => {
         this.projects = projects;
@@ -72,10 +73,20 @@ export class AppComponent implements OnInit {
   }
 
   logOut() {
-    this.authenticationService.deleteToken();
+    this.authenticationService.logOut();
   }
 
-  async checkAuthorization() {
-    this.userAuthorized = await this.authenticationService.checkUserAuthorisation();
+  checkAuthorization() {
+    // this.userAuthorized = await this.authenticationService.checkUserAuthorisation();
+    this.authenticationService.checkUserAuthorisationAsync()
+              .subscribe(response => {
+                this.userAuthorized = response;
+              },
+              error => {
+                console.log("Ошибка: " + error);
+                alert("Необходимо авторизироваться");
+                this.userAuthorized = false;
+                this.router.navigate(['account']);
+              })
   }
 }

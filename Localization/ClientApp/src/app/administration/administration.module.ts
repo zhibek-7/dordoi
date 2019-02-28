@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import {
   MatButtonModule,
@@ -34,6 +34,7 @@ import { ServersComponent } from './components/servers/servers.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
 import { DataImportComponent } from './components/data-import/data-import.component';
+import { RequestInterceptorService } from '../services/requestInterceptor.service';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { DataImportComponent } from './components/data-import/data-import.compon
   providers: [
     DataImportService,
     DataImportSignalRService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ]
 })
 export class AdministrationModule { }

@@ -7,6 +7,7 @@ import { CommentService } from "../../../services/comment.service";
 import { SharePhraseService } from "../../localServices/share-phrase.service";
 import { GlossariesService } from "src/app/services/glossaries.service";
 import { ShareWordFromModalService } from "../../localServices/share-word-from-modal.service";
+import { ProjectsService } from "../../../services/projects.service";
 
 import { TermWithGlossary } from "../../localEntites/terms/termWithGlossary.type";
 import { Comment } from "../../../models/database-entities/comment.type";
@@ -15,7 +16,6 @@ import { CommentWithUser } from "../../localEntites/comments/commentWithUser.typ
 import { Term } from "src/app/models/Glossaries/term.type";
 import { Glossary } from "src/app/models/database-entities/glossary.type";
 import { Image } from "src/app/models/database-entities/image.type";
-import { ProjectsService } from "../../../services/projects.service";
 
 import * as $ from "jquery";
 
@@ -262,7 +262,7 @@ export class CommentsComponent implements OnInit {
   }
 
   // Событие, срабатываемое при нажатии клавиши Enter при поиске в глоссарие
-  onEnterPressGlossary(event: any) {
+  onEnterPressComment(event: any) {
     if (event.which == 13 || event.keyCode == 13) {
       this.addComment();
     }

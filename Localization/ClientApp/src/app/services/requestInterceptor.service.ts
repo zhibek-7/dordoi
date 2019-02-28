@@ -2,7 +2,7 @@ import {throwError as observableThrowError,  Observable ,  BehaviorSubject } fro
 
 import {take, filter, catchError, switchMap, finalize} from 'rxjs/operators';
 import { Injectable, Injector } from "@angular/core";
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpErrorResponse } from "@angular/common/http";
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 import { AuthenticationService } from './authentication.service';
 
@@ -16,19 +16,23 @@ export class RequestInterceptorService implements HttpInterceptor  {
                 private authService: AuthenticationService) {}
 
     addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
-        return req.clone({ setHeaders: { Authorization: 'Bearer ' + token }})
+        return req.clone({
+            headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+          });
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
-
+        // console.log("Схватили");
         return next.handle(this.addToken(req, this.authService.getToken())).pipe(
             catchError(error => {
                 if (error instanceof HttpErrorResponse) {
+                    // console.log(error);
                     switch ((<HttpErrorResponse>error).status) {
                         case 400:
                             return observableThrowError("400");
                         case 401:
                             {
+                                // console.log("Сработал");
                                 if(this.authService.getToken() != null){
                                     return this.handle401Error(req, next);
                                 } else {

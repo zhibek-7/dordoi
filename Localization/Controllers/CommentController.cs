@@ -11,6 +11,7 @@ using Models.DatabaseEntities.PartialEntities.Comment;
 using System.Net.Http;
 using System.IO;
 using Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Localization.WebApi
 {
@@ -37,6 +38,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPost]
         [Route("AddComment")]
+        [Authorize]
         public async Task<IActionResult> CreateComment([FromBody] Comments comment)
         {
             if (comment == null)
@@ -61,6 +63,7 @@ namespace Localization.WebApi
         /// <returns>Список комментариев</returns>
         [HttpGet]
         [Route("InString/{idString}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CommentWithUserInfo>>> GetCommentsInString(int idString)
         {
             // Check if string by id exists in database
@@ -79,6 +82,7 @@ namespace Localization.WebApi
         /// Получает все комментарии
         /// </summary>
         /// <returns>Список комментариев</returns>
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Comments>>> GetComments()
         {
             IEnumerable<Comments> comments = await commentRepository.GetAllAsync();
@@ -93,6 +97,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpDelete]
         [Route("DeleteComment/{commentId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
             // Check if string by id exists in database
@@ -120,6 +125,7 @@ namespace Localization.WebApi
         /// <param name="comment">обновленный комментарий</param>
         /// <returns></returns>
         [HttpPut("UpdateComment/{idComment}")]
+        [Authorize]
         public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
         {
             // Check if comment by id exists in database
@@ -148,6 +154,7 @@ namespace Localization.WebApi
         /// <param name="idComment">id комментария к которому приложена картинка</param>
         /// <returns></returns>
         [HttpPost("UploadImageToComment")]
+        [Authorize]
         public async Task<IActionResult> UploadImage()
         {
             var content = Request.Form.Files["Image"];

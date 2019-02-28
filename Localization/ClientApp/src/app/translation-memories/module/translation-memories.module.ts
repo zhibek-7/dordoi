@@ -29,6 +29,10 @@ import { ProjectsService } from 'src/app/services/projects.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
+
+
 @NgModule({
   declarations:
   [
@@ -43,6 +47,7 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
   [
     FormsModule,
     CommonModule,
+    HttpClientModule,
 
     MatTableModule,
     MatIconModule,
@@ -61,7 +66,8 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
     TranslationMemoryService,
     LanguageService,
     ProjectsService,
-    RequestDataReloadService
+    RequestDataReloadService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ]
 }) //Модуль для памяти переводов (TranslationMemories)
 export class TranslationMemoriesModule { }

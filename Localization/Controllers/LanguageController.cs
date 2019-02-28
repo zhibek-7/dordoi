@@ -6,6 +6,7 @@ using DAL.Reposity.PostgreSqlRepository;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Localization.WebApi
 {
@@ -46,6 +47,7 @@ namespace Localization.WebApi
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns></returns>
         [HttpPost("localesWithPercentByProjectId")]
+        [Authorize]
         public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent([FromBody] int projectId)
         {
             return await _localeRepository.GetAllForProjectWithPercent(projectId);

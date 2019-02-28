@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { RequestInterceptorService } from '../services/requestInterceptor.service';
 
 import { CreateProjectComponent } from './create-project.component';
 import { CreateProjectRoutingModule } from './create-project-routing.module';
@@ -40,12 +42,6 @@ import {
   MatSortModule,
   MatAutocompleteModule,
   MatExpansionModule } from '@angular/material';
-
-
-
-
-
-
 
 @NgModule({
   declarations: [
@@ -88,9 +84,10 @@ import {
     MatPaginatorModule,
     MatSortModule,
     MatAutocompleteModule,
-    MatExpansionModule
-
+    MatExpansionModule,
+    HttpClientModule
   ],
-  providers: []
+  providers: [    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
+  ]
 })
 export class CreateProjectModule { }

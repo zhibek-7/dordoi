@@ -173,7 +173,7 @@ export class LanguagesComponent implements OnInit {
     }
 
     // Событие, срабатываемое при нажатии клавиши Enter в поле "Поиск по памяти"
-    onEnterPress(event: any){
+    onEnterPressByMemory(event: any){
         if(event.which == 13 || event.keyCode == 13){
             this.searchByMemory();
         }

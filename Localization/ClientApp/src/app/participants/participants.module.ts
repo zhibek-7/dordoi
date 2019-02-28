@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { RequestInterceptorService } from '../services/requestInterceptor.service';
 
 import { ParticipantsRoutingModule } from 'src/app/participants/participants-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -20,6 +22,7 @@ import { UserService } from 'src/app/services/user.service';
     ParticipantsRoutingModule,
     SharedModule,
     FormsModule,
+    HttpClientModule
   ],
   declarations: [
     ParticipantsListComponent,
@@ -31,6 +34,7 @@ import { UserService } from 'src/app/services/user.service';
     LanguageService,
     RolesService,
     UserService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ]
 })
 export class ParticipantsModule { }

@@ -12,9 +12,7 @@ export class RolesService {
   constructor(private httpClient: HttpClient) { }
 
   getAllRoles(): Observable<Role[]> {
-    return this.httpClient.post<Role[]>(RolesService.connectionUrl + 'list', null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<Role[]>(RolesService.connectionUrl + 'list', null);
   }
 
 }

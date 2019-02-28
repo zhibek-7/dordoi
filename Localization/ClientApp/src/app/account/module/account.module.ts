@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material';
-
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 ////// Import the library Dropzone;
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
@@ -28,6 +28,7 @@ import { RegistrationComponent } from '../components/registration/registration.c
 import { LoginComponent } from '../components/login/login.component';
 import { ProfileComponent } from '../components/profile/profile.component';
 import { RecoverPasswordComponent } from '../components/recover-password/recover-password.component';
+import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { RecoverPasswordComponent } from '../components/recover-password/recover
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
+    HttpClientModule,
 
     SharedModule,
 
@@ -56,7 +58,8 @@ import { RecoverPasswordComponent } from '../components/recover-password/recover
       {
         provide: DROPZONE_CONFIG,
         useValue: DEFAULT_DROPZONE_CONFIG
-      }
+      },
+      { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
     ]
 })
 export class AccountModule { }

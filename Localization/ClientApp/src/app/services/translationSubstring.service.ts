@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
@@ -78,7 +78,8 @@ export class TranslationSubstringService {
     return this.http.get<TranslationSubstring[]>(this.url + 'ByProjectId/' + projectId,
       {
         params: params,
-        observe: 'response'
+        observe: 'response',
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
       });
   }
 

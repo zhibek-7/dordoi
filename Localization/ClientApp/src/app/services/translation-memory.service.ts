@@ -17,9 +17,7 @@ export class TranslationMemoryService {
    * Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
    */
   getAllDTO(): Observable<TranslationMemoryTableViewDTO[]> {
-    return this.httpClient.post<TranslationMemoryTableViewDTO[]>(TranslationMemoryService.connectionUrl, null, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.post<TranslationMemoryTableViewDTO[]>(TranslationMemoryService.connectionUrl, null);
   }
 
   /**
@@ -27,9 +25,7 @@ export class TranslationMemoryService {
    * @param translationMemory Новая память переводов.
    */
   create(translationMemory: TranslationMemoryForEditingDTO): Observable<Object> {
-    return this.httpClient.post(TranslationMemoryService.connectionUrl + "create", translationMemory, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.post(TranslationMemoryService.connectionUrl + "create", translationMemory);
   }
 
   /**
@@ -37,9 +33,7 @@ export class TranslationMemoryService {
    * @param id Идентификатор памяти переводов.
    */
   async getForEditing(id: number): Promise<TranslationMemoryForEditingDTO> {
-    let result = await this.httpClient.post<TranslationMemoryForEditingDTO>(TranslationMemoryService.connectionUrl + "edit", id, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    })
+    let result = await this.httpClient.post<TranslationMemoryForEditingDTO>(TranslationMemoryService.connectionUrl + "edit", id)
       .pipe(catchError(this.handleError('getForEditing', null))).toPromise();
     return result;
   }
@@ -49,9 +43,7 @@ export class TranslationMemoryService {
    * @param translationMemory Отредактированная память переводов.
    */
   editSave(translationMemory: TranslationMemoryForEditingDTO): Observable<Object> {
-    return this.httpClient.post(TranslationMemoryService.connectionUrl + "editSave", translationMemory, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.post(TranslationMemoryService.connectionUrl + "editSave", translationMemory);
   }
 
   /**
@@ -59,9 +51,7 @@ export class TranslationMemoryService {
    * @param id Идентификатор памяти переводов.
    */
   delete(id: number): Observable<Object> {
-    return this.httpClient.delete(TranslationMemoryService.connectionUrl + "delete/" + id, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.delete(TranslationMemoryService.connectionUrl + "delete/" + id);
   }
 
   // 
@@ -70,9 +60,7 @@ export class TranslationMemoryService {
    * @param id Идентификатор памяти переводов.
    */
   clear(id: number): Observable<Object> {
-    return this.httpClient.delete(TranslationMemoryService.connectionUrl + "clear/" + id, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.delete(TranslationMemoryService.connectionUrl + "clear/" + id);
   }
 
 

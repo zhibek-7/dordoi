@@ -12,21 +12,15 @@ export class LanguageService {
   constructor(private httpClient: HttpClient) { }
 
   getLanguageList(): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(this.url + 'List', {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.get<Locale[]>(this.url + 'List');
   }
 
   getByProjectId(projectId: number): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(this.url + 'byProjectId/' + projectId, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.get<Locale[]>(this.url + 'byProjectId/' + projectId);
   }
 
   getByUserId(userId: number): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(this.url + 'byUserId/' + userId, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.get<Locale[]>(this.url + 'byUserId/' + userId);
   }
 
   /**
@@ -35,8 +29,6 @@ export class LanguageService {
    */
   getLocalesWithPercentByProjectId(projectId: number): Observable<LocalizationProjectsLocalesDTO[]>
   {
-    return this.httpClient.post<LocalizationProjectsLocalesDTO[]>(this.url + "localesWithPercentByProjectId", projectId, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<LocalizationProjectsLocalesDTO[]>(this.url + "localesWithPercentByProjectId", projectId);
   }
 }

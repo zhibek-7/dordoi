@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 
 import { Comment } from '../models/database-entities/comment.type';
 import { CommentWithUser } from '../work-panel/localEntites/comments/commentWithUser.type';

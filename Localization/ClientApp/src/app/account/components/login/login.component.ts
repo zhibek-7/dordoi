@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
             this.authenticationService.saveToken(response.token);     
           // this.userService.getProfile().subscribe(); 
           this.router.navigate(["/account/profile"]);
+            this.authenticationService.authorizeUser();
             this.authenticationService.setUserRole(response.role);
             this.authenticationService.setUserName(response.username);
           },
@@ -60,7 +61,7 @@ export class LoginComponent implements OnInit {
   }
 
   logOut(){
-    this.authenticationService.deleteToken();
+    this.authenticationService.logOut();
   }
 
   //getUserInfo(){

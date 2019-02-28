@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { SetLanguagesComponent } from 'src/app/shared/components/set-languages/set-languages.component';
@@ -26,10 +28,12 @@ import { SetLanguagesWithNativeComponent } from './components/set-languages-with
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule
   ],
   providers:
   [
-    TimeZoneService
+    TimeZoneService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ],
   exports: [
     PaginationComponent,

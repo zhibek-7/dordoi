@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Localization.Hubs.Files;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -38,6 +39,7 @@ namespace Localization.WebApi
 
         // GET api/files
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Node<File>>>> GetAllAsync()
         {
             var files = await this._filesService.GetAllAsync();
@@ -53,7 +55,9 @@ namespace Localization.WebApi
         {
             public string FileNamesSearch { get; set; }
         }
+
         [HttpPost("byProjectId/{projectId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Node<File>>>> GetByProjectIdAsync(int projectId, [FromBody] GetByProjectIdParams param)
         {
             var files = await this._filesService.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: param.FileNamesSearch);
@@ -67,6 +71,7 @@ namespace Localization.WebApi
 
         // GET api/files/5
         [HttpGet("{id:int}")]
+        [Authorize]
         public async Task<ActionResult<File>> GetAsync(int id)
         {
             var foundedFile = await this._filesService.GetByIdAsync(id);
@@ -75,6 +80,7 @@ namespace Localization.WebApi
 
         // GET api/files/ForProject:ProjectId
         [HttpGet("ForProject:{projectId}")]
+        [Authorize]
         public IEnumerable<File> GetInitialFolders(int projectId)
         {
             var projectFolders = this._filesService.GetInitialFolders(projectId);
@@ -83,6 +89,7 @@ namespace Localization.WebApi
 
         // POST api/files/add/file
         [HttpPost("add/fileByProjectId/{projectId}")]
+        [Authorize]
         public async Task<ActionResult<Node<File>>> AddFileAsync(IFormFile file, [FromForm] int? parentId, int projectId)
         {
             using (var fileContentStream = file.OpenReadStream())
@@ -94,6 +101,7 @@ namespace Localization.WebApi
         }
 
         [HttpPost("updateFileVersion/byProjectId/{projectId}")]
+        [Authorize]
         public async Task<ActionResult<Node<File>>> UpdateFileVersionAsync(IFormFile file, [FromForm] int? parentId, int projectId)
         {
             using (var fileContentStream = file.OpenReadStream())
@@ -106,6 +114,7 @@ namespace Localization.WebApi
 
         // POST api/files/add/folder
         [HttpPost("add/folderByProjectId/{projectId}")]
+        [Authorize]
         public async Task<ActionResult<Node<File>>> AddFolderAsync([FromBody] FolderModel newFolder, int projectId)
         {
             newFolder.Project_Id = projectId;
@@ -113,6 +122,7 @@ namespace Localization.WebApi
         }
 
         [HttpPost("upload/folderByProjectId/{projectId}")]
+        [Authorize]
         public async Task UploadFolderWithContentsAsync(
             int projectId,
             IFormFileCollection files,
@@ -129,6 +139,7 @@ namespace Localization.WebApi
 
         // PUT api/files/update/5
         [HttpPut("update/{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateNodeAsync(int id, File file)
         {
             await this._filesService.UpdateNodeAsync(id: id, file: file);
@@ -137,6 +148,7 @@ namespace Localization.WebApi
 
         // DELETE api/files/delete/5
         [HttpPost("delete")]
+        [Authorize]
         public async Task<IActionResult> DeleteNodeAsync([FromBody] File fileToDelete)
         {
             await this._filesService.DeleteNodeAsync(fileToDelete);
@@ -144,6 +156,7 @@ namespace Localization.WebApi
         }
 
         [HttpGet("{fileId}/changeParentFolder/{newParentId}")]
+        [Authorize]
         public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
         {
             await this._filesService.ChangeParentFolderAsync(
@@ -153,12 +166,14 @@ namespace Localization.WebApi
         }
 
         [HttpGet("{fileId}/locales/list")]
+        [Authorize]
         public async Task<IEnumerable<Locale>> GetTranslationLocalesForFileAsync(int fileId)
         {
             return await this._filesService.GetTranslationLocalesForFileAsync(fileId: fileId);
         }
 
         [HttpPut("{fileId}/locales")]
+        [Authorize]
         public async Task SetTranslationLocalesForTermAsync(int fileId, [FromBody] IEnumerable<int> localesIds)
         {
             await this._filesService.UpdateTranslationLocalesForTermAsync(
@@ -167,6 +182,7 @@ namespace Localization.WebApi
         }
 
         [HttpPost("{fileId}/download")]
+        [Authorize]
         public async Task<FileResult> DownloadFileAsync(int fileId, [FromBody] int? localeId)
         {
             var fileStream = await this._filesService.GetFileAsync(fileId, localeId);
@@ -177,6 +193,7 @@ namespace Localization.WebApi
         }
 
         [HttpPost("{fileId}/GetTranslationInfo")]
+        [Authorize]
         public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(int fileId)
         {
             return await this._filesService.GetFileTranslationInfoAsync(fileId: fileId);

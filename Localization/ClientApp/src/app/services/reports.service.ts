@@ -28,9 +28,7 @@ export class ReportService {
       volumeCalcType: volumeCalcType, calcBasisType: calcBasisType, workType: workType,
       userId: userId, localeId: localeId, initialFolderId: initialFolderId
     };
-    return this.httpClient.post<TranslatedWordsReportRow[]>(this.url + "TranslatedWords", body, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    }); 
+    return this.httpClient.post<TranslatedWordsReportRow[]>(this.url + "TranslatedWords", body); 
   }
 
   async getTranslatedWordsReportExcel(

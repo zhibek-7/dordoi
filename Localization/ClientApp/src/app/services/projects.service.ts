@@ -23,25 +23,14 @@ export class ProjectsService {
   getProjects(): Observable<LocalizationProject[]> {
     console.log("getProject-->");
     return this.httpClient.get<LocalizationProject[]>(
-      this.controllerUrl + "List",
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
+      this.controllerUrl + "List"
     );
   }
 
   getProject(id: number): Observable<LocalizationProject> {
     console.log("getProject=" + id);
     console.log("getProject===" + this.controllerUrl + id);
-    return this.httpClient.get<LocalizationProject>(this.controllerUrl + id, {
-      headers: new HttpHeaders().set(
-        "Authorization",
-        "Bearer " + sessionStorage.getItem("userToken")
-      )
-    });
+    return this.httpClient.get<LocalizationProject>(this.controllerUrl + id);
   }
 
   /**
@@ -49,16 +38,7 @@ export class ProjectsService {
    * @param id Идентификатор проекта локализации.
    */
   getProjectWithDetails(id: number): Observable<LocalizationProject> {
-    return this.httpClient.post<LocalizationProject>(
-      this.controllerUrl + "details",
-      id,
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
-    );
+    return this.httpClient.post<LocalizationProject>(this.controllerUrl + "details", id);
   }
 
   /**
@@ -66,16 +46,7 @@ export class ProjectsService {
    * @param project
    */
   newProject(project: LocalizationProject): Observable<LocalizationProject> {
-    return this.httpClient.post<LocalizationProject>(
-      this.controllerUrl + "newProject",
-      project,
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
-    );
+    return this.httpClient.post<LocalizationProject>(this.controllerUrl + "newProject", project);
   }
 
   /**
@@ -91,12 +62,7 @@ export class ProjectsService {
     //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
     let asyncResult = await this.httpClient
-      .post<LocalizationProject>(this.controllerUrl + "AddProject", project, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      })
+      .post<LocalizationProject>(this.controllerUrl + "AddProject", project)
       .toPromise();
     return asyncResult;
     //return this.httpClient.get<Project>(this.controllerUrl + 1);
@@ -106,12 +72,7 @@ export class ProjectsService {
     console.log(project);
     project.id = Id;
     let asyncResult = await this.httpClient
-      .post<LocalizationProject>(this.controllerUrl + "edit/" + Id, project, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      })
+      .post<LocalizationProject>(this.controllerUrl + "edit/" + Id, project)
       .toPromise();
 
     return asyncResult;
@@ -121,12 +82,7 @@ export class ProjectsService {
   async deleteProject(Id: number) {
     console.log("updateProject-->" + Id);
     let asyncResult = await this.httpClient
-      .post<LocalizationProject>(this.controllerUrl + "delete/" + Id, Id, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      })
+      .post<LocalizationProject>(this.controllerUrl + "delete/" + Id, Id)
       .toPromise();
     return asyncResult;
   }
@@ -136,16 +92,7 @@ export class ProjectsService {
     Id: number
   ): Observable<LocalizationProjectsLocales> {
     console.log("updateProject-->" + Id);
-    let asyncResult = this.httpClient.post<LocalizationProjectsLocales>(
-      this.controllerUrl + "deleteLocales/" + Id,
-      Id,
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
-    );
+    let asyncResult = this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "deleteLocales/" + Id, Id);
     return asyncResult;
   }
 
@@ -154,15 +101,7 @@ export class ProjectsService {
     LocalizationProjectForSelectDTO[]
   > {
     return this.httpClient.post<LocalizationProjectForSelectDTO[]>(
-      this.controllerUrl + "forSelect",
-      null,
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
-    );
+      this.controllerUrl + "forSelect", null);
   }
 
   async addProjectLocales(projectLocales: LocalizationProjectsLocales[]) {
@@ -174,16 +113,7 @@ export class ProjectsService {
     //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
     let asyncResult = await this.httpClient
-      .post<LocalizationProjectsLocales[]>(
-        this.controllerUrl + "AddProjectLocale",
-        projectLocales,
-        {
-          headers: new HttpHeaders().set(
-            "Authorization",
-            "Bearer " + sessionStorage.getItem("userToken")
-          )
-        }
-      )
+      .post<LocalizationProjectsLocales[]>(this.controllerUrl + "AddProjectLocale",projectLocales)
       .toPromise();
     return asyncResult;
 
@@ -199,16 +129,7 @@ export class ProjectsService {
     console.log(projectLocale);
     // projectLocale.id_Localization_Project = Id;
     let asyncResult = await this.httpClient
-      .post<LocalizationProjectsLocales>(
-        this.controllerUrl + "editProjectLocale/" + Id,
-        projectLocale,
-        {
-          headers: new HttpHeaders().set(
-            "Authorization",
-            "Bearer " + sessionStorage.getItem("userToken")
-          )
-        }
-      )
+      .post<LocalizationProjectsLocales>(this.controllerUrl + "editProjectLocale/" + Id, projectLocale)
       .toPromise();
 
     return asyncResult;
@@ -228,42 +149,15 @@ export class ProjectsService {
   ): Observable<LocalizationProjectsLocales[]> {
     console.log("addProject-->");
     console.log(projectLocales);
-    return this.httpClient.post<LocalizationProjectsLocales[]>(
-      this.controllerUrl + "deleteProjectLocale",
-      projectLocales,
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
-    );
+    return this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + "deleteProjectLocale", projectLocales);
   }
 
   //все языки 1 проекта
   getProjectLocales(Id: number): Observable<LocalizationProjectsLocales[]> {
-    return this.httpClient.post<LocalizationProjectsLocales[]>(
-      this.controllerUrl + "ListProjectLocales/" + Id,
-      Id,
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
-    ); //.pipe(map(listOfPojLocales => listOfPojLocales.map(singleProjLoc => new LocalizationProjectsLocales(singleProjLoc.id_LocalizationProject, singleProjLoc.id_Locale, singleProjLoc.percentOfTranslation, singleProjLoc.PercentOfConfirmed))));;
+    return this.httpClient.post<LocalizationProjectsLocales[]>(this.controllerUrl + "ListProjectLocales/" + Id, Id); //.pipe(map(listOfPojLocales => listOfPojLocales.map(singleProjLoc => new LocalizationProjectsLocales(singleProjLoc.id_LocalizationProject, singleProjLoc.id_Locale, singleProjLoc.percentOfTranslation, singleProjLoc.PercentOfConfirmed))));;
   }
 
   getLocales(): Observable<Locale[]> {
-    return this.httpClient.post<Locale[]>(
-      this.controllerUrl + "ListLocales",
-      null,
-      {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      }
-    );
+    return this.httpClient.post<Locale[]>(this.controllerUrl + "ListLocales", null);
   }
 }

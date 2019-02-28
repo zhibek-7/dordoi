@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
 import {
   MatIconModule,
   MatButtonModule,
@@ -28,6 +31,7 @@ import { ProjectsService } from 'src/app/services/projects.service';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
+import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 
 @NgModule({
   declarations:
@@ -53,6 +57,7 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
       MatPaginatorModule,
 
       SharedModule,
+      HttpClientModule,
 
       ListGlossariesRoutingModule
     ],
@@ -61,7 +66,8 @@ import { RequestDataReloadService } from 'src/app/glossaries/services/requestDat
       GlossaryService,
       LanguageService,
       ProjectsService,
-      RequestDataReloadService
+      RequestDataReloadService,
+      { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
     ]
 }) //Модуль для глоссария (Glossaries)
 export class ListGlossariesModule { }

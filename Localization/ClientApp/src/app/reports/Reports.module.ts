@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 
 import { ReportsRoutingModule } from './Reports-routing.module';
 import { ReportsComponent } from './Reports.component';
@@ -27,7 +28,9 @@ import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
   ],
   exports: [
   ],
-  providers: [ReportService, LanguageService, UserService],
+  providers: [ReportService, LanguageService, UserService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
+  ],
   declarations: [
     ReportsComponent,
     TranslatedWordsComponent

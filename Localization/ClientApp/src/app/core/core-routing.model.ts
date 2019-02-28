@@ -1,12 +1,12 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-import { NotFoundComponent } from "./not-found/not-found.component";
 import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
 import { NewProjectComponent } from "../new-project/new-project.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
-
 import { UserRegistrationComponent } from "../user-registration/user-registration.component";
+
+import { AuthenticationGuard } from "../services/authentication.guard";
 
 const routes: Routes = [
   {
@@ -15,61 +15,75 @@ const routes: Routes = [
   },
   {
     path: "Translation/:fileId",
-    loadChildren: "../work-panel/work-panel.module#WorkPanelModule"
+    loadChildren: "../work-panel/work-panel.module#WorkPanelModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Projects/:id/reports",
-    loadChildren: "../reports/Reports.module#ReportsModule"
+    loadChildren: "../reports/Reports.module#ReportsModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "create-project",
-    loadChildren: "../create-project/create-project.module#CreateProjectModule"
+    loadChildren: "../create-project/create-project.module#CreateProjectModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Projects/:id",
-    component: CurrentProjectSettingsComponent
+    component: CurrentProjectSettingsComponent,
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "New-project",
-    component: NewProjectComponent
+    component: NewProjectComponent,
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Profile",
-    component: UserAccountComponent
+    component: UserAccountComponent,
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Glossaries",
-    loadChildren: "../glossaries/glossaries.module#GlossariesModule"
+    loadChildren: "../glossaries/glossaries.module#GlossariesModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "list-glossaries",
     loadChildren:
-      "../glossary-list/module/list-glossaries.module#ListGlossariesModule"
+      "../glossary-list/module/list-glossaries.module#ListGlossariesModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Files",
-    loadChildren: "../files/files.module#FilesModule"
+    loadChildren: "../files/files.module#FilesModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Translation_project/:projectId/LanguageFiles/:localeId",
-    loadChildren: "../files/files.module#FilesModule"
+    loadChildren: "../files/files.module#FilesModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Participants",
-    loadChildren: "../participants/participants.module#ParticipantsModule"
+    loadChildren: "../participants/participants.module#ParticipantsModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Strings",
-    loadChildren: "../strings/strings.module#StringsModule"
+    loadChildren: "../strings/strings.module#StringsModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "Translation_project/:id",
-    loadChildren: "../project-page/project-page.module#ProjectPageModule"
+    loadChildren: "../project-page/project-page.module#ProjectPageModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "translation-memories",
     loadChildren:
-      "../translation-memories/module/translation-memories.module#TranslationMemoriesModule"
+      "../translation-memories/module/translation-memories.module#TranslationMemoriesModule",
+    canActivate: [AuthenticationGuard]
   },
   {
     path: "account",
@@ -82,7 +96,8 @@ const routes: Routes = [
   },
   {
     path: "**",
-    loadChildren: "../account/module/account.module#AccountModule"
+    loadChildren: "../account/module/account.module#AccountModule",
+    canActivate: [AuthenticationGuard]
     //component: NotFoundComponent
   }
 ];

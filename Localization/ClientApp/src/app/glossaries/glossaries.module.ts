@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 
 import { GlossariesRoutingModule } from 'src/app/glossaries/glossaries-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -28,6 +30,7 @@ import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term
     GlossariesRoutingModule,
     FormsModule,
     SharedModule,
+    HttpClientModule
   ],
   declarations: [
     GlossariesComponent,
@@ -46,6 +49,7 @@ import { TermDetailsEditableComponent } from 'src/app/glossaries/components/term
     PartsOfSpeechService,
     LanguageService,
     TranslationService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ]
 })
 export class GlossariesModule { }

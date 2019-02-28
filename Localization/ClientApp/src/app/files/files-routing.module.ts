@@ -3,10 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { FilesComponent } from './components/files/files.component';
 
+import { AuthenticationGuard } from '../services/authentication.guard';
+
 const routes: Routes = [
   {
     path: '',
-    component: FilesComponent
+    component: FilesComponent,
+    canActivate: [AuthenticationGuard]
   }
 ];
 

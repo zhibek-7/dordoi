@@ -3,9 +3,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { CoreModule } from './core/core.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { RequestInterceptorService } from './services/requestInterceptor.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +18,6 @@ import { RequestInterceptorService } from './services/requestInterceptor.service
     NgxSpinnerModule,
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ],
   bootstrap: [AppComponent],
 })

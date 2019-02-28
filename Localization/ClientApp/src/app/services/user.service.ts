@@ -22,15 +22,11 @@ export class UserService {
   }
 
   getUserList(): Observable<User[]> {
-    return this.httpClient.post<User[]>(this.url + "List", null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<User[]>(this.url + "List", null);
   }
 
   getProjectParticipantList(projectId: number): Observable < User[] > {
-    return this.httpClient.post<User[]>(this.url + "List/projectId:" + projectId, null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<User[]>(this.url + "List/projectId:" + projectId, null);
   }
 
   getPhotoById(userId: number): Observable<Blob> {
@@ -45,9 +41,7 @@ export class UserService {
    * @param email введенный email.
    */
   isUniqueEmail(email: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email, email, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.post<boolean>(this.url + "isUniqueEmail:" + email, email);
   }
 
   /**
@@ -55,9 +49,7 @@ export class UserService {
    * @param login введенное имя пользователя (логин).
    */
   isUniqueLogin(login: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + "isUniqueLogin:" + login, login, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<boolean>(this.url + "isUniqueLogin:" + login, login);
   }
 
   /**
@@ -65,9 +57,7 @@ export class UserService {
    * @param user
    */
   createUser(user: User): Observable<Object> {
-    return this.httpClient.post<number>(this.url + "registration", user, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });    
+    return this.httpClient.post<number>(this.url + "registration", user);    
   }
 
   /**
@@ -83,9 +73,7 @@ export class UserService {
    * @param user текущий и новый пароли.
    */
   passwordChange(user: userPasswordChange): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + "passwordChange", user, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    }); 
+    return this.httpClient.post<boolean>(this.url + "passwordChange", user); 
   }
 
   /**
@@ -93,16 +81,12 @@ export class UserService {
    * @param name имя пользователя (логин) или email
    */
   recoverPassword(name: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(this.url + "recoverPassword:" + name, name, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<boolean>(this.url + "recoverPassword:" + name, name);
   }
 
   /** Получение профиля пользователя. */
   getProfile(): Observable<UserProfile> {
-    return this.httpClient.post<UserProfile>(this.url + "profile", null, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.post<UserProfile>(this.url + "profile", null);
   }
 
   /**
@@ -110,17 +94,13 @@ export class UserService {
    * @param user
    */
   toSaveEditedProfile(user: UserProfile): Observable<Object> {
-    return this.httpClient.post(this.url + "toSaveEdited", user, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.post(this.url + "toSaveEdited", user);
   }
 
   /** Удаление пользователя. */
   delete(): Observable<boolean> {
     let id = sessionStorage.getItem('currentUserID');
-    return this.httpClient.delete<boolean>(this.url + "delete", {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.httpClient.delete<boolean>(this.url + "delete");
   }  
 
 }

@@ -199,7 +199,7 @@ namespace Localization.Controllers
         }
 
         [HttpPost("refreshToken")]
-        public async Task<IActionResult> RefreshToken()
+        public IActionResult RefreshToken()
         {
             var userName = Request.Form["userName"].ToString();
             var userRole = Request.Form["userRole"].ToString();

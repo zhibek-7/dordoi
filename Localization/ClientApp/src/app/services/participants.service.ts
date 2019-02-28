@@ -54,15 +54,11 @@ export class ParticipantsService {
   }
 
   deleteParticipant(projectId: number, participantUserId: number): Observable<Object> {
-    return this.httpClient.delete(this.url + 'byProjectId/' + projectId + '/' + participantUserId, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.delete(this.url + 'byProjectId/' + projectId + '/' + participantUserId);
   }
 
   addParticipant(projectId: number, userId: number, roleId: number): Observable<Object> {
-    return this.httpClient.post(this.url + projectId + '/' + userId + '/' + roleId, null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post(this.url + projectId + '/' + userId + '/' + roleId, null);
   }
 
 }

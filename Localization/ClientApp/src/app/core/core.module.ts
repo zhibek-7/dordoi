@@ -2,12 +2,16 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { CoreRoutingModule } from "./core-routing.model";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
+import { AuthenticationGuard } from "../services/authentication.guard";
+
+import { RequestInterceptorService } from "../services/requestInterceptor.service";
 import { AuthenticationService } from "../services/authentication.service";
 import { UserService } from 'src/app/services/user.service';
 
-import { CoreRoutingModule } from "./core-routing.model";
 import { HeaderComponent } from "./header/header.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
 
@@ -33,7 +37,6 @@ import {
   MatMenuModule
 } from "@angular/material";
 
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   imports: [
@@ -71,6 +74,9 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
   ],
   exports: [RouterModule, HeaderComponent],
   providers: [AuthenticationService,
-              UserService]
+              UserService,
+              AuthenticationGuard,
+              { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
+            ]
 })
 export class CoreModule {}

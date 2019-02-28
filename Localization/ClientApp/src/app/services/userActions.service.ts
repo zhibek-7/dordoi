@@ -12,9 +12,7 @@ export class UserActionsService {
   constructor(private httpClient: HttpClient) { }
 
   getActionsList(): Observable<UserAction[]> {
-    return this.httpClient.post<UserAction[]>(this.url + "List", null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    });
+    return this.httpClient.post<UserAction[]>(this.url + "List", null);
   }
 
   getUserActionsByProjectId(

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Translations;
 using Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Localization.WebApi
 {
@@ -30,6 +31,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="translation">вариант перевода который необходимо добавить</param>
         /// <returns>Статус ответа</returns>
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Translation translation)
         {
@@ -52,6 +54,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Translation>>> GetTranslations()
         {
             IEnumerable<Translation> translations = await translationRepository.GetAllAsync();
@@ -65,6 +68,7 @@ namespace Localization.WebApi
         /// <returns>Список вариантов перевода</returns>
         [HttpGet]
         [Route("InString/{idString}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Translation>>> GetTranslationsInString(int idString)
         {
             // Check if string by id exists in database
@@ -86,6 +90,7 @@ namespace Localization.WebApi
         /// <returns>Статус ответа</returns>
         [HttpDelete]
         [Route("DeleteTranslation/{idTranslation}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTranslate(int idTranslation)
         {
             //Check if file by id exists in database
@@ -116,6 +121,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPut]
         [Route("AcceptTranslation/{idTranslation}")]
+        [Authorize]
         public async Task<IActionResult> AcceptTranslate(int idTranslation)
         {
             //Check if file by id exists in database
@@ -144,6 +150,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPut]
         [Route("RejectTranslation/{idTranslation}")]
+        [Authorize]
         public async Task<IActionResult> RejectTranslate(int idTranslation)
         {
             //Check if file by id exists in database
@@ -171,6 +178,7 @@ namespace Localization.WebApi
         /// <param name="updatedTranslation">вариант перевода с обновленными данными</param>
         /// <returns></returns>
         [HttpPut("{translationId}")]
+        [Authorize]
         public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
         {
             updatedTranslation.id = translationId;
@@ -189,6 +197,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPost]
         [Route("FindTranslationByMemory/{currentProjectId}/{translationText}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(int currentProjectId, string translationText)
         {
             if (translationText == null || translationText == "")
@@ -215,6 +224,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPost]
         [Route("FindSimilarTranslations/{currentProjectId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, [FromBody] TranslationSubstring translationSubstring)
         {
             var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, translationSubstring);

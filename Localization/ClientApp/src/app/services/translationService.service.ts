@@ -45,10 +45,7 @@ export class TranslationService {
   }
 
   updateTranslation(updatedTranslation: Translation): Observable<Object> {
-    return this.http.put(
-      this.url + "/" + updatedTranslation.id,
-      updatedTranslation
-    );
+    return this.http.put(this.url + "/" + updatedTranslation.id, updatedTranslation);
   }
 
   findTranslationByMemory(
@@ -61,17 +58,13 @@ export class TranslationService {
         currentProjectId +
         "/" +
         translationText,
-      null
-    );
+        null);
   }
 
   findSimilarTranslations(
     currentProjectId: number,
     translationSubsting: TranslationSubstring
   ): Observable<SimilarTranslation[]> {
-    return this.http.post<SimilarTranslation[]>(
-      this.url + "/FindSimilarTranslations/" + currentProjectId,
-      translationSubsting
-    );
+    return this.http.post<SimilarTranslation[]>(this.url + "/FindSimilarTranslations/" + currentProjectId, translationSubsting);
   }
 }

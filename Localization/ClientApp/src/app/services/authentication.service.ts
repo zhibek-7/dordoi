@@ -9,24 +9,21 @@ import { UserService } from './user.service';
 @Injectable()
 export class AuthenticationService {
 
-  private authTokenStale: string = 'stale_auth_token';
-  private authTokenNew: string = 'new_auth_token';
-
   private url: string = 'api/User/';
 
-  userAuthorized: boolean;
+  private userAuthorized: boolean;
 
-  currentUserName: string = "";
+  constructor(private http: HttpClient) { }
 
-  constructor(private http: HttpClient,
-              private userService: UserService) { }
-
+  //Устаревший метод, но пока не удаляю
   async checkUserAuthorisation() {    
-    this.userAuthorized = await this.http.post<boolean>(this.url + "checkUserAuthorisation", null, {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
-    }).toPromise();       
+    this.userAuthorized = await this.http.post<boolean>(this.url + "checkUserAuthorisation", null).toPromise();       
 
     return await this.userAuthorized;           
+  }
+
+  checkUserAuthorisationAsync() {
+    return this.http.post<boolean>(this.url + "checkUserAuthorisation", null);
   }
 
   getToken(): string {
@@ -37,22 +34,33 @@ export class AuthenticationService {
     sessionStorage.setItem('userToken', token);  
   }
   
-  deleteToken(){
+  logOut(){
+    this.userAuthorized = false;
     sessionStorage.clear();
   }  
 
-  refreshTokenRequest(): any {
-    return this.http.post(this.url + "refreshToken", null, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
-  }  
-
-  getUserName(): string {
-    return this.currentUserName;
+  authorizeUser(){
+    this.userAuthorized = true;
   }
 
-  setUserName(userName: string) {
-    this.currentUserName = userName;
+  isLoggedIn(): boolean {
+    if(this.userAuthorized){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  refreshTokenRequest(): any {
+    return this.http.post(this.url + "refreshToken", null);
+  }  
+
+  getUserName(): string {    
+    return sessionStorage.getItem('userName');
+  }
+
+  setUserName(userName: string) {    
+    sessionStorage.setItem('userName', userName);
   }
 
   getUserRole(): string {
@@ -68,11 +76,9 @@ export class AuthenticationService {
     let userName = this.getUserName();
     let userRole = this.getUserRole();
 
-    const params = new HttpParams().set('userName', userName.toString()).set('userRole', userRole.toString());
+    const params = new HttpParams().set('userName', userName).set('userRole', userRole);
 
-    return this.http.post(this.url + "refreshToken", params , {
-          headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-        }).pipe(map(data => {
+    return this.http.post(this.url + "refreshToken", params).pipe(map(data => {
           let currentToken = data["token"];
           this.saveToken(data["token"]); 
           return currentToken;

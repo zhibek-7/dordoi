@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { SharedModule } from '../shared/shared.module';
 import { WorkPanelRoutingModule } from './work-panel-routing.module';
@@ -31,6 +31,7 @@ import { ProjectsService } from '../services/projects.service';
 import { GlossariesService } from '../services/glossaries.service';
 import { RequestDataReloadService } from '../glossaries/services/requestDataReload.service';
 import { PartsOfSpeechService } from '../services/partsOfSpeech.service';
+import { RequestInterceptorService } from '../services/requestInterceptor.service';
 
 import {
   MatIconModule,
@@ -79,7 +80,8 @@ import {
         ProjectsService,
         GlossariesService,
         RequestDataReloadService,
-        PartsOfSpeechService
+        PartsOfSpeechService,
+        { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
     ],
 })
 export class WorkPanelModule {}
