@@ -29,6 +29,7 @@ namespace Localization.WebApi
             var connectionString = Settings.GetStringDB();
             translationRepository = new TranslationRepository(connectionString);
             ur = new UserRepository(connectionString);
+            _userActionRepository = new UserActionRepository(connectionString);
         }
 
         /// <summary>
