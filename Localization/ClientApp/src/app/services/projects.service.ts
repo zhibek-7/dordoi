@@ -159,7 +159,5 @@ export class ProjectsService {
 
   getLocales(): Observable<Locale[]> {
     return this.httpClient.post<Locale[]>(this.controllerUrl + "ListLocales", null);
-  }
-    );
-}
+  }  
 }

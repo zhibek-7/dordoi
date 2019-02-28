@@ -89,8 +89,6 @@ export class TranslationSubstringService {
     }
     return this.http.get<TranslationSubstring[]>(this.url + 'ByProjectId/' + projectId,
        {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-,
         params: params,
         observe: 'response',
         headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))

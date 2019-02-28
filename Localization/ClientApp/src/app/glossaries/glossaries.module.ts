@@ -55,15 +55,14 @@ import { SetProjectsModalComponent } from "src/app/glossaries/components/set-pro
     RequestDataReloadService,
     GlossariesService,
     PartsOfSpeechService,
+    GlossaryService,
+    ProjectsService,
     LanguageService,
     TranslationService,
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
-  ]
-    GlossaryService,
-    ProjectsService,
-  ],
+  ],      
   entryComponents: [
     SetProjectsModalComponent,
-  ],
+  ]
 })
 export class GlossariesModule { }
