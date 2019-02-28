@@ -508,7 +508,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    string SQLQuery = "SELECT roles.name_text " +                                      
+                    string SQLQuery = "SELECT roles.name_text " +
                                       "FROM users " +
                                       "INNER JOIN participants ON participants.id_user = users.id " +
                                       "INNER JOIN roles ON roles.id = participants.id_role " +
@@ -554,7 +554,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                                       "FROM users " +
                                       "INNER JOIN participants ON participants.id_user = users.id " +
                                       "INNER JOIN roles ON roles.id = participants.id_role " +
-                                      "WHERE (users.name_text = @Name_text OR email = @Email) AND password_text = @Password_text";
+                                      "WHERE (users.name_text = @Name_text OR email = @Email) AND password_text = @Password_text  limit 1";
 
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);
