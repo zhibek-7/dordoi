@@ -227,7 +227,7 @@ namespace Localization.Controllers
                 };
             ClaimsIdentity identity =
             new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                ClaimsIdentity.DefaultRoleClaimType);          
+                ClaimsIdentity.DefaultRoleClaimType);
 
             var now = DateTime.UtcNow;
             // создаем JWT-токен
