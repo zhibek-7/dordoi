@@ -5,6 +5,13 @@
 @import "~angular-notifier/styles";
 @import "https://fonts.googleapis.com/css?family=Roboto";
 
+body {
+  color: #3E3F42;
+ background-color: #F4F7FC;
+
+
+}
+
 .selectionDialog .mat-dialog-container{   
     padding: 0%;
     border-radius: 5%;
