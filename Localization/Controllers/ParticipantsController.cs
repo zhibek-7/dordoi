@@ -73,7 +73,7 @@ namespace Localization.Controllers
         {
             var name_text = User.Identity.Name;
             int? user_Id = (int)ur.GetID(name_text);
-            _userActionRepository.DeleteParticipantAsync((int)user_Id, name_text, projectId, userId);
+            await _userActionRepository.DeleteParticipantAsync((int)user_Id, name_text, projectId, userId);
             await this._participantsRepository.SetInactiveAsync(projectId: projectId, userId: userId);
         }
 
@@ -83,7 +83,7 @@ namespace Localization.Controllers
         {
             var name_text = User.Identity.Name;
             int? user_Id = (int)ur.GetID(name_text);
-            _userActionRepository.AddOrActivateParticipantAsync((int)user_Id, name_text, projectId, userId, roleId);
+            await _userActionRepository.AddOrActivateParticipantAsync((int)user_Id, name_text, projectId, userId, roleId);
 
             await this._participantsRepository.AddOrActivateParticipant(projectId: projectId, userId: userId, roleId: roleId);
         }
