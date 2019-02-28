@@ -93,27 +93,29 @@ namespace Localization
             });
             //////////////Данный блок заканчивается    
 
-            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
+                    AuthenticationOptions opt = new AuthenticationOptions();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         // укзывает, будет ли валидироваться издатель при валидации токена
                         ValidateIssuer = true,
+
                         // строка, представляющая издателя
-                        ValidIssuer = AuthenticationOptions.ISSUER,
+                        ValidIssuer = opt.ISSUER,
 
                         // будет ли валидироваться потребитель токена
                         ValidateAudience = true,
                         // установка потребителя токена
-                        ValidAudience = AuthenticationOptions.AUDIENCE,
+                        ValidAudience = opt.AUDIENCE,
                         // будет ли валидироваться время существования
                         ValidateLifetime = true,
 
                         // установка ключа безопасности
-                        IssuerSigningKey = AuthenticationOptions.GetSymmetricSecurityKey(),
+                        IssuerSigningKey = opt.GetSymmetricSecurityKey(),
                         // валидация ключа безопасности
                         ValidateIssuerSigningKey = true,
                         ClockSkew = TimeSpan.Zero
@@ -126,9 +128,9 @@ namespace Localization
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+                {
+                    configuration.RootPath = "ClientApp/dist";
+                });
             services.AddSignalR(options => options.EnableDetailedErrors = false);
         }
 

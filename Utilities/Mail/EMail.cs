@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Utilities.Mail
 {
+    /// <summary>
+    /// Отправка сообщения
+    /// </summary>
     public class EMail : IMail
     {
         /// <summary>
@@ -46,20 +49,14 @@ namespace Utilities.Mail
                     //        await smtpClient.SendMailAsync(mail);
                     //    }
                     //}
-
-
                     Settings st = new Settings();
-
-
                     var emailMessage = new MimeMessage();
-
                     emailMessage.From.Add(new MailboxAddress("Администрация сайта", st.GetString("Email_Login")));
 
                     foreach (var email in emails)
                         emailMessage.To.Add(new MailboxAddress("", email));
 
                     emailMessage.Subject = subject;
-
                     emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
                     {
                         Text = msg
@@ -70,7 +67,6 @@ namespace Utilities.Mail
                         await client.ConnectAsync(st.GetString("Email_Host"), Int32.Parse(st.GetString("Email_Port")), true);
                         await client.AuthenticateAsync(st.GetString("Email_Login"), st.GetString("Email_Password"));
                         await client.SendAsync(emailMessage);
-
                         await client.DisconnectAsync(true);
                     }
                 }

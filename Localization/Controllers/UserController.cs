@@ -181,14 +181,15 @@ namespace Localization.Controllers
             }
 
             var now = DateTime.UtcNow;
+            AuthenticationOptions opt = new AuthenticationOptions();
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
-                    issuer: AuthenticationOptions.ISSUER,
-                    audience: AuthenticationOptions.AUDIENCE,
+                    issuer: opt.ISSUER,
+                    audience: opt.AUDIENCE,
                     notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthenticationOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                    expires: now.Add(TimeSpan.FromMinutes(opt.LIFETIME)),
+                    signingCredentials: new SigningCredentials(opt.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var claimsOfUser = identity.Claims;
@@ -230,14 +231,15 @@ namespace Localization.Controllers
                 ClaimsIdentity.DefaultRoleClaimType);
 
             var now = DateTime.UtcNow;
+            AuthenticationOptions opt = new AuthenticationOptions();
             // создаем JWT-токен
             var jwt = new JwtSecurityToken(
-                    issuer: AuthenticationOptions.ISSUER,
-                    audience: AuthenticationOptions.AUDIENCE,
+                    issuer: opt.ISSUER,
+                    audience: opt.AUDIENCE,
                     notBefore: now,
                     claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthenticationOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthenticationOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                    expires: now.Add(TimeSpan.FromMinutes(opt.LIFETIME)),
+                    signingCredentials: new SigningCredentials(opt.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
