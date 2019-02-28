@@ -29,9 +29,9 @@ namespace Models.Interfaces.Repository
         Task EditGlossaryAsync(GlossariesForEditingDTO glossary);
 
         /// <summary>
-        /// Удаление глоссария.
+        /// удаление глоссария.
         /// </summary>
-        /// <param name="id">Идентификатор глоссария.</param>
+        /// <param name="id">идентификатор глоссария.</param>
         /// <returns></returns>
         Task DeleteGlossaryAsync(int id);
     }

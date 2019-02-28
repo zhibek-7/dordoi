@@ -19,6 +19,7 @@ import { EditTranslationMemoryFormModalComponent } from '../components/edit-tran
 import { ConfirmDeleteTranslationMemoryComponent } from '../components/confirm-delete-translation-memory/confirm-delete-translation-memory.component';
 import { ConfirmClearTranslationMemoryOfStringComponent } from '../components/confirm-clear-translation-memory-of-string/confirm-clear-translation-memory-of-string.component';
 import { TranslationMemoryEditableDetailsComponent } from '../components/translation-memory-editable-details/translation-memory-editable-details.component';
+import { LoadTranslationMemoryFormModalComponent } from '../components/load-translation-memory-form-modal/load-translation-memory-form-modal.component';
 
 
 import { TranslationMemoryService } from 'src/app/services/translation-memory.service';
@@ -41,7 +42,8 @@ import { RequestInterceptorService } from 'src/app/services/requestInterceptor.s
     AddTranslationMemoryFormModalComponent,
     EditTranslationMemoryFormModalComponent,
     ConfirmDeleteTranslationMemoryComponent,
-    ConfirmClearTranslationMemoryOfStringComponent
+    ConfirmClearTranslationMemoryOfStringComponent,
+    LoadTranslationMemoryFormModalComponent
   ],
   imports:
   [

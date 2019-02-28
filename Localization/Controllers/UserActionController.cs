@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
@@ -23,6 +24,7 @@ namespace Localization.Controllers
         /// Получить список всех действий пользователей по всем проектам
         /// </summary>
         /// <returns>Список действий</returns>
+        [Authorize]
         [HttpPost]
         [Route("List")]
         public async Task<IEnumerable<UserAction>> GetAll()
@@ -45,6 +47,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="projectId">Идентификатор пользователя</param>
         /// <returns>Список действий</returns>
+        [Authorize]
         [HttpPost]
         [Route("List/byProjectId/{projectId}")]
         public async Task<IEnumerable<UserAction>> GetAllByProjectId(int projectId, [FromBody] GetAllByProjectIdArgs param)

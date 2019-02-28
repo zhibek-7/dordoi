@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders  } from '@angular/common/http';
 
 @Injectable()
 export class JsonParserService {
@@ -9,12 +9,18 @@ export class JsonParserService {
     }
 
     public async getPhrasesFromJsonFile(filePath:string){
-        let asyncResult = await this.http.get<Array<String>>(filePath).toPromise();
+        let asyncResult = await this.http.get<Array<String>>(filePath,
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
+    }).toPromise();
         return asyncResult;
     }
 
     public async getCommentsFromJsonFile(filePath:string){
-        let asyncResult = await this.http.get<Array<String>>(filePath).toPromise();
+        let asyncResult = await this.http.get<Array<String>>(filePath,
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
+    }).toPromise();
         return asyncResult;
     }  
     

@@ -58,10 +58,9 @@ export class GlossariesService {
     return this.httpClient
       .post<Term[]>(
         GlossariesService.connectionUrl + glossaryId + '/terms/list',
-        body,
-        {
-          observe: 'response',
-        })
+        body, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    , observe: 'response'})
       .pipe(catchError(this.handleError));
   }
 

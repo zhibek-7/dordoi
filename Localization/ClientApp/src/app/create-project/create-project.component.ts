@@ -24,7 +24,7 @@ export class CreateProjectComponent implements OnInit {
   reverse = false;
   searchText = "";
   form: FormGroup;
-  title = "Создание проекта Crowdin";
+  title = "Создание проекта";
 
   forms: Array<any> = [
     {
@@ -36,7 +36,7 @@ export class CreateProjectComponent implements OnInit {
     },
     {
       labelName: "Адрес проекта:",
-      placeHolder: "https://crowdin.com/project/<identifier>",
+      placeHolder: "https://localhost.com/project/<identifier>",
       ivalid_feedback: "Это поле необходимо заполнить",
       id: "exampleInputAddress",
       describedby: "addressHelp"

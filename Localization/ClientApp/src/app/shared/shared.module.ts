@@ -14,6 +14,7 @@ import { OrderByPipe } from 'src/app/shared/pipes/orderBy.pipe';
 import { SetTimeZoneComponent } from './components/set-time-zone/set-time-zone.component';
 import { TimeZoneService } from 'src/app/services/time-zone.service';
 import { SetLanguagesWithNativeComponent } from './components/set-languages-with-native/set-languages-with-native.component';
+import { MainListPageComponent } from './components/main-list-page/main-list-page.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { SetLanguagesWithNativeComponent } from './components/set-languages-with
     OrderByPipe,
     SetTimeZoneComponent,
     SetLanguagesWithNativeComponent,
+    MainListPageComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { SetLanguagesWithNativeComponent } from './components/set-languages-with
     ModalComponent,
     SetTimeZoneComponent,
     SetLanguagesWithNativeComponent,
+    MainListPageComponent
   ]
 })
 export class SharedModule { }

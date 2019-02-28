@@ -1,38 +1,115 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
-import { LocalizationProject } from '../models/database-entities/localizationProject.type';
+import { Component, OnInit, Input, ViewChild } from "@angular/core";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import { LocalizationProject } from "../models/database-entities/localizationProject.type";
 import { ProjectsService } from "../services/projects.service";
+
+///-----
+import { MatTableDataSource, MatSort } from "@angular/material";
+
+import { LanguageService } from "src/app/services/languages.service";
+import { UserService } from "src/app/services/user.service";
+
+import { Locale } from "src/app/models/database-entities/locale.type";
+import { User } from "src/app/models/database-entities/user.type";
+import { UserAction } from "src/app/models/database-entities/userAction.type";
+import { LocalizationProjectsLocalesDTO } from "src/app/models/DTO/localizationProjectsLocalesDTO";
+import { Participant } from "src/app/models/Participants/participant.type";
+
+///---
 import * as moment from "moment";
 moment.locale("ru");
 
 @Component({
   selector: "app-current-project-settings",
   templateUrl: "./current-project-settings.component.html",
-  styleUrls: ["./current-project-settings.component.css"]
+  styleUrls: ["./current-project-settings.component.css"],
+  providers: [LanguageService, UserService]
 })
 export class CurrentProjectSettingsComponent implements OnInit {
   currentProject: LocalizationProject;
   wasCreated: any;
   wasChanged: any;
 
+  //#region для настройки таблицы (mat-table) отображаемой на вкладке "Главная"
+  displayedColumnsForMainTab: string[] = [
+    "flag",
+    "locale_Name",
+    "percent_Of_Translation",
+    "percent_Of_Confirmed",
+    "users",
+    "download"
+  ];
+  private dataSourceForMainTab = new MatTableDataSource<
+    LocalizationProjectsLocalesDTO
+  >();
+  @ViewChild(MatSort) sortForMainTab: MatSort;
+
+  //Для блока "Детали" на главной вкладке
+  /** Менеджеры */
+  participantsManager: Participant[];
+  /** Владельцы */
+  participantsOwner: Participant[];
+
+  currentUserName = "";
+  projectId: number;
+  langList: Array<Locale>;
+
+  constructor(
+    private route: ActivatedRoute,
+    private projectService: ProjectsService,
+    private router: Router,
+    private languagesService: LanguageService,
+    private userService: UserService
+  ) {}
+
   // Загрузка файлов
   filesUpload(files): void {
     console.log(files);
   }
 
-  constructor(
-    private route: ActivatedRoute,
-    private projectService: ProjectsService
-  ) { }
-
   ngOnInit() {
     this.getProject();
 
-    console.log('ProjectName=' + sessionStorage.getItem('ProjectName'));
-    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
-    console.log('Projec=' + sessionStorage.getItem('Projec'));
+    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
+    console.log("Projec=" + sessionStorage.getItem("Projec"));
 
+    this.currentUserName = this.userService.currentUserName;
+    //this.currentUserName = sessionStorage.getItem("currentUserName");
 
+    this.projectId = this.projectService.currentProjectId;
+    //var projectId = Number(sessionStorage.getItem("ProjecID"));
+
+    this.languagesService.getByProjectId(this.projectId).subscribe(
+      Languages => {
+        this.langList = Languages;
+      },
+      error => console.error(error)
+    );
+
+    this.languagesService.getLocalesWithPercentByProjectId(this.projectId).subscribe(
+      localesWithPercent => {
+        this.dataSourceForMainTab.data = localesWithPercent;
+      },
+      error => console.error(error)
+    );
+
+    this.projectService.getProjectWithDetails(this.projectId).subscribe(
+      project => {
+        this.currentProject = project;
+        this.currentProject.date_Of_Creation = new Date(
+          this.currentProject.date_Of_Creation
+        );
+        this.currentProject.last_Activity = new Date(
+          this.currentProject.last_Activity
+        );
+      },
+      error => console.error(error)
+    );
+  }
+
+  ngAfterViewInit() {
+    this.dataSourceForMainTab.sort = this.sortForMainTab;
   }
 
   getProject() {
@@ -47,7 +124,21 @@ export class CurrentProjectSettingsComponent implements OnInit {
           },
           error => console.error(error)
         );
-      console.log('snapshot=' + this.route.snapshot.params["id"]);
+      console.log("snapshot=" + this.route.snapshot.params["id"]);
     });
+  }
+
+  openLanguageFiles(selectedLanguage: any) {
+    this.router.navigate(
+      [
+        "/Translation_project/" +
+          this.projectId +
+          "/LanguageFiles/" +
+          selectedLanguage.locale_Id
+      ],
+      {
+        relativeTo: this.route
+      }
+    );
   }
 }

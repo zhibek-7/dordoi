@@ -5,6 +5,8 @@ using Models.DatabaseEntities.PartialEntities.Glossaries;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Localization.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Localization.WebApi
 {
@@ -20,12 +22,14 @@ namespace Localization.WebApi
             this._glossaryService = glossaryService;
         }
 
+        [Authorize]
         [HttpPost("list")]
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
             return await this._glossaryService.GetAllAsync();
         }
 
+        [Authorize]
         [HttpPut("{glossaryId}")]
         public async Task UpdateAsync(int glossaryId, [FromBody] Glossary updatedGlossary)
         {
@@ -33,12 +37,14 @@ namespace Localization.WebApi
             await this._glossaryService.UpdateAsync(updatedGlossary: updatedGlossary);
         }
 
+        [Authorize]
         [HttpPost("{glossaryId}/get")]
         public async Task<Glossary> GetGlossaryByIdAsync(int glossaryId)
         {
             return await this._glossaryService.GetByIDAsync(glossaryId: glossaryId);
         }
 
+        [Authorize]
         [HttpPost("{glossaryId}/locale/get")]
         public async Task<Locale> GetGlossaryLocaleAsync(int glossaryId)
         {
@@ -54,6 +60,8 @@ namespace Localization.WebApi
             public string[] sortBy { get; set; }
             public bool? sortAscending { get; set; }
         }
+
+        [Authorize]
         [HttpPost("{glossaryId}/terms/list")]
         public async Task<IEnumerable<Term>> GetAssotiatedTermsAsync(
             int glossaryId,
@@ -75,6 +83,7 @@ namespace Localization.WebApi
                     sortAscending: param.sortAscending);
         }
 
+        [Authorize]
         [HttpPost("{glossaryId}/terms")]
         public async Task AddTermAsync(int glossaryId, [FromBody] TranslationSubstring newTerm, [FromQuery] int? partOfSpeechId)
         {
@@ -85,12 +94,14 @@ namespace Localization.WebApi
                     partOfSpeechId: partOfSpeechId);
         }
 
+        [Authorize]
         [HttpDelete("{glossaryId}/terms/{termId}")]
         public async Task DeleteTermAsync(int glossaryId, int termId)
         {
             await this._glossaryService.DeleteTermAsync(glossaryId: glossaryId, termId: termId);
         }
 
+        [Authorize]
         [HttpPut("{glossaryId}/terms/{termId}")]
         public async Task UpdateTermAsync(
             int glossaryId,
@@ -106,6 +117,7 @@ namespace Localization.WebApi
                     partOfSpeechId: partOfSpeechId);
         }
 
+        [Authorize]
         [HttpPost("{glossaryId}/terms/{termId}/locales/list")]
         public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
@@ -114,6 +126,7 @@ namespace Localization.WebApi
                 termId: termId);
         }
 
+        [Authorize]
         [HttpPut("{glossaryId}/terms/{termId}/locales")]
         public async Task SetTranslationLocalesForTermAsync(int glossaryId, int termId, [FromBody] IEnumerable<int> localesIds)
         {
@@ -128,6 +141,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="projectId">id проекта локализации в котором необходимо найти все термины</param>
         /// <returns>Список терминов</returns>
+        [Authorize]
         [HttpPost("FindAllTermsInProjects")]
         [Authorize]
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync([FromBody] int projectId)

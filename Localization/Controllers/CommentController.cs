@@ -10,6 +10,8 @@ using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Comment;
 using System.Net.Http;
 using System.IO;
+using Localization.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Utilities;
 using Microsoft.AspNetCore.Authorization;
 
@@ -22,13 +24,17 @@ namespace Localization.WebApi
     {
         private readonly CommentRepository commentRepository;
         private readonly TranslationSubstringRepository stringRepository;
+        private UserRepository ur;
+
 
         public CommentController()
         {
             //this.commentRepository = commentRepository;
             //this.stringRepository = stringRepository;
-            commentRepository = new CommentRepository(Settings.GetStringDB());
-            stringRepository = new TranslationSubstringRepository(Settings.GetStringDB());
+            var connectionString = Settings.GetStringDB();
+            commentRepository = new CommentRepository(connectionString);
+            stringRepository = new TranslationSubstringRepository(connectionString);
+            ur = new UserRepository(connectionString);
         }
 
         /// <summary>
@@ -36,6 +42,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="comment">текст комментария</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("AddComment")]
         [Authorize]
@@ -50,6 +57,8 @@ namespace Localization.WebApi
                 return BadRequest("Модель не соответсвует");
             }
 
+            comment.ID_User = (int)ur.GetID(User.Identity.Name);
+
             comment.DateTime = DateTime.Now;
             int insertedCommentId = await commentRepository.AddAsync(comment);
             CommentWithUserInfo commentWithUserInfo = await commentRepository.GetByIDWithUserInfoAsync(insertedCommentId);
@@ -61,6 +70,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idString">id фразы, комментарии которой необходимы</param>
         /// <returns>Список комментариев</returns>
+        [Authorize]
         [HttpGet]
         [Route("InString/{idString}")]
         [Authorize]
@@ -95,6 +105,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idComment">id комментария, который необходимо удалить</param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete]
         [Route("DeleteComment/{commentId}")]
         [Authorize]
@@ -124,6 +135,7 @@ namespace Localization.WebApi
         /// <param name="idComment">id комментария, который нужно обновить</param>
         /// <param name="comment">обновленный комментарий</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("UpdateComment/{idComment}")]
         [Authorize]
         public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
@@ -135,6 +147,8 @@ namespace Localization.WebApi
             {
                 return NotFound($"Comment by id \"{ idComment }\" not found");
             }
+
+            comment.ID_User = (int)ur.GetID(User.Identity.Name);
 
             // Update file in database
             var updateResult = await commentRepository.UpdateAsync(comment);
@@ -153,6 +167,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="idComment">id комментария к которому приложена картинка</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("UploadImageToComment")]
         [Authorize]
         public async Task<IActionResult> UploadImage()
@@ -174,7 +189,7 @@ namespace Localization.WebApi
                         imageData = binaryReader.ReadBytes((int)fileLength);
 
                         Image img = new Image();
-                        img.ID_User = 301;
+                        img.ID_User = (int)ur.GetID(User.Identity.Name);
                         img.Name_text = fileName;
                         img.Date_Time_Added = DateTime.Now;
                         img.body = imageData;

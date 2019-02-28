@@ -9,7 +9,7 @@ export class LanguageService {
 
   private url = 'api/Language/';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getLanguageList(): Observable<Locale[]> {
     return this.httpClient.get<Locale[]>(this.url + 'List');
@@ -29,6 +29,25 @@ export class LanguageService {
    */
   getLocalesWithPercentByProjectId(projectId: number): Observable<LocalizationProjectsLocalesDTO[]>
   {
-    return this.httpClient.post<LocalizationProjectsLocalesDTO[]>(this.url + "localesWithPercentByProjectId", projectId);
+    return this.httpClient.post<LocalizationProjectsLocalesDTO[]>(this.url + "localesWithPercentByProjectId", projectId, {
+        headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+      });
+  }
+
+  /** Возвращает список языков назначенных на проекты, которые назначены на пользователя. */
+  getByUserProjects(): Observable<Locale[]> {
+    return this.httpClient.post<Locale[]>(this.url + 'localesByUserProjects', null, {
+        headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+      });
+  }
+  
+  /**
+   * Возвращает список языков назначенных на память переводов.
+   * @param idTranslationMemory идентификатор памяти переводов.
+   */
+  getByTranslationMemory(idTranslationMemory: number): Observable<Locale[]> {
+    return this.httpClient.post<Locale[]>(this.url + 'localesByTranslationMemory', idTranslationMemory, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
   }
 }

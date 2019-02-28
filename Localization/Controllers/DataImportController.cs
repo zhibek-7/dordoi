@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Localization.Controllers;
 using Localization.Hubs.DataImport;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -11,7 +13,7 @@ namespace Localization.WebApi
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DataImportController : Controller
+    public class DataImportController : ControllerBase
     {
 
         private readonly ILocaleRepository _localeRepository;
@@ -27,6 +29,7 @@ namespace Localization.WebApi
             this._hubContext = hubContext;
         }
 
+        [Authorize]
         [HttpPost("locales")]
         public async Task ImportLocalesFromFile(IFormFile file, [FromForm] bool cleanTableBeforeImportFlag, [FromForm] string signalrConnectionId)
         {

@@ -44,6 +44,15 @@ namespace Models.DatabaseEntities
 
         public string project_name { get; set; }
 
+        public int? id_user_participant { get; set; }
+
+        public int? id_role_participant { get; set; }
+
+        public int? id_glossary { get; set; }
+
+        public string glossary_name { get; set; }
+
+
         public UserAction() { }
 
         public UserAction(int userId, string userName, string descript, int actionTypeID, string actionName)

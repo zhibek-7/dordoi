@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
 using Models.DatabaseEntities;
 using Microsoft.AspNetCore.Cors;
 using Utilities;
@@ -24,6 +25,7 @@ namespace Localization.Controllers
         /// GET api/WorkType/list       
         /// </summary>
         /// <returns>Список всех типов работы</returns>
+        [Authorize]
         [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<WorkType>>> GetWorkTypes()
         {
@@ -40,6 +42,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="id">id типа работы</param>
         /// <returns>Тип работы с необходимым id</returns>
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<WorkType>> GetWorkTypeById(int id)
         {

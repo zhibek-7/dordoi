@@ -22,23 +22,27 @@ namespace Localization.Controllers
         private readonly LocalizationProjectsLocalesRepository _localizationProjectsLocalesRepository;
         private readonly LocaleRepository _localeRepository;
         private readonly UserActionRepository _userActionRepository;
+        private UserRepository ur;
 
         public ProjectController()
         {
-            _localizationProjectRepository = new LocalizationProjectRepository(Settings.GetStringDB());
-            _localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(Settings.GetStringDB());
-            _localeRepository = new LocaleRepository(Settings.GetStringDB());
-            _userActionRepository = new UserActionRepository(Settings.GetStringDB());
+            string connectionString = Settings.GetStringDB();
+            _localizationProjectRepository = new LocalizationProjectRepository(connectionString);
+            _localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(connectionString);
+            _localeRepository = new LocaleRepository(connectionString);
+            _userActionRepository = new UserActionRepository(connectionString);
+            ur = new UserRepository(connectionString);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
-        [Route("List")]    
+        [Route("List")]
         public List<LocalizationProject> GetProjects()
         {
             return _localizationProjectRepository.GetAll()?.ToList();
         }
 
+        [Authorize]
         [HttpGet]
         [Route("{Id}")]
         public LocalizationProject GetProjectById(int Id)
@@ -52,6 +56,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="id">Идентификатор проекта локализации.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("details")]
         public async Task<LocalizationProject> GetWithDetailsById([FromBody] int id)
         {
@@ -61,66 +66,75 @@ namespace Localization.Controllers
 
         //[HttpPost]
         //[Route("add/{project}")]
+        [Authorize]
         [HttpPost]
         [Route("newProject")]
         public async Task<int> newProject([FromBody] LocalizationProject project)
         {
-          int idProj= await _localizationProjectRepository.AddAsyncInsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            int idProj = await _localizationProjectRepository.AddAsyncInsertProject(project);
+            _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return idProj;
         }
 
         //[HttpPost]
         //[Route("add/{project}")]
+        [Authorize]
         [HttpPost]
         [Route("AddProject")]
         public LocalizationProject AddProject([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return project;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("AddProject2")]
         public LocalizationProject AddProjectT([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return project;
         }
 
-
+        [Authorize]
         [HttpPost]
         [Route("deleteLocales/{Id}")]
         public void deleteLocalesById(int Id)
         {
             _localizationProjectsLocalesRepository.DeleteProjectLocalesById(Id);
         }
+
+        [Authorize]
         [HttpPost]
         [Route("delete/{Id}")]
         public void DeleteProject(int Id)
         {
             _localizationProjectRepository.DeleteProject(Id);
         }
+
+        [Authorize]
         [HttpPost]
         [Route("edit/{Id}")]
         public LocalizationProject EditProject(LocalizationProject project, int Id)
         {
             _localizationProjectRepository.UpdateProject(project);
-            _userActionRepository.AddEditProjectActionAsync(300, "Test user", project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация           
+            _userActionRepository.AddEditProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация           
 
             return project;
         }
 
         /// <summary>
-        /// Возвращает список проектов локализации 
+        /// Возвращает список проектов локализации, назначенных на пользователя
         /// </summary>
         /// <returns>LocalizationProjectForSelectDTO{ID, Name}</returns>
-        [HttpPost("forSelect")]
+        [Authorize]
+        [HttpPost("forSelectByUser")]
         public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectAsync()
         {
-            return await _localizationProjectRepository.GetAllForSelectDTOAsync();
+            var userName = User.Identity.Name;
+            return await _localizationProjectRepository.GetForSelectByUserAsync(userName);
         }
 
         /// <summary>
@@ -128,6 +142,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="projectLocales"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("AddProjectLocale")]
         public LocalizationProjectsLocales[] EditProjectLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
@@ -151,6 +166,7 @@ namespace Localization.Controllers
         /// взвращает все языки по id проекта
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("ListProjectLocales/{Id}")]
         public Task<IEnumerable<LocalizationProjectsLocales>> GetProjectsLocales(int Id)
@@ -162,6 +178,7 @@ namespace Localization.Controllers
         /// взвращает все языки
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("ListLocales")]
         public Task<IEnumerable<Locale>> GetLocales()
@@ -178,6 +195,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="projectLocales"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("deleteProjectLocale")]
         public LocalizationProjectsLocales[] DeleteProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
@@ -201,6 +219,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="projectLocales"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost]
         [Route("editProjectLocale")]
         public LocalizationProjectsLocales[] EditProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)

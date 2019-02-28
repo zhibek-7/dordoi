@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Localization.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Utilities;
 
 namespace Localization.WebApi
@@ -21,6 +23,7 @@ namespace Localization.WebApi
             this._partOfSpeechRepository = new PartOfSpeechRepository(Settings.GetStringDB());
         }
 
+        [Authorize]
         [HttpGet]
         public IEnumerable<PartOfSpeech> GetAll([FromQuery] int? glossaryId)
         {

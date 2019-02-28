@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, Predicate } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material";
 
 import { TreeNode } from "primeng/api";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -7,10 +8,11 @@ import { saveAs } from "file-saver";
 
 import { FileService } from "src/app/services/file.service";
 import { ProjectsService } from "src/app/services/projects.service";
-import { FilesSignalRService } from 'src/app/services/filesSignalR.service';
+import { FilesSignalRService } from "src/app/services/filesSignalR.service";
+
+import { UploadingLogModalComponent } from "../uploading-log-modal/uploading-log-modal.component";
 
 import { File as FileData } from "src/app/models/database-entities/file.type";
-import { FailedFileParsingModel } from "src/app/models/files/failedFileParsing.type";
 
 @Component({
   selector: "app-files",
@@ -41,19 +43,13 @@ export class FilesComponent implements OnInit {
     private projectsService: ProjectsService,
     private ngxSpinnerService: NgxSpinnerService,
     private filesSignalRService: FilesSignalRService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
     console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
     console.log("Projec=" + sessionStorage.getItem("Projec"));
-
-    this.filesSignalRService.errorReported.subscribe(
-      (parsingFailInfo: FailedFileParsingModel) => {
-        const message = `Не удалось добавить файл ${parsingFailInfo.fileName}, ошибка – ${parsingFailInfo.parserMessage}.`;
-        console.log(message);
-        alert(message);
-      });
 
     if (this.router.url.indexOf("LanguageFiles") != -1) {
       this.isSelectionFileForTranslation = true;
@@ -190,6 +186,7 @@ export class FilesComponent implements OnInit {
   addFolder(newFolder: FileData, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
 
+    console.log(" ....addFolder");
     this.fileService
       .addFolder(
         newFolder.name_text,
@@ -204,10 +201,24 @@ export class FilesComponent implements OnInit {
 
   async uploadFolder(files, parentNode?: TreeNode): Promise<void> {
     const parentId = parentNode ? parentNode.data.id : null;
+
     this.ngxSpinnerService.show();
+    const uploadedFolderName = files[0].webkitRelativePath.slice(
+      0,
+      files[0].webkitRelativePath.indexOf("/")
+    );
+    this.dialog.open(UploadingLogModalComponent, {
+      data: { name: uploadedFolderName }
+    });
+
     const signalrConnectionId = await this.filesSignalRService.getConnectionId();
     this.fileService
-      .uploadFolder(files, this.projectsService.currentProjectId, signalrConnectionId, parentId)
+      .uploadFolder(
+        files,
+        this.projectsService.currentProjectId,
+        signalrConnectionId,
+        parentId
+      )
       .subscribe(
         null,
         error => alert(error),
@@ -219,7 +230,10 @@ export class FilesComponent implements OnInit {
   }
 
   addFile(file: File, parentNode: TreeNode): void {
+    console.log(" ....addFile");
+    console.log(" ....parentNode=" + parentNode);
     const parentId = parentNode ? parentNode.data.id : null;
+    console.log(" ....parentId=" + parentId);
     this.ngxSpinnerService.show();
     this.fileService
       .addFile(file, this.projectsService.currentProjectId, parentId)
@@ -228,7 +242,12 @@ export class FilesComponent implements OnInit {
           this.addNode(node, parentNode);
           this.ngxSpinnerService.hide();
         },
-        error => alert(error.error)
+        error => {
+          this.ngxSpinnerService.hide();
+          this.dialog.open(UploadingLogModalComponent, {
+            data: { name: file.name, errorMessage: error.error }
+          });
+        }
       );
   }
 
@@ -255,6 +274,9 @@ export class FilesComponent implements OnInit {
   }
 
   addNode(addedNode: TreeNode, parent: TreeNode): void {
+    console.log("parent=" + parent);
+    console.log("addedNode=" + addedNode);
+    console.log("parent != null =" + parent.children);
     // Nodes (parent children or root)
     const nodes = parent ? [...parent.children] : [...this.files];
 

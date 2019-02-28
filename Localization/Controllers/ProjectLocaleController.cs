@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
@@ -27,11 +28,13 @@ namespace Localization.Controllers
             _userActionRepository = new UserActionRepository(Settings.GetStringDB());
         }
 
+        [Authorize]
         [HttpPost]
         [Route("edit/{Id}")]
         public LocalizationProjectsLocales[] EditProject(LocalizationProjectsLocales[] projectLocales, int Id)
         {
-            foreach (LocalizationProjectsLocales projectLocale in projectLocales) {
+            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
+            {
                 _localizationProjectsLocalesRepository.UpdateProjectsLocales(projectLocale);
             }
             return projectLocales;

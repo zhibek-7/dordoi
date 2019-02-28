@@ -57,7 +57,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase
   //#region Работа с Locales
 
   loadAvailableLanguages() {
-    this.languageService.getLanguageList().subscribe(
+    this.languageService.getByUserProjects().subscribe(
       locale => {
         this.availableLocales = locale.map(
           local =>
@@ -84,7 +84,7 @@ export class GlossaryEditableDetailsComponent extends LoadOnRequestBase
   //#region Работа с LocalizationProjects
 
   loadAvailableLocalizationProjects() {
-    this.projectsService.getLocalizationProjectForSelectDTO().subscribe(
+    this.projectsService.getLocalizationProjectForSelectDTOByUser().subscribe(
       localizationProject => {
         this.availableLocalizationProjects = localizationProject.map(
           localProject =>

@@ -20,7 +20,7 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly UserRepository userRepository;
 
@@ -29,27 +29,34 @@ namespace Localization.Controllers
             userRepository = new UserRepository(Settings.GetStringDB());
         }
 
+        [Authorize]
         [HttpPost]
         [Route("List")]
         public List<User> GetAll()
         {
+            var name_text = User.Identity.Name;
+
             return userRepository.GetAll().ToList();
         }
 
+        [Authorize]
         [HttpPost("List/projectId:{projectId}")]
         public List<User> GetAll(int projectId)
         {
             return userRepository.GetByProjectID(projectId).ToList();
         }
 
+        [Authorize]
         [HttpPost("{userId}/getPhoto")]
         public async Task<byte[]> GetPhoto(int userId)
         {
+
             return await this.userRepository.GetPhotoByIdAsync(id: userId);
         }
 
         //
         //[Authorize]
+        [Authorize]
         [HttpPost("Photo")]
         public async Task PhotoAsync()
         {
@@ -62,7 +69,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="email">введенный email.</param>
         /// <returns></returns>
-        [HttpPost("isUniqueEmail:{email}")] 
+        [HttpPost("isUniqueEmail:{email}")]
         public async Task<bool?> IsUniqueEmail(string email)
         {
             var name_text = User.Identity.Name;
@@ -123,6 +130,7 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="name">имя пользователя (логин) или email</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("recoverPassword:{name}")]
         public async Task<bool> RecoverPassword(string name)
         {
@@ -239,7 +247,7 @@ namespace Localization.Controllers
             };
 
             return Ok(response);
-        }        
+        }
 
         private async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
         {

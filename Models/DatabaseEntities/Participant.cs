@@ -6,7 +6,7 @@ namespace Models.DatabaseEntities
     public class Participant : BaseEntity
     {
 
-        public int ID_Localization_Project { get; set; }
+        public int? ID_Localization_Project { get; set; }
 
         public int ID_User { get; set; }
 

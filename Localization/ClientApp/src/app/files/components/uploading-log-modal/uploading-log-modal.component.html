@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Ошибки загрузки {{data.name}}</h1>
+<div mat-dialog-content>
+  <div *ngIf="parsingFailInfos.length > 0; else noErrors">
+    <div class="m-2" *ngFor="let parsingFailInfo of parsingFailInfos">
+      <div>Не удалось добавить файл {{parsingFailInfo.fileName}}, ошибка – {{parsingFailInfo.parserMessage}}.</div>
+    </div>
+  </div>
+  <ng-template #noErrors>
+    <div class="m-2">
+      <div>Ошибок нет.</div>
+    </div>
+  </ng-template>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Закрыть</button>
+</div>

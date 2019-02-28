@@ -36,6 +36,8 @@ export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase
     super();
   }
 
+  //#region init
+
   ngOnInit() { }
 
   load() {
@@ -44,19 +46,21 @@ export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase
     this.loadAvailableLocalizationProjects();
   }
 
+  //#endregion
+
   //#region Работа с Locales
 
   loadAvailableLanguages() {
-    this.languageService.getLanguageList().subscribe(
+    this.languageService.getByUserProjects().subscribe(
       locale => {
         this.availableLocales = locale.map(
           local =>
-            new Selectable<Locale>(
-              local,
+          new Selectable<Locale>(
+            local,
               this.translationMemory.locales_ids.some(
-                selectedLocaleId => selectedLocaleId == local.id
-              )
+              selectedLocaleId => selectedLocaleId == local.id
             )
+          )
         );
       },
       error => console.error(error)
@@ -74,7 +78,7 @@ export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase
   //#region Работа с LocalizationProjects
 
   loadAvailableLocalizationProjects() {
-    this.projectsService.getLocalizationProjectForSelectDTO().subscribe(
+    this.projectsService.getLocalizationProjectForSelectDTOByUser().subscribe(
       localizationProject => {
         this.availableLocalizationProjects = localizationProject.map(
           localProject =>

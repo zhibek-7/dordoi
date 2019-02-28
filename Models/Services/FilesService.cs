@@ -106,7 +106,7 @@ namespace Models.Services
             {
                 if (lastVersionDbFile.is_folder)
                 {
-                    throw new Exception(WriteLn("Нельзя обновить папку."));
+                    throw new Exception(WriteLn("Нельзя обновить папку " + lastVersionDbFile.name_text));
                 }
 
                 lastVersionDbFile.is_last_version = false;
@@ -118,6 +118,7 @@ namespace Models.Services
 
                 // TODO: single transaction?
                 var updatedSuccessfully = await this._filesRepository.UpdateAsync(lastVersionDbFile);
+                //TODO нужно копировать переводы в новую версию
                 if (!updatedSuccessfully)
                 {
                     throw new Exception(WriteLn("Не удалось обновить старый файл."));
@@ -194,6 +195,11 @@ namespace Models.Services
             }
         }
 
+        /// <summary>
+        /// Создаем StreamReader
+        /// </summary>
+        /// <param name="fileContentStream"></param>
+        /// <returns></returns>
         private File GetNewFileModel(System.IO.Stream fileContentStream)
         {
             var newFile = new File()
@@ -380,14 +386,19 @@ namespace Models.Services
 
         private async Task InsertFileToDbAsync(File file)
         {
-            var fileUploaded = await this._filesRepository.UploadAsync(file);
+            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.id_localization_project);
+
+            var fileUploaded = await this._filesRepository.UploadAsync(file, projectLocales);
             if (!fileUploaded)
             {
-                throw new Exception(WriteLn($"Не удалось добавить файл \"{file.name_text}\" в базу данных."));
+                Exception e = new Exception(($"Не удалось добавить файл \"{file.name_text}\" в базу данных."));
+                WriteLn($"Не удалось добавить файл \"{file.name_text}\" в базу данных.", e);
+                throw e;
             }
 
             var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.name_text, file.id_folder_owner)).id;
-            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.id_localization_project);
+
+            //TODO тут брать в зависимости от того откуда это, глоссарийи и память переводов отельно
             await this._filesRepository.AddTranslationLocalesAsync(
                 fileId: addedFileId,
                 localesIds: projectLocales.Select(locale => locale.id));
@@ -465,7 +476,7 @@ namespace Models.Services
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
             if (file == null)
             {
-                throw new Exception("Файл не найден.");
+                throw new Exception(WriteLn("Файл не найден.  " + fileId));
             }
 
             if (file.is_folder)

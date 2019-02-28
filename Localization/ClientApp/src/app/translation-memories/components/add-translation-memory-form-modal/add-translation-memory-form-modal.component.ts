@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 
+import { ProjectsService } from "src/app/services/projects.service";
+
 import { TranslationMemoryForEditingDTO } from "src/app/models/DTO/translationMemoryDTO.type";
 
 @Component({
@@ -16,7 +18,7 @@ export class AddTranslationMemoryFormModalComponent extends ModalComponent imple
   @Output()
   newSubmitted = new EventEmitter<TranslationMemoryForEditingDTO>();
 
-  constructor() {
+  constructor(private projectsService: ProjectsService) {
     super();
     this.resetNewTranslationMemoryModel();
   }
@@ -35,8 +37,10 @@ export class AddTranslationMemoryFormModalComponent extends ModalComponent imple
 
   resetNewTranslationMemoryModel() {
     this.newTranslationMemory = new TranslationMemoryForEditingDTO();
-    //this.newTranslationMemory.locales_ids = [];
+    this.newTranslationMemory.locales_ids = [];
     this.newTranslationMemory.localization_projects_ids = [];
+    let currentProjectId = this.projectsService.currentProjectId;
+    this.newTranslationMemory.localization_projects_ids.push(currentProjectId);
   }
 
 }

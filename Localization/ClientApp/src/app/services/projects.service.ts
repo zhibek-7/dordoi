@@ -10,7 +10,7 @@ import { Locale } from "moment";
 export class ProjectsService {
   private controllerUrl: string = "api/Project/";
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   get currentProjectId(): number {
     return +sessionStorage.getItem("ProjecID");
@@ -49,7 +49,7 @@ export class ProjectsService {
     return this.httpClient.post<LocalizationProject>(this.controllerUrl + "newProject", project);
   }
 
-  /**
+    /**
    * /добавление проекта
    * @param project
    */
@@ -78,8 +78,8 @@ export class ProjectsService {
     return asyncResult;
   }
 
-  //удаление проекта
-  async deleteProject(Id: number) {
+   //удаление проекта 
+  async  deleteProject(Id: number) {
     console.log("updateProject-->" + Id);
     let asyncResult = await this.httpClient
       .post<LocalizationProject>(this.controllerUrl + "delete/" + Id, Id)
@@ -87,7 +87,7 @@ export class ProjectsService {
     return asyncResult;
   }
 
-  //удаление языков
+  //удаление языков 
   deleteProjectLocalesById(
     Id: number
   ): Observable<LocalizationProjectsLocales> {
@@ -96,12 +96,12 @@ export class ProjectsService {
     return asyncResult;
   }
 
-  //Возвращает список проектов локализации содержащий только ID, Name
-  getLocalizationProjectForSelectDTO(): Observable<
-    LocalizationProjectForSelectDTO[]
-  > {
-    return this.httpClient.post<LocalizationProjectForSelectDTO[]>(
-      this.controllerUrl + "forSelect", null);
+
+  /** Возвращает список проектов локализации, назначенных на пользователя, содержащий только ID, Name */
+  getLocalizationProjectForSelectDTOByUser(): Observable<LocalizationProjectForSelectDTO[]> {
+    return this.httpClient.post<LocalizationProjectForSelectDTO[]>(this.controllerUrl + "forSelectByUser", null, {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))      
+    });
   }
 
   async addProjectLocales(projectLocales: LocalizationProjectsLocales[]) {
@@ -118,7 +118,7 @@ export class ProjectsService {
     return asyncResult;
 
     //return this.httpClient.get<Project>(this.controllerUrl + 1);
-  }
+  } 
 
   //обновление языков
   async updateProjectLocales(
@@ -160,4 +160,6 @@ export class ProjectsService {
   getLocales(): Observable<Locale[]> {
     return this.httpClient.post<Locale[]>(this.controllerUrl + "ListLocales", null);
   }
+    );
+}
 }

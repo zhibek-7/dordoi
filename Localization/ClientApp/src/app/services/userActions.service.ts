@@ -65,3 +65,7 @@ export class UserActionsService {
   }
 
 }
+
+      {
+        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")), observe: 'response'
+    });

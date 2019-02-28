@@ -21,8 +21,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <summary>
         /// Добавить комментарий
         /// </summary>
-        /// <param name="comment">комментарий</param>
-        /// <returns></returns>
+        /// <param name = "comment" > комментарий </ param >
+        /// < returns ></ returns >
         public async Task<int> AddAsync(Comments comment)
         {
             var query = "INSERT INTO comments_text (id_translation_substrings, datetime, id_user, comment_text)" +
@@ -59,42 +59,42 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <summary>
         /// Добавить файл в комментарий
         /// </summary>
-        /// <param name="comment">комментарий</param>
-        /// <returns></returns>
-        public async Task<int> AddFileAsync(Comments comment)
-        {
+        /// <param name = "comment" > комментарий </ param >
+        /// < returns ></ returns >
+        //public async Task<int> AddFileAsync(Comments comment)
+        //{
 
-            var query = "INSERT INTO images (name_text,  id_user, data, url) VALUES('test',  comment.ID_User,  '‰PNG','')";
-            /*
-                    var query = "INSERT INTO comments_text (\"ID_TranslationSubstrings\", datetime, id_user, comment_text)" +
-                                    "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
-                                    "RETURNING  comments_text.id";
-            */
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    this.LogQuery(query, comment.GetType(), comment);
-                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
-                    return idOfInsertedRow;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
-                    exception);
-                return 0;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
-                    exception);
-                return 0;
-            }
+        //    var query = "INSERT INTO images (name_text,  id_user, data, url) VALUES('test',  comment.ID_User,  '‰PNG','')";
+        //    /*
+        //            var query = "INSERT INTO comments_text (\"ID_TranslationSubstrings\", datetime, id_user, comment_text)" +
+        //                            "VALUES (@ID_TranslationSubstrings, @DateTime, @ID_User, @Comment) " +
+        //                            "RETURNING  comments_text.id";
+        //    */
+        //    try
+        //    {
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            this.LogQuery(query, comment.GetType(), comment);
+        //            var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
+        //            return idOfInsertedRow;
+        //        }
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return 0;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+        //            exception);
+        //        return 0;
+        //    }
 
-        }
+        //}
 
         /// <summary>
         /// Получить все комментарии
@@ -132,7 +132,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <summary>
         /// Получает все комментарии которые есть данной фразы
         /// </summary>
-        /// <param name="idString">id фразы, комментарии которой необходимы</param>
+        /// <param name = "idString" > id фразы, комментарии которой необходимы</param>
         /// <returns>Список комментариев</returns>        
         public async Task<IEnumerable<CommentWithUserInfo>> GetAllCommentsInStringByID(int idString)
         {
@@ -177,7 +177,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <summary>
         /// Получить комментарий по id
         /// </summary>
-        /// <param name="id">id комментария который нужно получить</param>
+        /// <param name = "id" > id комментария который нужно получить</param>
         /// <returns></returns>
         public async Task<Comments> GetByIDAsync(int id)
         {
@@ -209,12 +209,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        /// <summary>
-        /// Получить комментарий по id комментария с информацией о пользователе, который 
-        /// добавил данный комментарий
-        /// </summary>
-        /// <param name="id">id комментария который нужно получить</param>
-        /// <returns></returns>
+        // <summary>
+        // Получить комментарий по id комментария с информацией о пользователе, который 
+        // добавил данный комментарий
+        // </summary>
+        // <param name = "id" > id комментария который нужно получить</param>
+        // <returns></returns>
         public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(int id)
         {
             var query = "SELECT users.id AS user_id, users.name_text AS user_name," +
@@ -253,10 +253,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <summary>
         /// Удалить комментарий по id 
         /// </summary>
-        /// <param name="id">id комментарий который нужно удалить</param>
+        /// <param name = "id" > id комментарий который нужно удалить</param>
         /// <returns></returns>
         public async Task<bool> RemoveAsync(int commentId)
         {
+
             //"" +
             //"DELETE " +
             //"FROM comments_images AS CI " +
@@ -324,7 +325,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <summary>
         /// Обновить комментарий
         /// </summary>
-        /// <param name="comment">обновленный комментарий</param>
+        /// <param name = "comment" > обновленный комментарий</param>
         /// <returns></returns>
         public async Task<bool> UpdateAsync(Comments comment)
         {
@@ -360,12 +361,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        /// <summary>
-        /// Добавить изображение к комментарию
-        /// </summary>
-        /// <param name="img">Изображение</param>
-        /// <param name="commentId">Id комментария</param>
-        /// <returns></returns>
+        // <summary>
+        // Добавить изображение к комментарию
+        // </summary>
+        // <param name = "img" > Изображение </ param >
+        // < param name="commentId">Id комментария</param>
+        // <returns></returns>
         public async Task<int> UploadImageAsync(Image img, int commentId)
         {
             var query1 = "INSERT INTO images (name_text, id_user, body, date_time_added)" +
@@ -391,24 +392,24 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return 0;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(Exception)} ",
                     exception);
                 return 0;
             }
         }
 
-        /// <summary>
-        /// Получить все изображения прикрепленные к конкретному комментарию
-        /// </summary>
-        /// <param name="commentId">id комментария</param>
-        /// <returns>Список изображений</returns>
+        // <summary>
+        // Получить все изображения прикрепленные к конкретному комментарию
+        // </summary>
+        // <param name = "commentId" > id комментария</param>
+        // <returns>Список изображений</returns>
         public async Task<IEnumerable<Image>> GetImagesOfCommentAsync(int commentId)
         {
             var query = "SELECT Im.id, Im.url, Im.name_text, Im.date_time_added, Im.body, Im.id_user " +
@@ -434,14 +435,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetImagesOfCommentAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddFileAsync)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetImagesOfCommentAsync)} {nameof(Exception)} ",
                     exception);
                 return null;
             }

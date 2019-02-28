@@ -42,5 +42,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+
+        /// <summary>
+        /// Возврощаем Id по сокращенному имени роли observer
+        /// </summary>
+        /// <param name="dbConnection"></param>
+        /// <param name="shortName"></param>
+        /// <returns></returns>
+        public int? GetRoleId(string shortName)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var sqlString = "SELECT id FROM public.roles where short =  '" + shortName + "'";
+                    this.LogQuery(sqlString);
+                    var idRole = dbConnection.ExecuteScalar<int>(sqlString);
+
+                    return idRole;
+
+                }
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(RoleRepository)}.{nameof(RoleRepository.GetRoleId)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Models.DatabaseEntities;
 using Dapper;
 using System.Linq;
@@ -14,68 +15,72 @@ namespace DAL.Reposity.PostgreSqlRepository
     public class UserRepository : BaseRepository, IRepository<User>
     {
         private readonly ParticipantRepository _participantsRepository;
-
+        private RoleRepository roles;
+        private ParticipantRepository participant;
         public UserRepository(string connectionStr) : base(connectionStr)
         {
             _participantsRepository = new ParticipantRepository(connectionStr);
+
+            roles = new RoleRepository(connectionStr);
+            participant = new ParticipantRepository(connectionStr);
         }
 
-        public void Add(User user)
-        {
-            try
-            {
+        //public void Add(User user)
+        //{
+        //    try
+        //    {
 
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    string SQLQuery = "INSERT INTO users (name_text, password_text, photo, email) VALUES (@Name_text, @Password_text, @Photo, @Email)";
-                    this.LogQuery(SQLQuery, user.GetType(), user);
-                    dbConnection.Execute(SQLQuery, user);
-                }
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            string SQLQuery = "INSERT INTO users (name_text, password_text, photo, email) VALUES (@Name_text, @Password_text, @Photo, @Email)";
+        //            this.LogQuery(SQLQuery, user.GetType(), user);
+        //            dbConnection.Execute(SQLQuery, user);
+        //        }
 
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Add)} {nameof(NpgsqlException)} ",
-                    exception);
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Add)} {nameof(Exception)} ",
-                    exception);
-            }
-        }
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Add)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Add)} {nameof(Exception)} ",
+        //            exception);
+        //    }
+        //}
 
-        public User GetByID(int Id)
-        {
-            try
-            {
-                User user = null;
-                string SQLQuery = "SELECT * FROM users WHERE Id = @Id";
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    var param = new { Id };
-                    this.LogQuery(SQLQuery, param);
-                    user = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
-                }
-                return user;
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetByID)} {nameof(NpgsqlException)} ",
-                    exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetByID)} {nameof(Exception)} ",
-                    exception);
-                return null;
-            }
-        }
+        //public User GetByID(int Id)
+        //{
+        //    try
+        //    {
+        //        User user = null;
+        //        string SQLQuery = "SELECT * FROM users WHERE Id = @Id";
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            var param = new { Id };
+        //            this.LogQuery(SQLQuery, param);
+        //            user = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
+        //        }
+        //        return user;
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetByID)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetByID)} {nameof(Exception)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //}
 
         public IEnumerable<User> GetByProjectID(int Id)
         {
@@ -111,39 +116,39 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public bool CheckExistUser(User user)
-        {
-            string SQLQuery = "SELECT * FROM users WHERE name_text = @Name_text AND password_text = @Password_text";
-            try
-            {
-                User existUser = null;
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    var param = new { user.Name_text, user.Password_text };
-                    this.LogQuery(SQLQuery, param);
-                    existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
-                    if (existUser == null)
-                        return true;
-                    return false;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.CheckExistUser)} {nameof(NpgsqlException)} ",
-                    exception);
-                return false;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.CheckExistUser)} {nameof(Exception)} ",
-                    exception);
-                return false;
-            }
+        //public bool CheckExistUser(User user)
+        //{
+        //    string SQLQuery = "SELECT * FROM users WHERE name_text = @Name_text AND password_text = @Password_text";
+        //    try
+        //    {
+        //        User existUser = null;
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            var param = new { user.Name_text, user.Password_text };
+        //            this.LogQuery(SQLQuery, param);
+        //            existUser = dbConnection.Query<User>(SQLQuery, param).FirstOrDefault();
+        //            if (existUser == null)
+        //                return true;
+        //            return false;
+        //        }
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.CheckExistUser)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return false;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.CheckExistUser)} {nameof(Exception)} ",
+        //            exception);
+        //        return false;
+        //    }
 
 
-        }
+        //}
 
         public IEnumerable<User> GetAll()
         {
@@ -173,65 +178,65 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public bool Remove(int Id)
-        {
-            string SQLQuery = "DELETE FROM Users WHERE Id = @Id";
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
+        //public bool Remove(int Id)
+        //{
+        //    string SQLQuery = "DELETE FROM Users WHERE Id = @Id";
+        //    try
+        //    {
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
 
-                    var param = new { Id };
-                    this.LogQuery(SQLQuery, param);
-                    dbConnection.Execute(SQLQuery, param);
-                }
-                throw new NotImplementedException();
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Remove)} {nameof(NpgsqlException)} ",
-                    exception);
-                return false;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Remove)} {nameof(Exception)} ",
-                    exception);
-                return false;
-            }
-
-
-        }
-
-        public void Update(User user)
-        {
-            string SQLQuery = "UPDATE users SET name_text = @Name_text, password_text = @Password_text, photo = @Photo, email = @Email";
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    this.LogQuery(SQLQuery, user.GetType(), user);
-                    dbConnection.Execute(SQLQuery, user);
-                }
-                throw new NotImplementedException();
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Update)} {nameof(NpgsqlException)} ",
-                    exception);
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Update)} {nameof(Exception)} ",
-                    exception);
-            }
+        //            var param = new { Id };
+        //            this.LogQuery(SQLQuery, param);
+        //            dbConnection.Execute(SQLQuery, param);
+        //        }
+        //        throw new NotImplementedException();
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Remove)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return false;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Remove)} {nameof(Exception)} ",
+        //            exception);
+        //        return false;
+        //    }
 
 
-        }
+        //}
+
+        //public void Update(User user)
+        //{
+        //    string SQLQuery = "UPDATE users SET name_text = @Name_text, password_text = @Password_text, photo = @Photo, email = @Email";
+        //    try
+        //    {
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            this.LogQuery(SQLQuery, user.GetType(), user);
+        //            dbConnection.Execute(SQLQuery, user);
+        //        }
+        //        throw new NotImplementedException();
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Update)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.Update)} {nameof(Exception)} ",
+        //            exception);
+        //    }
+
+
+        //}
 
         public async Task<byte[]> GetPhotoByIdAsync(int id)
         {
@@ -448,6 +453,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+
+
                     var newUser = new
                     {
                         name_text = user.Name_text,
@@ -455,7 +462,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
                         data_create = DateTime.Now
                     };
-                    var query = new Query("users").AsInsert(newUser, true); //true - вернуть сгенерированный id нового объекта
+                    var query = new Query("users").AsInsert(newUser,
+                        true); //true - вернуть сгенерированный id нового объекта
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
 
@@ -463,8 +471,24 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .ExecuteScalarAsync<int>(
                             sql: compiledQuery.Sql,
                             param: compiledQuery.NamedBindings);
+
+
+                    ///создание записи в participants
+                    var id = roles.GetRoleId("observer");
+                    Participant newParticipant = new Participant();
+                    newParticipant.ID_Localization_Project = null;
+                    newParticipant.Active = true;
+                    newParticipant.ID_Role = (int)id;
+                    newParticipant.ID_User = idOfNewUser;
+
+                    participant.AddAsync(newParticipant);
+
+
+                    ////
+
                     return idOfNewUser;
                 }
+
             }
             catch (NpgsqlException exception)
             {
@@ -586,7 +610,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         about_me = temp.FirstOrDefault().about_me,
                         gender = temp.FirstOrDefault().gender,
                         id_time_zones = temp.FirstOrDefault().id_time_zones,
-                        id = temp.FirstOrDefault().id,
+                        //id = temp.FirstOrDefault().id,
 
                         locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
                         ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
@@ -613,40 +637,30 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public BaseEntity GetID(string name)
+        public int? GetID(string name)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("users")
-                        .Where("users.name_text", name)
-                        .LeftJoin("users_locales", "users_locales.id_user", "users.id")
-                        .Select(
-                        "users.id"
-                        );
-                    var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
-                    var temp = dbConnection.Query<BaseEntity>(
-                        sql: compiledQuery.Sql,
-                        param: compiledQuery.NamedBindings);
 
-                    //Создание пользователя с вложенными списками идентификаторов связанных данных.
-                    var resultDTO = new UserProfileForEditingDTO
-                    {
-                        id = temp.FirstOrDefault().id,
-                    };
-                    return resultDTO;
+                    var query = "SELECT users.id FROM users WHERE users.name_text = '" + name + "'";
+
+
+                    this.LogQuery(query);
+                    var idOfInsertedRow = dbConnection.ExecuteScalar<int>(query);
+                    return idOfInsertedRow;
+
                 }
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetProfileAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetID)} {nameof(NpgsqlException)} ", exception);
                 return null;
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetProfileAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetID)} {nameof(Exception)} ", exception);
                 return null;
             }
         }

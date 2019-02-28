@@ -170,6 +170,7 @@ namespace Localization
             app.UseSignalR(routes =>
             {
                 routes.MapHub<Hubs.DataImport.DataImportHub>("/dataimport/hub");
+                routes.MapHub<Hubs.Files.FilesHub>("/files/hub");
             });
 
             app.UseCors("SiteCorsPolicy"); // это тоже для нескольких портов(см. выше)

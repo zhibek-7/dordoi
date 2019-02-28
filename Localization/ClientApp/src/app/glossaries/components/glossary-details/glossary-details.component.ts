@@ -1,16 +1,20 @@
 import { Component, OnInit, EventEmitter } from "@angular/core";
 import { forkJoin } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
+import { MatDialog } from "@angular/material";
+
+import { SetProjectsModalComponent } from "src/app/glossaries/components/set-projects-modal/set-projects-modal.component";
 
 import { GlossariesService } from "src/app/services/glossaries.service";
-import { Glossary } from "src/app/models/database-entities/glossary.type";
-import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
+import { GlossaryService } from "src/app/services/glossary.service";
+
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
+
+import { Glossary } from "src/app/models/database-entities/glossary.type";
 import { TermViewModel } from "src/app/glossaries/models/term.viewmodel";
 import { SortingArgs } from "src/app/shared/models/sorting.args";
-import { PartsOfSpeechService } from "src/app/services/partsOfSpeech.service";
-import { PartOfSpeech } from "src/app/models/database-entities/partOfSpeech.type";
 import { Term } from "src/app/models/Glossaries/term.type";
+import { GlossariesForEditing } from "src/app/models/DTO/glossariesDTO.type";
 
 @Component({
   selector: "app-glossary-details",
@@ -51,7 +55,9 @@ export class GlossaryDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private glossariesService: GlossariesService,
-    private requestDataReloadService: RequestDataReloadService
+    private glossaryService: GlossaryService,
+    private requestDataReloadService: RequestDataReloadService,
+    public dialog: MatDialog,
   ) {
     this.requestDataReloadService.updateRequested.subscribe(() =>
       this.loadTerms(this.currentOffset)
@@ -117,5 +123,18 @@ export class GlossaryDetailsComponent implements OnInit {
     this.sortByColumnName = sortingArgs.columnName;
     this.ascending = sortingArgs.isAscending;
     this.loadTerms();
+  }
+
+  openSetProjectsModal() {
+    const dialogRef = this.dialog.open(SetProjectsModalComponent, {
+      data: { glossary: this._glossary }
+    });
+    dialogRef.afterClosed().subscribe((result: GlossariesForEditing) => {
+      if (result) {
+        this.glossaryService
+          .editSaveGlossary(result)
+          .subscribe();
+      }
+    });
   }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using DAL.Reposity.PostgreSqlRepository;
+using Localization.Controllers;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Utilities;
@@ -22,6 +23,7 @@ namespace Localization.WebApi
             _localeRepository = new LocaleRepository(Settings.GetStringDB());
         }
 
+        [Authorize]
         [HttpGet]
         [Route("List")]
         public async Task<IEnumerable<Locale>> GetLocales()
@@ -29,6 +31,7 @@ namespace Localization.WebApi
             return await _localeRepository.GetAllAsync();
         }
 
+        [Authorize]
         [HttpGet("byProjectId/{projectId}")]
         public async Task<IEnumerable<Locale>> GetProjectLocales(int projectId)
         {
@@ -46,11 +49,36 @@ namespace Localization.WebApi
         /// </summary>
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("localesWithPercentByProjectId")]
         [Authorize]
         public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent([FromBody] int projectId)
         {
             return await _localeRepository.GetAllForProjectWithPercent(projectId);
+        }
+
+        /// <summary>
+        /// Возвращает список языков назначенных на проекты, которые назначены на пользователя.
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("localesByUserProjects")]
+        public async Task<IEnumerable<Locale>> GetByUserProjectsAsync()
+        {
+            var userName = User.Identity.Name;
+            return await _localeRepository.GetByUserProjectsAsync(userName);
+        }
+
+        /// <summary>
+        /// Возвращает список языков назначенных на память переводов.
+        /// </summary>
+        /// <param name="idTranslationMemory">Идентификатор памяти переводов.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("localesByTranslationMemory")]
+        public async Task<IEnumerable<Locale>> GetByTranslationMemory([FromBody] int idTranslationMemory)
+        {
+            return await _localeRepository.GetByTranslationMemory(idTranslationMemory);
         }
     }
 }
