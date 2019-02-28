@@ -1,8 +1,8 @@
 <div class="row m-2">
   <div class="col">
-    <button class="m-2 btn btn-default" (click)="inviteUser.show()">Пригласить</button>
+    <button class="btn btn-primary m-1" (click)="inviteUser.show()">Пригласить</button>
     <app-invite-user #inviteUser [projectId]="projectId" [roles]="roles" (participantAdded)="loadParticipants(currentOffset)"></app-invite-user>
-    <button class="m-2 btn btn-default" disabled>Связаться</button>
+    <button class="btn btn-primary m-1" disabled>Связаться</button>
   </div>
   <div class="col">
     <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalParticipantsCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
@@ -19,7 +19,7 @@
     </select>
   </div>
   <div class="col">
-    <button class="btn btn-default dropdown-toggle m-1" data-toggle="collapse" data-target="#collapseSetLanguages" aria-controls="collapseSetLanguages">Фильтр по языкам</button>
+    <button class="btn btn-primary dropdown-toggle m-1" data-toggle="collapse" data-target="#collapseSetLanguages" aria-controls="collapseSetLanguages">Фильтр по языкам</button>
   </div>
 </div>
 <div class="row m-2">
@@ -46,7 +46,7 @@
     <td class="col-xs-6">{{participant.role_Name}}</td>
     <td class="col-xs-2">
       <div class="btn-group">
-        <button class="btn btn-default" (click)="participantDetails.showParticipant(participant)">Подробности</button>
+        <button class="btn btn-primary m-1" (click)="participantDetails.showParticipant(participant)">Подробности</button>
       </div>
     </td>
   </tr>

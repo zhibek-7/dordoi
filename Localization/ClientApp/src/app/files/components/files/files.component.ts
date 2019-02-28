@@ -58,7 +58,7 @@ export class FilesComponent implements OnInit {
 
       this.cols = [
         { field: "name_text", header: "Имя" },
-        { field: "date_of_change", header: "Дата изменения" },
+        { field: "date_of_change", header: "Дата изменения", width: "100px" },
         {
           field: "strings_Count",
           header: "Строки",
@@ -67,16 +67,16 @@ export class FilesComponent implements OnInit {
         },
         {
           field: "percent_Of_Translation",
-          header: "Процент предложенных переводов",
-          width: "130px",
+          header: "% предложенных/подтверждённых переводов",
+          width: "170px",
           textalign: "center"
         },
-        {
-          field: "percent_Of_Confirmed",
-          header: "Процент подтверждённых переводов",
-          width: "150px",
-          textalign: "center"
-        },
+//        {
+//          field: "percent_Of_Confirmed",
+//          header: "Процент подтверждённых переводов",
+//          width: "150px",
+//          textalign: "center"
+//        },
         {}
       ];
     } else {
@@ -89,18 +89,18 @@ export class FilesComponent implements OnInit {
           width: "100px",
           textalign: "right"
         },
-        {
+       {
           field: "version",
           header: "Версия",
           width: "80px",
           textalign: "center"
         },
-        {
-          field: "priority",
-          header: "Приоритет",
-          width: "100px",
-          textalign: "center"
-        },
+        //{
+        //  field: "priority",
+        //  header: "Приоритет",
+        //  width: "100px",
+        //  textalign: "center"
+        //},
         {}
       ];
     }

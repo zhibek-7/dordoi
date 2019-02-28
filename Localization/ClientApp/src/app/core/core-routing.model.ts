@@ -92,7 +92,6 @@ const routes: Routes = [
   {
     path: "user-registration",
     component: UserRegistrationComponent
-    /*loadChildren: '../user-registration/user-registration.modele.ts#UserRegistrationModule'*/
   },
   {
     path: "**",

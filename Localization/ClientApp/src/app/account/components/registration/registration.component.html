@@ -86,9 +86,9 @@
 
 
   <div class="form-group">
-    <button class="btn"
+    <button class="btn m-1"
             [class.btn-success]="formGroup.valid"
-            [class.btn-secondary]="formGroup.invalid"
+            [class.btn-primary]="formGroup.invalid"
             type="submit"
             [disabled]="formGroup.invalid">
       СОЗДАТЬ УЧЁТНУЮ ЗАПИСЬ
@@ -96,7 +96,7 @@
   </div>
 
   <div class="form-group">
-    <button class="btn btn-secondary" routerLink=''>
+    <button class="btn btn-primary m-1" routerLink=''>
       ОТМЕНА
     </button>
   </div>

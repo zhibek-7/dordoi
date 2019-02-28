@@ -3,9 +3,9 @@
 
   <div class="row m-2">
     <div class="col">
-      <label class="btn btn-secondary">Добавить файл <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
-      <button class="btn btn-secondary" (click)="addFolderModal.showForNode(null)">Создать папку</button>
-      <button class="btn btn-secondary" (click)="folderInput.value = ''; folderInput.click()">
+      <label class="btn btn-primary m-1">Добавить файл <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
+      <button class="btn btn-primary m-1" (click)="addFolderModal.showForNode(null)">Создать папку</button>
+      <button class="btn btn-primary m-1" (click)="folderInput.value = ''; folderInput.click()">
         Загрузить папку
         <input type="file" #folderInput webkitdirectory style="display: none;" (change)="uploadFolder(folderInput.files)">
       </button>
@@ -97,18 +97,18 @@
           {{rowData.strings_count}}
         </td>
         <td class="col-xs-2">
-          <button class="btn btn-default" [style.width]="100+'%'" *ngIf="!rowData.is_folder" disabled>{{rowData.version}}</button>
+          <button class="btn btn-light" [style.width]="100+'%'" *ngIf="!rowData.is_folder" disabled>{{rowData.version}}</button>
         </td>
-        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
-          <button class="btn btn-default" *ngIf="!rowData.is_folder" disabled>{{rowData.priority}}</button>
-        </td>
+        <!--<td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+          <button class="btn btn-primary" *ngIf="!rowData.is_folder" disabled>{{rowData.priority}}</button>
+        </td>-->
         <td class="col-xs-2">
-          <button *ngIf="!rowData.is_folder" mat-raised-button (click)="updateFileInput.click()">
+          <button *ngIf="!rowData.is_folder" class="btn btn-primary  btn-sm m-1" (click)="updateFileInput.click()">
             Обновить
             <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
           </button>
-          <button *ngIf="!rowData.is_folder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
-            <mat-icon> arrow_downward </mat-icon>
+          <button *ngIf="!rowData.is_folder" class="btn btn-success  btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
+            Скачать
           </button>
           <button mat-icon-button
                   #fileRowMenuTrigger="matMenuTrigger"
@@ -169,17 +169,17 @@
           {{rowData.strings_count}}
         </td>        
         <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
-          {{rowData.percent_of_translation | percent }}
+          {{rowData.percent_of_translation | percent }}/{{rowData.percent_of_confirmed | percent }}
         </td>
-        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+<!--        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
           {{rowData.percent_of_confirmed | percent }}
-        </td>
+        </td>-->
         <td class="col-xs-2">
-          <button *ngIf="!rowData.is_folder" mat-raised-button (click)="translateFileClick(rowData)">
+          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1" (click)="translateFileClick(rowData)">
             Перевести
           </button>
-          <button *ngIf="!rowData.is_folder" mat-icon-button (click)="requestFileDownload(rowNode.node)">
-            <mat-icon> arrow_downward </mat-icon>
+          <button *ngIf="!rowData.is_folder" class="btn btn-success btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
+            Скачать
           </button>          
         </td>
       </tr>

@@ -41,7 +41,7 @@
 
 
               </dropzone>
-              <button class="btn btn-secondary"
+              <button class="btn btn-danger m-1"
                       (click)="deleteImage()">
                 Удалить
               </button>
@@ -110,9 +110,9 @@
             </div>
             <br />
             <div class="form-group">
-              <button class="btn"
+              <button class="btn m-1"
                       [class.btn-success]="profileFormGroup.valid"
-                      [class.btn-secondary]="profileFormGroup.invalid"
+                      [class.btn-primary]="profileFormGroup.invalid"
                       [disabled]="profileFormGroup.invalid"
                       type="submit">
                 СОХРАНИТЬ
@@ -134,7 +134,7 @@
               Проекты, созданные под Вашей учётной записью и сама учётная запись будут удалены навсегда,
               без возможности их восстановления в будущем.
             </label>
-            <button class="btn btn-danger"
+            <button class="btn btn-danger m-1"
                     (click)="deleteUser()">
               Удаление учетной записи
             </button>
@@ -212,9 +212,9 @@
               </div>
 
               <div class="form-group">
-                <button class="btn"
+                <button class="btn m-1"
                         [class.btn-success]="passwordChangeFormGroup.valid"
-                        [class.btn-secondary]="passwordChangeFormGroup.invalid"
+                        [class.btn-primary]="passwordChangeFormGroup.invalid"
                         [disabled]="passwordChangeFormGroup.invalid"
                         type="submit">
                   Смена пароля
