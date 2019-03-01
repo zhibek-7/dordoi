@@ -16,23 +16,17 @@ export class TranslationSubstringService {
     }
 
     async getStringById(){        
-      let asyncResult = await this.http.get<TranslationSubstring>(this.url, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    }).toPromise();
-        return asyncResult;    
+      let asyncResult = await this.http.get<TranslationSubstring>(this.url).toPromise();
+      return asyncResult;    
     }
 
     async getStrings(){
-      let strings: TranslationSubstring[] = await this.http.get<TranslationSubstring[]>(this.url, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    }).toPromise();
-        return strings;
+      let strings: TranslationSubstring[] = await this.http.get<TranslationSubstring[]>(this.url).toPromise();
+      return strings;
     }
 
     getImagesByTranslationSubstringId(translationSubstringId: number): Observable<Image[]>{
-      return this.http.post<Image[]>(this.url + "GetImagesByStringId/" + translationSubstringId, null, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+      return this.http.post<Image[]>(this.url + "GetImagesByStringId/" + translationSubstringId, null);
     }
 
     uploadImageToTranslationSubstring(fileToUpload: File[], translationSubstringId: number) {
@@ -41,22 +35,16 @@ export class TranslationSubstringService {
         fileToUpload.forEach(element => {
             formData.set('Image', element); 
             formData.append('TranslationSubstringId', translationSubstringId.toString());
-            return this.http.post(this.url + "UploadImageToTranslationSubstring", formData, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    }).toPromise();
+            return this.http.post(this.url + "UploadImageToTranslationSubstring", formData).toPromise();
         });        
     }
 
     getStringsInFile(idFile: number): Observable<TranslationSubstring[]>{
-      return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+      return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile);
     }
 
   getTranslationSubstringStatus(translationSubstringId: number): Observable<string>{
-    return this.http.post<string>(this.url + "Status/" + translationSubstringId, null, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.http.post<string>(this.url + "Status/" + translationSubstringId, null);
   }
 
   getStringsByProjectId(
@@ -96,27 +84,19 @@ export class TranslationSubstringService {
   }
 
   deleteTranslationSubstring(id: number): Observable<Object> {
-    return this.http.delete(this.url + id.toString(), {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.http.delete(this.url + id.toString());
   }
 
   updateTranslationSubstring(translationSubstring: TranslationSubstring): Observable<Object> {
-    return this.http.put(this.url + translationSubstring.id.toString(), translationSubstring, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.http.put(this.url + translationSubstring.id.toString(), translationSubstring);
   }
 
   getTranslationLocalesForString(id: number): Observable<Locale[]> {
-    return this.http.get<Locale[]>(this.url + id + '/locales', {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.http.get<Locale[]>(this.url + id + '/locales');
   }
 
   setTranslationLocalesForString(id: number, localesIds: number[]): Observable<Object> {
-    return this.http.put(this.url + id + '/locales', localesIds, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+    return this.http.put(this.url + id + '/locales', localesIds);
   }
 
 }

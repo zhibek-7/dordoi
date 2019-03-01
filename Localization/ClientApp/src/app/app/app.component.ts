@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
     );
 
     sessionStorage.setItem("ProjectName", currentProject.name_text);
-    sessionStorage.setItem("ProjecID", currentProject.id.toString());
+    sessionStorage.setItem("ProjectID", currentProject.id.toString());
   }
 
   logOut() {
@@ -77,7 +77,6 @@ export class AppComponent implements OnInit {
   }
 
   checkAuthorization() {
-    // this.userAuthorized = await this.authenticationService.checkUserAuthorisation();
     this.authenticationService.checkUserAuthorisationAsync()
               .subscribe(response => {
                 this.userAuthorized = response;

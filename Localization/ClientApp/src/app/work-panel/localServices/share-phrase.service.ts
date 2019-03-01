@@ -30,7 +30,6 @@ export class SharePhraseService {
     }
 
     async getTranslationsOfPickedPhrase(){
-        // this.translationsOfTheString = [];
         this.translationsOfTheString = await this.translateService.getAllTranslationsInStringById(this.sharedPhrase.id);
         this.onClick2.emit(this.translationsOfTheString);
     }

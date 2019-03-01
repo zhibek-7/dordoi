@@ -5,6 +5,7 @@ import { ShareTranslatedPhraseService } from '../../localServices/share-translat
 import { ShareWordFromModalService } from '../../localServices/share-word-from-modal.service';
 import { TranslationService } from '../../../services/translationService.service';
 import { ProjectsService } from '../../../services/projects.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 import { Translation } from '../../../models/database-entities/translation.type';
 import { TranslationWithFile } from '../../localEntites/translations/translationWithFile.type';
@@ -30,9 +31,12 @@ export class LanguagesComponent implements OnInit {
 
     searchByMemoryText: string = "";
 
-    constructor(private sharePhraseService: SharePhraseService, private shareTranslatedPhraseService: ShareTranslatedPhraseService,
-                private translationService: TranslationService, private projectService: ProjectsService,
-                private shareWordFromModalService: ShareWordFromModalService) {
+    constructor(private sharePhraseService: SharePhraseService,
+                private shareTranslatedPhraseService: ShareTranslatedPhraseService,
+                private translationService: TranslationService,
+                private projectService: ProjectsService,
+                private shareWordFromModalService: ShareWordFromModalService,
+                private authenticationService: AuthenticationService) {
         
         this.listOfTranslations = [];
         this.listOfTranslationsByMemory = [];
@@ -85,6 +89,18 @@ export class LanguagesComponent implements OnInit {
 
 
     ngOnInit(): void { }    
+
+    // Предоставляет доступ к финальному подтверждению перевода только пользователю с ролью "Менеджер"
+    checkAccessToSelectTranslation(): boolean{
+
+        let roles: string[] = ["Менеджер"];
+
+        if(this.authenticationService.provideAccessOnlyFor(roles)){
+            return true;
+        } else {
+            return false;
+        }
+    }
     
 
     // Функция проверки наличия фразы
@@ -128,7 +144,7 @@ export class LanguagesComponent implements OnInit {
     }
 
     // Изменение подтвержедние перевода
-    async changeTranslate(translation: Translation){
+    async changeTranslation(translation: Translation){
         if(translation.confirmed == false){
             this.translationService.rejectTranslate(translation.id);
         }
@@ -137,9 +153,21 @@ export class LanguagesComponent implements OnInit {
         }
     }
 
+    // Изменение выбранного финального перевода 
+    async changeSelectedTranslation(translation: Translation){
+        if(translation.selected == false){
+            translation.confirmed = false;
+            this.translationService.rejectFinalTranslattion(translation.id);
+        }
+        else {
+            translation.confirmed = true;
+            this.translationService.acceptFinalTranslation(translation.id);
+        }
+    }
+
     // Удаление варианта перевода
     async deleteTranslateClick(translationId: number){        
-        await this.translationService.deleteTranslate(translationId);
+        await this.translationService.deleteTranslation(translationId);
         for(var i = 0; i < this.listOfTranslations.length; i++) {
             if(this.listOfTranslations[i].id == translationId) {
                 this.listOfTranslations.splice(i, 1);

@@ -15,7 +15,7 @@ export class TranslationService {
 
   constructor(private http: HttpClient) {}
 
-  async createTranslate(translate: Translation) {
+  async createTranslation(translate: Translation) {
     return await this.http.post<number>(this.url, translate).toPromise();
   }
 
@@ -26,7 +26,7 @@ export class TranslationService {
     return translations;
   }
 
-  async deleteTranslate(idTranslation: number) {
+  async deleteTranslation(idTranslation: number) {
     await this.http
       .delete(this.url + "/DeleteTranslation/" + idTranslation)
       .toPromise();
@@ -35,6 +35,18 @@ export class TranslationService {
   async acceptTranslate(translationId: number) {
     await this.http
       .put(this.url + "/AcceptTranslation/" + translationId, true)
+      .toPromise();
+  }
+
+  async acceptFinalTranslation(translationId: number) {
+    await this.http
+      .put(this.url + "/AcceptFinalTranslation/" + translationId, true)
+      .toPromise();
+  }
+
+  async rejectFinalTranslattion(translationId: number) {
+    await this.http
+      .put(this.url + "/RejectFinalTranslation/" + translationId, false)
       .toPromise();
   }
 

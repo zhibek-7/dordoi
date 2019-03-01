@@ -15,8 +15,9 @@ namespace Models.DatabaseEntities
         [Required]
         public bool Confirmed { get; set; }
 
-        [Required]
         public int ID_User { get; set; }
+
+        public string User_Name { get; set; }
 
         [Required]
         public DateTime DateTime { get; set; }

@@ -228,8 +228,17 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список вариантов перевода</returns>
         public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByID(int idString)
         {
-            var query = "SELECT * " +
-                        "FROM translations " +
+            var query = "SELECT t.id_string, " +
+                        "t.translated, " +
+                        "t.confirmed, " +
+                        "t.id_user, " +
+                        "t.datetime, " +
+                        "t.id_locale, " +
+                        "t.selected, " +
+                        "t.id, " +
+                        "u.name_text AS User_Name " +
+                        "FROM translations as t " +
+                        "INNER JOIN users AS u ON u.id = t.id_user " +
                         "WHERE id_string = @Id";
 
             try
@@ -263,20 +272,36 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idTranslation">id перевода</param>
         /// <returns></returns>
-        public async Task<bool> AcceptTranslation(int idTranslation)
+        public async Task<bool> AcceptTranslation(int idTranslation, bool selectTranslation = false)
         {
             var query = "UPDATE translations " +
                         "SET confirmed = true " +
+                        "WHERE id = @Id";
+
+            var querySelectedTranslation = 
+                        "UPDATE translations " +
+                        "SET confirmed = true, selected = true " +
                         "WHERE id = @Id";
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { Id = idTranslation };
+                    var param = new { Id = idTranslation, selectTranslation };
                     this.LogQuery(query, param);
-                    var updatedRows = await dbConnection.ExecuteAsync(query, param);
-                    return updatedRows > 0;
+
+                    if (selectTranslation)
+                    {
+                        var updatedRows = await dbConnection.ExecuteAsync(querySelectedTranslation, param);
+
+                        return updatedRows > 0;
+                    }
+                    else
+                    {
+                        var updatedRows = await dbConnection.ExecuteAsync(query, param);
+
+                        return updatedRows > 0;
+                    }
                 }
             }
             catch (NpgsqlException exception)
@@ -300,20 +325,37 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idTranslation">id Перевода</param>
         /// <returns></returns>
-        public async Task<bool> RejectTranslation(int idTranslation)
+        public async Task<bool> RejectTranslation(int idTranslation, bool selectTranslation = false)
         {
             var query = "UPDATE translations " +
                         "SET confirmed = false " +
                         "WHERE id = @Id";
 
+            var querySelectedTranslation =
+                       "UPDATE translations " +
+                       "SET confirmed = false, selected = false " +
+                       "WHERE id = @Id";
+
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    var param = new { Id = idTranslation };
+                {                    
+
+                    var param = new { Id = idTranslation, selectTranslation };
                     this.LogQuery(query, param);
-                    var updatedRows = await dbConnection.ExecuteAsync(query, param);
-                    return updatedRows > 0;
+
+                    if (selectTranslation)
+                    {
+                        var updatedRows = await dbConnection.ExecuteAsync(querySelectedTranslation, param);
+
+                        return updatedRows > 0;
+                    }
+                    else
+                    {
+                        var updatedRows = await dbConnection.ExecuteAsync(query, param);
+
+                        return updatedRows > 0;
+                    }
                 }
             }
             catch (NpgsqlException exception)

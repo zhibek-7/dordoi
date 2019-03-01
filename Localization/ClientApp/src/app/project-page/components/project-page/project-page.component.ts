@@ -8,6 +8,7 @@ import { LanguageService } from "src/app/services/languages.service";
 import { UserService } from "src/app/services/user.service";
 import { UserActionsService } from "src/app/services/userActions.service";
 import { ParticipantsService } from "src/app/services/participants.service";
+import { AuthenticationService } from "src/app/services/authentication.service";
 
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { User } from "src/app/models/database-entities/user.type";
@@ -70,7 +71,8 @@ export class ProjectPageComponent implements OnInit {
     private languagesService: LanguageService,
     private userService: UserService,
     private userActionsService: UserActionsService,
-    private participantsService: ParticipantsService
+    private participantsService: ParticipantsService,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -79,6 +81,12 @@ export class ProjectPageComponent implements OnInit {
 
     var projectId = this.projectService.currentProjectId;
     //var projectId = Number(sessionStorage.getItem("ProjecID"));
+
+    this.authenticationService.setUserRoleAccordingToProject().subscribe(
+      success => {
+        this.authenticationService.refreshToken().subscribe();
+      }
+    );
 
     this.languagesService.getByProjectId(projectId).subscribe(
       Languages => {

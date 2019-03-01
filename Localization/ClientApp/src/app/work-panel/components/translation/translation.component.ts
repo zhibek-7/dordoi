@@ -32,7 +32,6 @@ export class TranslationComponent implements OnInit {
   translatedText: string;
   phraseForTranslate: TranslationSubstring;
   translatedPhrase: Translation;
-  currentUserID = -1;
 
   constructor(
     private sharePhraseService: SharePhraseService,
@@ -41,7 +40,6 @@ export class TranslationComponent implements OnInit {
     private translationSubstringService: TranslationSubstringService,
     private selectionDialog: MatDialog,
     private showImageDialog: MatDialog,
-    private userService: UserService
   ) {
     this.images = [];
 
@@ -85,9 +83,7 @@ export class TranslationComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    this.currentUserID = this.userService.currentUserId;
-  }
+  ngOnInit(): void {}
 
   // Скрывает левый блок (Блок с фразами)
   hideLeftBlock() {
@@ -150,10 +146,9 @@ export class TranslationComponent implements OnInit {
     this.translatedPhrase = new Translation(
       this.translatedText,
       this.phraseForTranslate.id,
-      10123,
-      this.currentUserID //300
-    ); //TODO поменять потом на реальный id пользователя и id языка
-    let insertedTranslationId = await this.translationService.createTranslate(
+      300
+    ); // Todo указывать язык, а не константу
+    let insertedTranslationId = await this.translationService.createTranslation(
       this.translatedPhrase
     );
     this.translatedPhrase.id = insertedTranslationId;

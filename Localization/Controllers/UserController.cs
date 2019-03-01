@@ -162,6 +162,23 @@ namespace Localization.Controllers
             return await userRepository.RemoveAsync(name_text);
         }
 
+        [Authorize]
+        [HttpPost("setUserRoleAccordingToProject")]
+        public async Task<ActionResult> SetUserRoleAccordingToProject()
+        {
+            var username = User.Identity.Name;
+            var projectId = Request.Form["ProjectID"].ToString();
+
+            var roleAccordingToProject = await userRepository.GetRoleAsync(username, Convert.ToInt32(projectId));
+
+            var response = new
+            {                
+                role = roleAccordingToProject
+            };
+
+            return Ok(response);
+        }
+
         /// <summary>
         /// Авторизация.
         /// </summary>
@@ -275,7 +292,10 @@ namespace Localization.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, user.Name_text),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role)
+                    // Это сделано намерено, т.к. у пользователя может быть несколько проектов и в каждом проекте у него своя роль,
+                    // а при первом логине пользователь еще не выбирает проект, соответственно его текущая роль будет "Наблюдатель".
+                    // Как только пользователь выбирает проект локализации, роль меняется в соответсвии с текущим проектом.
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, "Наблюдатель")
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

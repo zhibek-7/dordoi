@@ -9,7 +9,6 @@ export class TranslationWithLocale extends Translation {
     super(
       translation.translated,
       translation.iD_String,
-      translation.iD_User,
       translation.iD_Locale,
       translation.id
     );

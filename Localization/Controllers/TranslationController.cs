@@ -21,13 +21,13 @@ namespace Localization.WebApi
     {
         private readonly TranslationRepository translationRepository;
         private readonly UserActionRepository _userActionRepository;
-        private UserRepository ur;
+        private readonly UserRepository userRepository;
 
         public TranslationController()
         {
             var connectionString = Settings.GetStringDB();
             translationRepository = new TranslationRepository(connectionString);
-            ur = new UserRepository(connectionString);
+            userRepository = new UserRepository(connectionString);
             _userActionRepository = new UserActionRepository(connectionString);
         }
 
@@ -40,6 +40,11 @@ namespace Localization.WebApi
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]Translation translation)
         {
+            var identityName = User.Identity.Name;
+            int userId = (int)userRepository.GetID(identityName);
+
+            translation.ID_User = userId;
+
             if (translation == null)
             {
                 return BadRequest("Запрос с пустыми параметрами");
@@ -155,6 +160,37 @@ namespace Localization.WebApi
         }
 
         /// <summary>
+        /// Подтвердить финальный вариант перевода (поставить вторую галочку)
+        /// </summary>
+        /// <param name="idTranslation">id варианта перевода</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPut]
+        [Route("AcceptFinalTranslation/{idTranslation}")]
+        [Authorize(Roles = "Менеджер")]
+        public async Task<IActionResult> AcceptFinalTranslation(int idTranslation)
+        {
+            //Check if file by id exists in database
+            var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
+
+            if (foundedTranslation == null)
+            {
+                return NotFound($"Translation by id \"{idTranslation}\" not found");
+            }
+
+            var updateResult = await translationRepository.AcceptTranslation(idTranslation, true);
+
+            if (!updateResult)
+            {
+                return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
+            }
+
+            //_userActionRepository.AddConfirmTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Отклонить вариант перевода (убрать галочку)
         /// </summary>
         /// <param name="idTranslation">id варианта перевода, который нужно отклонить</param>
@@ -174,6 +210,37 @@ namespace Localization.WebApi
             }
 
             var updateResult = await translationRepository.RejectTranslation(idTranslation);
+
+            if (!updateResult)
+            {
+                return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
+            }
+
+            //int? pk = null;
+            //_userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, pk, idTranslation, foundedTranslation.ID_String, foundedTranslation.ID_Locale, "Убрали галочку");
+            return Ok();
+        }
+
+        /// <summary>
+        /// Отклонить финальный вариант перевода (убрать вторую галочку)
+        /// </summary>
+        /// <param name="idTranslation">id варианта перевода, который нужно отклонить</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPut]
+        [Route("RejectFinalTranslation/{idTranslation}")]
+        [Authorize(Roles = "Менеджер")]
+        public async Task<IActionResult> RejectFinalTranslation(int idTranslation)
+        {
+            //Check if file by id exists in database
+            var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
+
+            if (foundedTranslation == null)
+            {
+                return NotFound($"Translation by id \"{idTranslation}\" not found");
+            }
+
+            var updateResult = await translationRepository.RejectTranslation(idTranslation, true);
 
             if (!updateResult)
             {

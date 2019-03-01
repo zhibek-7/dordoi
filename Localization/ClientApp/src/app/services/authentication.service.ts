@@ -85,4 +85,33 @@ export class AuthenticationService {
         }));
   }
 
+  setUserRoleAccordingToProject() {
+
+    let projectId = sessionStorage.getItem('ProjectID');
+
+    const params = new HttpParams().set('ProjectID', projectId);
+
+    return this.http.post<string>(this.url + "setUserRoleAccordingToProject", params).pipe(map(data => {
+          let currentRole = data["role"];
+          this.setUserRole(currentRole);
+          return currentRole;
+        }));;
+  }
+
+  provideAccessOnlyFor(acceptableRoles: string[]): boolean {
+
+    let accessProvided = false;
+    let currentRole = this.getUserRole();
+
+
+    acceptableRoles.some(function(item){
+      if(item == currentRole){
+        accessProvided = true;
+        return accessProvided;
+      }
+    });
+
+    return accessProvided;
+  }
+
 }

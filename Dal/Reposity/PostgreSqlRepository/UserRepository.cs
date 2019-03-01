@@ -502,22 +502,38 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<String> GetRoleAsync(string userName)
+        public async Task<String> GetRoleAsync(string userName, int? projectId)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    string SQLQuery = "SELECT roles.name_text " +
+                    if(projectId == null)
+                    {
+                        string SQLQuery = "SELECT roles.name_text " +
                                       "FROM users " +
                                       "INNER JOIN participants ON participants.id_user = users.id " +
                                       "INNER JOIN roles ON roles.id = participants.id_role " +
                                       "WHERE users.name_text = @userName";
 
-                    var param = new { userName };
-                    this.LogQuery(SQLQuery, param);
-                    var userRole = await dbConnection.QuerySingleOrDefaultAsync<string>(SQLQuery, param);
-                    return userRole;
+                        var param = new { userName };
+                        this.LogQuery(SQLQuery, param);
+                        var userRole = await dbConnection.QuerySingleOrDefaultAsync<string>(SQLQuery, param);
+                        return userRole;
+                    }
+                    else
+                    {
+                        string SQLQuery = "SELECT roles.name_text " +
+                                      "FROM users " +
+                                      "INNER JOIN participants ON participants.id_user = users.id " +
+                                      "INNER JOIN roles ON roles.id = participants.id_role " +
+                                      "WHERE users.name_text = @userName AND participants.id_localization_project = @projectId ";
+
+                        var param = new { userName, projectId };
+                        this.LogQuery(SQLQuery, param);
+                        var userRole = await dbConnection.QuerySingleOrDefaultAsync<string>(SQLQuery, param);
+                        return userRole;
+                    }                    
                 }
             }
             catch (NpgsqlException exception)

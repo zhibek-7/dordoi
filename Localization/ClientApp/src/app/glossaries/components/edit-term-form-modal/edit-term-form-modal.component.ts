@@ -74,7 +74,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
           updateRequests.push(updateTermTranslationObservable);
         } else {
-          this.translationService.createTranslate(translation);
+          this.translationService.createTranslation(translation);
         }
       }
     }
