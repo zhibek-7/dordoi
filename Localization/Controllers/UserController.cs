@@ -207,6 +207,10 @@ namespace Localization.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Обновление токена у которого истекло время действия
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("refreshToken")]
         public IActionResult RefreshToken()
         {
@@ -218,8 +222,6 @@ namespace Localization.Controllers
             {
                 return null;
             }
-
-            //var roleUser = await this.userRepository.GetRoleAsync(userName);
 
             var claims = new List<Claim>
                 {
@@ -251,6 +253,12 @@ namespace Localization.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Получение пользователя с его claims (необходимые для авторизации)
+        /// </summary>
+        /// <param name="username"> Логин </param>
+        /// <param name="password"> Пароль </param>
+        /// <returns></returns>
         private async Task<ClaimsIdentity> GetUserWithIdentity(string username, string password)
         {
             User user = new User
@@ -279,6 +287,10 @@ namespace Localization.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Проверка авторизации пользователя
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("checkUserAuthorisation")]
         public IActionResult CheckUserAuthorisation()

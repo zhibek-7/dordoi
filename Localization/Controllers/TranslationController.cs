@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Translations;
 using Utilities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Localization.WebApi
 {
@@ -119,7 +118,7 @@ namespace Localization.WebApi
             }
 
 
-            _userActionRepository.AddDeleteTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
+            //_userActionRepository.AddDeleteTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
 
             return Ok();
         }
@@ -149,8 +148,9 @@ namespace Localization.WebApi
             {
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
+            
+            //_userActionRepository.AddConfirmTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
 
-            _userActionRepository.AddConfirmTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
             return Ok();
         }
 
@@ -180,8 +180,8 @@ namespace Localization.WebApi
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
 
-            int? pk = null;
-            _userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, pk, idTranslation, foundedTranslation.ID_String, foundedTranslation.ID_Locale, "Убрали галочку");
+            //int? pk = null;
+            //_userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, pk, idTranslation, foundedTranslation.ID_String, foundedTranslation.ID_Locale, "Убрали галочку");
             return Ok();
         }
 
@@ -200,7 +200,7 @@ namespace Localization.WebApi
             var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation);
             if (!updatedSuccessfuly)
                 return this.BadRequest();
-            _userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            //_userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return this.Ok();
         }
 
@@ -223,14 +223,7 @@ namespace Localization.WebApi
 
             var translations = await translationRepository.GetAllTranslationsByMemory(currentProjectId, translationText);
             return Ok(translations);
-        }
-
-        //[HttpPost]
-        //[Route("littleTest/{currentProjectId}")]
-        //public async Task LittleTest(int currentProjectId)
-        //{
-        //    Ok();
-        //}
+        }       
 
         /// <summary>
         /// Поиск схожих вариантов перевода в данном проекте

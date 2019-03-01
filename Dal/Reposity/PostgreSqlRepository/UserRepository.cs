@@ -558,7 +558,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);
-                    var existedUser = await dbConnection.QuerySingleOrDefaultAsync<User>(SQLQuery, param);
+                    var existedUser = await dbConnection.QueryFirstOrDefaultAsync<User>(SQLQuery, param);
                     return existedUser;
                 }
             }
