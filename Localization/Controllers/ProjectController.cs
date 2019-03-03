@@ -35,7 +35,7 @@ namespace Localization.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         [Route("List")]
         public List<LocalizationProject> GetProjects()
         {
@@ -43,7 +43,7 @@ namespace Localization.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         [Route("{Id}")]
         public LocalizationProject GetProjectById(int Id)
         {
@@ -72,7 +72,7 @@ namespace Localization.Controllers
         public async Task<int> newProject([FromBody] LocalizationProject project)
         {
             int idProj = await _localizationProjectRepository.AddAsyncInsertProject(project);
-           await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return idProj;
         }
 
@@ -84,7 +84,7 @@ namespace Localization.Controllers
         public async Task<LocalizationProject> AddProject([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-           await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
             return project;
         }
 
@@ -120,7 +120,7 @@ namespace Localization.Controllers
         public async Task<LocalizationProject> EditProject(LocalizationProject project, int Id)
         {
             _localizationProjectRepository.UpdateProject(project);
-           await _userActionRepository.AddEditProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация           
+            await _userActionRepository.AddEditProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация           
 
             return project;
         }

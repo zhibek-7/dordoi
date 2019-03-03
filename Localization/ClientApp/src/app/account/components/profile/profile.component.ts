@@ -274,7 +274,7 @@ export class ProfileComponent implements OnInit {
   /** Удаление фотографии. */
   deleteImage() {
     this.user.photo = null;
-    this.imageUrl = "../../assets/images/user-picture.png";
+    this.imageUrl = "../../assets/svg/011-user.svg";
   }
 
   //#endregion

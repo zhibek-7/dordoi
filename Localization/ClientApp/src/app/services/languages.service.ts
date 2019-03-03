@@ -12,15 +12,15 @@ export class LanguageService {
   constructor(private httpClient: HttpClient) {}
 
   getLanguageList(): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(this.url + 'List');
+    return this.httpClient.post<Locale[]>(this.url + 'List', null);
   }
 
   getByProjectId(projectId: number): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(this.url + 'byProjectId/' + projectId);
+    return this.httpClient.post<Locale[]>(this.url + 'byProjectId/' + projectId, projectId);
   }
 
   getByUserId(userId: number): Observable<Locale[]> {
-    return this.httpClient.get<Locale[]>(this.url + 'byUserId/' + userId);
+    return this.httpClient.post<Locale[]>(this.url + 'byUserId/' + userId, userId);
   }
 
   /**

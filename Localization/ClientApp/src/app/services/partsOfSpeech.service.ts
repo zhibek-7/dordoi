@@ -11,8 +11,8 @@ export class PartsOfSpeechService {
   constructor(private httpClient: HttpClient) {}
 
   public getListByGlossaryId(glossaryId: number): Observable<PartOfSpeech[]> {
-    return this.httpClient.get<PartOfSpeech[]>(
-      PartsOfSpeechService.connectionUrl,
+    return this.httpClient.post<PartOfSpeech[]>(
+      PartsOfSpeechService.connectionUrl, glossaryId, 
       {
         headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")), params: new HttpParams({
           fromObject: {

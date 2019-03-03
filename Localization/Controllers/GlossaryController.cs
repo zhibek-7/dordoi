@@ -143,7 +143,6 @@ namespace Localization.WebApi
         /// <returns>Список терминов</returns>
         [Authorize]
         [HttpPost("FindAllTermsInProjects")]
-        [Authorize]
         public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync([FromBody] int projectId)
         {
             var allTerms = await _glossaryService.GetAllTermsFromAllGlossarisInProjectByIdAsync(projectId);

@@ -54,8 +54,6 @@ namespace Localization.Controllers
             return await this.userRepository.GetPhotoByIdAsync(id: userId);
         }
 
-        //
-        //[Authorize]
         [Authorize]
         [HttpPost("Photo")]
         public async Task PhotoAsync()
@@ -172,7 +170,7 @@ namespace Localization.Controllers
             var roleAccordingToProject = await userRepository.GetRoleAsync(username, Convert.ToInt32(projectId));
 
             var response = new
-            {                
+            {
                 role = roleAccordingToProject
             };
 

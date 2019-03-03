@@ -24,7 +24,7 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         public IEnumerable<PartOfSpeech> GetAll([FromQuery] int? glossaryId)
         {
             if (glossaryId != null)

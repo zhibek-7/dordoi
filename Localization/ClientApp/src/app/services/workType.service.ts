@@ -11,10 +11,10 @@ export class WorkTypeService {
   constructor(private httpClient: HttpClient) { }
 
   getWorkTypes(): Observable<WorkType[]> {
-    return this.httpClient.get<WorkType[]>(this.url + 'list');
+    return this.httpClient.post<WorkType[]>(this.url + 'list', null);
   }
 
   getWorkTypeByID(id: number): Observable<WorkType> {
-    return this.httpClient.get<WorkType>(this.url + id.toString());
+    return this.httpClient.post<WorkType>(this.url + id.toString(), id);
   }
 }

@@ -26,7 +26,8 @@ namespace Localization.Controllers
         /// </summary>
         /// <returns>Список всех типов работы</returns>
         [Authorize]
-        [HttpGet("list")]
+        [Route("list")]
+        [HttpPost]
         public async Task<ActionResult<IEnumerable<WorkType>>> GetWorkTypes()
         {
             var strings = await workTypeRepository.GetAllAsync();
@@ -43,7 +44,8 @@ namespace Localization.Controllers
         /// <param name="id">id типа работы</param>
         /// <returns>Тип работы с необходимым id</returns>
         [Authorize]
-        [HttpGet("{id}")]
+        [Route("{id}")]
+        [HttpPost]
         public async Task<ActionResult<WorkType>> GetWorkTypeById(int id)
         {
             WorkType typeOfWork = await workTypeRepository.GetByIDAsync(id);

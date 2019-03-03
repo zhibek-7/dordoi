@@ -32,13 +32,9 @@ export class ProjectsLocalesService {
 
     console.log(this.controllerUrl + "add/{project}");
     console.log(this.controllerUrl + "AddProject");
-    //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
     let asyncResult = await this.httpClient.post<LocalizationProjectsLocales>(this.controllerUrl + "AddProject", project).toPromise();
     return asyncResult;
-
-
-    //return this.httpClient.get<Project>(this.controllerUrl + 1);
   }
 
 

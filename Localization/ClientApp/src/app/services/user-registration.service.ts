@@ -11,14 +11,14 @@ export class UserRegistrationService {
   }
 
   getUsers() {
-    return this.http.get(this.url,
+    return this.http.post(this.url, null,
       {
         headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
     });
   }
 
   getUser(Id: number) {
-    return this.http.get(this.url,
+    return this.http.post(this.url, Id,
       {
         headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken"))
     })

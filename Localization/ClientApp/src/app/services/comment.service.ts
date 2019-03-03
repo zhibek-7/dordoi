@@ -32,7 +32,7 @@ export class CommentService {
     }
 
     getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{    
-        return this.http.get<CommentWithUser[]>(this.url + 'InString/' + idString)
+        return this.http.post<CommentWithUser[]>(this.url + 'InString/' + idString, idString)
                 .pipe(
                     catchError(this.handleError('Get comments in string', []))
                 );

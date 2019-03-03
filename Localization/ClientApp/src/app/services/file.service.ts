@@ -19,7 +19,7 @@ export class FileService {
 
   getFiles(): Observable<TreeNode[]> {
     return this.http
-      .get<TreeNode[]>(this._url, {
+      .post<TreeNode[]>(this._url, null, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
@@ -52,7 +52,7 @@ export class FileService {
   //Нужно для формирования отчетов
   getInitialProjectFolders(projectId: number): Observable<FileData[]> {
     const url = `${this._url}/ForProject:${projectId}`;
-    return this.http.get<FileData[]>(url, {
+    return this.http.post<FileData[]>(url, projectId, {
       headers: new HttpHeaders().set(
         "Authorization",
         "Bearer " + sessionStorage.getItem("userToken")
@@ -190,7 +190,7 @@ export class FileService {
     const url = `${this._url}/${fileData.id}/changeParentFolder/${newParentId}`;
 
     return this.http
-      .get<TreeNode>(url, {
+      .post<TreeNode>(url,  fileData, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
@@ -203,7 +203,7 @@ export class FileService {
     const url = `${this._url}/${fileData.id}/locales/list`;
 
     return this.http
-      .get<Locale[]>(url, {
+      .post<Locale[]>(url,fileData, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")

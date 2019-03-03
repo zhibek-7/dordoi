@@ -24,7 +24,7 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         [Route("List")]
         public async Task<IEnumerable<Locale>> GetLocales()
         {
@@ -32,13 +32,16 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpGet("byProjectId/{projectId}")]
+        [HttpPost]
+        [Route("byProjectId/{projectId}")]
         public async Task<IEnumerable<Locale>> GetProjectLocales(int projectId)
         {
             return await _localeRepository.GetAllForProject(projectId);
         }
 
-        [HttpGet("byUserId/{userId}")]
+        [Authorize]
+        [HttpPost]
+        [Route("byUserId/{userId}")]
         public async Task<IEnumerable<Locale>> GetUserLocales(int userId)
         {
             return await _localeRepository.GetByUserIdAsync(userId);
@@ -51,7 +54,6 @@ namespace Localization.WebApi
         /// <returns></returns>
         [Authorize]
         [HttpPost("localesWithPercentByProjectId")]
-        [Authorize]
         public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent([FromBody] int projectId)
         {
             return await _localeRepository.GetAllForProjectWithPercent(projectId);

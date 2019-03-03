@@ -16,12 +16,14 @@ export class TranslationService {
   constructor(private http: HttpClient) {}
 
   async createTranslation(translate: Translation) {
-    return await this.http.post<number>(this.url, translate).toPromise();
+    return await this.http
+      .post<number>(this.url + "/Create", translate)
+      .toPromise();
   }
 
   async getAllTranslationsInStringById(idString: number) {
     let translations: Translation[] = await this.http
-      .get<Translation[]>(this.url + "/InString/" + idString)
+      .post<Translation[]>(this.url + "/InString/" + idString, idString)
       .toPromise();
     return translations;
   }
@@ -57,7 +59,10 @@ export class TranslationService {
   }
 
   updateTranslation(updatedTranslation: Translation): Observable<Object> {
-    return this.http.put(this.url + "/" + updatedTranslation.id, updatedTranslation);
+    return this.http.put(
+      this.url + "/" + updatedTranslation.id,
+      updatedTranslation
+    );
   }
 
   findTranslationByMemory(
@@ -70,13 +75,17 @@ export class TranslationService {
         currentProjectId +
         "/" +
         translationText,
-        null);
+      null
+    );
   }
 
   findSimilarTranslations(
     currentProjectId: number,
     translationSubsting: TranslationSubstring
   ): Observable<SimilarTranslation[]> {
-    return this.http.post<SimilarTranslation[]>(this.url + "/FindSimilarTranslations/" + currentProjectId, translationSubsting);
+    return this.http.post<SimilarTranslation[]>(
+      this.url + "/FindSimilarTranslations/" + currentProjectId,
+      translationSubsting
+    );
   }
 }

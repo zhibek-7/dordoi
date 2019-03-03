@@ -36,8 +36,7 @@ namespace Localization.WebApi
         /// </summary> 
         /// <returns>Список всех фраз</returns> 
         [Authorize]
-        [HttpGet]
-        [Authorize]
+        [HttpPost]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStrings()
         {
             var strings = await stringRepository.GetAllAsync();
@@ -56,8 +55,8 @@ namespace Localization.WebApi
         /// <param name="idFile">id файла в котором производится поиск фраз для перевода</param> 
         /// <returns>список фраз для перевода из файла</returns> 
         [Authorize]
-        [HttpGet("InFile/{idFile}")]
-        [Authorize]
+        [HttpPost]
+        [Route("InFile/{idFile}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStringsInFile(int idFile)
         {
             var strings = await stringRepository.GetStringsByFileIdAsync(idFile);
@@ -76,8 +75,8 @@ namespace Localization.WebApi
         /// <param name="id">id фразы</param> 
         /// <returns>Фраза с необходимым id</returns> 
         [Authorize]
-        [HttpGet("{id}")]
-        [Authorize]
+        [HttpPost]
+        [Route("{id}")]
         public async Task<ActionResult<TranslationSubstring>> GetStringById(int id)
         {
             TranslationSubstring foundedString = await stringRepository.GetByIDAsync(id);
@@ -97,7 +96,6 @@ namespace Localization.WebApi
         /// <returns>Список изображений</returns> 
         [Authorize]
         [HttpPost("GetImagesByStringId/{translationSubstringId}")]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(int translationSubstringId)
         {
             var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
@@ -119,7 +117,6 @@ namespace Localization.WebApi
         /// <returns>Статус перевода</returns> 
         [Authorize]
         [HttpPost("Status/{translationSubstringId}")]
-        [Authorize]
         public async Task<ActionResult<string>> GetStatusOfTranslationSubstring(int translationSubstringId)
         {
             var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
@@ -141,7 +138,6 @@ namespace Localization.WebApi
         /// <returns></returns> 
         [Authorize]
         [HttpPost("UploadImageToTranslationSubstring")]
-        [Authorize]
         public async Task<IActionResult> UploadImage()
         {
             var content = Request.Form.Files["Image"];
@@ -176,8 +172,8 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpGet("ByProjectId/{projectId}")]
-        [Authorize]
+        [HttpPost]
+        [Route("ByProjectId/{projectId}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetByProjectId(
             int projectId,
             int? offset,
@@ -215,7 +211,6 @@ namespace Localization.WebApi
 
         [Authorize]
         [HttpDelete("{translationSubstringId}")]
-        [Authorize]
         public async Task DeleteTranslationSubstring(int translationSubstringId)
         {
             await this.stringRepository.RemoveAsync(id: translationSubstringId);
@@ -223,7 +218,6 @@ namespace Localization.WebApi
 
         [Authorize]
         [HttpPut("{translationSubstringId}")]
-        [Authorize]
         public async Task UpdateTranslationSubstring(int translationSubstringId, [FromBody] TranslationSubstring updatedTranslationSubstring)
         {
             updatedTranslationSubstring.id = translationSubstringId;
@@ -231,8 +225,8 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpGet("{translationSubstringId}/locales")]
-        [Authorize]
+        [Route("{translationSubstringId}/locales")]
+        [HttpPost]
         public async Task<IEnumerable<Locale>> GetLocalesIdsForStringAsync(int translationSubstringId)
         {
             return await this.stringRepository.GetLocalesForStringAsync(translationSubstringId: translationSubstringId);
@@ -240,7 +234,6 @@ namespace Localization.WebApi
 
         [Authorize]
         [HttpPut("{translationSubstringId}/locales")]
-        [Authorize]
         public async Task UpdateLocalesForStringAsync(int translationSubstringId, [FromBody] IEnumerable<int> localesIds)
         {
             await this.stringRepository.DeleteTranslationLocalesAsync(translationSubstringId: translationSubstringId);

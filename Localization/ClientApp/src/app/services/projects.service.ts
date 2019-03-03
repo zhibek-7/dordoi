@@ -22,15 +22,15 @@ export class ProjectsService {
 
   getProjects(): Observable<LocalizationProject[]> {
     console.log("getProject-->");
-    return this.httpClient.get<LocalizationProject[]>(
-      this.controllerUrl + "List"
+    return this.httpClient.post<LocalizationProject[]>(
+      this.controllerUrl + "List", null
     );
   }
 
   getProject(id: number): Observable<LocalizationProject> {
     console.log("getProject=" + id);
     console.log("getProject===" + this.controllerUrl + id);
-    return this.httpClient.get<LocalizationProject>(this.controllerUrl + id);
+    return this.httpClient.post<LocalizationProject>(this.controllerUrl + id, id);
   }
 
   /**
@@ -59,13 +59,11 @@ export class ProjectsService {
 
     console.log(this.controllerUrl + "add/{project}");
     console.log(this.controllerUrl + "AddProject");
-    //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
     let asyncResult = await this.httpClient
       .post<LocalizationProject>(this.controllerUrl + "AddProject", project)
       .toPromise();
     return asyncResult;
-    //return this.httpClient.get<Project>(this.controllerUrl + 1);
   }
   async updateProject(Id: number, project: LocalizationProject) {
     console.log("updateProject-->" + Id);
@@ -110,14 +108,12 @@ export class ProjectsService {
 
     console.log(this.controllerUrl + "add/{project}");
     console.log(this.controllerUrl + "AddProject");
-    //return this.httpClient.get<Project>(this.controllerUrl + "add/{project}");
 
     let asyncResult = await this.httpClient
       .post<LocalizationProjectsLocales[]>(this.controllerUrl + "AddProjectLocale",projectLocales)
       .toPromise();
     return asyncResult;
 
-    //return this.httpClient.get<Project>(this.controllerUrl + 1);
   } 
 
   //обновление языков

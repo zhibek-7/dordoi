@@ -45,7 +45,6 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost]
         [Route("AddComment")]
-        [Authorize]
         public async Task<IActionResult> CreateComment([FromBody] Comments comment)
         {
             if (comment == null)
@@ -71,9 +70,8 @@ namespace Localization.WebApi
         /// <param name="idString">id фразы, комментарии которой необходимы</param>
         /// <returns>Список комментариев</returns>
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         [Route("InString/{idString}")]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<CommentWithUserInfo>>> GetCommentsInString(int idString)
         {
             // Check if string by id exists in database
@@ -93,6 +91,7 @@ namespace Localization.WebApi
         /// </summary>
         /// <returns>Список комментариев</returns>
         [Authorize]
+        [HttpPost]
         public async Task<ActionResult<IEnumerable<Comments>>> GetComments()
         {
             IEnumerable<Comments> comments = await commentRepository.GetAllAsync();
@@ -108,7 +107,6 @@ namespace Localization.WebApi
         [Authorize]
         [HttpDelete]
         [Route("DeleteComment/{commentId}")]
-        [Authorize]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
             // Check if string by id exists in database
@@ -137,7 +135,6 @@ namespace Localization.WebApi
         /// <returns></returns>
         [Authorize]
         [HttpPut("UpdateComment/{idComment}")]
-        [Authorize]
         public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
         {
             // Check if comment by id exists in database
@@ -169,7 +166,6 @@ namespace Localization.WebApi
         /// <returns></returns>
         [Authorize]
         [HttpPost("UploadImageToComment")]
-        [Authorize]
         public async Task<IActionResult> UploadImage()
         {
             var content = Request.Form.Files["Image"];

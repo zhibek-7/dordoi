@@ -11,11 +11,11 @@ export class UserLoginService {
   }
 
   getUsers() {
-    return this.http.get(this.url);
+    return this.http.post(this.url, null);
   }
 
   getUser(Id: number) {
-    return this.http.get(this.url)
+    return this.http.post(this.url, Id)
   }
 
 

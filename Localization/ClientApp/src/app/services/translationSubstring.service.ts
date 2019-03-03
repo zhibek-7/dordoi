@@ -16,12 +16,12 @@ export class TranslationSubstringService {
     }
 
     async getStringById(){        
-      let asyncResult = await this.http.get<TranslationSubstring>(this.url).toPromise();
+      let asyncResult = await this.http.post<TranslationSubstring>(this.url, null).toPromise();
       return asyncResult;    
     }
 
     async getStrings(){
-      let strings: TranslationSubstring[] = await this.http.get<TranslationSubstring[]>(this.url).toPromise();
+      let strings: TranslationSubstring[] = await this.http.post<TranslationSubstring[]>(this.url, null).toPromise();
       return strings;
     }
 
@@ -40,7 +40,7 @@ export class TranslationSubstringService {
     }
 
     getStringsInFile(idFile: number): Observable<TranslationSubstring[]>{
-      return this.http.get<TranslationSubstring[]>(this.url + "InFile/" + idFile);
+      return this.http.post<TranslationSubstring[]>(this.url + "InFile/" + idFile, idFile);
     }
 
   getTranslationSubstringStatus(translationSubstringId: number): Observable<string>{
@@ -75,7 +75,7 @@ export class TranslationSubstringService {
         params = params.set('sortAscending', sortAscending.toString());
       }
     }
-    return this.http.get<TranslationSubstring[]>(this.url + 'ByProjectId/' + projectId,
+    return this.http.post<TranslationSubstring[]>(this.url + 'ByProjectId/' + projectId, projectId,
        {
         params: params,
         observe: 'response',
@@ -92,7 +92,7 @@ export class TranslationSubstringService {
   }
 
   getTranslationLocalesForString(id: number): Observable<Locale[]> {
-    return this.http.get<Locale[]>(this.url + id + '/locales');
+    return this.http.post<Locale[]>(this.url + id + '/locales', id);
   }
 
   setTranslationLocalesForString(id: number, localesIds: number[]): Observable<Object> {
