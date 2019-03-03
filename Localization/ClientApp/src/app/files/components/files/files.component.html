@@ -169,7 +169,10 @@
           {{rowData.strings_count}}
         </td>        
         <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
-          {{rowData.percent_of_translation | percent }}/{{rowData.percent_of_confirmed | percent }}
+          
+<div class="progress">
+  <div class="progress-bar" style="width:{{rowData.percent_of_translation | percent }}">{{rowData.percent_of_translation | percent }}/{{rowData.percent_of_confirmed | percent }}</div>
+</div>
         </td>
 <!--        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
           {{rowData.percent_of_confirmed | percent }}
