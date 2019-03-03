@@ -1,22 +1,16 @@
 <div class="reportParamHolder">
-  <p class="daterangePicker">
+
+  <p class="daterangePicker1">
     <span>Диапазон дат </span>
+    <!-- -->
     <input type="text" matInput ngxDaterangepickerMd [locale]="{cancelLabel: ' Отмена ', applyLabel: ' ОК ', format: 'DD-MM-YYYY'}"
-      startKey="from" endKey="to" [(ngModel)]="selected" name="daterange" class="daterangePicker" value="{{getReportPeriod()}}" />
+      startKey="from" endKey="to" [(ngModel)]="selected" name="daterange" class="daterangePicker1" value="{{getReportPeriod()}}" />
+    <!---->
   </p>
+
   <div>
+
     <div classs="div_bg">
-
-      <!--
-          <div class="col">
-              <select class="form-control m-1" [(ngModel)]="selectedFileId" (change)="applyActionsFilter()" [(value)]="userId2">
-                <option [ngValue]="-1">Все пользователи</option>
-                <option *ngFor="let u of Users" [ngValue]="u.id">{{u.name_text}}</option>
-              </select>
-            </div>
-          -->
-
-
       <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
         <mat-label>Пользователь</mat-label>
         <mat-select [(value)]="userId" placeholder="Пользователь" style=" color: green;padding: 2px">
@@ -49,6 +43,7 @@
           <mat-option value="true">знакам с пробелами</mat-option>
         </mat-select>
       </mat-form-field>
+
       <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
         <mat-label>Основа для подсчета</mat-label>
         <mat-select [(value)]="calcBasisType" placeholder="Основа для подсчета">
@@ -56,16 +51,8 @@
           <mat-option value="true">Язык перевода</mat-option>
         </mat-select>
       </mat-form-field>
-      <!--
-      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
-        <mat-label>Начальная папка</mat-label>
-        <mat-select [(value)]="initialFolderId" placeholder="Начальная папка">
-          <mat-option value="0">Все</mat-option>
-          <mat-option *ngFor="let folder of Folders" value="{{folder.id}}">"{{folder.name_text}}"</mat-option>
-        </mat-select>
-      </mat-form-field>
-      -->
     </div>
+
     <div>
       <button (click)="clickEvent()" class="btn  btn-success m-1">
         Построить отчет
@@ -74,6 +61,7 @@
         Экспорт отчетов
       </button>
     </div>
+
   </div>
 
 </div>
@@ -107,4 +95,5 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+
 </div>
