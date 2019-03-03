@@ -43,7 +43,7 @@ namespace Localization.WebApi
         /// <param name="workType">Тип работы - перевод и редактура</param>
         /// <param name="initialFolderId">ID начальной папки</param>
         /// <returns>Строки отчета</returns>
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         [Route("TranslatedWords")]
         public IEnumerable<TranslatedWordsReportRow> GetTranslatedWordsReport([FromBody] reportParamsDTO _params)
@@ -66,7 +66,7 @@ namespace Localization.WebApi
         /// <param name="workType">Тип работы - перевод и редактура</param>
         /// <param name="initialFolderId">ID начальной папки</param>
         /// <returns>Файл Report.xlsx</returns>
-        //[Authorize]
+        //[Authorize]  //TODO нужно переделать, в текущем варинате не работает авторизация
         [HttpPost]
         [Route("TranslatedWordsExcel")]
         public FileResult GetTranslatedWordsReportExcel(

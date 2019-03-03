@@ -37,7 +37,7 @@ export class TranslatedWordsComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.error("--report ngOnInit-");
+    console.log("--report ngOnInit-");
     this.languagesService.getLanguageList().subscribe(
       Languages => {
         this.Languages = Languages;
@@ -111,7 +111,7 @@ export class TranslatedWordsComponent implements OnInit {
   ];
 
   async getRows() {
-    console.error("--report getRows-");
+    console.log("--report getRows-");
     this.reportService
       .getTranslatedWordsReport(
         this.project.id,
@@ -131,7 +131,7 @@ export class TranslatedWordsComponent implements OnInit {
   }
 
   setHeaderMsg() {
-    console.error("--report setHeaderMsg-");
+    console.log("--report setHeaderMsg-");
     let fromStr = "";
     if (this.selected.from != undefined && this.selected.from != null)
       fromStr = this.selected.from.format("DD-MM-YYYY");
@@ -142,7 +142,7 @@ export class TranslatedWordsComponent implements OnInit {
   }
 
   getReportPeriod() {
-    console.error("--report getReportPeriod-");
+    console.log("--report getReportPeriod-");
     if (this.selected && this.selected.from && this.selected.to)
       return (
         this.selected.from.format("DD.MM.YYYY") +
@@ -157,7 +157,7 @@ export class TranslatedWordsComponent implements OnInit {
   }
 
   download() {
-    console.error("--report getTranslatedWordsReportExcel-");
+    console.log("--report getTranslatedWordsReportExcel-");
 
     this.reportService.getTranslatedWordsReportExcel(
       this.project.id,
