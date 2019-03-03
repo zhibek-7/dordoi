@@ -12,6 +12,7 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(int glossaryId, int limit, int offset, string termPart = null, string[] sortBy = null, bool sortAscending = true);
         Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart);
         Task<Locale> GetLocaleByIdAsync(int glossaryId);
+        Task<Locale> GetLocaleByTermByIdAsync(int termId);
         Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId);
 
         Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId);

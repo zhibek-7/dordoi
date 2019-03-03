@@ -728,7 +728,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             NpgsqlConnection dbConnection, IDbTransaction transaction = null)
         {
             //TODO нужно удаление локалей сделать.
-
             Task<IEnumerable<Locale>> assignedLoc = GetLocalesForStringAsync(translationSubstringId);
 
             List<int> idAssignetLoc = new List<int>();

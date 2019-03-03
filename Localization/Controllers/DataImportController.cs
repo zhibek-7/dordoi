@@ -30,7 +30,8 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpPost("locales")]
+        [HttpPost()]
+        [Route("locales")]
         public async Task ImportLocalesFromFile(IFormFile file, [FromForm] bool cleanTableBeforeImportFlag, [FromForm] string signalrConnectionId)
         {
             var signalrHubClientProxy = this._hubContext.Clients.Client(signalrConnectionId);

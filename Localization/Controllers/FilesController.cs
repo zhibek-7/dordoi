@@ -79,7 +79,7 @@ namespace Localization.WebApi
             return Ok(foundedFile);
         }
 
-        [HttpPost()]
+        [HttpPost]
         [Route("ForProject:{projectId}")]
         [Authorize]
         public IEnumerable<File> GetInitialFolders(int projectId)

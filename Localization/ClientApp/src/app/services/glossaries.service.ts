@@ -92,8 +92,14 @@ export class GlossariesService {
       .pipe(catchError(this.handleError));
   }
 
+  getGlossaryLocaleByTerm(termId: number): Observable<Locale> {
+    return this.httpClient.post<Locale>(GlossariesService.connectionUrl+ 'term/locale/get/'+termId , null)
+      .pipe(catchError(this.handleError));
+  }
+
+
   getTranslationLocalesForTerm(glossaryId: number, termId: number): Observable<Locale[]> {
-    return this.httpClient.post<Locale[]>(GlossariesService.connectionUrl + glossaryId + '/terms/' + termId + '/locales/list', null)
+    return this.httpClient.post<Locale[]>(GlossariesService.connectionUrl + 'terms/' + termId + '/locales/list', null)
       .pipe(catchError(this.handleError));
   }
 

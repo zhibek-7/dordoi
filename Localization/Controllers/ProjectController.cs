@@ -72,7 +72,7 @@ namespace Localization.Controllers
         public async Task<int> newProject([FromBody] LocalizationProject project)
         {
             int idProj = await _localizationProjectRepository.AddAsyncInsertProject(project);
-            await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
             return idProj;
         }
 
@@ -84,7 +84,7 @@ namespace Localization.Controllers
         public async Task<LocalizationProject> AddProject([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
             return project;
         }
 
@@ -94,7 +94,7 @@ namespace Localization.Controllers
         public LocalizationProject AddProjectT([FromBody] LocalizationProject project)
         {
             _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
             return project;
         }
 
@@ -120,7 +120,7 @@ namespace Localization.Controllers
         public async Task<LocalizationProject> EditProject(LocalizationProject project, int Id)
         {
             _localizationProjectRepository.UpdateProject(project);
-            await _userActionRepository.AddEditProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);//TODO поменять на пользователя когда будет реализована авторизация           
+            await _userActionRepository.AddEditProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
 
             return project;
         }
@@ -130,7 +130,8 @@ namespace Localization.Controllers
         /// </summary>
         /// <returns>LocalizationProjectForSelectDTO{ID, Name}</returns>
         [Authorize]
-        [HttpPost("forSelectByUser")]
+        [HttpPost]
+        [Route("forSelectByUser")]
         public async Task<IEnumerable<LocalizationProjectForSelectDTO>> GetAllForSelectAsync()
         {
             var userName = User.Identity.Name;

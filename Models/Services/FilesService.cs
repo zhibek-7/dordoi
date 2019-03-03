@@ -398,7 +398,6 @@ namespace Models.Services
 
             var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.name_text, file.id_folder_owner)).id;
 
-            //TODO тут брать в зависимости от того откуда это, глоссарийи и память переводов отельно
             await this._filesRepository.AddTranslationLocalesAsync(
                 fileId: addedFileId,
                 localesIds: projectLocales.Select(locale => locale.id));

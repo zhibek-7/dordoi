@@ -21,7 +21,7 @@ namespace Models.Services
             this._stringsRepository = translationSubstringRepository;
         }
 
-        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int termId)
         {
             try
             {
@@ -78,6 +78,18 @@ namespace Models.Services
             catch (Exception exception)
             {
                 throw new Exception(WriteLn($"Error  \"{glossaryId}\" ", exception), exception);
+            }
+        }
+
+        public async Task<Locale> GetLocaleByTermByIdAsync(int termId)
+        {
+            try
+            {
+                return await this._glossaryRepository.GetLocaleByTermByIdAsync(termId: termId);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(WriteLn($"Error  \"{termId}\" ", exception), exception);
             }
         }
 

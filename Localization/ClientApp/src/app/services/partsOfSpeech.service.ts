@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams, HttpHeaders  } from "@angular/common/http";
+import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 import { PartOfSpeech } from "src/app/models/database-entities/partOfSpeech.type";
@@ -12,14 +12,19 @@ export class PartsOfSpeechService {
 
   public getListByGlossaryId(glossaryId: number): Observable<PartOfSpeech[]> {
     return this.httpClient.post<PartOfSpeech[]>(
-      PartsOfSpeechService.connectionUrl, glossaryId, 
+      PartsOfSpeechService.connectionUrl + "/List",
+      glossaryId,
       {
-        headers: new HttpHeaders().set('Authorization',"Bearer " + sessionStorage.getItem("userToken")), params: new HttpParams({
+        headers: new HttpHeaders().set(
+          "Authorization",
+          "Bearer " + sessionStorage.getItem("userToken")
+        ),
+        params: new HttpParams({
           fromObject: {
-            glossaryId: glossaryId.toString()
+            glossaryId: "" + glossaryId
           }
         })
-    }
+      }
     );
   }
 }

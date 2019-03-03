@@ -500,7 +500,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="projectId">Идентификатор проекта</param> 
         /// <param name="translationId">Идентификатор перевода</param> 
         /// <returns>Идентификатор добавленого действия</returns> 
-        public async Task<int> AddAddTraslationActionAsync(int userId, string userName, int projectId, int translationId, int stringId, int localeId, string comment = "")
+        public async Task<int> AddAddTraslationActionAsync(int userId, string userName, int? projectId, int translationId, int stringId, int localeId, string comment = "")
         {
             var act = new UserAction(userId, userName, "Добавление перевода. " + comment, (int)WorkTypes.AddTraslation, WorkTypes.AddTraslation.ToString())
             {

@@ -123,8 +123,6 @@ namespace Localization
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            ///TODO
-            //services.AddEntityFrameworkNpgsql().AddDbContext<PostgreSqlEFContext>(opt => opt.UseNpgsql(connectionString)); // тут подключаем нашу удаленную бд
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

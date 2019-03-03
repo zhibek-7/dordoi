@@ -51,6 +51,13 @@ namespace Localization.WebApi
             return await this._glossaryService.GetLocaleByIdAsync(glossaryId: glossaryId);
         }
 
+        [Authorize]
+        [HttpPost("term/locale/get/{termId}")]
+        public async Task<Locale> GetGlossaryLocaleByTermAsync(int termId)
+        {
+            return await this._glossaryService.GetLocaleByTermByIdAsync(termId: termId);
+        }
+
 
         public class GetAssotiatedTermsParam
         {
@@ -118,11 +125,10 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpPost("{glossaryId}/terms/{termId}/locales/list")]
+        [HttpPost("terms/{termId}/locales/list")]
         public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int glossaryId, int termId)
         {
             return await this._glossaryService.GetTranslationLocalesForTermAsync(
-                glossaryId: glossaryId,
                 termId: termId);
         }
 

@@ -50,7 +50,7 @@ namespace Localization.Controllers
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddCreateGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-              await _glossariesService.AddNewGlossaryAsync(glossary);
+            await _glossariesService.AddNewGlossaryAsync(glossary);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Localization.Controllers
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
-            await _userActionRepository.AddDeleteGlossaryActionAsync((int)userId, identityName, glossaryId, "");//TODO поменять на пользователя когда будет реализована авторизация
+            await _userActionRepository.AddDeleteGlossaryActionAsync((int)userId, identityName, glossaryId, "");
             await _glossariesService.DeleteGlossaryAsync(glossaryId);
         }
 

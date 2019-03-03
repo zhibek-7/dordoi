@@ -165,7 +165,8 @@ namespace Localization.WebApi
         /// <param name="idComment">id комментария к которому приложена картинка</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("UploadImageToComment")]
+        [HttpPost()]
+        [Route("UploadImageToComment")]
         public async Task<IActionResult> UploadImage()
         {
             var content = Request.Form.Files["Image"];

@@ -9,9 +9,8 @@ namespace Utilities
     /// </summary>
     public class Settings : ISettings
     {
-
         private static Settings st;
-        //TODO нужно доработать метод
+
         private Dictionary<string, string> list;
         private string _connectionString;
 

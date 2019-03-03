@@ -482,6 +482,42 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public async Task<Locale> GetLocaleByTermByIdAsync(int termId)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var sqlString = @"SELECT l.*
+                    FROM public.locales as l
+            left join public.glossaries_locales as gl
+            on l.id=gl.id_locale
+            left join public.glossaries as g
+            on gl.id_glossary = g.id
+            left join public.glossaries_strings as gs
+            on g.id=gs.id_glossary
+            where gs.id_glossary =" + termId;
+
+                    this.LogQuery(sqlString);
+                    return await dbConnection.QueryFirstAsync<Locale>(sqlString);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetLocaleByIdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetLocaleByIdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
         public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
         {
             try

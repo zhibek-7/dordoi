@@ -46,6 +46,7 @@ namespace Localization.WebApi
 
             translation.ID_User = userId;
 
+
             if (translation == null)
             {
                 return BadRequest("Запрос с пустыми параметрами");
@@ -56,7 +57,8 @@ namespace Localization.WebApi
             }
 
             int insertedTranslationId = await translationRepository.AddAsync(translation);
-            //_userActionRepository.AddAddTraslationActionAsync(translation.ID_User, 0, translation.ID, translation.ID_String, translation.ID_Locale) ;//TODO поменять идентификатор проекта
+            _userActionRepository.AddAddTraslationActionAsync(translation.ID_User, identityName, null, translation.id, translation.ID_String, translation.ID_Locale);
+            //TODO поменять идентификатор проекта
             return Ok(insertedTranslationId);
         }
 
@@ -256,11 +258,13 @@ namespace Localization.WebApi
         [Authorize]
         public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
         {
+            updatedTranslation.ID_User = (int)userRepository.GetID(User.Identity.Name);
+
             updatedTranslation.id = translationId;
             var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation);
             if (!updatedSuccessfuly)
                 return this.BadRequest();
-            //_userActionRepository.AddUpdateTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);//TODO поменять на пользователя когда будет реализована авторизация
+            _userActionRepository.AddUpdateTranslationActionAsync((int)userRepository.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);
             return this.Ok();
         }
 
