@@ -152,7 +152,7 @@ namespace Localization.WebApi
             {
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
-
+            
             //_userActionRepository.AddConfirmTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
 
             return Ok();
@@ -286,7 +286,7 @@ namespace Localization.WebApi
 
             var translations = await translationRepository.GetAllTranslationsByMemory(currentProjectId, translationText);
             return Ok(translations);
-        }
+        }       
 
         /// <summary>
         /// Поиск схожих вариантов перевода в данном проекте
@@ -301,6 +301,31 @@ namespace Localization.WebApi
         {
             var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, translationSubstring);
             return Ok(similarTranslations);
+        }
+
+
+        /// <summary>
+        /// Возвращает все варианты перевода конкретной фразы с языком перевода.
+        /// </summary>
+        /// <param name="idString">Идентификатор фразы.</param>
+        /// <returns>Список вариантов перевода</returns>
+        [Authorize]
+        [HttpPost("InStringWithLocale/{idString}")]
+        public async Task<IEnumerable<TranslationDTO>> GetAllTranslationsInStringWithLocaleById(int idString)
+        {
+            return await translationRepository.GetAllTranslationsInStringWithLocaleByID(idString);
+        }
+
+        /// <summary>
+        /// Обновление поля translated.
+        /// </summary>
+        /// <param name="translations"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("saveTranslated")]
+        public async Task<bool> UpdateTranslatedAsync(IEnumerable<TranslationDTO> translations)
+        {
+            return await translationRepository.UpdateTranslatedAsync(translations);
         }
 
     }

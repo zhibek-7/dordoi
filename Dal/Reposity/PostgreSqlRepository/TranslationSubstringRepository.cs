@@ -7,6 +7,7 @@ using System.Data;
 using Dapper;
 using System.Linq;
 using System.Threading.Tasks;
+using Models.DatabaseEntities.DTO;
 using SqlKata;
 using Models.Interfaces.Repository;
 using Npgsql;
@@ -894,5 +895,129 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return false;
             }
         }
+
+        
+        /// <summary>
+        /// Возвращает строки (со связанными объектами).
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(int projectId)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("translation_substrings")
+                        .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                        .Join("translation_memories", "translation_memories.id", "translation_memories_strings.id_translation_memory")
+                        .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
+                        .Where("localization_projects_translation_memories.id_localization_project", projectId)
+                        .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name");
+                    
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var temp = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+
+                    var translationSubstrings = temp.GroupBy(t => t.id).Select(t => new TranslationSubstringTableViewDTO
+                    {
+                        id = t.Key,
+                        substring_to_translate = t.FirstOrDefault().substring_to_translate,
+                        translation_memories_name = string.Join(", ", t.Select(x => x.translation_memories_name).Distinct().OrderBy(n => n))
+                    });
+
+                    return translationSubstrings;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Обновление поля substring_to_translate
+        /// </summary>
+        /// <param name="translationSubstring"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateSubstringToTranslateAsync(TranslationSubstringTableViewDTO translationSubstring)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var forSave = new
+                    {
+                        translationSubstring.substring_to_translate
+                    };
+                    var query = new Query("translation_substrings")
+                        .Where("id", translationSubstring.id)
+                        .AsUpdate(forSave);
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.UpdateSubstringToTranslateAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.UpdateSubstringToTranslateAsync)} {nameof(Exception)} ", exception);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Удаление строк.
+        /// </summary>
+        /// <param name="ids">Идентификаторы строк.</param>
+        /// <returns></returns>
+        public async Task<bool> DeleteRangeAsync(IEnumerable<int> ids)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("translation_substrings")
+                            .WhereIn("id", ids)
+                            .AsDelete();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.DeleteTranslationLocalesAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.DeleteTranslationLocalesAsync)} {nameof(Exception)} ", exception);
+                return false;
+            }
+        }
+
     }
 }

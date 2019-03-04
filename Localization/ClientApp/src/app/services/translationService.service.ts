@@ -7,6 +7,7 @@ import { SimilarTranslation } from "../work-panel/localEntites/translations/simi
 import { TranslationSubstring } from "../models/database-entities/translationSubstring.type";
 
 import { Observable } from "rxjs";
+import { TranslationDTO } from "../models/DTO/translationDTO";
 
 @Injectable()
 export class TranslationService {
@@ -88,4 +89,21 @@ export class TranslationService {
       translationSubsting
     );
   }
+
+  /**
+   * Возвращает все варианты перевода конкретной фразы с языком перевода.
+   * @param idString Идентификатор фразы.
+   */
+  getAllTranslationsInStringWithLocaleById(idString: number): Observable<TranslationDTO[]> {
+    return this.http.post<TranslationDTO[]>(this.url + "/InStringWithLocale/" + idString, idString);
+  }
+
+  /**
+   * Обновление поля translated.
+   * @param translations
+   */
+  saveTranslated(translations: TranslationDTO[]): Observable<boolean> {
+    return this.http.post<boolean>(this.url + "/saveTranslated", translations);
+  }
+
 }

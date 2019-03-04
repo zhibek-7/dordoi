@@ -82,5 +82,30 @@ namespace Localization.WebApi
         {
             return await _localeRepository.GetByTranslationMemory(idTranslationMemory);
         }
+
+        /// <summary>
+        /// Возвращает список языков назначенных на память переводов.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <param name="idsTranslationSubstring">Идентификатор памяти переводов.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("localesByIdsTranslationSubstring")]
+        public async Task<IEnumerable<Locale>> GetByIdsTranslationSubstring(int projectId, int[] idsTranslationSubstring)
+        {
+            return await _localeRepository.GetByIdsTranslationSubstring(projectId, idsTranslationSubstring);
+        }
+
+        /// <summary>
+        /// Возвращает основной язык проекта.
+        /// </summary>
+        /// <param name="id">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("getSourceLocaleLocalizationProject")]
+        public async Task<Locale> GetSourceLocaleLocalizationProject([FromBody] int id)
+        {
+            return await _localeRepository.GetSourceLocaleLocalizationProject(id);
+        }
     }
 }

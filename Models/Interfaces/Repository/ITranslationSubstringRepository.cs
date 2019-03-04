@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
+using Models.DatabaseEntities.DTO;
 
 namespace Models.Interfaces.Repository
 {
@@ -38,5 +39,26 @@ namespace Models.Interfaces.Repository
         /// <param name="translationMemoryId"></param>
         /// <returns></returns>
         Task<bool> RemoveByTranslationMemoryAsync(int translationMemoryId);
+
+        /// <summary>
+        /// Возвращает строки (со связанными объектами).
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <returns></returns>
+        Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(int projectId);
+
+        /// <summary>
+        /// Обновление поля substring_to_translate
+        /// </summary>
+        /// <param name="translationSubstring"></param>
+        /// <returns></returns>
+        Task<bool> UpdateSubstringToTranslateAsync(TranslationSubstringTableViewDTO translationSubstring);
+
+        /// <summary>
+        /// Удаление строк.
+        /// </summary>
+        /// <param name="ids">Идентификаторы строк.</param>
+        /// <returns></returns>
+        Task<bool> DeleteRangeAsync(IEnumerable<int> ids);
     }
 }

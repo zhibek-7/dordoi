@@ -11,12 +11,12 @@ namespace Localization.Controllers
     [ApiController]
     public class TranslationMemoryController : ControllerBase
     {
-        private readonly TranslationMemoryService _translationMemoriesService;
+        private readonly TranslationMemoryService _translationMemoryService;
 
 
-        public TranslationMemoryController(TranslationMemoryService translationMemoriesService)
+        public TranslationMemoryController(TranslationMemoryService translationMemoryService)
         {
-            _translationMemoriesService = translationMemoriesService;
+            _translationMemoryService = translationMemoryService;
         }
 
 
@@ -28,7 +28,7 @@ namespace Localization.Controllers
         [HttpPost]
         public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync()
         {
-            return await _translationMemoriesService.GetAllDTOAsync();
+            return await _translationMemoryService.GetAllDTOAsync();
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Localization.Controllers
         [HttpPost("create")]
         public async Task AddAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            await _translationMemoriesService.AddAsync(translationMemory);
+            await _translationMemoryService.AddAsync(translationMemory);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Localization.Controllers
         [HttpPost("edit")]
         public async Task<TranslationMemoryForEditingDTO> GetForEditAsync([FromBody] int id)
         {
-            return await _translationMemoriesService.GetForEditAsync(id);
+            return await _translationMemoryService.GetForEditAsync(id);
         }
 
         /// <summary>
@@ -64,31 +64,31 @@ namespace Localization.Controllers
         [HttpPost("editSave")]
         public async Task UpdateAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            await _translationMemoriesService.UpdateAsync(translationMemory);
+            await _translationMemoryService.UpdateAsync(translationMemory);
         }
 
         /// <summary>
         /// Удаление памяти переводов.
         /// </summary>
-        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
         [Authorize]
         [HttpDelete("delete/{id}")]
         public async Task<bool> DeleteAsync(int id)
         {
-            return await _translationMemoriesService.DeleteAsync(id);
+            return await _translationMemoryService.DeleteAsync(id);
         }
 
         /// <summary>
         /// Удаление всех записей из памяти переводов.
         /// </summary>
-        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
         [Authorize]
         [HttpDelete("clear/{id}")]
         public async Task<bool> ClearAsync(int id)
         {
-            return await _translationMemoriesService.ClearAsync(id);
+            return await _translationMemoryService.ClearAsync(id);
         }
     }
 }

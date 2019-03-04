@@ -11,6 +11,7 @@ using System.IO;
 using DAL.Reposity.PostgreSqlRepository;
 using Localization.Controllers;
 using Microsoft.AspNetCore.Authorization;
+using Models.DatabaseEntities.DTO;
 using Utilities;
 
 namespace Localization.WebApi
@@ -238,6 +239,43 @@ namespace Localization.WebApi
         {
             await this.stringRepository.DeleteTranslationLocalesAsync(translationSubstringId: translationSubstringId);
             await this.stringRepository.AddTranslationLocalesAsync(translationSubstringId: translationSubstringId, localesIds: localesIds);
+        }
+
+        
+        /// <summary>
+        /// Возвращает строки (со связанными объектами).
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("getAllWithTranslationMemoryByProject")]
+        public async Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync([FromBody] int projectId)
+        {
+            return await stringRepository.GetAllWithTranslationMemoryByProjectAsync(projectId);
+        }
+
+        /// <summary>
+        /// Обновление поля substring_to_translate
+        /// </summary>
+        /// <param name="translationSubstring"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("saveSubstringToTranslate")]
+        public async Task<bool> UpdateSubstringToTranslateAsync(TranslationSubstringTableViewDTO translationSubstring)
+        {
+            return await stringRepository.UpdateSubstringToTranslateAsync(translationSubstring);
+        }
+
+        /// <summary>
+        /// Удаление строк.
+        /// </summary>
+        /// <param name="ids">Идентификаторы строк.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("deleteRange")]
+        public async Task<bool> DeleteRangeAsync(int[] ids) //IEnumerable<int> ids)
+        {
+            return await stringRepository.DeleteRangeAsync(ids);
         }
 
     }

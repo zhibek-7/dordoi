@@ -238,6 +238,10 @@ export class TranslationMemoriesComponent implements OnInit {
      let fileType = file.name.substring(file.name.lastIndexOf(".") + 1);
      if (fileType != "csv" && fileType != "tmx")
        alert("Невозможно загрузить файл. Выбранный файл не соответствует допустимым форматам - *.tmx, *.csv.");
+
+
+     //TODO вставить функцию для загрузки файла
+
   }
 
   //#endregion
@@ -255,7 +259,10 @@ export class TranslationMemoriesComponent implements OnInit {
   }
 
   load(setting: settingFileLoad) {
-    console.log("load Submitted: ", setting);
+    //console.log("load Submitted: ", setting);
+
+    //TODO вставить функцию для скачивания
+
   }
 
   //#endregion

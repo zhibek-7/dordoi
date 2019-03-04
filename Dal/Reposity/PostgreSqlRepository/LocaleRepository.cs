@@ -275,7 +275,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-
         /// <summary>
         /// Возвращает список языков назначенных на память переводов.
         /// </summary>
@@ -288,19 +287,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("locales")
-                    //.LeftJoin("translation_memories_locales", "translation_memories_locales.id_locale", "locales.id")
-                    //.LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_locales.id_translation_memory")
-                    //.LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")
-                    //.Where("translation_memories_locales.id_translation_memory", idTranslationMemory)
-
-                    //.WhereIn("id",
-                    //    new Query("translation_memories_locales")
-                    //        .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_locales.id_translation_memory")
-                    //        .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")
-                    //        .Where("translation_memories_locales.id_translation_memory", idTranslationMemory)
-                    //        .Select("translation_memories_locales.id_locale")
-                    //);
-
                     .WhereIn("id",
                         new Query("translation_memories_locales")
                             .Where("translation_memories_locales.id_translation_memory", idTranslationMemory)
@@ -313,9 +299,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Where("localization_projects_translation_memories.id_translation_memory", idTranslationMemory)
                         .Select("localization_projects.id_source_locale")
                     );
-
-
-
+                    
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var translationMemoriesLocales = await dbConnection.QueryAsync<Locale>(
@@ -332,6 +316,90 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByTranslationMemory)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+        
+        /// <summary>
+        /// Возвращает список языков назначенных на строки.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <param name="idsTranslationSubstring">Идентификаторы строк.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Locale>> GetByIdsTranslationSubstring(int projectId, IEnumerable<int> idsTranslationSubstring)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("locales")
+                    .WhereIn("id",
+                        new Query("translation_substrings_locales")
+                            .WhereIn("translation_substrings_locales.id_translation_substrings", idsTranslationSubstring)
+                            .Select("translation_substrings_locales.id_locale")
+                    )
+
+                    .OrWhereIn("id",
+                            new Query("translation_memories_strings")
+                                //.LeftJoin("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                                .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_strings.id_translation_memory")
+                                .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")
+                                .Where("localization_projects.id", projectId)
+                                .WhereIn("translation_memories_strings.id_string", idsTranslationSubstring)
+                                .Select("localization_projects.id_source_locale")
+                    );
+
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var translationSubstringsLocales = await dbConnection.QueryAsync<Locale>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return translationSubstringsLocales;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByIdsTranslationSubstring)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByIdsTranslationSubstring)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Возвращает основной язык проекта.
+        /// </summary>
+        /// <param name="id">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        public async Task<Locale> GetSourceLocaleLocalizationProject(int idProject)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("localization_projects")
+                        .Where("localization_projects.id", idProject)
+                        .LeftJoin("locales", "locales.id", "localization_projects.id_source_locale")
+                        .Select("locales.id", "locales.name_text");
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var project = await dbConnection.QueryFirstOrDefaultAsync<Locale>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return project;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetSourceLocaleLocalizationProject)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetSourceLocaleLocalizationProject)} {nameof(Exception)} ", exception);
                 return null;
             }
         }

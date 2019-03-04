@@ -29,14 +29,18 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\src\app\string-translation-memory\**" />
     <Compile Remove="WebApi\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\app\string-translation-memory\**" />
     <Content Remove="WebApi\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="ClientApp\src\app\string-translation-memory\**" />
     <EmbeddedResource Remove="WebApi\**" />
+    <None Remove="ClientApp\src\app\string-translation-memory\**" />
     <None Remove="WebApi\**" />
   </ItemGroup>
 
@@ -49,10 +53,13 @@
     <None Remove="ClientApp\src\app\models\DTO\glossariesDTO.type.ts" />
     <None Remove="ClientApp\src\app\models\DTO\localizationProjectForSelectDTO.type.ts" />
     <None Remove="ClientApp\src\app\models\DTO\translationMemoryDTO.type.ts" />
+    <None Remove="ClientApp\src\app\models\DTO\TranslationSubstringDTO.type.ts" />
     <None Remove="ClientApp\src\app\services\glossary.service.ts" />
     <None Remove="ClientApp\src\app\services\reports.service.ts" />
+    <None Remove="ClientApp\src\app\services\strings-project.service.ts" />
     <None Remove="ClientApp\src\app\services\translation-memory.service.ts" />
     <None Remove="ClientApp\src\app\services\user-registration.service.ts" />
+    <None Remove="ClientApp\src\app\strings-project\models\settingFileLoad.ts" />
     <None Remove="ClientApp\src\app\translation-memories\models\settingFileLoad.ts" />
     <None Remove="ClientApp\src\app\user-account\user.ts" />
     <None Remove="ClientApp\src\app\user-registration\example.ts" />
@@ -80,10 +87,12 @@
     <TypeScriptCompile Include="ClientApp\src\app\models\DTO\glossariesDTO.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\models\DTO\localizationProjectForSelectDTO.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\models\DTO\translationMemoryDTO.type.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\DTO\TranslationSubstringDTO.type.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\glossary.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\reports.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\translation-memory.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\user-registration.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\strings-project\models\settingFileLoad.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\translation-memories\models\settingFileLoad.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-account\user.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-registration\example.ts" />
