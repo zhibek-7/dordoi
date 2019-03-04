@@ -48,16 +48,15 @@
           <div class="table-border">
 
             <mat-table [dataSource]="dataSourceForMainTab" matSort style="cursor: pointer">
-
+<!--
               <ng-container matColumnDef="flag">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                 <mat-cell *matCellDef="let row"><img src='{{row.locale_Url}}' alt="Изображение флага"> </mat-cell>
               </ng-container>
-
+-->
               <ng-container matColumnDef="locale_Name">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Целевой
-                    язык </label> </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.locale_Name}} </mat-cell>
+                <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell align-center"> Перевод </label> </mat-header-cell>
+                <mat-cell *matCellDef="let row"><img src='{{row.locale_Url}}' alt="{{row.locale_Name}}"> {{row.locale_Name}} </mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="percent_Of_Translation">

@@ -1,21 +1,19 @@
-.directoryBlock, .addCommentBlock  {
+.directoryBlock,
+.addCommentBlock {
   background-color: #F6F5F1;
   height: 1.5rem;
 }
 
-.nav-tabs {
-  border-bottom: none;
-}
 
 .directoryBlock a {
-    color: gray;
+  color: gray;
 }
 
 .panel-body {
   background: #fcfaef;
 }
 
-.tabsBlock{
+.tabsBlock {
   margin-top: 1rem;
 }
 
@@ -27,12 +25,12 @@
   padding: 2px;
 }
 
-.list-group{
+.list-group {
   margin-top: 1rem;
 }
 
 
-.list-group-item-action{
+.list-group-item-action {
   padding: 2px 2px 2px 1rem;
 }
 
@@ -51,22 +49,18 @@
 }
 
 .conditionsBlock {
-    text-align: center;
-    padding-top: 40%;
-    font-size: 1em;
-    color: grey;
+  text-align: center;
+  padding-top: 40%;
+  font-size: 1em;
+  color: grey;
 }
 
-.userNameRow {
-  color: #A4BF82;
+
+.col-6 {
   font-size: 0.8rem;
 }
 
-.col-6{
-  font-size: 0.8rem;
-}
-
-.controlText{
+.controlText {
   color: #A4BF82;
   cursor: pointer;
   font-size: 0.8rem;
@@ -79,7 +73,7 @@
 }
 
 .appendedImage {
-  width: 100%;  
+  width: 100%;
 }
 
 .imageBlock {
@@ -87,7 +81,7 @@
   margin-right: 5%;
   padding: 2%;
   border-radius: 15%;
-  border-color: #A4BF82;
+  border-color: #4430ffea;
   border-width: 2px;
   border-style: dashed;
 }
@@ -96,7 +90,7 @@
   padding-top: 0.3rem;
 }
 
-.arrowIcon {    
+.arrowIcon {
   cursor: pointer;
 }
 
@@ -105,6 +99,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .mat-icon {
   color: grey;
 }

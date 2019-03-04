@@ -111,8 +111,5 @@ export class PhrasesComponent implements OnInit {
       return false;
     }
   }
-
-  filterPhrasesClick() {
-    alert("Здесь будут функции фильтрации");
-  }
+  
 }

@@ -91,7 +91,7 @@
           </div>
         </td>
         <td class="col-xs-2">
-          {{rowData.date_of_change | date: 'dd/MM/yyyy'}}
+          {{rowData.date_of_change | date: 'dd.MM.yyyy'}}
         </td>
         <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
           {{rowData.strings_count}}
@@ -103,11 +103,11 @@
           <button class="btn btn-primary" *ngIf="!rowData.is_folder" disabled>{{rowData.priority}}</button>
         </td>-->
         <td class="col-xs-2">
-          <button *ngIf="!rowData.is_folder" class="btn btn-primary  btn-sm m-1" (click)="updateFileInput.click()">
+          <button *ngIf="!rowData.is_folder" class="btn btn-btn-success  btn-sm m-1" (click)="updateFileInput.click()">
             Обновить
             <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
           </button>
-          <button *ngIf="!rowData.is_folder" class="btn btn-success  btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
+          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
             Скачать
           </button>
           <button mat-icon-button
@@ -163,7 +163,7 @@
           </div>
         </td>
         <td class="col-xs-2">
-          {{rowData.date_of_change | date: 'dd/MM/yyyy'}}
+          {{rowData.date_of_change | date: 'dd.MM.yyyy'}}
         </td>
         <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
           {{rowData.strings_count}}
@@ -178,10 +178,10 @@
           {{rowData.percent_of_confirmed | percent }}
         </td>-->
         <td class="col-xs-2">
-          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1" (click)="translateFileClick(rowData)">
+          <button *ngIf="!rowData.is_folder" class="btn btn-success btn-sm m-1" (click)="translateFileClick(rowData)">
             Перевести
           </button>
-          <button *ngIf="!rowData.is_folder" class="btn btn-success btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
+          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
             Скачать
           </button>          
         </td>

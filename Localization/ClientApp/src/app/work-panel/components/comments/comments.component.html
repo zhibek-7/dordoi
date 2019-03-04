@@ -1,14 +1,14 @@
 <div class="commentsAndTermsBlock">
 
   <div class="directoryBlock">
-    <nav>
-      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active" id="nav-comment-tab" data-toggle="tab" href="#nav-comment" role="tab"
-          aria-controls="nav-comment" aria-selected="true">Комментарии</a>
-        <a class="nav-item nav-link" id="nav-condition-tab" data-toggle="tab" href="#nav-condition" role="tab"
-          aria-controls="nav-condition" aria-selected="false">Глоссарий</a>
-      </div>
-    </nav>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#nav-comment">Комментарий</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#nav-condition">Словари</a>
+  </li>
+</ul>
   </div>
 
   <div class="tabsBlock">
@@ -21,7 +21,7 @@
               <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
                 <div class="oneCommentBlock">
                   <div class="row">
-                    <div class="col-6 userNameRow">{{comment.user_name}}</div>
+                    <div class="col-6">{{comment.user_name}}</div>
                     <div class="col-6">{{comment.datetime | date: 'd.M.yyyy H:m'}}</div>
                   </div>
                   <div *ngIf="!commentEdited">

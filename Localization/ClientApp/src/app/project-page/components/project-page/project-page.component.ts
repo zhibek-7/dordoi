@@ -53,7 +53,7 @@ export class ProjectPageComponent implements OnInit {
 
   //#region для настройки таблицы (mat-table) отображаемой на вкладке "Главная"
   displayedColumnsForMainTab: string[] = [
-    "flag",
+//    "flag",
     "locale_Name",
     "percent_Of_Translation",
     "percent_Of_Confirmed"

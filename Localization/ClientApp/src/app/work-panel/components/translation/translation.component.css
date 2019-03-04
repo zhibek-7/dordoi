@@ -1,128 +1,132 @@
-
 .controlBlock {
-    font-size: 1em;
-    color: gray;
-    height: 3vh;
+  font-size: 1em;
+  color: gray;
+  height: 3vh;
 }
 
 .hideBlocksIcons {
-    width: 10px;
-    height: 10px;
-    cursor: pointer;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
 }
 
 .rightHideIcon {
-    margin-top: 1.5em;
-    margin-right: 1.5em;
+  margin-top: 1.5em;
+  margin-right: 1.5em;
 }
 
 .contextBlock {
-    padding-left: 1.5em;
-    padding-right: 1.5em;
-    padding-top: 1em;
-    height: 20vh;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+  padding-top: 1em;
+  height: 20vh;
 }
 
 .textForTranslate {
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 
 .context {
-    margin-top: 1%;
-    color: #A4BF82;
-    font-size: 1em;
+  margin-top: 1%;
+  color: #646567;
+  font-size: 1em;
 }
 
 .verticalLine {
-    color: gray;
+  color: gray;
 }
 
 .contextPicker {
-    margin-right: 3%;
-    cursor: pointer;
+  margin-right: 3%;
+  cursor: pointer;
+  padding-right: 3rem;
+
 }
 
 .contextEdit {
-    /* margin-left: -3%; */
-    cursor: pointer;
-    font-size: 0.8em;
+  /* margin-left: -3%; */
+  cursor: pointer;
+  font-size: 0.8em;
 }
 
 .objectInCode {
-    color: gray;
-    margin-top: 0.5%;
-    font-size: 1em;
+  color: gray;
+  margin-top: 0.5%;
+  font-size: 1em;
 }
 
 .workWithTranslation {
-    margin-top: 2vh;
+  margin-top: 2vh;
 }
 
 .translateTextArea {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .translateTextArea textarea {
-    /* min-height: 29.3vh; */
-    height: 5rem;
-    resize: none;
+  /* min-height: 29.3vh; */
+  height: 5rem;
+  resize: none;
 }
 
-.arrowIcon {   
-    cursor: pointer;
+.arrowIcon {
+  cursor: pointer;
 }
 
-.mat-icon{
+.mat-icon {
   width: 10px;
   height: 10px;
 }
 
 .importIcon {
-    height: 10px;
-    width: 10px;
-    cursor: pointer;
+  height: 10px;
+  width: 10px;
+  cursor: pointer;
 }
 
 .appendedImage {
-    width: 100%;  
+  width: 100%;
 }
-  
+
 .imageBlock {
-    cursor: pointer;
-    margin-right: 5%;
-    margin-bottom: 2%;
-    padding: 2%;
-    border-radius: 15%;
-    border-color: #A4BF82;
-    border-width: 2px;
-    border-style: dashed;
+  cursor: pointer;
+  margin-right: 5%;
+  margin-bottom: 2%;
+  padding: 2%;
+  border-radius: 15%;
+  border-color: #4430ffea;
+  border-width: 2px;
+  border-style: dashed;
 }
 
 .arrowsIcons {
-    padding-left: 2%;
+  padding-left: 2%;
 }
+
 .translationBlockWithoutPhrase {
-    margin-top: 35%;    
+  margin-top: 35%;
 }
 
 .phraseUndifinedBlock {
-    font-size: 1em;
-    color: gray;
+  font-size: 1em;
+  color: gray;
 }
 
-.selectionDialog{
-    padding: 0;
+.selectionDialog {
+  padding: 0;
 }
 
-.col-sm-2{
+.col-sm-2 {
   font-style: 0.8em
 }
 
-.col-2{
+.col-2 {
   font-style: 0.8em;
   padding: 2px;
 }
 
-
-
+.headline-text {
+  text-align: left;
+  font-style: 0.8em;
+}
