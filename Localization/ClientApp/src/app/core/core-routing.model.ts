@@ -14,7 +14,7 @@ const routes: Routes = [
     loadChildren: "../administration/administration.module#AdministrationModule"
   },
   {
-    path: "Translation/:fileId",
+    path: "Translation/:fileId/:localeId",
     loadChildren: "../work-panel/work-panel.module#WorkPanelModule",
     canActivate: [AuthenticationGuard]
   },

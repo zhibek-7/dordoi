@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 
 import { ShowImageModalComponent } from "../show-image-modal/show-image-modal";
@@ -22,7 +22,7 @@ declare var $: any;
   styleUrls: ["./translation.component.css"],
   providers: [TranslationSubstringService, UserService]
 })
-export class TranslationComponent implements OnInit {
+export class TranslationComponent implements OnInit, OnDestroy {
   showContextBlock: boolean = true;
   showLeftBlock: boolean = true;
   showRightBlock: boolean = true;
@@ -84,6 +84,10 @@ export class TranslationComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  ngOnDestroy(): void {
+    this.sharePhraseService.setSharedPhraseToNull();
+  }
 
   // Скрывает левый блок (Блок с фразами)
   hideLeftBlock() {
@@ -174,7 +178,7 @@ export class TranslationComponent implements OnInit {
     } else {
       return true;
     }
-  }
+  }  
 
   loadImages(translationSubstringId: number) {
     this.translationSubstringService

@@ -13,7 +13,6 @@ using System.IO;
 using Localization.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Utilities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Localization.WebApi
 {

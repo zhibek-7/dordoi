@@ -24,11 +24,11 @@ export class CommentService {
     uploadImageToComment(fileToUpload: File[], commentId: number) {
         const formData: FormData = new FormData();
 
-        fileToUpload.forEach(element => {
-            formData.set('Image', element); 
+        // fileToUpload.forEach(element => {
+            formData.set('Image', fileToUpload[0]); 
             formData.append('CommentId', commentId.toString());
-            return this.http.post(this.url + "UploadImageToComment", formData).toPromise();
-        });        
+            return this.http.post(this.url + "UploadImageToComment", formData);
+        // });        
     }
 
     getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{    

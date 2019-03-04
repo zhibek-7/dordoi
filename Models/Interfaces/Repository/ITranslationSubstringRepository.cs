@@ -6,7 +6,7 @@ namespace Models.Interfaces.Repository
 {
     public interface ITranslationSubstringRepository : IRepositoryAsync<TranslationSubstring>
     {
-        Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId);
+        Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId, int? localeId);
         //Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId);
         //Task<IEnumerable<TranslationSubstring>> FilterByString(
         //    string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings);

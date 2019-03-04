@@ -24,6 +24,7 @@ export class PhrasesComponent implements OnInit {
   maxNumberOfPages: number;
 
   @Input() fileId: number;
+  @Input() localeId: number;
 
   constructor(
     private sharePhraseService: SharePhraseService,
@@ -39,8 +40,9 @@ export class PhrasesComponent implements OnInit {
   // Получение всех фраз для перевода
   async getStrings() {
     this.phrasesList = await this.stringService
-      .getStringsInFile(this.fileId)
+      .getStringsInFile(this.fileId, this.localeId)
       .toPromise();
+    console.log(this.phrasesList)
     this.countPages();
   }
 

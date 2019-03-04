@@ -503,7 +503,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                 }
 
                 //вставить обновление локалей
-                var strings = _tsr.GetStringsByFileIdAsync(fileId);
+                
+                // не знаю чей это метод, но я добавил вторым параметром id языка для перевода, если нужно, то применяй
+                var strings = _tsr.GetStringsByFileIdAsync(fileId, null);
                 foreach (var str in strings.Result)
                 {
                     _tsr.AddTranslationLocalesTransactAsync(str.id, localesIds, dbConnection, null);

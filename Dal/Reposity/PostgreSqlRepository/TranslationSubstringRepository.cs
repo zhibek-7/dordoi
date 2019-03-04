@@ -236,9 +236,22 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="fileId">id файла</param>
         /// <returns></returns>
-        public async Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId)
+        public async Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId, int? localeId)
         {
-            var query = "SELECT TS.substring_to_translate AS substring_to_translate, TS.description AS description, " +
+            var queryForSubstingsInFileWithLocale = "SELECT TS.substring_to_translate AS substring_to_translate, " +
+                        "TS.description AS description, " +
+                        "TS.context AS context, " +
+                        "TS.translation_max_length AS translation_max_length, " +
+                        "TS.id_file_owner AS id_file_owner, " +
+                        "TS.value AS value, " +
+                        "TS.position_in_text AS position_in_text, " +
+                        "TS.id AS id " +
+                        "FROM translation_substrings AS TS " +
+                        "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
+                        "INNER JOIN translation_substrings_locales AS TSL ON TSL.id_translation_substrings = TS.id " +
+                        "WHERE F.id = @FileId AND TSL.id_locale = @LocaleId ";
+
+            var queryForSubstingsInFile = "SELECT TS.substring_to_translate AS substring_to_translate, TS.description AS description, " +
                         "TS.context AS context, TS.translation_max_length AS translation_max_length," +
                         "TS.id_file_owner AS id_file_owner, TS.value AS value," +
                         "TS.position_in_text AS position_in_text, TS.id AS id " +
@@ -250,10 +263,21 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { Id = fileId };
-                    this.LogQuery(query, param);
-                    IEnumerable<TranslationSubstring> stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(query, param);
+                    IEnumerable<TranslationSubstring> stringsInFile;
 
+                    if (localeId != null)
+                    {
+                        var param = new { FileId = fileId, LocaleId = localeId };
+                        this.LogQuery(queryForSubstingsInFile, param);
+                        stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(queryForSubstingsInFileWithLocale, param);
+                    }
+                    else
+                    {
+                        var param = new { FileId = fileId};
+                        this.LogQuery(queryForSubstingsInFile, param);
+                        stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(queryForSubstingsInFile, param);
+                    }
+                    
                     foreach (var translationSubstring in stringsInFile)
                     {
                         translationSubstring.Status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id);

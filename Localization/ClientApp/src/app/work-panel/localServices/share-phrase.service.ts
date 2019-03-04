@@ -29,6 +29,10 @@ export class SharePhraseService {
         return this.sharedPhrase;
     }
 
+    setSharedPhraseToNull(){
+        this.sharedPhrase = undefined;
+    }
+
     async getTranslationsOfPickedPhrase(){
         this.translationsOfTheString = await this.translateService.getAllTranslationsInStringById(this.sharedPhrase.id);
         this.onClick2.emit(this.translationsOfTheString);

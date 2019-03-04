@@ -39,8 +39,11 @@ export class TranslationSubstringService {
         });        
     }
 
-    getStringsInFile(idFile: number): Observable<TranslationSubstring[]>{
-      return this.http.post<TranslationSubstring[]>(this.url + "InFile/" + idFile, idFile);
+    getStringsInFile(fileId: number, localeId: number): Observable<TranslationSubstring[]>{
+
+      let params = new HttpParams().set('fileId', fileId.toString()).set('localeId', localeId.toString());
+
+      return this.http.post<TranslationSubstring[]>(this.url + "getStringsInFileWithByLocale/", params);
     }
 
   getTranslationSubstringStatus(translationSubstringId: number): Observable<string>{

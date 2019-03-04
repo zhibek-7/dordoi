@@ -21,6 +21,7 @@ export class WorkPanelComponent implements OnInit {
     middleAndRight: boolean = false;  
 
     fileIdForTranslation: number;
+    localeForTranslation: number;
     
     constructor(
         private activatedRoute: ActivatedRoute
@@ -28,6 +29,7 @@ export class WorkPanelComponent implements OnInit {
 
     ngOnInit(): void {
         this.fileIdForTranslation = this.activatedRoute.snapshot.params['fileId'];
+        this.localeForTranslation = this.activatedRoute.snapshot.params['localeId'];
     }
 
     hideLeftBlockFunction(showLeftBlock: boolean){

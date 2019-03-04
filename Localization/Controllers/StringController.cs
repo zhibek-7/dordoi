@@ -47,7 +47,7 @@ namespace Localization.WebApi
             }
 
             return Ok(strings);
-        }
+        }        
 
         /// <summary> 
         /// Получить все фразы для перевода из файла 
@@ -56,10 +56,13 @@ namespace Localization.WebApi
         /// <returns>список фраз для перевода из файла</returns> 
         [Authorize]
         [HttpPost]
-        [Route("InFile/{idFile}")]
-        public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStringsInFile(int idFile)
+        [Route("getStringsInFileWithByLocale")]
+        public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStringsInFile()
         {
-            var strings = await stringRepository.GetStringsByFileIdAsync(idFile);
+            var fileId = Request.Form["fileId"].ToString();
+            var localeId = Request.Form["localeId"].ToString();
+
+            var strings = await stringRepository.GetStringsByFileIdAsync(Convert.ToInt32(fileId), Convert.ToInt32(localeId));
 
             if (strings == null)
             {

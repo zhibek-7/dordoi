@@ -110,21 +110,23 @@ export class CommentsComponent implements OnInit {
   // Добавление комментария
   public async addComment() {
     let comment_loc: Comment = new Comment(
-      301,
+      -1,
       this.stringId,
       this.addCommentText
-    ); //TODO поменять на id реального пользователя, когда появится
-    let insertedComment: CommentWithUser = await this.commentService.createComment(
-      comment_loc
     );
-    this.commentsList.push(insertedComment);
-
-    this.addCommentText = null;
+    if(comment_loc.comment_text != ""){
+      let insertedComment: CommentWithUser = await this.commentService.createComment(
+        comment_loc
+      );
+      this.commentsList.push(insertedComment);
+  
+      this.addCommentText = "";
+    }    
   }
 
   // Изменение комментария
   async changeCommentClick(comment: CommentWithUser) {
-    console.log(" comment.id=" + comment.comment_id);
+    // console.log(" comment.id=" + comment.comment_id);
     this.commentsList = await [];
     this.changedComment = comment;
     this.commentEdited = true;
@@ -139,15 +141,14 @@ export class CommentsComponent implements OnInit {
 
   // Сохранение измененного комментария
   async saveChangedComment(comment: CommentWithUser) {
-    console.log("comment=" + comment);
-    console.log("comment.comment_Id=" + comment.comment_id);
-    console.log("comment_text =" + comment.comment_text);
-    console.log("changedComment_text=" + this.changedComment.comment_text);
-    console.log("changedComment id=" + this.changedComment.comment_id);
+    // console.log("comment=" + comment);
+    // console.log("comment.comment_Id=" + comment.comment_id);
+    // console.log("comment_text =" + comment.comment_text);
+    // console.log("changedComment_text=" + this.changedComment.comment_text);
+    // console.log("changedComment id=" + this.changedComment.comment_id);
 
-    // comment.id_User = userId           // когда появится id реального пользователя, нужно будет использовать его (а пока костыль)
     let updatedComment: Comment = new Comment(
-      301,
+      -1,
       this.stringId,
       this.changedComment.comment_text,
       new Date(Date.now()),
@@ -157,8 +158,9 @@ export class CommentsComponent implements OnInit {
     await this.commentService.updateComment(updatedComment);
     if (this.filesToUpload != null) {
       this.loadScrinshot();
+    } else {
+      this.endEditingMode();
     }
-    this.endEditingMode();
   }
 
   // Функция завершения редактирования комментария
@@ -174,7 +176,10 @@ export class CommentsComponent implements OnInit {
     this.commentService.uploadImageToComment(
       this.filesToUpload,
       this.changedComment.comment_id
-    );
+    ).subscribe(success =>
+      {
+      this.endEditingMode();
+    });
   }
 
   // Функция отображения скриншота в модальном окне в увеличенном размере

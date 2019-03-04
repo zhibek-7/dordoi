@@ -387,7 +387,7 @@ export class FilesComponent implements OnInit {
 
   translateFileClick(selectedFile: any) {
     if(!selectedFile.is_folder){
-      this.router.navigate(["Translation/" + selectedFile.id]);
+      this.router.navigate(["Translation/" + selectedFile.id + "/" + this.selectedLanguageId]);
     }
   }
 }
