@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.PartialEntities.Translations;
 using Npgsql;
+using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -300,9 +301,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         var updatedRows = await dbConnection.ExecuteAsync(query, param);
 
-                        return updatedRows > 0;
-                    }
+                    return updatedRows > 0;
                 }
+            }
             }
             catch (NpgsqlException exception)
             {
@@ -339,7 +340,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
-                {                    
+                {
 
                     var param = new { Id = idTranslation, selectTranslation };
                     this.LogQuery(query, param);
@@ -352,11 +353,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
                     else
                     {
-                        var updatedRows = await dbConnection.ExecuteAsync(query, param);
+                    var updatedRows = await dbConnection.ExecuteAsync(query, param);
 
-                        return updatedRows > 0;
-                    }
+                    return updatedRows > 0;
                 }
+            }
             }
             catch (NpgsqlException exception)
             {
@@ -461,5 +462,84 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Возвращает все варианты перевода конкретной фразы с языком перевода
+        /// </summary>
+        /// <param name="idString">id фразы</param>
+        /// <returns>Список вариантов перевода</returns>
+        public async Task<IEnumerable<TranslationDTO>> GetAllTranslationsInStringWithLocaleByID(int idString)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("translations")
+                        .LeftJoin("locales", "locales.id", "translations.id_locale")
+                        .Where("translations.id_string", idString)
+                        .Select(
+                            "translations.id",
+                            "translations.translated",
+                            "locales.id as locale_id",
+                            "locales.name_text as locale_name");
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var translations = await dbConnection.QueryAsync<TranslationDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return translations;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringWithLocaleByID)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringWithLocaleByID)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Обновление поля translated.
+        /// </summary>
+        /// <param name="translations"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateTranslatedAsync(IEnumerable<TranslationDTO> translations)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    foreach (var translation in translations)
+                    {
+                        var query = new Query("translations")
+                            .Where("id", translation.id)
+                            .AsUpdate(new {translation.translated});
+
+                        var compiledQuery = _compiler.Compile(query);
+                        LogQuery(compiledQuery);
+                        await dbConnection.ExecuteAsync(
+                            sql: compiledQuery.Sql,
+                            param: compiledQuery.NamedBindings
+                        );
+
+                    }
+
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.UpdateSubstringToTranslateAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.UpdateSubstringToTranslateAsync)} {nameof(Exception)} ", exception);
+                return false;
+            }
+        }
     }
 }

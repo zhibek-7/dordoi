@@ -1,0 +1,84 @@
+.nav-border {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 2px;
+  padding: 0em 0em 0em 0.7em;
+}
+
+.nav {
+  background-color: white;
+  border: 0px;
+  padding: 0em;
+}
+
+.nav-element {
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 2px;
+  margin: 0em 0.5em 0em 0em;
+}
+
+.nav-element-gray {
+  color: black;
+  background-color: #d8d8d8;
+  margin: 0em;
+  padding: 0.7em 0.7em 0.7em 0.7em;
+  border: 0px;
+  border-radius: 0px;
+}
+
+.table-border {
+  margin-top: 1em;
+  border-top: 1px solid #dee2e6;
+}
+
+.table-cell {
+  color: black;
+  font-size: medium;
+  margin: 0em 0em 0em 0em;
+}
+
+.table {
+  font-size: 14px;
+}
+
+table td, table th {
+  padding: 2px;
+}
+
+table th {
+  text-align: justify;
+}
+
+.col-xs-6 {
+  width: 10vw;
+}
+
+.col-xs-2 {
+  width: 1vw;
+}
+
+.mat-row.selected {
+  background: #A4BF82;
+}
+
+/*////*/
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  /*border: 1px solid #ccc;*/
+  display: inline-block;
+  /*padding: 6px 12px;*/
+  cursor: pointer;
+}
+
+.mat-column-select{
+  flex: 0 0 50px;
+}
+
+.mat-column-additionalButtons {
+  flex: 0 0 180px;
+}

@@ -32,11 +32,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    //var countQuery = new Query("translation_memories")
-                    //    .LeftJoin("translation_memories_strings", "translation_memories_strings.id_translation_memory", "translation_memories.id")
-                    //    //.Where("translation_memories_strings.id_translation_memory", "translation_memories.id")
-                    //    .AsCount();
-
                     var query = new Query("translation_memories")
                         .LeftJoin("translation_memories_locales", "translation_memories_locales.id_translation_memory", "translation_memories.id")
                         .LeftJoin("locales", "locales.id", "translation_memories_locales.id_locale")

@@ -1,0 +1,103 @@
+<nav class="navbar navbar-expand nav">
+  <ul class="navbar-nav nav">
+
+    <li class="nav-item">
+      <div>
+        <label for="file-upload" class="btn nav-element">
+          Открыть
+        </label>
+        <input id="file-upload" (change)="unload($event.target.files)" type="file" [accept]="fileTypes">
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <button type="button" class="btn nav-element" (click)="getLoad()" [disabled]="!isSelected">
+        Скачать
+      </button>
+      <app-load-string-project-form-modal #loadFormModal
+                                          (loadSubmitted)="load($event)"
+                                          *ngIf="isSelected"
+                                          [translationSubstrings]="translationSubstrings">
+      </app-load-string-project-form-modal>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element" (click)="getConfirmSelectedDelete()" [disabled]="!isSelected">
+        <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
+      </button>
+      <app-confirm-delete-string-project-form-modal #confirmDeleteFormModal
+                                             *ngIf="isSelected || translationSubstrings.length > 0"
+                                             [translationSubstrings]="translationSubstrings"
+                                             (confirmedDelete)="delete($event)">
+      </app-confirm-delete-string-project-form-modal>
+    </li>
+    
+    <li class="nav-item">
+      <button class="btn nav-element"
+              (click)="appointFormModalShow()">
+        Назначить ПП
+      </button>
+      <app-appoint-translation-memories-project-form-modal #appointFormModal
+                                                           *ngIf="isVisibleAppointFormModal" >
+      </app-appoint-translation-memories-project-form-modal>
+    </li>
+
+  </ul>
+</nav>
+
+<app-edit-string-project-form-modal #editFormModal
+                                        *ngIf="isVisibleEditFormModal"
+                                        [translationSubstring]="translationSubstring"
+                                        (editedSubmitted)="edited($event)"
+                                        (error)="getAllDTO()">
+</app-edit-string-project-form-modal>
+
+<div class="table-border">
+
+  <mat-table [dataSource]="dataSource" matSort>
+    
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+        <input type="checkbox" class="checkbox width" [value]="isSelectedAll" (change)="allSelected()">
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <input type="checkbox" class="checkbox" [value]="row.isSelected" (change)="selected(row)">
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="substring_to_translate">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        <label class="table-cell align-center"> Строка </label>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.model.id}} - {{row.model.substring_to_translate}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="translation_memories_name">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> ТМ </label> </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.model.translation_memories_name}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="additionalButtons">
+      <mat-header-cell *matHeaderCellDef>
+        <label class="table-cell align-center"> Действия </label> 
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+
+        <button (click)="getEditing(row.model)"> Изменить </button>
+        <button (click)="getConfirmDelete(row.model)"> Удалить </button>
+
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{selected: row.isSelected}"><!--(click)="selected(row)"-->
+    </mat-row>
+
+  </mat-table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+</div>
+
+
+<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

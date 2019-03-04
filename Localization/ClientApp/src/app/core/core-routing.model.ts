@@ -24,6 +24,11 @@ const routes: Routes = [
     canActivate: [AuthenticationGuard]
   },
   {
+    path: "Projects/:id/stringsTranslationMemory",
+    loadChildren: "../strings-project/module/strings-project.module#StringsProjectModule",
+    canActivate: [AuthenticationGuard]
+  },
+  {
     path: "create-project",
     loadChildren: "../create-project/create-project.module#CreateProjectModule",
     canActivate: [AuthenticationGuard]

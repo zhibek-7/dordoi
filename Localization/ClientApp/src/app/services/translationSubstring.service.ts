@@ -3,26 +3,29 @@ import { HttpClient, HttpParams, HttpResponse, HttpHeaders } from '@angular/comm
 import { Observable } from 'rxjs';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
+import { TranslationSubstringForEditingDTO, TranslationSubstringTableViewDTO } from 'src/app/models/DTO/TranslationSubstringDTO.type';
+
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { Image } from '../models/database-entities/image.type';
+
 
 @Injectable()
 export class TranslationSubstringService {
 
     private url: string = "api/string/";
 
-    constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {
 
     }
 
     async getStringById(){        
       let asyncResult = await this.http.post<TranslationSubstring>(this.url, null).toPromise();
-      return asyncResult;    
+        return asyncResult;    
     }
 
     async getStrings(){
       let strings: TranslationSubstring[] = await this.http.post<TranslationSubstring[]>(this.url, null).toPromise();
-      return strings;
+        return strings;
     }
 
     getImagesByTranslationSubstringId(translationSubstringId: number): Observable<Image[]>{
@@ -100,6 +103,39 @@ export class TranslationSubstringService {
 
   setTranslationLocalesForString(id: number, localesIds: number[]): Observable<Object> {
     return this.http.put(this.url + id + '/locales', localesIds);
+  }
+
+
+  
+  /**
+   * Возвращает список строк текущего проекта, со строками перечислений имен связанных объектов.
+   */
+  getAllWithTranslationMemoryByProject(projectId: number): Observable<TranslationSubstringTableViewDTO[]> {
+    //let projectId = this.projectsService.currentProjectId;
+    return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", projectId, {
+      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+    });
+  }
+
+  /**
+   * Обновление поля substring_to_translate
+   * @param translationSubstring
+   */
+  saveSubstringToTranslate(translationSubstring: TranslationSubstringTableViewDTO): Observable<boolean> {
+    return this.http.post<boolean>(this.url + "saveSubstringToTranslate", translationSubstring);
+  }
+
+  /**
+   * Удаление строк.
+   * @param ids Идентификаторы строк.
+   */
+  deleteRange(ids: number[]): Observable<boolean> {
+    let params = new HttpParams();
+    ids.forEach(id => params = params.append('ids', id.toString()));
+    return this.http.post<boolean>(this.url + "deleteRange", null,
+      {
+        params: params
+      });
   }
 
 }
