@@ -193,17 +193,40 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<bool> RemoveAsync(int id)
         {
-            var sqlString = "DELETE FROM files WHERE id = @id";
+
+
+            var sqlStringTrSubLoc = @"DELETE FROM translation_substrings_locales as t
+                        where t.id_translation_substrings in (
+                            select ts.id
+                            from public.translation_substrings as ts
+            WHERE id_file_owner= " + id + ")";
+
+            var sqlStringTrSub = @"DELETE FROM public.translation_substrings as ts
+            WHERE id_file_owner = " + id;
+
+            var sqlString = "DELETE FROM files WHERE id = " + id;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { id };
-                    this.LogQuery(sqlString, param);
-                    var deletedRows = await connection.ExecuteAsync(sqlString, param);
+                    connection.Open();
+                    using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
+                    {
 
-                    // Return result "deleted rows count more than 0"
-                    return deletedRows > 0;
+                        this.LogQuery(sqlStringTrSubLoc);
+                        connection.Execute(sqlStringTrSubLoc, transaction: transaction);
+
+                        this.LogQuery(sqlStringTrSub);
+                        connection.Execute(sqlStringTrSub, transaction: transaction);
+
+                        var param = new { id };
+                        this.LogQuery(sqlString, param);
+                        var deletedRows = connection.Execute(sqlString, transaction: transaction);
+                        transaction.Commit();
+
+                        // Return result "deleted rows count more than 0"
+                        return deletedRows > 0;
+                    }
                 }
             }
             catch (NpgsqlException exception)
@@ -478,39 +501,60 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                foreach (var localeId in localesIds)
+                dbConnection.Open();
+                using (IDbTransaction transaction = dbConnection.BeginTransaction(IsolationLevel.ReadCommitted))
                 {
-                    var sql =
-                        "INSERT INTO files_locales " +
-                        "(" +
-                        "id_file, " +
-                        "id_locale, " +
-                        "percent_of_confirmed, " +
-                        "percent_of_translation" +
-                        ") VALUES " +
-                        "(" +
-                        "@ID_File, " +
-                        "@ID_Locale, " +
-                        "0, " +
-                        "0" +
-                        ")";
-                    var param = new { ID_File = fileId, ID_Locale = localeId };
-                    this.LogQuery(sql, param);
+                    try
+                    {
+                        foreach (var localeId in localesIds)
+                        {
+                            var sql =
+                                "INSERT INTO files_locales " +
+                                "(" +
+                                "id_file, " +
+                                "id_locale, " +
+                                "percent_of_confirmed, " +
+                                "percent_of_translation" +
+                                ") VALUES " +
+                                "(" +
+                                "@ID_File, " +
+                                "@ID_Locale, " +
+                                "0, " +
+                                "0" +
+                                ")";
+                            var param = new { ID_File = fileId, ID_Locale = localeId };
+                            this.LogQuery(sql, param);
 
-                    await dbConnection.ExecuteAsync(
-                        sql: sql,
-                        param: param);
+                            await dbConnection.ExecuteAsync(
+                                sql: sql,
+                                param: param, transaction: transaction);
+                        }
+
+                        //вставить обновление локалей
+
+                        // не знаю чей это метод, но я добавил вторым параметром id языка для перевода, если нужно, то применяй
+                        var strings = _tsr.GetStringsByFileIdAsync(fileId, null);
+                        foreach (var str in strings.Result)
+                        {
+                            _tsr.AddTranslationLocalesTransactAsync(str.id, localesIds, dbConnection, transaction);
+                        }
+
+                    }
+                    catch (NpgsqlException exception)
+                    {
+                        this._loggerError.WriteLn(
+                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddTranslationLocalesAsync)} {nameof(NpgsqlException)} ",
+                            exception);
+                        transaction.Rollback();
+                    }
+                    catch (Exception exception)
+                    {
+                        this._loggerError.WriteLn(
+                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddTranslationLocalesAsync)} {nameof(Exception)} ",
+                            exception);
+                        transaction.Rollback();
+                    }
                 }
-
-                //вставить обновление локалей
-                
-                // не знаю чей это метод, но я добавил вторым параметром id языка для перевода, если нужно, то применяй
-                var strings = _tsr.GetStringsByFileIdAsync(fileId, null);
-                foreach (var str in strings.Result)
-                {
-                    _tsr.AddTranslationLocalesTransactAsync(str.id, localesIds, dbConnection, null);
-                }
-
             }
         }
 

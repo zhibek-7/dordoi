@@ -71,12 +71,12 @@ export class FilesComponent implements OnInit {
           width: "170px",
           textalign: "center"
         },
-//        {
-//          field: "percent_Of_Confirmed",
-//          header: "Процент подтверждённых переводов",
-//          width: "150px",
-//          textalign: "center"
-//        },
+        //        {
+        //          field: "percent_Of_Confirmed",
+        //          header: "Процент подтверждённых переводов",
+        //          width: "150px",
+        //          textalign: "center"
+        //        },
         {}
       ];
     } else {
@@ -89,7 +89,7 @@ export class FilesComponent implements OnInit {
           width: "100px",
           textalign: "right"
         },
-       {
+        {
           field: "version",
           header: "Версия",
           width: "80px",
@@ -274,9 +274,9 @@ export class FilesComponent implements OnInit {
   }
 
   addNode(addedNode: TreeNode, parent: TreeNode): void {
-    console.log("parent=" + parent);
-    console.log("addedNode=" + addedNode);
-    console.log("parent != null =" + parent.children);
+    //console.log("parent=" + parent);
+    //console.log("addedNode=" + addedNode);
+    //console.log("parent != null =" + parent.children);
     // Nodes (parent children or root)
     const nodes = parent ? [...parent.children] : [...this.files];
 
@@ -386,8 +386,10 @@ export class FilesComponent implements OnInit {
   }
 
   translateFileClick(selectedFile: any) {
-    if(!selectedFile.is_folder){
-      this.router.navigate(["Translation/" + selectedFile.id + "/" + this.selectedLanguageId]);
+    if (!selectedFile.is_folder) {
+      this.router.navigate([
+        "Translation/" + selectedFile.id + "/" + this.selectedLanguageId
+      ]);
     }
   }
 }

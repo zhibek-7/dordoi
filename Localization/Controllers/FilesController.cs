@@ -93,11 +93,14 @@ namespace Localization.WebApi
         public async Task<ActionResult<Node<File>>> AddFileAsync(IFormFile file, [FromForm] int? parentId, int projectId)
         {
             using (var fileContentStream = file.OpenReadStream())
-                return await this._filesService.AddFileAsync(
+            {
+                var t = await this._filesService.AddFileAsync(
                     fileName: file.FileName,
                     fileContentStream: fileContentStream,
                     parentId: parentId,
                     projectId: projectId);
+                return t;
+            }
         }
 
         [HttpPost("updateFileVersion/byProjectId/{projectId}")]

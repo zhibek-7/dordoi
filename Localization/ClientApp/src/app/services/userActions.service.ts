@@ -1,15 +1,14 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse, HttpHeaders  } from '@angular/common/http';
-import { UserAction } from '../models/database-entities/userAction.type';
-import { Observable, from } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpResponse, HttpHeaders } from "@angular/common/http";
+import { UserAction } from "../models/database-entities/userAction.type";
+import { Observable, from } from "rxjs";
+import { filter, map } from "rxjs/operators";
 
 @Injectable()
 export class UserActionsService {
-
   private url: string = "api/UserAction/";
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getActionsList(): Observable<UserAction[]> {
     return this.httpClient.post<UserAction[]>(this.url + "List", null);
@@ -23,9 +22,9 @@ export class UserActionsService {
     limit: number,
     offset: number,
     sortBy?: string[],
-    sortAscending?: boolean,
+    sortAscending?: boolean
   ): Observable<HttpResponse<UserAction[]>> {
-    const url = `${this.url}/List/byProjectId/${projectId}`;
+    const url = `${this.url}List/byProjectId/${projectId}`;
     let body: any = {};
     if (workTypeId) {
       body.workTypeId = workTypeId;
@@ -48,20 +47,20 @@ export class UserActionsService {
         body.sortAscending = sortAscending;
       }
     }
-    return this.httpClient
-      .post<UserAction[]>(
-        url,
-        body,
-        {
-          observe: 'response',
-        });
+    console.log("..url=" + url);
+
+    return this.httpClient.post<UserAction[]>(url, body, {
+      headers: new HttpHeaders().set(
+        "Authorization",
+        "Bearer " + sessionStorage.getItem("userToken")
+      ),
+      observe: "response"
+    });
   }
 
   getProjectActionsList(project: string): Observable<UserAction[]> {
-    return this.getActionsList()
-      .pipe(
-        map(actions => actions.filter(action => action.project_name === project))
-      );
+    return this.getActionsList().pipe(
+      map(actions => actions.filter(action => action.project_name === project))
+    );
   }
-
-}     
+}

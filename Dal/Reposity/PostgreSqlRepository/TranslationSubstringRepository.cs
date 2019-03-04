@@ -258,7 +258,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "TS.position_in_text AS position_in_text, TS.id AS id " +
                         "FROM translation_substrings AS TS " +
                         "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
-                        "WHERE F.id = @Id";
+                        "WHERE F.id = @FileId";
 
             try
             {
@@ -274,11 +274,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
                     else
                     {
-                        var param = new { FileId = fileId};
+                        var param = new { FileId = fileId };
                         this.LogQuery(queryForSubstingsInFile, param);
                         stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(queryForSubstingsInFile, param);
                     }
-                    
+
                     foreach (var translationSubstring in stringsInFile)
                     {
                         translationSubstring.Status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id);
@@ -767,7 +767,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             foreach (var localeId in localesIds)
             {
                 //Назначаем только назначенные локали
-                if (localeId != null && idAssignetLoc.Contains((int)localeId) == false)
+                if (idAssignetLoc.Contains((int)localeId) == false)
                 {
                     var sql =
                         "INSERT INTO translation_substrings_locales " +
@@ -920,7 +920,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        
+
         /// <summary>
         /// Возвращает строки (со связанными объектами).
         /// </summary>
@@ -938,7 +938,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
                         .Where("localization_projects_translation_memories.id_localization_project", projectId)
                         .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name");
-                    
+
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var temp = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
