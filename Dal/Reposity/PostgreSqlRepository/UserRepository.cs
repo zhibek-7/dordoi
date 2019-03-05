@@ -618,7 +618,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Создание пользователя с вложенными списками идентификаторов связанных данных.
                     var resultDTO = new UserProfileForEditingDTO
                     {
-                        //id = temp.FirstOrDefault().id,
+                        id = temp.FirstOrDefault()?.id ?? -1,
                         name_text = temp.FirstOrDefault().name_text,
                         email = temp.FirstOrDefault().email,
                         photo = temp.FirstOrDefault().photo,
@@ -626,7 +626,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                         about_me = temp.FirstOrDefault().about_me,
                         gender = temp.FirstOrDefault().gender,
                         id_time_zones = temp.FirstOrDefault().id_time_zones,
-                        //id = temp.FirstOrDefault().id,
 
                         locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
                         ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
