@@ -47,7 +47,7 @@ namespace Localization
             ///Как идея использовать класс, который видно во всех методах.
             //var connectionString = Configuration.GetConnectionString("db_connection");
             var connectionString = Settings.GetStringDB();
-            services.AddScoped<ISettings>(provider => new Settings(connectionString));
+            services.AddSingleton<ISettings>(provider => new Settings(connectionString));
 
 
             // TODO нужно будет переделать все классы под этот вариант
