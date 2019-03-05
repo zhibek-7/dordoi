@@ -67,7 +67,7 @@ namespace Utilities
             }
         }
 
-        public Settings(string connectionString) : base()
+        public Settings(string connectionString) : this()
         {
             this._connectionString = connectionString;
         }
