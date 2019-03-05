@@ -16,7 +16,7 @@
     <div class="row mt-2">
       <div ng-cl class="translateTextArea">
         <div (dblclick)="openSelectionDialog($event)" class="textForTranslate">
-          <textarea rows="2" cols="55re" style="font-size: 0.8re" readonly> {{phraseForTranslate.substring_to_translate}}</textarea>
+          <textarea disabled=true rows="2" cols="55re" style="font-size: 0.8re" readonly> {{phraseForTranslate.substring_to_translate}}</textarea>
         </div>
       </div>
     </div>
@@ -56,11 +56,15 @@
     <!---->
 
     <hr>
-    <div class="yourTranslateBlock">
-      <div class="form-group translateTextArea">
-        <textarea class="form-control" rows="5" id="inputForTranslation" name="translatedText" [(ngModel)]="translatedText"
-          placeholder="Введите вариант перевода"></textarea>
+    <div>
+      <!-- class="yourTranslateBlock"<div class="form-group translateTextArea">-->
+      <div class="row mt-2">
+        <div ng-cl class="translateTextArea">
+          <textarea rows="2" cols="55re" style="font-size: 0.8re" id="inputForTranslation" name="translatedText"
+            [(ngModel)]="translatedText" placeholder="Введите вариант перевода"></textarea>
+        </div>
       </div>
+      <!--</div>-->
       <div class="form-group">
         <button type="submit" class="btn btn-success float-right col-2 m-1" id="btnSave" name="buttonSubmitInput" form="inputForTranslation"
           (click)="submitTranslate()">Сохранить</button>
