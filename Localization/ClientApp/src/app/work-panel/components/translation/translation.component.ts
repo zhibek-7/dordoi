@@ -142,7 +142,9 @@ export class TranslationComponent implements OnInit, OnDestroy {
 
     this.translationSubstringService
       .updateTranslationSubstring(this.phraseForTranslate)
-      .subscribe();
+      .subscribe( success => {
+        this.loadImages(this.phraseForTranslate.id);
+      });
   }
 
   // Сохранить вариант перевода

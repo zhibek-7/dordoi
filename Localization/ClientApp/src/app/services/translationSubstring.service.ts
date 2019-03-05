@@ -35,11 +35,11 @@ export class TranslationSubstringService {
     uploadImageToTranslationSubstring(fileToUpload: File[], translationSubstringId: number) {
         const formData: FormData = new FormData();
 
-        fileToUpload.forEach(element => {
-            formData.set('Image', element); 
+        // fileToUpload.forEach(element => {
+            formData.set('Image', fileToUpload[0]); 
             formData.append('TranslationSubstringId', translationSubstringId.toString());
-            return this.http.post(this.url + "UploadImageToTranslationSubstring", formData).toPromise();
-        });        
+            return this.http.post(this.url + "UploadImageToTranslationSubstring", formData);
+        // });        
     }
 
     getStringsInFile(fileId: number, localeId: number): Observable<TranslationSubstring[]>{

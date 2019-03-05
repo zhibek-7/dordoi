@@ -21,7 +21,7 @@ namespace Models.DatabaseEntities
 
         public bool? outdated { get; set; }
 
-        public string Status { get; set; }
+        public string status { get; set; }
 
         public TranslationSubstring() { }
 

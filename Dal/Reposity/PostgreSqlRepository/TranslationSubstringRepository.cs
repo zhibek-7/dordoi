@@ -281,7 +281,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     foreach (var translationSubstring in stringsInFile)
                     {
-                        translationSubstring.Status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id);
+                        translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id);
                     }
 
                     return stringsInFile;

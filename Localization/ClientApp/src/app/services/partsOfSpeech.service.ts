@@ -12,7 +12,7 @@ export class PartsOfSpeechService {
 
   public getListByGlossaryId(glossaryId: number): Observable<PartOfSpeech[]> {
     return this.httpClient.post<PartOfSpeech[]>(
-      PartsOfSpeechService.connectionUrl + "/List",
+      PartsOfSpeechService.connectionUrl + "List",
       glossaryId,
       {
         headers: new HttpHeaders().set(

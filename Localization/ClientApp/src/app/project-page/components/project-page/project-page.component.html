@@ -21,8 +21,8 @@
   </div>
 </div>
  -->
-<h1 *ngIf="currentProject" class="mt-4 mb-4">{{ currentProject.name_text }}</h1>
-<h1 *ngIf="!currentProject">Невозможно подключиться к БД</h1>
+<h4 *ngIf="currentProject" class="mt-4 mb-4">{{ currentProject.name_text }}</h4>
+<h4 *ngIf="!currentProject">Невозможно подключиться к БД</h4>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
@@ -81,7 +81,7 @@
 
         </div>
         <div class="col-3 right-content">
-          <span style="font-weight:600">Детали</span>
+          <h5>Детали</h5>
           <table class="table" *ngIf="currentProject">
             <tr>
               <td>Исходный язык </td>
@@ -89,7 +89,7 @@
             </tr>
             <tr>
               <td>Пользователей </td>
-              <td> {{currentProject.count_users_active}} </td>
+              <td> <span class="mr-1">{{currentProject.count_users_active}} </span> </td>
             </tr>
             <!--<tr>
               <td>Words to translate</td>
@@ -107,7 +107,7 @@
           <hr>
 
           <div>
-            <span style="font-weight:600">Менеджеры</span>
+            <h5>Менеджеры</h5>
             <br>
 
             <div *ngFor="let participant of participantsOwner">
@@ -127,7 +127,7 @@
             <div *ngFor="let participant of participantsManager">
 
               <a class="nav-link profile-link" role="button" aria-haspopup="true" routerLink='/profile'>
-                <img src="../assets/svg/011-user.svg" width="24" height="24" class="d-inline-block align-top"
+                <img src="../assets/svg/011-user.svg" width="24" height="24" class="d-inline-block align-top m-1"
                   alt="">
                 <span class="ml-2" style="color: grey;">{{participant.user_Name}}</span>
               </a>
