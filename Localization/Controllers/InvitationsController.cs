@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Models.Services;
+using Utilities;
 
 namespace Localization.Controllers
 {
@@ -14,17 +15,21 @@ namespace Localization.Controllers
 
         private readonly InvitationsService _invitationsService;
 
-        public InvitationsController(InvitationsService invitationsService)
+        private readonly ISettings _settings;
+
+        public InvitationsController(InvitationsService invitationsService, ISettings settings)
         {
             this._invitationsService = invitationsService;
+            this._settings = settings;
         }
 
         [HttpPost("add")]
         [Authorize]
         public async Task AddInvitationAsync([FromBody] Invitation invitation)
         {
-            string hostName = this.HttpContext.Request.Host.Value;
-            await this._invitationsService.AddInvitationAsync(invitation, $"https://{hostName}/invitation/{invitation.id}");
+            string hostName = this._settings.GetString("host_name");
+            string hostProtocol = this._settings.GetString("host_protocol");
+            await this._invitationsService.AddInvitationAsync(invitation, $"{hostProtocol}://{hostName}/invitation/{invitation.id}");
         }
 
         [HttpPost("{invitationId}")]
