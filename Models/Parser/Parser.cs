@@ -48,7 +48,9 @@ namespace Models.Parser
                 {"resx", ParseAsResx },
                 {"string", ParseAsString },
                 {"txt", ParseAsTxt },
-                {"rc", ParseAsRc }
+                {"rc", ParseAsRc },
+                {"yml", ParseAsYml_Yaml },
+                {"yaml", ParseAsYml_Yaml }
             };
         }
 
@@ -374,6 +376,63 @@ namespace Models.Parser
                 ts.Add(new TranslationSubstring(m.Groups[2].Value, m.Groups[1].Value, file.id, m.Groups[2].Value, m.Groups[2].Index));
             }
             _logger.WriteLn("Parser: " + string.Format("Парсер 'rc'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
+            return ts;
+        }
+
+        private List<TranslationSubstring> ParseAsYml_Yaml(File file)
+        {
+            _logger.WriteLn("Parser: " + string.Format("К файлу {0} применяется парсер для файлов с расширением 'yml/yaml'", file.name_text));
+            var ts = new List<TranslationSubstring>();
+            var pattern = "^([ ]*)([^#].*\n)";
+            var rowpattern = "((?:(?:[^:]|:(?![ ]))+|['\"].*['\"])):[ ]?";
+            var matches = Regex.Matches(file.original_full_text, pattern, RegexOptions.Multiline);
+            var context_parts = new List<string>();
+            string context = string.Empty;
+            for (int i = 0; i < matches.Count; i++)
+            {
+                var m_row = Regex.Matches(matches[i].Groups[2].Value, rowpattern);
+                if (m_row.Count > 0)
+                {
+                    var indent = matches[i].Groups[1].Length;
+                    context_parts = context_parts.Take(indent / 2).ToList();
+                    var context_row = string.Empty;
+                    int n = -1;
+                    while (n + 1 < m_row.Count && !Regex.IsMatch(m_row[n + 1].Value, "^[ ]*{[ ]*"))
+                    {
+                        context_row += "[" + m_row[n + 1].Groups[1].Value + "]";
+                        n++;
+                    }
+                    context_parts.Add(context_row);
+                    context = string.Empty;
+                    foreach (var s in context_parts) context += s;
+                    var nodetext_index = m_row[n].Index + m_row[n].Length;
+                    string nodetext = matches[i].Groups[2].Value.Substring(nodetext_index);
+                    nodetext_index += matches[i].Groups[2].Index;
+                    if (Regex.IsMatch(nodetext, "\\S+"))
+                    {
+                        if (Regex.IsMatch(nodetext, "^[>|{]\\s+"))
+                        {
+                            var value = nodetext;
+                            while (i + 1 < matches.Count && matches[i + 1].Groups[1].Length > indent)
+                            {
+                                value += matches[i + 1].Value;
+                                i++;
+                            }
+                            value = value.Substring(0, value.Length - 1);
+                            ts.Add(new TranslationSubstring(value, context, file.id, value, nodetext_index));
+                            continue;
+                        }
+                        nodetext = nodetext.Substring(0, nodetext.Length - 1);
+                        ts.Add(new TranslationSubstring(nodetext, context, file.id, nodetext, nodetext_index));
+                    }
+                }
+                else
+                {
+                    var value = matches[i].Groups[2].Value.Substring(0, matches[i].Groups[2].Value.Length - 1);
+                    ts.Add(new TranslationSubstring(value, context, file.id, value, matches[i].Groups[2].Index));
+                }
+            }
+            _logger.WriteLn("Parser: " + string.Format("Парсер 'yml/yaml'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
 
