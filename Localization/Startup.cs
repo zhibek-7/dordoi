@@ -70,6 +70,7 @@ namespace Localization
             services.AddScoped<GlossariesService>();
             services.AddScoped<UserAction>();
             services.AddScoped<TranslationMemoryService>();
+            services.AddScoped<InvitationsService>();
 
             /*
             services.AddScoped<IFilesRepository, FilesRepository>();
