@@ -21,7 +21,12 @@ namespace Localization.Authentication
         public AuthenticationOptions()
         {
             ISSUER = st.GetString("AuthenticationOptions_ISSUER");
-            AUDIENCE = st.GetString("AuthenticationOptions_AUDIENCE");
+            //AUDIENCE = st.GetString("AuthenticationOptions_AUDIENCE");
+
+            string hostName = st.GetString("host_name");
+            string hostProtocol = st.GetString("host_protocol");
+            AUDIENCE = hostName + "://" + hostProtocol + "/";
+
             LIFETIME = Int32.Parse(st.GetString("AuthenticationOptions_LIFETIME"));
         }
 
