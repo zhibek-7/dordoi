@@ -42,7 +42,6 @@ export class PhrasesComponent implements OnInit {
     this.phrasesList = await this.stringService
       .getStringsInFile(this.fileId, this.localeId)
       .toPromise();
-    console.log(this.phrasesList)
     this.countPages();
   }
 

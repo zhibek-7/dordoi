@@ -44,11 +44,17 @@ export class ContextEditModalComponent extends ModalComponent
     this.currentPhrase.translation_max_length = this.translationMaxLength;
 
     if (this.filesToUpload != null) {
-      this.loadScrinshot();
+      this.translationSubstringService.uploadImageToTranslationSubstring(
+        this.filesToUpload,
+        this.currentPhrase.id
+      ).subscribe( success => {
+        this.onEnterContext.emit(this.currentPhrase);
+        super.hide();
+      });
+    } else {
+      this.onEnterContext.emit(this.currentPhrase);
+      super.hide();
     }
-
-    this.onEnterContext.emit(this.currentPhrase);
-    super.hide();
   }
 
   // Функция загрузки скриншота
