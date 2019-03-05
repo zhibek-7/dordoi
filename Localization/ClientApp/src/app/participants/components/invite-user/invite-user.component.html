@@ -18,9 +18,7 @@
           <h6>Электронная почта</h6>
         </div>
         <div class="width-to-parent">
-          <input class="form-control"
-                 formControlName="emailFormControl"
-                 placeholder="Электронная почта">
+          <input class="form-control" formControlName="emailFormControl" placeholder="Электронная почта">
         </div>
         <div class="alert alert-danger" *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.required">
           Поле "Email" обязательно для заполнения
@@ -34,14 +32,9 @@
           <h6>Сообщение</h6>
         </div>
         <mat-form-field class="width-to-parent">
-          <textarea matInput
-                    cdkTextareaAutosize
-                    #autosize="cdkTextareaAutosize"
-                    cdkAutosizeMinRows="6"
-                    cdkAutosizeMaxRows="20"
-                    placeholder="Сообщение"
-                    formControlName="invitationMessageFormControl"
-                    ></textarea>
+          <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="6"
+            cdkAutosizeMaxRows="20" placeholder="Сообщение" formControlName="invitationMessageFormControl"></textarea>
+
         </mat-form-field>
       </div>
       <div class="m-2">
@@ -49,10 +42,7 @@
           <h6>Ссылка</h6>
         </div>
         <mat-form-field class="width-to-parent">
-          <textarea matInput
-                    readonly
-                    [value]="invitationLink"
-                    ></textarea>
+          <textarea matInput readonly [value]="invitationLink"></textarea>
         </mat-form-field>
       </div>
     </form>

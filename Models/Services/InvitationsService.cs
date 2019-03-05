@@ -23,7 +23,7 @@ namespace Models.Services
         {
             await this._invitationsRepository.AddAsync(invitation);
             await this._mail.PostMail(
-                msg: $"{invitation.message}{Environment.NewLine}Ссылка для участия в проекте - {invitationLink}",
+                msg: $"{invitation.message}{Environment.NewLine}Ссылка для участия в проекте - <a href='{invitationLink}'> {invitationLink} </a>",
                 subject: "Приглашение в проект перевода",
                 emails: new[] { invitation.email }
                 );

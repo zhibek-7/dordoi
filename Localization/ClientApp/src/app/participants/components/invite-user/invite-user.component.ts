@@ -1,20 +1,19 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 
-import { InvitationsService } from 'src/app/services/invitations.service';
-import { GuidsService } from 'src/app/services/guids.service';
+import { InvitationsService } from "src/app/services/invitations.service";
+import { GuidsService } from "src/app/services/guids.service";
 
-import { Role } from 'src/app/models/database-entities/role.type';
+import { Role } from "src/app/models/database-entities/role.type";
 import { Invitation } from "src/app/models/database-entities/invitation.type";
-import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
+import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 
 @Component({
-  selector: 'app-invite-user',
-  templateUrl: './invite-user.component.html',
-  styleUrls: ['./invite-user.component.css']
+  selector: "app-invite-user",
+  templateUrl: "./invite-user.component.html",
+  styleUrls: ["./invite-user.component.css"]
 })
 export class InviteUserComponent extends ModalComponent implements OnInit {
-
   @Input()
   projectId: number;
 
@@ -28,19 +27,28 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
   invitationLink: string = "";
 
   formGroup: FormGroup;
+  text = "";
 
   constructor(
     private invitationsService: InvitationsService,
-    private guidsService: GuidsService,
-  ) { super(); }
+    private guidsService: GuidsService
+  ) {
+    super();
+  }
 
   ngOnInit() {
+    this.text =
+      "Добрый день.\r\n" +
+      "Мы хотели бы пригласить Вас помочь нам в процессе перевода нашего проекта.\r\n" +
+      "\r\n" +
+      "Для подключения к проекту необходимо авторизоваться в системе или зарегистрироваться.\r\n" +
+      "Регистрация простая и бесплатная.";
     this.formGroup = new FormGroup({
       emailFormControl: new FormControl("", [
         Validators.required,
         Validators.email
       ]),
-      invitationMessageFormControl: new FormControl(""),
+      invitationMessageFormControl: new FormControl(this.text)
     });
   }
 
@@ -53,32 +61,36 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
   }
 
   generateNewInvitationLink() {
-    this.guidsService.getNew()
-      .subscribe(newGuid => {
+    this.guidsService.getNew().subscribe(
+      newGuid => {
         this.invitationId = newGuid;
-        this.invitationLink = `${this.getAbsoluteDomainUrl()}/invitation/${this.invitationId}`;
+        this.invitationLink = `${this.getAbsoluteDomainUrl()}/invitation/${
+          this.invitationId
+        }`;
       },
-      error => console.log(error));
+      error => console.log(error)
+    );
   }
 
   public getAbsoluteDomainUrl(): string {
-    if (window
-      && "location" in window
-      && "host" in window.location) {
+    if (window && "location" in window && "host" in window.location) {
       return "https://" + window.location.host;
     }
     return null;
   }
 
   saveInvitation() {
-    this.invitationsService.addInvitation(new Invitation(
-      this.invitationId,
-      this.projectId,
-      this.selectedRoleId,
-      this.formGroup.controls.emailFormControl.value,
-      this.formGroup.controls.invitationMessageFormControl.value
-    )).subscribe();
+    this.invitationsService
+      .addInvitation(
+        new Invitation(
+          this.invitationId,
+          this.projectId,
+          this.selectedRoleId,
+          this.formGroup.controls.emailFormControl.value,
+          this.formGroup.controls.invitationMessageFormControl.value
+        )
+      )
+      .subscribe();
     this.hide();
   }
-
 }
