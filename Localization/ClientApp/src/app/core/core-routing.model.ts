@@ -99,6 +99,10 @@ const routes: Routes = [
     component: UserRegistrationComponent
   },
   {
+    path: "invitation",
+    loadChildren: "../invitations/invitations.module#InvitationsModule",
+  },
+  {
     path: "**",
     loadChildren: "../account/module/account.module#AccountModule",
     canActivate: [AuthenticationGuard]

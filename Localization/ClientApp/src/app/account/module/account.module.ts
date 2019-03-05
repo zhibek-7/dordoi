@@ -29,6 +29,8 @@ import { LoginComponent } from '../components/login/login.component';
 import { ProfileComponent } from '../components/profile/profile.component';
 import { RecoverPasswordComponent } from '../components/recover-password/recover-password.component';
 import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
+import { InvitationsService } from 'src/app/services/invitations.service';
+import { ParticipantsService } from 'src/app/services/participants.service';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,8 @@ import { RequestInterceptorService } from 'src/app/services/requestInterceptor.s
         useValue: DEFAULT_DROPZONE_CONFIG
       },
       { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
+      InvitationsService,
+      ParticipantsService,
     ]
 })
 export class AccountModule { }

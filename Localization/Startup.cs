@@ -60,6 +60,7 @@ namespace Localization
             services.AddScoped<IUserActionRepository>(provider => new UserActionRepository(connectionString));
             services.AddScoped<IMail>(provider => new EMail());
             services.AddScoped<ITranslationMemoryRepository>(provider => new TranslationMemoryRepository(connectionString));
+            services.AddScoped<IInvitationsRepository>(provider => new InvitationsRepository(connectionString));
 
             services.AddScoped<FromExcel>();
 
@@ -69,6 +70,7 @@ namespace Localization
             services.AddScoped<GlossariesService>();
             services.AddScoped<UserAction>();
             services.AddScoped<TranslationMemoryService>();
+            services.AddScoped<InvitationsService>();
 
             /*
             services.AddScoped<IFilesRepository, FilesRepository>();

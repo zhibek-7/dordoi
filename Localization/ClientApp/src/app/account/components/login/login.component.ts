@@ -4,6 +4,8 @@ import { Router } from "@angular/router";
 
 import { UserService } from "src/app/services/user.service";
 import { AuthenticationService } from "src/app/services/authentication.service";
+import { InvitationsService } from 'src/app/services/invitations.service';
+import { ParticipantsService } from 'src/app/services/participants.service';
 
 import { User } from "src/app/models/database-entities/user.type";
 
@@ -13,9 +15,13 @@ import { User } from "src/app/models/database-entities/user.type";
   styleUrls: ["./login.component.css"]
 })
 export class LoginComponent implements OnInit {
-  constructor(private router: Router, 
-              private userService: UserService,
-              private authenticationService: AuthenticationService) {}
+  constructor(
+    private router: Router, 
+    private userService: UserService,
+    private authenticationService: AuthenticationService,
+    private invitationsService: InvitationsService,
+    private participantsService: ParticipantsService,
+  ) { }
   
   hidePassword: boolean;
   formGroup: FormGroup;
@@ -41,8 +47,21 @@ export class LoginComponent implements OnInit {
       let user = this.getUser();
       this.userService
         .login(user)
-        .subscribe( response => {    
-            this.authenticationService.saveToken(response.token);     
+        .subscribe( async response => {    
+          this.authenticationService.saveToken(response.token);
+
+          if (this.invitationsService.currentInvitationId) {
+            const currentInvitation = await this.invitationsService.getInvitationById(this.invitationsService.currentInvitationId).toPromise();
+            const currentUserProfile = await this.userService.getProfile().toPromise();
+            if (currentUserProfile.email == currentInvitation.email) {
+              this.participantsService.addParticipant(
+                currentInvitation.id_project,
+                currentUserProfile.id,
+                currentInvitation.id_role
+              ).subscribe(() => this.invitationsService.currentInvitationId = null);
+            }
+          }
+
           // this.userService.getProfile().subscribe(); 
           this.router.navigate(["/Profile"]);
             this.authenticationService.authorizeUser();
