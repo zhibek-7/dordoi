@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class GuidsService {
 
-  private url: string = "api/guids/";
+  private url: string = "api/guids";
 
   constructor(private httpClient: HttpClient) { }
 
