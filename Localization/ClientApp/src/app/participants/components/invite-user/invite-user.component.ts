@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { ParticipantsService } from 'src/app/services/participants.service';
-import { UserService } from 'src/app/services/user.service';
+import { InvitationsService } from 'src/app/services/invitations.service';
+import { GuidsService } from 'src/app/services/guids.service';
 
 import { Role } from 'src/app/models/database-entities/role.type';
+import { Invitation } from "src/app/models/database-entities/invitation.type";
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
-import { User } from 'src/app/models/database-entities/user.type';
 
 @Component({
   selector: 'app-invite-user',
@@ -14,57 +15,70 @@ import { User } from 'src/app/models/database-entities/user.type';
 })
 export class InviteUserComponent extends ModalComponent implements OnInit {
 
-  @Output()
-  participantAdded = new EventEmitter();
-
   @Input()
   projectId: number;
 
   @Input()
   roles: Role[];
 
-  selectedRoleId: number;
+  selectedRoleId: number = -1;
 
-  users: User[];
+  invitationId: string = "";
 
-  selectedUserId: number;
+  invitationLink: string = "";
+
+  formGroup: FormGroup;
 
   constructor(
-    private participantsService: ParticipantsService,
-    private usersService: UserService,
+    private invitationsService: InvitationsService,
+    private guidsService: GuidsService,
   ) { super(); }
 
   ngOnInit() {
+    this.formGroup = new FormGroup({
+      emailFormControl: new FormControl("", [
+        Validators.required,
+        Validators.email
+      ]),
+      invitationMessageFormControl: new FormControl(""),
+    });
   }
 
   show() {
     if (this.roles.length > 0) {
       this.selectedRoleId = this.roles[0].id;
     }
-    this.loadUsers();
+    this.generateNewInvitationLink();
     super.show();
   }
 
-  loadUsers() {
-    this.usersService.getUserList()
-      .subscribe(
-        users => {
-          this.users = users;
-          if (users.length > 0) {
-            this.selectedUserId = users[0].id;
-          }
-        },
-        error => console.log(error));
+  generateNewInvitationLink() {
+    this.guidsService.getNew()
+      .subscribe(newGuid => {
+        this.invitationId = newGuid;
+        this.invitationLink = `${this.getAbsoluteDomainUrl()}/invitation/${this.invitationId}`;
+      },
+      error => console.log(error));
   }
 
-  addParticipant() {
-    this.participantsService.addParticipant(this.projectId, this.selectedUserId, this.selectedRoleId)
-      .subscribe(
-        () => {
-          this.hide();
-          this.participantAdded.emit();
-        },
-        error => console.log(error));
+  public getAbsoluteDomainUrl(): string {
+    if (window
+      && "location" in window
+      && "host" in window.location) {
+      return "https://" + window.location.host;
+    }
+    return null;
+  }
+
+  saveInvitation() {
+    this.invitationsService.addInvitation(new Invitation(
+      this.invitationId,
+      this.projectId,
+      this.selectedRoleId,
+      this.formGroup.controls.emailFormControl.value,
+      this.formGroup.controls.invitationMessageFormControl.value
+    )).subscribe();
+    this.hide();
   }
 
 }
