@@ -7,6 +7,7 @@ import { GuidsService } from "src/app/services/guids.service";
 import { Role } from "src/app/models/database-entities/role.type";
 import { Invitation } from "src/app/models/database-entities/invitation.type";
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
+import { AppConfigService } from "src/services/app-config.service";
 
 @Component({
   selector: "app-invite-user",
@@ -31,7 +32,8 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
 
   constructor(
     private invitationsService: InvitationsService,
-    private guidsService: GuidsService
+    private guidsService: GuidsService,
+    private appConfigService: AppConfigService,
   ) {
     super();
   }
@@ -64,19 +66,12 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
     this.guidsService.getNew().subscribe(
       newGuid => {
         this.invitationId = newGuid;
-        this.invitationLink = `${this.getAbsoluteDomainUrl()}/invitation/${
-          this.invitationId
-        }`;
+        const hostProtocol = this.appConfigService.config.host.protocol;
+        const hostName = this.appConfigService.config.host.name;
+        this.invitationLink = `${hostProtocol}://${hostName}/invitation/${this.invitationId}`;
       },
       error => console.log(error)
     );
-  }
-
-  public getAbsoluteDomainUrl(): string {
-    if (window && "location" in window && "host" in window.location) {
-      return "https://" + window.location.host;
-    }
-    return null;
   }
 
   saveInvitation() {

@@ -1,4 +1,8 @@
 {
   "apiCloud": "http://dev-filecloud-test.taximaxim.local:3030/",
   "casServer": "https://dev-cas.taxsee.com/login?service=http%3A%2F%2Fdev-filecloud-test.taximaxim.local%2F",
+  "host": {
+    "protocol": "http",
+    "name": "localhost:1527"
+  },
 }
