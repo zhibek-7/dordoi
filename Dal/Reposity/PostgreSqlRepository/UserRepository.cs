@@ -12,7 +12,7 @@ using Models.DatabaseEntities.DTO;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class UserRepository : BaseRepository, IRepository<User>
+    public class UserRepository : BaseRepository, IUserRepository, IRepository<User>
     {
         private readonly ParticipantRepository _participantsRepository;
         private RoleRepository roles;

@@ -13,7 +13,7 @@ using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class ParticipantRepository : BaseRepository, IRepositoryAsync<Models.DatabaseEntities.Participant>
+    public class ParticipantRepository : BaseRepository, IParticipantRepository, IRepositoryAsync<Models.DatabaseEntities.Participant>
     {
 
         public ParticipantRepository(string connectionStr) : base(connectionStr)

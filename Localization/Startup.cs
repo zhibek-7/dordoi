@@ -61,6 +61,8 @@ namespace Localization
             services.AddScoped<IMail>(provider => new EMail());
             services.AddScoped<ITranslationMemoryRepository>(provider => new TranslationMemoryRepository(connectionString));
             services.AddScoped<IInvitationsRepository>(provider => new InvitationsRepository(connectionString));
+            services.AddScoped<IUserRepository>(provider => new UserRepository(connectionString));
+            services.AddScoped<IParticipantRepository>(provider => new ParticipantRepository(connectionString));
 
             services.AddScoped<FromExcel>();
 
