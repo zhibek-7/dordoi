@@ -1,5 +1,5 @@
 //import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from "@angular/core";
+import { NgModule, APP_INITIALIZER } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
@@ -11,6 +11,7 @@ import { AuthenticationGuard } from "../services/authentication.guard";
 import { RequestInterceptorService } from "../services/requestInterceptor.service";
 import { AuthenticationService } from "../services/authentication.service";
 import { UserService } from 'src/app/services/user.service';
+import { AppInitService } from "src/app/services/app-init.service";
 
 import { HeaderComponent } from "./header/header.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
@@ -73,10 +74,17 @@ import {
     UserRegistrationComponent
   ],
   exports: [RouterModule, HeaderComponent],
-  providers: [AuthenticationService,
-              UserService,
-              AuthenticationGuard,
-              { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
-            ]
+  providers: [
+    AuthenticationService,
+    UserService,
+    AuthenticationGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (appInitService: AppInitService) => () => appInitService.initApp(),
+      deps: [AppInitService],
+      multi: true
+    },
+  ]
 })
 export class CoreModule {}
