@@ -42,4 +42,14 @@ export class InvitationsService {
       });
   }
 
+  activateInvitation(invitationId: string): Observable<Object> {
+    return this.http
+      .post(`${this._url}/activate/${invitationId}`, null, {
+        headers: new HttpHeaders().set(
+          "Authorization",
+          "Bearer " + sessionStorage.getItem("userToken")
+        )
+      });
+  }
+
 }

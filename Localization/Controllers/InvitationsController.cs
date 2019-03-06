@@ -39,5 +39,14 @@ namespace Localization.Controllers
             return await this._invitationsService.GetInvitationByIdAsync(invitationId);
         }
 
+        [HttpPost("activate/{invitationId}")]
+        [Authorize]
+        public async Task ActivateInvitationAsync(Guid invitationId)
+        {
+            await this._invitationsService.ActivateInvitationAsync(
+                invitationId: invitationId,
+                currentUserName: this.User.Identity.Name);
+        }
+
     }
 }

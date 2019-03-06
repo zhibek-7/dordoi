@@ -54,11 +54,9 @@ export class LoginComponent implements OnInit {
             const currentInvitation = await this.invitationsService.getInvitationById(this.invitationsService.currentInvitationId).toPromise();
             const currentUserProfile = await this.userService.getProfile().toPromise();
             if (currentUserProfile.email == currentInvitation.email) {
-              this.participantsService.addParticipant(
-                currentInvitation.id_project,
-                currentUserProfile.id,
-                currentInvitation.id_role
-              ).subscribe(() => this.invitationsService.currentInvitationId = null);
+              this.invitationsService
+                .activateInvitation(this.invitationsService.currentInvitationId)
+                .subscribe(() => this.invitationsService.currentInvitationId = null);
             }
           }
 
