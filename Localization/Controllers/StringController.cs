@@ -252,10 +252,43 @@ namespace Localization.WebApi
         /// <returns></returns>
         [Authorize]
         [HttpPost("getAllWithTranslationMemoryByProject")]
-        public async Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync([FromBody] int projectId)
-        {
-            return await stringRepository.GetAllWithTranslationMemoryByProjectAsync(projectId);
-        }
+        public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(//[FromBody] int projectId)
+        //{
+        //    return await stringRepository.GetAllWithTranslationMemoryByProjectAsync(projectId);
+
+            int projectId,
+            int? offset,
+            int? limit,
+            int? translationMemoryId,
+            string searchString,
+            string[] sortBy,
+            bool? sortAscending)
+            {
+                Response.Headers.Add(
+                    key: "totalCount",
+                    value: (await stringRepository.GetAllWithTranslationMemoryByProjectCountAsync(
+                        projectId: projectId,
+                        translationMemoryId: translationMemoryId,
+                        searchString: searchString
+                    )).ToString());
+
+                var strings = await stringRepository.GetAllWithTranslationMemoryByProjectAsync(
+                    projectId: projectId,
+                    offset: offset ?? 0,
+                    limit: limit ?? 25,
+                    translationMemoryId: translationMemoryId,
+                    searchString: searchString,
+                    sortBy: sortBy,
+                    sortAscending: sortAscending ?? true
+                );
+
+                if (strings == null)
+                {
+                    return BadRequest("Strings not found");
+                }
+
+                return Ok(strings);
+            }
 
         /// <summary>
         /// Обновление поля substring_to_translate

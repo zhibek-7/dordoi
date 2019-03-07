@@ -480,7 +480,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "translations.id",
                             "translations.translated",
                             "locales.id as locale_id",
-                            "locales.name_text as locale_name");
+                            "locales.name_text as locale_name")
+                        .OrderBy("locales.name_text", "translations.translated");
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var translations = await dbConnection.QueryAsync<TranslationDTO>(

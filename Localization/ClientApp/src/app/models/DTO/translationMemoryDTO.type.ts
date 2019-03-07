@@ -23,3 +23,8 @@ export class TranslationMemoryTableViewDTO {
 
   localization_projects_name: string;
 }
+
+export class TranslationMemoryForSelectDTO {
+  id: number;
+  name_text: string;
+}

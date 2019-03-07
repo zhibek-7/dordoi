@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
-import { TranslationMemoryForEditingDTO, TranslationMemoryTableViewDTO } from 'src/app/models/DTO/translationMemoryDTO.type';
+import { TranslationMemoryForEditingDTO, TranslationMemoryTableViewDTO, TranslationMemoryForSelectDTO } from 'src/app/models/DTO/translationMemoryDTO.type';
 import { catchError } from 'rxjs/operators';
 
 
@@ -18,6 +18,14 @@ export class TranslationMemoryService {
    */
   getAllDTO(): Observable<TranslationMemoryTableViewDTO[]> {
     return this.httpClient.post<TranslationMemoryTableViewDTO[]>(TranslationMemoryService.connectionUrl, null);
+  }
+
+  /**
+   * Возвращает список памятей переводов назначенных на проект локализации.
+   * @param projectId Идентификатор проекта локализации.
+   */
+  getForSelectByProjectAsync(projectId: number): Observable<TranslationMemoryForSelectDTO[]> {
+    return this.httpClient.post<TranslationMemoryForSelectDTO[]>(TranslationMemoryService.connectionUrl + "forSelectByProject", projectId);
   }
 
   /**

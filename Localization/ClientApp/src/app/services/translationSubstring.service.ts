@@ -110,12 +110,46 @@ export class TranslationSubstringService {
   /**
    * Возвращает список строк текущего проекта, со строками перечислений имен связанных объектов.
    */
-  getAllWithTranslationMemoryByProject(projectId: number): Observable<TranslationSubstringTableViewDTO[]> {
-    //let projectId = this.projectsService.currentProjectId;
-    return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", projectId, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    });
+  getAllWithTranslationMemoryByProject(
+    projectId: number,
+    translationMemoryId?: number,
+    searchString?: string,
+    limit?: number,
+    offset?: number,
+    sortBy?: string[],
+    sortAscending?: boolean): Observable<HttpResponse<TranslationSubstringTableViewDTO[]>> {
+    let params = new HttpParams();
+    if (searchString && searchString != '') {
+      params = params.set('searchString', searchString);
+    }
+    if (translationMemoryId) {
+      params = params.set('translationMemoryId', translationMemoryId.toString());
+    }
+    if (limit) {
+      params = params.set('limit', limit.toString());
+    }
+    if (offset) {
+      params = params.set('offset', offset.toString());
+    }
+    if (sortBy && sortBy.length > 0) {
+      sortBy.forEach(sortByItem => params = params.append('sortBy', sortByItem));
+      if (sortAscending !== undefined) {
+        params = params.set('sortAscending', sortAscending.toString());
+      }
+    }
+    return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", projectId,
+      {
+        params: params,
+        observe: 'response'//,
+        //headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+      });
   }
+  //getAllWithTranslationMemoryByProject(projectId: number): Observable<TranslationSubstringTableViewDTO[]> {
+  //  //let projectId = this.projectsService.currentProjectId;
+  //  return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", projectId, {
+  //    headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+  //  });
+  //}
 
   /**
    * Обновление поля substring_to_translate

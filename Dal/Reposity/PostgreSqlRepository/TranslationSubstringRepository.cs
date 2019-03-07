@@ -479,6 +479,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             { "value", "value" },
             { "positionin_text", "positionin_text" },
             { "outdated", "outdated" },
+            { "translation_memories.name_text", "translation_memories.name_text"}
         };
 
         public async Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
@@ -490,6 +491,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             string[] sortBy = null,
             bool sortAscending = true)
         {
+            //TODO !!!!
             if (sortBy == null || !sortBy.Any())
             {
                 sortBy = new[] { "id" };
@@ -937,7 +939,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Join("translation_memories", "translation_memories.id", "translation_memories_strings.id_translation_memory")
                         .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
                         .Where("localization_projects_translation_memories.id_localization_project", projectId)
-                        .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name");
+                        .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name")
+                        .OrderBy("translation_substrings.substring_to_translate");
 
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
@@ -964,6 +967,149 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (Exception exception)
             {
                 this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(
+            int projectId,
+            int offset,
+            int limit,
+            int? translationMemoryId = null,
+            string searchString = null,
+            string[] sortBy = null,
+            bool sortAscending = true)
+        {
+            if (sortBy == null || !sortBy.Any())
+            {
+                sortBy = new[] { "id" };
+            }
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = GetAllWithTranslationMemoryByProjectQuery(
+                        projectId,
+                        translationMemoryId,
+                        searchString);
+
+                    query = ApplyPagination(
+                        query: query,
+                        offset: offset,
+                        limit: limit);
+
+                    query = ApplySorting(
+                        query: query,
+                        columnNamesMappings: TranslationSubstringRepository.SortColumnNamesMapping,
+                        sortBy: sortBy,
+                        sortAscending: sortAscending);
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+
+                    var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                        );
+                    return translationSubstrings;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        public async Task<int> GetAllWithTranslationMemoryByProjectCountAsync(
+            int projectId,
+            int? translationMemoryId = null,
+            string searchString = null)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = GetAllWithTranslationMemoryByProjectQuery(
+                        projectId,
+                        translationMemoryId,
+                        searchString);
+                    query = query.AsCount();
+
+
+                    var compiledQuery = _compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+                    return count;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectCountAsync)} {nameof(NpgsqlException)} ", exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectCountAsync)} {nameof(Exception)} ", exception);
+                return 0;
+            }
+
+        }
+
+        private Query GetAllWithTranslationMemoryByProjectQuery(
+            int projectId,
+            int? translationMemoryId = null,
+            string searchString = null)
+        {
+            try
+            {
+
+                var query = new Query("translation_substrings")
+                    .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                    .Join("translation_memories", "translation_memories.id", "translation_memories_strings.id_translation_memory")
+                    .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
+                    //.Where("localization_projects_translation_memories.id_localization_project", projectId)
+                    .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name")
+                    //.OrderBy("translation_substrings.substring_to_translate")
+                    ;
+
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                if (translationMemoryId != null)
+                {
+                    query = query.Where("translation_memories.id", translationMemoryId);
+                }
+                else
+                {
+                    query = query.Where("localization_projects_translation_memories.id_localization_project", projectId);
+                }
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    var searchPattern = $"%{searchString}%";
+                    query = query.WhereLike("substring_to_translate", searchPattern);
+                }
+
+                return query;
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectQuery)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectQuery)} {nameof(Exception)} ", exception);
                 return null;
             }
         }

@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { MatTableDataSource, MatSort, MatPaginator } from "@angular/material";
 
 import { TranslationMemoryService } from "src/app/services/translation-memory.service";
 import { TranslationSubstringService } from "../../../services/translationSubstring.service";
@@ -15,27 +14,17 @@ import { Selectable } from "src/app/shared/models/selectable.model";
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
 import { settingFileLoad, fileType } from "../../models/settingFileLoad";
 import { ProjectsService } from "src/app/services/projects.service";
+import { MainListPageComponent } from "src/app/shared/components/main-list-page/main-list-page.component";
 
 @Component({
   selector: 'app-strings-project',
   templateUrl: './strings-project.component.html',
   styleUrls: ['./strings-project.component.css']
 })
-export class StringsProjectComponent implements OnInit {
+export class StringsProjectComponent extends MainListPageComponent implements OnInit {
 
-
-  //#region для настройки таблицы (mat-table)
-  displayedColumns: string[] = [
-    "select",
-    "substring_to_translate",
-    "translation_memories_name",
-    "additionalButtons"
-  ];
-  private dataSource = new MatTableDataSource<Selectable<TranslationSubstringTableViewDTO>>();
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  //#endregion
-
+  //dataSource: Selectable<TranslationSubstringTableViewDTO>[];
+  
   //#region Для обращения к модальным окнам
   @ViewChild("confirmDeleteFormModal")
   public confirmDeleteFormModal: ConfirmDeleteStringProjectFormModalComponent;
@@ -49,7 +38,7 @@ export class StringsProjectComponent implements OnInit {
   @ViewChild("appointFormModal")
   public appointFormModal: AppointTranslationMemoriesProjectFormModalComponent;
   //#endregion
-
+  
   isVisibleEditFormModal: boolean = false;
   isVisibleAppointFormModal: boolean = false;
 
@@ -68,43 +57,105 @@ export class StringsProjectComponent implements OnInit {
   private idsSelected: number[] = [];
   private indexSelected: number;
 
+  currentProjectId: number;
+
+
+
+  //
+  @ViewChild("parent")
+  public parent: MainListPageComponent;
+  //
 
   constructor(
     private translationSubstringService: TranslationSubstringService,
     private projectsService: ProjectsService,
+    private translationMemoryService: TranslationMemoryService,
     private requestDataReloadService: RequestDataReloadService
   ) {
+    super();
     this.requestDataReloadService.updateRequested.subscribe(() =>
-      this.getAllDTO()
+      this.loadData()
     );
   }
 
   ngOnInit() {
-    this.getAllDTO();
+    this.currentProjectId = this.projectsService.currentProjectId;
+    this.loadDropdown();
+    this.loadData();
     this.getFileTypes();
   }
+  
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+  /** Получение списка памятей переводов текущего проекта для фильтра данных таблицы через выпадающий список. */
+  loadDropdown() {
+    super.loadDropdown();
+
+    this.translationMemoryService.getForSelectByProjectAsync(this.currentProjectId).subscribe(
+      translationMemories => {
+        //this.filters = translationMemories;
+        this.parent.filters = translationMemories;
+
+        //this.loadData();
+      },
+        error => {
+          this.isDataSourceLoaded = false;
+          console.error(error);
+        }
+      );
   }
 
   /**
    * Получение списка строк памяти переводов текущего проекта для отображения в таблице.
    */
-  getAllDTO() {
-    this.translationSubstringService.getAllWithTranslationMemoryByProject(this.projectsService.currentProjectId).subscribe(
-      translationSubstrings => {
-        this.dataSource.data = translationSubstrings.map(
-          translationSubstring => new Selectable<TranslationSubstringTableViewDTO>(translationSubstring, false));
-      },
-      error => {
-        this.isDataSourceLoaded = false;
-        console.error(error);
-      }
-    );
+  loadData(offset = 0) {
+    super.loadData();
+
+    let sortBy = new Array<string>();
+    if (this.sortByColumnName) {
+      sortBy = [this.sortByColumnName];
+    }
+
+
+
+    console.log("loadData:");
+    console.log("currentProjectId:", this.currentProjectId);
+    console.log("selectedFilterId:", this.parent.filterId);
+    console.log("SearchString:", this.parent.searchString);
+    console.log("pageSize:", this.parent.pageSize);
+    console.log("offset:", this.parent.currentOffset);
+    console.log("sortBy:", sortBy);
+    console.log("isSortingAscending:", this.isSortingAscending);
+
+
+
+
+
+
+    this.translationSubstringService.getAllWithTranslationMemoryByProject(
+        this.currentProjectId,
+        this.parent.filterId,
+        this.parent.searchString,
+        this.parent.pageSize,
+        this.parent.currentOffset,
+        sortBy,
+        this.isSortingAscending
+      )
+      .subscribe(
+        response => {
+          this.dataSource = response.body.map(translationSubstring => new Selectable<TranslationSubstringTableViewDTO>(translationSubstring, false));
+          
+          this.parent.totalCount = +response.headers.get("totalCount");
+          //this.parent.currentOffset = offset;
+        },
+        error => console.log(error)
+      );
   }
 
+  //onPageChanged(newOffset: number) {
+  //  super.onPageChanged(newOffset);
+  //  this.loadData(newOffset);
+  //}
+  
   //#region Выбранная строка. Его отметка и возврат.
 
   /**
@@ -121,7 +172,7 @@ export class StringsProjectComponent implements OnInit {
       let index = this.idsSelected.findIndex(id => id == element.model.id);
       this.idsSelected.splice(index, 1);
     }
-    //this.isSelected = this.dataSource.data.filter(t => t.isSelected).length > 0;
+
     this.isSelected =
       this.idsSelected != undefined &&
       this.idsSelected != null &&
@@ -130,10 +181,10 @@ export class StringsProjectComponent implements OnInit {
 
   allSelected() {
     if (this.isSelected)
-      this.dataSource.data.forEach(t => t.isSelected = false);
+      this.dataSource.forEach(t => t.isSelected = false);
     else
     if (!this.isSelected)
-      this.dataSource.data.forEach(t => t.isSelected = true);
+        this.dataSource.forEach(t => t.isSelected = true);
 
     this.isSelected = !this.isSelected;
   }
@@ -142,8 +193,9 @@ export class StringsProjectComponent implements OnInit {
    * Возвращает выбранные элементы пользователем.
    */
   getSelected() {
-    this.translationSubstrings = this.dataSource.data.filter(t => this.idsSelected.find(id => id == t.model.id) != null)
-      .map(t => new TranslationSubstringForEditingDTO(t.model.id, t.model.substring_to_translate));
+    this.translationSubstrings = this.dataSource
+                                 .filter(t => this.idsSelected.find(id => id == t.model.id) != null)
+                                 .map(t => new TranslationSubstringForEditingDTO(t.model.id, t.model.substring_to_translate));
   }
 
   /**
@@ -155,6 +207,9 @@ export class StringsProjectComponent implements OnInit {
   }
   //#endregion
 
+  /**
+   * Отображает диалог для назначения памяти переводов на текущий проект.
+   */
   appointFormModalShow() {
     this.isVisibleAppointFormModal = true;
     setTimeout(() => {
@@ -180,12 +235,7 @@ export class StringsProjectComponent implements OnInit {
    * Сохранение изменений.
    * @param editedTranslationSubstring
    */
-  edited(//editedTranslationSubstring: TranslationSubstringForEditingDTO
-        ) {
-    //this.translationSubstringService
-    //  .editSave(editedTranslationSubstring)
-    //  .subscribe(() => this.requestDataReloadService.requestUpdate());
-
+  edited() {
     this.requestDataReloadService.requestUpdate();
 
     //Сброс выбранного элемента.

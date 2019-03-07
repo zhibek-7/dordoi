@@ -102,6 +102,11 @@
     <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration.module.ts" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientApp\src\app\current-project-settings\components\current-project-settings\" />
+    <Folder Include="ClientApp\src\app\current-project-settings\components\current-project-translations\" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

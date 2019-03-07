@@ -54,6 +54,16 @@ namespace Models.Services
         }
 
         /// <summary>
+        /// Возвращает список памятей переводов назначенных на проект локализации.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <returns>TranslationMemoryForSelectDTO</returns>
+        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(int projectId)
+        {
+            return await _translationMemoryRepository.GetForSelectByProjectAsync(projectId);
+        }
+
+        /// <summary>
         /// Добавление новой памяти переводов.
         /// </summary>
         /// <param name="translationMemory">Новая память переводов.</param>

@@ -47,6 +47,20 @@ namespace Models.Interfaces.Repository
         /// <returns></returns>
         Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(int projectId);
 
+        Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(
+            int projectId,
+            int offset,
+            int limit,
+            int? translationMemoryId = null,
+            string searchString = null,
+            string[] sortBy = null,
+            bool sortAscending = true);
+
+        Task<int> GetAllWithTranslationMemoryByProjectCountAsync(
+            int projectId,
+            int? translationMemoryId = null,
+            string searchString = null);
+
         /// <summary>
         /// Обновление поля substring_to_translate
         /// </summary>

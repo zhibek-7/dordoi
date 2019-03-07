@@ -25,9 +25,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// < returns ></ returns >
         public async Task<int> AddAsync(Comments comment)
         {
-            var query = "INSERT INTO comments_text (id_translation_substrings, datetime, id_user, comment_text)" +
-                        "VALUES (@Id_Translation_Substrings, @DateTime, @Id_User, @Comment_text) " +
-                        "RETURNING  comments_text.id";
+            var query = @"INSERT INTO comments_text (id_translation_substrings, datetime, id_user, comment_text)
+                        VALUES (@Id_Translation_Substrings, @DateTime, @Id_User, @Comment_text) 
+                        RETURNING  comments_text.id";
 
             try
             {
@@ -136,12 +136,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns>Список комментариев</returns>        
         public async Task<IEnumerable<CommentWithUserInfo>> GetAllCommentsInStringByID(int idString)
         {
-            var query = "SELECT users.id AS user_id, users.name_text AS user_name," +
-                        " comments_text.id AS comment_id, comments_text.datetime AS datetime," +
-                        " comments_text.comment_text AS comment_text " +
-                        "FROM comments_text " +
-                        "INNER JOIN users ON comments_text.id_user = users.id " +
-                        "WHERE comments_text.id_translation_substrings = @Id";
+            var query = @"SELECT users.id AS user_id, users.name_text AS user_name, 
+                         ct.id AS comment_id, ct.datetime AS datetime,
+                         ct.comment_text AS comment_text 
+                        FROM comments_text as ct 
+                            INNER JOIN users ON ct.id_user = users.id 
+                        WHERE ct.id_translation_substrings = @Id";
 
             try
             {
@@ -217,12 +217,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         // <returns></returns>
         public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(int id)
         {
-            var query = "SELECT users.id AS user_id, users.name_text AS user_name," +
-                        " comments_text.id AS comment_id, comments_text.datetime AS datetime," +
-                        " comments_text.comment_text AS comment_text " +
-                        "FROM comments_text " +
-                        "INNER JOIN users ON comments_text.id_user = users.id " +
-                        "WHERE comments_text.id = @Id";
+            var query = @"SELECT users.id AS user_id, users.name_text AS user_name,
+                         ct.id AS comment_id, ct.datetime AS datetime,
+                         ct.comment_text AS comment_text 
+                        FROM comments_text  as ct
+                        INNER JOIN users ON ct.id_user = users.id 
+                        WHERE ct.id = @Id";
 
             try
             {
@@ -370,11 +370,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<int> UploadImageAsync(Image img, int commentId)
         {
             var query1 = "INSERT INTO images (name_text, id_user, body, date_time_added)" +
-                        "VALUES (@Name_text,  @ID_User, @body, @Date_Time_Added) " +
+                        " VALUES (@Name_text,  @ID_User, @body, @Date_Time_Added) " +
                         "RETURNING  images.id";
 
             var query2 = "INSERT INTO comments_images (id_comment, id_image)" +
-                        "VALUES (@CommentId,  @ImageId) ";
+                        " VALUES (@CommentId,  @ImageId) ";
 
             try
             {
@@ -412,11 +412,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         // <returns>Список изображений</returns>
         public async Task<IEnumerable<Image>> GetImagesOfCommentAsync(int commentId)
         {
-            var query = "SELECT Im.id, Im.url, Im.name_text, Im.date_time_added, Im.body, Im.id_user " +
-                        "FROM images AS Im " +
-                        "INNER JOIN comments_images AS CI ON CI.id_image = Im.id " +
-                        "INNER JOIN comments_text AS C ON C.id = CI.id_comment " +
-                        "WHERE C.id = @CommentId ";
+            var query = @"SELECT Im.id, Im.url, Im.name_text, Im.date_time_added, Im.body, Im.id_user 
+                        FROM images AS Im 
+                        INNER JOIN comments_images AS CI ON CI.id_image = Im.id 
+                        INNER JOIN comments_text AS C ON C.id = CI.id_comment 
+                        WHERE C.id = @CommentId ";
 
             try
             {

@@ -16,7 +16,7 @@ import { AppInitService } from "src/app/services/app-init.service";
 import { HeaderComponent } from "./header/header.component";
 import { NotFoundComponent } from "./not-found/not-found.component";
 
-import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
+//import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
 import { NewProjectComponent } from "../new-project/new-project.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
 import { UserRegistrationComponent } from "../user-registration/user-registration.component";
@@ -68,7 +68,7 @@ import {
   declarations: [
     NotFoundComponent,
     HeaderComponent,
-    CurrentProjectSettingsComponent,
+    //CurrentProjectSettingsComponent,
     NewProjectComponent,
     UserAccountComponent,
     UserRegistrationComponent
