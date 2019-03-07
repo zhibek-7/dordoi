@@ -131,7 +131,7 @@ export class TranslatedWordsComponent implements OnInit {
   }
 
   setHeaderMsg() {
-    console.log("--report setHeaderMsg-");
+    //console.log("--report setHeaderMsg-");
     let fromStr = "";
     if (this.selected.from != undefined && this.selected.from != null)
       fromStr = this.selected.from.format("DD-MM-YYYY");
@@ -142,7 +142,7 @@ export class TranslatedWordsComponent implements OnInit {
   }
 
   getReportPeriod() {
-    console.log("--report getReportPeriod-");
+    //console.log("--report getReportPeriod-");
     if (this.selected && this.selected.from && this.selected.to)
       return (
         this.selected.from.format("DD.MM.YYYY") +

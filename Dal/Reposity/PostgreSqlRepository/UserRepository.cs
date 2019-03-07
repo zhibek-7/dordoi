@@ -86,10 +86,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                string SQLQuery = "SELECT u.* FROM users u " +
-                        " join participants p on u.id = p.id_user " +
-                        " join localization_projects lp on p.id_localization_project = lp.id " +
-                        " where lp.id = @Id";
+                string SQLQuery = @"SELECT u.* FROM users u
+                                   join participants p on u.id = p.id_user 
+                         join localization_projects lp on p.id_localization_project = lp.id 
+                         where lp.id = @Id";
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
 
@@ -508,13 +508,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    if(projectId == null)
+                    if (projectId == null)
                     {
-                        string SQLQuery = "SELECT roles.name_text " +
-                                      "FROM users " +
-                                      "INNER JOIN participants ON participants.id_user = users.id " +
-                                      "INNER JOIN roles ON roles.id = participants.id_role " +
-                                      "WHERE users.name_text = @userName";
+                        string SQLQuery = @"SELECT roles.name_text 
+                                      FROM users 
+                                      INNER JOIN participants as p ON p.id_user = users.id 
+                                      INNER JOIN roles ON roles.id = p.id_role 
+                                      WHERE users.name_text = @userName";
 
                         var param = new { userName };
                         this.LogQuery(SQLQuery, param);
@@ -523,17 +523,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
                     else
                     {
-                        string SQLQuery = "SELECT roles.name_text " +
-                                      "FROM users " +
-                                      "INNER JOIN participants ON participants.id_user = users.id " +
-                                      "INNER JOIN roles ON roles.id = participants.id_role " +
-                                      "WHERE users.name_text = @userName AND participants.id_localization_project = @projectId ";
+                        string SQLQuery = @"SELECT roles.name_text 
+                                      FROM users 
+                                      INNER JOIN participants as p ON p.id_user = users.id 
+                                      INNER JOIN roles ON roles.id = p.id_role 
+                                      WHERE users.name_text = @userName AND p.id_localization_project = @projectId ";
 
                         var param = new { userName, projectId };
                         this.LogQuery(SQLQuery, param);
                         var userRole = await dbConnection.QuerySingleOrDefaultAsync<string>(SQLQuery, param);
                         return userRole;
-                    }                    
+                    }
                 }
             }
             catch (NpgsqlException exception)
@@ -560,17 +560,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     user.Password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text);
-                    string SQLQuery = "SELECT users.id as id, " +
-                                      "users.name_text as Name_text, " +
-                                      "users.password_text as Password_text, " +
-                                      "users.photo as Photo, " +
-                                      "users.email as Email, " +
-                                      "users.joined as Joined, " +
-                                      "roles.name_text as Role " +
-                                      "FROM users " +
-                                      "INNER JOIN participants ON participants.id_user = users.id " +
-                                      "INNER JOIN roles ON roles.id = participants.id_role " +
-                                      "WHERE (users.name_text = @Name_text OR email = @Email) AND password_text = @Password_text  limit 1";
+                    string SQLQuery = @"SELECT u.id as id, 
+                                      u.name_text as Name_text, 
+                                      u.password_text as Password_text, 
+                                      u.photo as Photo, 
+                                      u.email as Email, 
+                                      u.joined as Joined, 
+                                      roles.name_text as Role 
+                                      FROM users  as u
+                                      INNER JOIN participants as p ON p.id_user = u.id 
+                                      INNER JOIN roles ON roles.id = p.id_role 
+                                      WHERE (u.name_text = @Name_text OR email = @Email) AND password_text = @Password_text  limit 1";
 
                     var param = new { user.Name_text, user.Email, user.Password_text };
                     this.LogQuery(SQLQuery, param);

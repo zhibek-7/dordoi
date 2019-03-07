@@ -95,9 +95,11 @@
       {{row.model.translation_memories_name}}
     </td>
     <td class="col-xs-9">
-      <button (click)="getEditing(row.model)"> Изменить </button>
-      <button (click)="getConfirmDelete(row.model)"> Удалить </button>
-    </td>
+     <div class="btn-group" role="group">
+      <button (click)="getEditing(row.model)" class="btn btn-primary m-1"> Изменить </button>
+      <button (click)="getConfirmDelete(row.model)" class="btn btn-warning m-1"> Удалить </button>
+</div>    
+</td>
   </tr>
 </table>
 

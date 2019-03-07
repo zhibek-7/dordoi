@@ -491,6 +491,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             string[] sortBy = null,
             bool sortAscending = true)
         {
+            //TODO !!!!
             if (sortBy == null || !sortBy.Any())
             {
                 sortBy = new[] { "id" };

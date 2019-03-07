@@ -28,8 +28,16 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit() {
     console.log("--Reports.component ngOnInit-");
+    console.log(
+      "--Reports.component ngOnInit-1 ==" + this.route.snapshot.params["id"]
+    );
+    console.log(
+      "--Reports.component ngOnInit2 = ==-" +
+        this.projectsService.currentProjectId
+    );
 
-    this.projectsService.getProject(this.route.snapshot.params["id"]).subscribe(
+    var id = this.projectsService.currentProjectId; // this.route.snapshot.params["id"];
+    this.projectsService.getProject(id).subscribe(
       project => {
         this.project = project;
         this.projectId = project.id;
