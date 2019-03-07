@@ -8,7 +8,6 @@ import { Locale } from "src/app/models/database-entities/locale.type";
 import { Router } from "@angular/router";
 import { forEach } from "@angular/router/src/utils/collection";
 import { promise } from "protractor";
-import { Promise } from "q";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 @Component({
