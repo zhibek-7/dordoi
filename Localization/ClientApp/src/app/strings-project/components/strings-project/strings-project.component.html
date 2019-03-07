@@ -26,19 +26,19 @@
         <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
       </button>
       <app-confirm-delete-string-project-form-modal #confirmDeleteFormModal
-                                             *ngIf="isSelected || translationSubstrings.length > 0"
-                                             [translationSubstrings]="translationSubstrings"
-                                             (confirmedDelete)="delete($event)">
+                                                    *ngIf="isSelected || translationSubstrings.length > 0"
+                                                    [translationSubstrings]="translationSubstrings"
+                                                    (confirmedDelete)="delete($event)">
       </app-confirm-delete-string-project-form-modal>
     </li>
-    
+
     <li class="nav-item">
       <button class="btn nav-element"
               (click)="appointFormModalShow()">
         Назначить ПП
       </button>
       <app-appoint-translation-memories-project-form-modal #appointFormModal
-                                                           *ngIf="isVisibleAppointFormModal" >
+                                                           *ngIf="isVisibleAppointFormModal">
       </app-appoint-translation-memories-project-form-modal>
     </li>
 
@@ -46,58 +46,60 @@
 </nav>
 
 <app-edit-string-project-form-modal #editFormModal
-                                        *ngIf="isVisibleEditFormModal"
-                                        [translationSubstring]="translationSubstring"
-                                        (editedSubmitted)="edited($event)"
-                                        (error)="getAllDTO()">
+                                    *ngIf="isVisibleEditFormModal"
+                                    [translationSubstring]="translationSubstring"
+                                    (editedSubmitted)="edited($event)"
+                                    (error)="getAllDTO()">
 </app-edit-string-project-form-modal>
 
-<div class="table-border">
+<app-main-list-page #parent (changed)="loadData()"></app-main-list-page>
 
-  <mat-table [dataSource]="dataSource" matSort>
-    
-    <ng-container matColumnDef="select">
-      <mat-header-cell *matHeaderCellDef>
-        <input type="checkbox" class="checkbox width" [value]="isSelectedAll" (change)="allSelected()">
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        <input type="checkbox" class="checkbox" [value]="row.isSelected" (change)="selected(row)">
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="substring_to_translate">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>
-        <label class="table-cell align-center"> Строка </label>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row">{{row.model.id}} - {{row.model.substring_to_translate}} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="translation_memories_name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> <label class="table-cell"> ТМ </label> </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.model.translation_memories_name}} </mat-cell>
-    </ng-container>
-    
-    <ng-container matColumnDef="additionalButtons">
-      <mat-header-cell *matHeaderCellDef>
-        <label class="table-cell align-center"> Действия </label> 
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-
-        <button (click)="getEditing(row.model)"> Изменить </button>
-        <button (click)="getConfirmDelete(row.model)"> Удалить </button>
-
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{selected: row.isSelected}"><!--(click)="selected(row)"-->
-    </mat-row>
-
-  </mat-table>
-
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-
-</div>
+<table class="table table-bordered table-striped">
+  <thead>
+  <tr>
+    <th class="col-xs-1">
+      <!--<th [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'select'"
+              [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'select'"
+              class="col-xs-2">-->
+      <!--<label (click)="sortBy('select')">
+      </label>-->
+      <input type="checkbox"
+             class="checkbox"
+             [value]="isSelectedAll" (change)="allSelected()">
+    </th>
+    <th (click)="requestSortBy('substring_to_translate')"
+        [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+        class="col-xs-12">
+      Строка
+    </th>
+    <th (click)="requestSortBy('translation_memories.name_text')"
+        [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
+        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
+        class="col-xs-10">
+      ТМ
+    </th> 
+    <th class="col-xs-9">
+      Действия
+    </th>
+  </tr>
+  </thead>
+  <tr *ngFor="let row of dataSource">
+    <td class="col-xs-1">
+      <input type="checkbox" class="checkbox" [value]="row.isSelected" (change)="selected(row)">
+    </td>
+    <td class="col-xs-12">
+      {{row.model.id}} - {{row.model.substring_to_translate}}
+    </td>
+    <td class="col-xs-10">
+      {{row.model.translation_memories_name}}
+    </td>
+    <td class="col-xs-9">
+      <button (click)="getEditing(row.model)"> Изменить </button>
+      <button (click)="getConfirmDelete(row.model)"> Удалить </button>
+    </td>
+  </tr>
+</table>
 
 
 <h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

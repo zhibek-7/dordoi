@@ -1,15 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-//import { ActivatedRoute, ParamMap } from "@angular/router";
-//import { switchMap } from "rxjs/operators";
-import { TreeNode } from "primeng/api";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 
-import { FileViewModel } from "src/app/strings/models/file.viewmodel";
-//import { TranslationSubstringService } from "src/app/services/translationSubstring.service";
-//import { LanguageService } from "src/app/services/languages.service";
-//import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
-//import { FileService } from "src/app/services/file.service";
-//import { SortingArgs } from "src/app/shared/models/sorting.args";
-//import { ProjectsService } from "src/app/services/projects.service";
 
 @Component({
   selector: 'app-main-list-page',
@@ -17,124 +7,119 @@ import { FileViewModel } from "src/app/strings/models/file.viewmodel";
   styleUrls: ['./main-list-page.component.css']
 })
 export class MainListPageComponent implements OnInit {
+
+  @Output()
+  changed = new EventEmitter();
+
+  protected dataSource: any[];
+
+  private _pageSize: number = 10;
+  set pageSize(pageSize: number) {
+    this._pageSize = pageSize;
+  }
+  get pageSize(): number {
+    return this._pageSize;
+  }
   
-  //source: TranslationSubstring[] = [];
+  private _currentOffset: number = 0;
+  set currentOffset(currentOffset: number) {
+    this._currentOffset = currentOffset;
+  }
+  get currentOffset(): number {
+    return this._currentOffset;
+  }
 
-  pageSize: number = 10;
+  private _totalCount: number = 0;
+  set totalCount(totalCount: number) {
+    this._totalCount = totalCount;
+  }
+  get totalCount(): number {
+    return this._totalCount;
+  }
 
-  currentOffset: number = 0;
+  private _sortByColumnName: string = null;
+  set sortByColumnName(columnName: string) {
+    this._sortByColumnName = columnName;
+  }
+  get sortByColumnName(): string {
+    return this._sortByColumnName;
+  }
+  
+  private _searchString: string = "";
+  set searchString(string: string) {
+    this._searchString = string;
+  }
+  get searchString(): string {
+    return this._searchString;
+  }
+  
+  private _lastSortColumnName: string = '';
+  set lastSortColumnName(columnName: string) {
+    this._lastSortColumnName = columnName;
+  }
+  get lastSortColumnName(): string {
+    return this._lastSortColumnName;
+  }
+  
+  private _isSortingAscending: boolean = true;
+  set isSortingAscending(isSortingAscending: boolean) {
+    this._isSortingAscending = isSortingAscending;
+  }
+  get isSortingAscending(): boolean {
+    return this._isSortingAscending;
+  }
+  
+  private _filtersViewModels: any[];// = [];
+  set filters(items: any) {
+    this._filtersViewModels = items;
+  }
+  get filters(): any {
+    return this._filtersViewModels;
+  }
+  private _selectedFilterId: number | null = null;
+  set filterId(id: number) {
+    this._selectedFilterId = id;
+  }
+  get filterId(): number {
+    return this._selectedFilterId;
+  }
 
-  totalCount: number = 0;
 
-  sortByColumnName: string = null;
-
-  SearchString: string = "";
-
-  filesViewModels: FileViewModel[] = [];
-
-  selectedFileId: number | null = null;
-
-  //private get projectId(): number {
-  //  return this.projectsService.currentProjectId;
-  //}
-
-  isSortingAscending: boolean = true;
-
-  constructor(
-    //private projectsService: ProjectsService,
-    //private fileService: FileService,
-    //private translationSubstringService: TranslationSubstringService,
-    //private route: ActivatedRoute
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    this.loadDropdown();
+    //this.loadDropdown();
   }
 
   loadDropdown() {
-    //this.fileService.getFilesByProjectIdAsTree(this.projectId).subscribe(
-    //  filesTree => {
-    //    this.filesViewModels = this.filesTreeToFilesList(filesTree);
-    //    this.route.paramMap.subscribe(
-    //      paramMap => {
-    //        const fileIdParamName = "fileId";
-    //        if (paramMap.has(fileIdParamName)) {
-    //          const fileIdParam = +paramMap.get(fileIdParamName);
-    //          if (
-    //            this.filesViewModels.some(value => value.id === fileIdParam)
-    //          ) {
-    //            this.selectedFileId = fileIdParam;
-    //          }
-    //        }
-    //        this.loadData();
-    //      },
-    //      error => console.log(error)
-    //    );
-    //  },
-    //  error => console.log(error)
-    //);
+    //this.loadData();
   }
   
   loadData(offset = 0) {
-    //let sortBy = new Array<string>();
-    //if (this.sortByColumnName) {
-    //  sortBy = [this.sortByColumnName];
-    //}
-    //this.translationSubstringService
-    //  .getStringsByProjectId(
-    //    this.projectId,
-    //    this.selectedFileId,
-    //    this.SearchString,
-    //    this.pageSize,
-    //    offset,
-    //    sortBy,
-    //    this.isSortingAscending
-    //  )
-    //  .subscribe(
-    //    response => {
-    //      let strings = response.body;
-    //      this.source = strings;
-    //      let totalCount = +response.headers.get("totalCount");
-    //      this.totalCount = totalCount;
-    //      this.currentOffset = offset;
-    //    },
-    //    error => console.log(error)
-    //  );
+    console.log("base loadData");
+    this.currentOffset = offset;
   }
 
-  filesTreeToFilesList(filesTree: TreeNode[]): FileViewModel[] {
-    return filesTree
-      .map(fileTreeNode =>
-        this.filesTreeNodeToFilesListRecursive("", fileTreeNode)
-      )
-      .reduce(
-        (previousValue, currentValue) => previousValue.concat(currentValue),
-        new Array<FileViewModel>()
-      );
+  reloadData() {
+    this.changed.emit();
   }
 
-  filesTreeNodeToFilesListRecursive(
-    path: string,
-    fileTreeNode: TreeNode
-  ): FileViewModel[] {
-    let pathForCurrentNode = path + "/" + fileTreeNode.data.name_text;
-    if (!fileTreeNode.data.is_folder) {
-      return [new FileViewModel(pathForCurrentNode, fileTreeNode.data.id)];
-    } else {
-      return fileTreeNode.children
-        .map(child =>
-          this.filesTreeNodeToFilesListRecursive(pathForCurrentNode, child)
-        )
-        .reduce(
-          (previousValue, currentValue) => previousValue.concat(currentValue),
-          new Array<FileViewModel>()
-        );
+  requestSortBy(columnName: string) {
+    if (columnName != this.lastSortColumnName) {
+      this.isSortingAscending = true;
     }
+
+    this.sortByColumnName = columnName;
+    this.loadData();
+
+    this.lastSortColumnName = columnName;
+    this.isSortingAscending = !this.isSortingAscending;
   }
 
   onPageChanged(newOffset: number) {
-    this.loadData(newOffset);
+    //this.loadData(newOffset);
+    this.currentOffset = newOffset;
+    this.changed.emit();
   }
-
- 
+  
 }

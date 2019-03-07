@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
+//import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
 import { NewProjectComponent } from "../new-project/new-project.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
 import { UserRegistrationComponent } from "../user-registration/user-registration.component";
@@ -18,16 +18,16 @@ const routes: Routes = [
     loadChildren: "../work-panel/work-panel.module#WorkPanelModule",
     canActivate: [AuthenticationGuard]
   },
-  {
-    path: "Projects/:id/reports",
-    loadChildren: "../reports/Reports.module#ReportsModule",
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: "Projects/:id/stringsTranslationMemory",
-    loadChildren: "../strings-project/module/strings-project.module#StringsProjectModule",
-    canActivate: [AuthenticationGuard]
-  },
+  //{
+  //  path: "Projects/:id/reports",
+  //  loadChildren: "../reports/Reports.module#ReportsModule",
+  //  canActivate: [AuthenticationGuard]
+  //},
+  //{
+  //  path: "Projects/:id/stringsTranslationMemory",
+  //  loadChildren: "../strings-project/module/strings-project.module#StringsProjectModule",
+  //  canActivate: [AuthenticationGuard]
+  //},
   {
     path: "create-project",
     loadChildren: "../create-project/create-project.module#CreateProjectModule",
@@ -35,7 +35,8 @@ const routes: Routes = [
   },
   {
     path: "Projects/:id",
-    component: CurrentProjectSettingsComponent,
+    //component: CurrentProjectSettingsComponent,
+    loadChildren: "../current-project-settings/module/current-project-settings.module#CurrentProjectSettingsModule",
     canActivate: [AuthenticationGuard]
   },
   {

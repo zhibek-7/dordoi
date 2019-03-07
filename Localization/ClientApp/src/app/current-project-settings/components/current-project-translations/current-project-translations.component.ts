@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-import { ProjectsService } from "../services/projects.service";
+import { LocalizationProject } from "../../../models/database-entities/localizationProject.type";
+import { ProjectsService } from "../../../services/projects.service";
 
 ///-----
 import { MatTableDataSource, MatSort } from "@angular/material";
@@ -20,12 +20,12 @@ import * as moment from "moment";
 moment.locale("ru");
 
 @Component({
-  selector: "app-current-project-settings",
-  templateUrl: "./current-project-settings.component.html",
-  styleUrls: ["./current-project-settings.component.css"],
-  providers: [LanguageService, UserService]
+  selector: "app-current-project-translations",
+  templateUrl: "./current-project-translations.component.html",
+  styleUrls: ["./current-project-translations.component.css"]//,
+  //providers: [LanguageService, UserService]
 })
-export class CurrentProjectSettingsComponent implements OnInit {
+export class CurrentProjectTranslationsComponent implements OnInit {
   currentProject: LocalizationProject;
   wasCreated: any;
   wasChanged: any;
@@ -39,16 +39,16 @@ export class CurrentProjectSettingsComponent implements OnInit {
     "users",
     "download"
   ];
-  private dataSourceForMainTab = new MatTableDataSource<
-    LocalizationProjectsLocalesDTO
-  >();
+  private dataSourceForMainTab = new MatTableDataSource<LocalizationProjectsLocalesDTO>();
   @ViewChild(MatSort) sortForMainTab: MatSort;
+  //#endregion
 
-  //Для блока "Детали" на главной вкладке
+  //#region Для блока "Детали" на главной вкладке
   /** Менеджеры */
   participantsManager: Participant[];
   /** Владельцы */
   participantsOwner: Participant[];
+  //#endregion
 
   currentUserName = "";
   projectId: number;

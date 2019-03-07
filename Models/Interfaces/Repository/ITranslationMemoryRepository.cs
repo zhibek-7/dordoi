@@ -22,6 +22,13 @@ namespace Models.Interfaces.Repository
         Task<IEnumerable<TranslationMemory>> GetForEditAsync(int translationMemoryId);
 
         /// <summary>
+        /// Возвращает список памятей переводов назначенных на проект локализации.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <returns>TranslationMemoryForSelectDTO</returns>
+        Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(int projectId);
+
+        /// <summary>
         /// Сохранение изменений в памяти переводов.
         /// </summary>
         /// <param name="translationMemory">Отредактированная память переводов.</param>

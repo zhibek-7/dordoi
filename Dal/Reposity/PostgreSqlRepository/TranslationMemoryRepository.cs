@@ -72,6 +72,42 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
+        /// Возвращает список памятей переводов назначенных на проект локализации.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <returns>TranslationMemoryForSelectDTO</returns>
+        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(int projectId)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("translation_memories")
+                        .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
+                        .Where("localization_projects_translation_memories.id_localization_project", projectId)
+                        .Select("translation_memories.id",
+                                "translation_memories.name_text");
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    var translationMemories = await dbConnection.QueryAsync<TranslationMemoryForSelectDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return translationMemories;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Добавление новой памяти переводов.
         /// </summary>
         /// <param name="translationMemory">Новая память переводов.</param>
