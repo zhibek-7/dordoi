@@ -4,5 +4,5 @@
   "host": {
     "protocol": "http",
     "name": "localhost:1527"
-  },
+  }
 }
