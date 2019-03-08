@@ -2,7 +2,8 @@
   <span *ngIf="currentProject">
     {{ projectName }}
  </span>
-  Настройки
+
+  настройки
 </h1>
 <!-- меню -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
@@ -13,30 +14,30 @@
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
       <li class="nav-item">
-        <a class="nav-link" routerLink="create-project">
+        <a class="nav-item nav-link" routerLink='/create-project/all-settings/'>
           <mat-icon class="nav-item">tune</mat-icon>
         </a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link active" routerLink="./">Переводы</a>
+        <a class="nav-item nav-link active" routerLink="./">Переводы</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="Files">Файлы</a>
+        <a class="nav-item nav-link" href="./Files">Файлы</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="Participants">Переводчики</a>
+        <a class="nav-item nav-link" href="./Participants">Переводчики</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="reports">Отчеты</a>
+        <a class="nav-item nav-link" routerLink="reports">Отчеты</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="stringsTranslationMemory">Память переводов</a>
+        <a class="nav-item nav-link" routerLink="stringsTranslationMemory">Память переводов</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="Glossaries">Словарь</a>
+        <a class="nav-item nav-link" href="./Glossaries">Словарь</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="Strings">Строки</a>
+        <a class="nav-item nav-link" href="./Strings">Строки</a>
       </li>
 
     </ul>

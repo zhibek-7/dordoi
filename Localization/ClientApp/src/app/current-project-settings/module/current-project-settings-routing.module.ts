@@ -23,33 +23,6 @@ const routes: Routes = [
         canActivate: [AuthenticationGuard]
       },
   {
-    path: "Strings",
-    loadChildren: "src/app/strings/strings.module#StringsModule",
-    canActivate: [AuthenticationGuard]
-  },
-
-  {
-    path: "Glossaries",
-    loadChildren: "../glossaries/glossaries.module#GlossariesModule",
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: "Participants",
-    loadChildren: "../participants/participants.module#ParticipantsModule",
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: "Files",
-    loadChildren: "../files/files.module#FilesModule",
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: "create-project",
-    loadChildren: "../create-project/create-project.module#CreateProjectModule",
-    canActivate: [AuthenticationGuard]
-  },
-
-      {
         path: '', //path: 'translations',
         component: CurrentProjectTranslationsComponent,
         canActivate: [AuthenticationGuard]

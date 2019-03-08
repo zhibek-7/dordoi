@@ -28,11 +28,11 @@ const routes: Routes = [
   //  loadChildren: "../strings-project/module/strings-project.module#StringsProjectModule",
   //  canActivate: [AuthenticationGuard]
   //},
-//  {
-//    path: "create-project",
-//    loadChildren: "../create-project/create-project.module#CreateProjectModule",
-//    canActivate: [AuthenticationGuard]
-//  },
+  {
+    path: "create-project",
+    loadChildren: "../create-project/create-project.module#CreateProjectModule",
+    canActivate: [AuthenticationGuard]
+  },
   {
     path: "Projects/:id",
     //component: CurrentProjectSettingsComponent,
@@ -49,37 +49,37 @@ const routes: Routes = [
     component: UserAccountComponent,
     canActivate: [AuthenticationGuard]
   },
-//  {
-//    path: "Glossaries",
-//    loadChildren: "../glossaries/glossaries.module#GlossariesModule",
-//    canActivate: [AuthenticationGuard]
-//  },
+  {
+    path: "Glossaries",
+    loadChildren: "../glossaries/glossaries.module#GlossariesModule",
+    canActivate: [AuthenticationGuard]
+  },
   {
     path: "list-glossaries",
     loadChildren:
       "../glossary-list/module/list-glossaries.module#ListGlossariesModule",
     canActivate: [AuthenticationGuard]
   },
-//  {
-//    path: "Files",
-//    loadChildren: "../files/files.module#FilesModule",
-//    canActivate: [AuthenticationGuard]
-//  },
+  {
+    path: "Files",
+    loadChildren: "../files/files.module#FilesModule",
+    canActivate: [AuthenticationGuard]
+  },
   {
     path: "Translation_project/:projectId/LanguageFiles/:localeId",
     loadChildren: "../files/files.module#FilesModule",
     canActivate: [AuthenticationGuard]
   },
-//  {
-//    path: "Participants",
-//    loadChildren: "../participants/participants.module#ParticipantsModule",
-//    canActivate: [AuthenticationGuard]
-//  },
-//  {
-//    path: "Strings",
-//    loadChildren: "../strings/strings.module#StringsModule",
-//    canActivate: [AuthenticationGuard]
-//  },
+  {
+    path: "Participants",
+    loadChildren: "../participants/participants.module#ParticipantsModule",
+    canActivate: [AuthenticationGuard]
+  },
+  {
+    path: "Strings",
+    loadChildren: "../strings/strings.module#StringsModule",
+    canActivate: [AuthenticationGuard]
+  },
   {
     path: "Translation_project/:id",
     loadChildren: "../project-page/project-page.module#ProjectPageModule",
