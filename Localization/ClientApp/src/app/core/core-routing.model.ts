@@ -4,7 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 //import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
 import { NewProjectComponent } from "../new-project/new-project.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
-import { UserRegistrationComponent } from "../user-registration/user-registration.component";
+//import { UserRegistrationComponent } from "../user-registration/user-registration.component";
 
 import { AuthenticationGuard } from "../services/authentication.guard";
 
@@ -97,7 +97,8 @@ const routes: Routes = [
   },
   {
     path: "user-registration",
-    component: UserRegistrationComponent
+    //component: UserRegistrationComponent
+    loadChildren: "../user-registration/user-registration.modele#UserRegistrationModule",
   },
   {
     path: "invitation",
