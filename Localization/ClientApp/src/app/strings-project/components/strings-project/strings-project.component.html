@@ -14,10 +14,8 @@
       <button type="button" class="btn nav-element" (click)="getLoad()" [disabled]="!isSelected">
         Скачать
       </button>
-      <app-load-string-project-form-modal #loadFormModal
-                                          (loadSubmitted)="load($event)"
-                                          *ngIf="isSelected"
-                                          [translationSubstrings]="translationSubstrings">
+      <app-load-string-project-form-modal #loadFormModal (loadSubmitted)="load($event)" *ngIf="isSelected"
+        [translationSubstrings]="translationSubstrings">
       </app-load-string-project-form-modal>
     </li>
 
@@ -25,64 +23,51 @@
       <button class="btn nav-element" (click)="getConfirmSelectedDelete()" [disabled]="!isSelected">
         <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
       </button>
-      <app-confirm-delete-string-project-form-modal #confirmDeleteFormModal
-                                                    *ngIf="isSelected || translationSubstrings.length > 0"
-                                                    [translationSubstrings]="translationSubstrings"
-                                                    (confirmedDelete)="delete($event)">
+      <app-confirm-delete-string-project-form-modal #confirmDeleteFormModal *ngIf="isSelected || translationSubstrings.length > 0"
+        [translationSubstrings]="translationSubstrings" (confirmedDelete)="delete($event)">
       </app-confirm-delete-string-project-form-modal>
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element"
-              (click)="appointFormModalShow()">
+      <button class="btn nav-element" (click)="appointFormModalShow()">
         Назначить ПП
       </button>
-      <app-appoint-translation-memories-project-form-modal #appointFormModal
-                                                           *ngIf="isVisibleAppointFormModal">
+      <app-appoint-translation-memories-project-form-modal #appointFormModal *ngIf="isVisibleAppointFormModal">
       </app-appoint-translation-memories-project-form-modal>
     </li>
 
   </ul>
 </nav>
 
-<app-edit-string-project-form-modal #editFormModal
-                                    *ngIf="isVisibleEditFormModal"
-                                    [translationSubstring]="translationSubstring"
-                                    (editedSubmitted)="edited($event)"
-                                    (error)="getAllDTO()">
+<app-edit-string-project-form-modal #editFormModal *ngIf="isVisibleEditFormModal" [translationSubstring]="translationSubstring"
+  (editedSubmitted)="edited($event)" (error)="getAllDTO()">
 </app-edit-string-project-form-modal>
 
 <app-main-list-page #parent (changed)="loadData()"></app-main-list-page>
 
 <table class="table table-bordered table-striped">
   <thead>
-  <tr>
-    <th class="col-xs-1">
-      <!--<th [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'select'"
+    <tr>
+      <th class="col-xs-1">
+        <!--<th [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'select'"
               [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'select'"
               class="col-xs-2">-->
-      <!--<label (click)="sortBy('select')">
+        <!--<label (click)="sortBy('select')">
       </label>-->
-      <input type="checkbox"
-             class="checkbox"
-             [value]="isSelectedAll" (change)="allSelected()">
-    </th>
-    <th (click)="requestSortBy('substring_to_translate')"
-        [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
-        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'"
-        class="col-xs-12">
-      Строка
-    </th>
-    <th (click)="requestSortBy('translation_memories.name_text')"
-        [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
-        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
-        class="col-xs-10">
-      ТМ
-    </th> 
-    <th class="col-xs-9">
-      Действия
-    </th>
-  </tr>
+        <input type="checkbox" class="checkbox" [value]="isSelectedAll" (change)="allSelected()">
+      </th>
+      <th (click)="requestSortBy('substring_to_translate')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'" class="col-xs-12">
+        Строка
+      </th>
+      <th (click)="requestSortBy('translation_memories.name_text')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
+        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'translation_memories.name_text'" class="col-xs-10">
+        ТМ
+      </th>
+      <th class="col-xs-9">
+        Действия
+      </th>
+    </tr>
   </thead>
   <tr *ngFor="let row of dataSource">
     <td class="col-xs-1">
@@ -95,11 +80,11 @@
       {{row.model.translation_memories_name}}
     </td>
     <td class="col-xs-9">
-     <div class="btn-group" role="group">
-      <button (click)="getEditing(row.model)" class="btn btn-primary m-1"> Изменить </button>
-      <button (click)="getConfirmDelete(row.model)" class="btn btn-warning m-1"> Удалить </button>
-</div>    
-</td>
+      <div class="btn-group" role="group">
+        <button (click)="getEditing(row.model)" class="btn btn-primary m-1"> Изменить </button>
+        <button (click)="getConfirmDelete(row.model)" class="btn btn-warning m-1"> Удалить </button>
+      </div>
+    </td>
   </tr>
 </table>
 

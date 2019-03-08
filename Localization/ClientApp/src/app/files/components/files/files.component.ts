@@ -28,6 +28,7 @@ export class FilesComponent implements OnInit {
   searchFilesNamesString: string = "";
 
   cuttedNode: TreeNode;
+  selectedNode: TreeNode;
 
   isLoading: boolean;
 

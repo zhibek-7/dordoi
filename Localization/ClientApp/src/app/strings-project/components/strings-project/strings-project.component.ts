@@ -83,8 +83,28 @@ export class StringsProjectComponent extends MainListPageComponent implements On
     this.loadDropdown();
     this.loadData();
     this.getFileTypes();
+    this.getAllDTO();
   }
   
+
+/**
+   * Получение списка памяти переводов для отображения в таблице.
+   */
+  getAllDTO() {
+   /*TODO почему-то небыло фукнции
+скопировал
+ this.translationMemoryService.getAllDTO().subscribe(
+      translationMemories =>
+        (this.dataSource.data = translationMemories.map(
+          translationMemory => new Selectable<TranslationMemoryTableViewDTO>(translationMemory, false)
+        )),
+      error => {
+        this.isDataSourceLoaded = false;
+        console.error(error);
+      }
+    );
+*/
+  }
 
   /** Получение списка памятей переводов текущего проекта для фильтра данных таблицы через выпадающий список. */
   loadDropdown() {

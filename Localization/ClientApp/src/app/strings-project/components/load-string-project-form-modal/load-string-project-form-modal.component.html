@@ -20,7 +20,7 @@
       </div>
       <div class="alert alert-danger"
            *ngIf="(typesControl.dirty || typesControl.touched) &&
-           (setting.typeFile == null || setting.typeFile == 'null')">
+           (setting.typeFile == null)">
         Выберите формат.
       </div>
     </div>
@@ -79,8 +79,8 @@
         </div>
       </div>
       <div *ngIf="setting.isAllLocale == false &&
-           ( ((setting.baseLocaleId == null || setting.baseLocaleId == 'null') && (baseLocaleControl.dirty || baseLocaleControl.touched)) ||
-           ((setting.translationLocaleId == null || setting.translationLocaleId == 'null') && (translationLocaleControl.dirty || translationLocaleControl.touched)) )" class="alert alert-danger">
+           ( ((setting.baseLocaleId == null) && (baseLocaleControl.dirty || baseLocaleControl.touched)) ||
+           ((setting.translationLocaleId == null) && (translationLocaleControl.dirty || translationLocaleControl.touched)) )" class="alert alert-danger">
         Выберите языковую пару.
       </div>
     </div>
@@ -88,7 +88,7 @@
   </div>
   <div class="app-modal-footer">
     <button class="btn btn-primary m-1"
-            [disabled]="setting.typeFile == null || setting.typeFile == 'null' ||
+            [disabled]="setting.typeFile == null ||
             setting.isAllLocale == null ||
             (setting.isAllLocale == false && (setting.baseLocaleId == null || setting.translationLocaleId == null))"
             (click)="submit()">

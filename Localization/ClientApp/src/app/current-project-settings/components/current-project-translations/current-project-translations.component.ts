@@ -22,7 +22,7 @@ moment.locale("ru");
 @Component({
   selector: "app-current-project-translations",
   templateUrl: "./current-project-translations.component.html",
-  styleUrls: ["./current-project-translations.component.css"]//,
+  styleUrls: ["./current-project-translations.component.css"] //,
   //providers: [LanguageService, UserService]
 })
 export class CurrentProjectTranslationsComponent implements OnInit {
@@ -39,7 +39,9 @@ export class CurrentProjectTranslationsComponent implements OnInit {
     "users",
     "download"
   ];
-  private dataSourceForMainTab = new MatTableDataSource<LocalizationProjectsLocalesDTO>();
+  public dataSourceForMainTab = new MatTableDataSource<
+    LocalizationProjectsLocalesDTO
+  >();
   @ViewChild(MatSort) sortForMainTab: MatSort;
   //#endregion
 
@@ -87,12 +89,14 @@ export class CurrentProjectTranslationsComponent implements OnInit {
       error => console.error(error)
     );
 
-    this.languagesService.getLocalesWithPercentByProjectId(this.projectId).subscribe(
-      localesWithPercent => {
-        this.dataSourceForMainTab.data = localesWithPercent;
-      },
-      error => console.error(error)
-    );
+    this.languagesService
+      .getLocalesWithPercentByProjectId(this.projectId)
+      .subscribe(
+        localesWithPercent => {
+          this.dataSourceForMainTab.data = localesWithPercent;
+        },
+        error => console.error(error)
+      );
 
     this.projectService.getProjectWithDetails(this.projectId).subscribe(
       project => {
