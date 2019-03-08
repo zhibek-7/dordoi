@@ -19,11 +19,41 @@ const routes: Routes = [
       },
       {
         path: "stringsTranslationMemory",
-        loadChildren: "src/app/strings-project/module/strings-project.module#StringsProjectModule",
+        loadChildren:
+          "src/app/strings-project/module/strings-project.module#StringsProjectModule",
+        canActivate: [AuthenticationGuard]
+      },
+
+      {
+        path: "Strings",
+        loadChildren: "src/app/strings/strings.module#StringsModule",
         canActivate: [AuthenticationGuard]
       },
   {
-        path: '', //path: 'translations',
+        path: "Glossaries",
+        loadChildren: "src/app/glossaries/glossaries.module#GlossariesModule",
+        canActivate: [AuthenticationGuard]
+      },
+      {
+        path: "Participants",
+        loadChildren: "src/app/participants/participants.module#ParticipantsModule",
+        canActivate: [AuthenticationGuard]
+      },
+      {
+        path: "Files",
+        loadChildren: "src/app/files/files.module#FilesModule",
+        canActivate: [AuthenticationGuard]
+      },
+
+      {
+        path: "create-project",
+        loadChildren:
+          "src/app/create-project/create-project.module#CreateProjectModule",
+        canActivate: [AuthenticationGuard]
+      },
+
+      {
+        path: "", //path: 'translations',
         component: CurrentProjectTranslationsComponent,
         canActivate: [AuthenticationGuard]
       }
