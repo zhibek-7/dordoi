@@ -29,18 +29,6 @@
               <mat-icon>person</mat-icon>&nbsp;&nbsp;&nbsp;<span>Пользователи</span>
           </mat-toolbar-row>
 
-          <mat-toolbar-row (click)="showMainContent(4)" [ngClass]="{'active': showServersComponent}">
-              <mat-icon>insert_invitation</mat-icon>&nbsp;&nbsp;&nbsp;<span>Сервера</span>
-          </mat-toolbar-row>
-
-          <mat-toolbar-row (click)="showMainContent(5)" [ngClass]="{'active': showEventsComponent}">
-              <mat-icon>list_alt</mat-icon>&nbsp;&nbsp;&nbsp;<span>События</span>
-          </mat-toolbar-row>
-
-          <mat-toolbar-row (click)="showMainContent(6)" [ngClass]="{'active': showAuthComponent}">
-              <mat-icon>lock</mat-icon>&nbsp;&nbsp;&nbsp;<span>Аутентификация</span>
-          </mat-toolbar-row>
-
           <mat-toolbar-row (click)="showMainContent(7)" [ngClass]="{'active': showImportComponent}">
               <mat-icon>input</mat-icon>&nbsp;&nbsp;&nbsp;<span>Иморт данных</span>
           </mat-toolbar-row>
@@ -57,15 +45,6 @@
       </div>
       <div *ngIf="showUsersListComponent">
           <app-users-list></app-users-list>
-      </div>
-      <div *ngIf="showServersComponent">
-          <app-servers></app-servers>
-      </div>
-      <div *ngIf="showEventsComponent">
-          <app-events></app-events>
-      </div>
-      <div *ngIf="showAuthComponent">
-          <app-auth></app-auth>
       </div>
       <div *ngIf="showImportComponent">
           <app-data-import></app-data-import>

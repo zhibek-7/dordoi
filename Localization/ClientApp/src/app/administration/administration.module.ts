@@ -27,10 +27,7 @@ import { DataImportSignalRService } from '../services/dataImportSignalR.service'
 import { AdministrationRoutingModule } from './administration-routing.module';
 
 import { AdministrationComponent } from './components/administration/administration.component';
-import { AuthComponent } from './components/auth/auth.component';
-import { EventsComponent } from './components/events/events.component';
 import { FoldersComponent } from './components/folders/folders.component';
-import { ServersComponent } from './components/servers/servers.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { UsersListComponent } from './components/users-list/users-list.component';
 import { DataImportComponent } from './components/data-import/data-import.component';
@@ -39,10 +36,7 @@ import { RequestInterceptorService } from '../services/requestInterceptor.servic
 @NgModule({
   declarations: [
     AdministrationComponent,
-    AuthComponent,
-    EventsComponent,
     FoldersComponent,
-    ServersComponent,
     SettingsComponent,
     UsersListComponent,
     DataImportComponent,

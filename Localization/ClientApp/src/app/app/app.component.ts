@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
   projects: LocalizationProject[];
   currentProject: LocalizationProject;
   name = "";
+  projectVisibility = true;
 
   userAuthorized: boolean = false;
   currentUserID = -1;
@@ -39,6 +40,17 @@ export class AppComponent implements OnInit {
     // this.getProjects();
     console.log("app ngOnInit ---!!!!!!!!!");
     console.log("ProjectName ==" + sessionStorage.getItem("ProjectName"));
+    var role = sessionStorage.getItem("userRole");
+
+    /*
+    if (
+      role=="Менеджер" ||
+      role=="Владелец проекта" ||
+      role=="Программист"
+    ) {
+      this.projectVisibility = true;
+    }
+    */
     this.name = sessionStorage.getItem("ProjectName");
   }
 
@@ -77,15 +89,16 @@ export class AppComponent implements OnInit {
   }
 
   checkAuthorization() {
-    this.authenticationService.checkUserAuthorisationAsync()
-              .subscribe(response => {
+    this.authenticationService.checkUserAuthorisationAsync().subscribe(
+      response => {
                 this.userAuthorized = response;
               },
               error => {
                 console.log("Ошибка: " + error);
                 alert("Необходимо авторизироваться");
                 this.userAuthorized = false;
-                this.router.navigate(['account']);
-              })
+        this.router.navigate(["account"]);
+      }
+    );
   }
 }

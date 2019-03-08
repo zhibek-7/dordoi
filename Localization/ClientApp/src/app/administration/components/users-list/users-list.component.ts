@@ -38,7 +38,7 @@ export class UsersListComponent implements OnInit {
               }
 
   openDialog(userId): void {
-    const dialogRef = this.dialog.open(DialogOverview, {
+/*    const dialogRef =  this.dialog.open(DialogOverview, {
       width: '500px',
       data: {}
     });
@@ -58,7 +58,7 @@ export class UsersListComponent implements OnInit {
         //  }
         //});
       }
-    });
+    });*/
   }
 
   ngOnInit() {
@@ -69,35 +69,4 @@ export class UsersListComponent implements OnInit {
   applyFilter(filterValue: string) {
     //this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-}
-
-@Component({
-  selector: 'dialog-overview',
-  templateUrl: 'dialog-overview.html'
-})
-export class DialogOverview {
-  constructor(
-    public dialogRef: MatDialogRef<DialogOverview>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-export interface DialogData {
-  selectedRate: string;
-  selectedStatus: string;
-  selectedAuthMethod: string;
-}
-
-export interface Users {
-  id: string;
-  name: string;
-  role: string;
-  creationDate: string;
-  foldersWeight: string;
-  maxFoldersWeight: string;
-  condition: string;
 }
