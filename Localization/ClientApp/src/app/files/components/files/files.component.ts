@@ -48,9 +48,9 @@ export class FilesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-//    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
-//    console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
-//    console.log("Projec=" + sessionStorage.getItem("Projec"));
+    //    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    //    console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
+    //    console.log("Projec=" + sessionStorage.getItem("Projec"));
 
     if (this.router.url.indexOf("LanguageFiles") != -1) {
       this.isSelectionFileForTranslation = true;
@@ -106,12 +106,12 @@ export class FilesComponent implements OnInit {
       ];
     }
 
-//    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
-//    console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
+    //    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    //    console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
     console.log("ProjecID2=" + this.projectsService.currentProjectId);
-//    console.log("ProjecID3=" + this.selectedProjectId);
-//    console.log("Projec=" + sessionStorage.getItem("Projec"));
-    this.getFiles(this.projectsService.currentProjectId);
+    //    console.log("ProjecID3=" + this.selectedProjectId);
+    //    console.log("Projec=" + sessionStorage.getItem("Projec"));
+    this.getFiles();
   }
 
   pseudoCut(selectedNode: TreeNode): void {
