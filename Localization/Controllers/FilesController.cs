@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using DAL.Reposity.PostgreSqlRepository;
 using Localization.Controllers;
 using Localization.Hubs.Files;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using Models.DatabaseEntities;
 
 using Models.Models;
 using Models.Services;
+using Utilities;
 
 namespace Localization.WebApi
 {
@@ -20,6 +22,7 @@ namespace Localization.WebApi
         private readonly FilesService _filesService;
 
         private readonly IHubContext<FilesHub> _hubContext;
+        private UserRepository ur;
 
         public FilesController(
             FilesService filesService,
@@ -29,6 +32,7 @@ namespace Localization.WebApi
             this._hubContext = hubContext;
 
             this._filesService.FileParsingFailed += OnFileParsingFailedAsync;
+            ur = new UserRepository(Settings.GetStringDB());
         }
 
         private async Task OnFileParsingFailedAsync(string signalrClientId, FailedFileParsingModel failedParsingInfoModel)
@@ -40,9 +44,13 @@ namespace Localization.WebApi
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<Node<File>>>> GetAllAsync()
+        public async Task<ActionResult<IEnumerable<Node<File>>>> GetAllAsync([FromForm] int? project)
         {
-            var files = await this._filesService.GetAllAsync();
+
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+
+            var files = await this._filesService.GetAllAsync(userId, project);
             if (files == null)
             {
                 return BadRequest("Files not found");
@@ -75,6 +83,7 @@ namespace Localization.WebApi
         [Authorize]
         public async Task<ActionResult<File>> GetAsync(int id)
         {
+
             var foundedFile = await this._filesService.GetByIdAsync(id);
             return Ok(foundedFile);
         }

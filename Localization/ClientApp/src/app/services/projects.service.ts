@@ -13,7 +13,7 @@ export class ProjectsService {
   constructor(private httpClient: HttpClient) {}
 
   get currentProjectId(): number {
-    return +sessionStorage.getItem("ProjecID");
+    return +sessionStorage.getItem("ProjectID");
   }
 
   get currentProjectName(): string {

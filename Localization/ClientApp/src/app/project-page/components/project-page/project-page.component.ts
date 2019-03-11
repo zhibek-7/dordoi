@@ -80,7 +80,7 @@ export class ProjectPageComponent implements OnInit {
     //this.currentUserName = sessionStorage.getItem("currentUserName");
 
     var projectId = this.projectService.currentProjectId;
-    //var projectId = Number(sessionStorage.getItem("ProjecID"));
+    //var projectId = Number(sessionStorage.getItem("ProjectID"));
 
     this.authenticationService.setUserRoleAccordingToProject().subscribe(
       success => {

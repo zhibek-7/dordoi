@@ -34,7 +34,7 @@ const routes: Routes = [
 //    canActivate: [AuthenticationGuard]
 //  },
   {
-    path: "Projects/:id",
+    path: "Projects/:projectId",
     //component: CurrentProjectSettingsComponent,
     loadChildren: "../current-project-settings/module/current-project-settings.module#CurrentProjectSettingsModule",
     canActivate: [AuthenticationGuard]

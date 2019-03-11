@@ -39,7 +39,7 @@ export class ParticipantsListComponent implements OnInit {
   pageSize: number = 10;
 
   private get projectId(): number {
-    return +sessionStorage.getItem('ProjecID');
+    return +sessionStorage.getItem('ProjectID');
   }
 
   constructor(

@@ -128,8 +128,8 @@ export class AllSettingsComponent implements OnInit {
 
 
 
-    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
-    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
+    //console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    //console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
 
     this.projectsService.getProject(this.currentProjectId).subscribe(
       project => {

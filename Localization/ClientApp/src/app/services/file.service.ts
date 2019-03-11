@@ -8,6 +8,7 @@ import { File as FileData } from "../models/database-entities/file.type";
 import { Locale } from "../models/database-entities/locale.type";
 import { FileTranslationInfo } from "../models/database-entities/fileTranslationInfo.type";
 import { FolderModel } from "../models/DTO/folder.type";
+import { ProjectsService } from "./projects.service";
 
 @Injectable({
   providedIn: "root"
@@ -17,9 +18,14 @@ export class FileService {
 
   constructor(private http: HttpClient) {}
 
-  getFiles(): Observable<TreeNode[]> {
+  getFiles(prId: number): Observable<TreeNode[]> {
+ 
+ console.log("project=="+ prId);
+  const formData = new FormData();
+    formData.append("project", "" + prId);
+
     return this.http
-      .post<TreeNode[]>(this._url, null, {
+      .post<TreeNode[]>(this._url, formData, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
@@ -79,8 +85,12 @@ export class FileService {
 
     return this.http
       .post<TreeNode>(url, formData, {
-      headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-    }).pipe(catchError(this.handleError("addFile")));
+        headers: new HttpHeaders().set(
+          "Authorization",
+          "Bearer " + sessionStorage.getItem("userToken")
+        )
+      })
+      .pipe(catchError(this.handleError("addFile")));
   }
 
   updateFileVersion(
@@ -190,7 +200,7 @@ export class FileService {
     const url = `${this._url}/${fileData.id}/changeParentFolder/${newParentId}`;
 
     return this.http
-      .post<TreeNode>(url,  fileData, {
+      .post<TreeNode>(url, fileData, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
@@ -203,7 +213,7 @@ export class FileService {
     const url = `${this._url}/${fileData.id}/locales/list`;
 
     return this.http
-      .post<Locale[]>(url,fileData, {
+      .post<Locale[]>(url, fileData, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
