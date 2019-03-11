@@ -26,12 +26,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Возвращает все строки запроса (без группировки по объектам).
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<TranslationMemory>> GetAllAsync()
+        public async Task<IEnumerable<TranslationMemory>> GetAllAsync(int? userId, int? projectId)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+                    /*
                     var query = new Query("translation_memories")
                         .LeftJoin("translation_memories_locales", "translation_memories_locales.id_translation_memory", "translation_memories.id")
                         .LeftJoin("locales", "locales.id", "translation_memories_locales.id_locale")
@@ -53,9 +54,34 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //.Select(countQuery, "string_count");
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
+
                     var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings);
+                    */
+                    var sql =
+                        @"SELECT tm.id, tm.name_text, l.name_text AS locale_name, lp.name_text AS localization_project_name, 
+COUNT(tms.id_translation_memory) AS string_count
+FROM translation_memories  as tm
+LEFT JOIN translation_memories_locales as tml 
+ON tml.id_translation_memory = tm.id
+LEFT JOIN locales  as l 
+ON l.id = tml.id_locale
+LEFT JOIN localization_projects_translation_memories as lptm 
+ON lptm.id_translation_memory = tm.id
+LEFT JOIN localization_projects  as lp 
+ON lp.id = lptm.id_localization_project
+LEFT JOIN translation_memories_strings as tms 
+ON tms.id_translation_memory = tm.id
+inner join participants as p
+	on lp.id = p.id_localization_project
+where  active = true and p.id_user = " + (int)userId + @"
+GROUP BY tm.id, tm.name_text, l.name_text, lp.name_text";
+                    LogQuery(sql);
+
+                    var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
+                        sql: sql);
+
                     return translationMemories;
                 }
             }

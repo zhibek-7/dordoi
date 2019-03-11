@@ -28,11 +28,11 @@ namespace Models.Services
         /// Возвращает список глоссариев, со строками перечислений имен связанных объектов.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
+        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync(int? userId, int? projectId)
         {
             try
             {
-                var temp = await _glossariesRepository.GetAllAsync();
+                var temp = await _glossariesRepository.GetAllAsync(userId, projectId);
                 //Создание списка глоссариев со строками перечислений имен связанных объектов.
                 var resultDTO = temp.GroupBy(t => t.id).Select(t => new GlossariesTableViewDTO
                 {

@@ -28,11 +28,11 @@ namespace Models.Services
         /// Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync()
+        public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync(int? userId, int? projectId)
         {
             try
             {
-                var temp = await _translationMemoryRepository.GetAllAsync();
+                var temp = await _translationMemoryRepository.GetAllAsync(userId, projectId);
                 //Создание списка памяти переводов со строками перечислений имен связанных объектов.
                 var resultDTO = temp.GroupBy(t => t.id).Select(t => new TranslationMemoryTableViewDTO
                 {

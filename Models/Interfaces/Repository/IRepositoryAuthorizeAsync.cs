@@ -12,11 +12,11 @@ namespace Models.Interfaces.Repository
     /// <typeparam name="T">Тип с которым работает репозиторий</typeparam>
     public interface IRepositoryAuthorizeAsync<T> where T : BaseEntity
     {
-        //Task<int> AddAsync(T item);
-        //Task<bool> RemoveAsync(int id);
-        //Task<bool> UpdateAsync(T item);
+        Task<int> AddAsync(T item);
+        Task<bool> RemoveAsync(int id);
+        Task<bool> UpdateAsync(T item);
 
-        //Task<T> GetByIDAsync(int id);
-        //Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIDAsync(int id);
+        Task<IEnumerable<T>> GetAllAsync(int? userId, int? projectId);
     }
 }
