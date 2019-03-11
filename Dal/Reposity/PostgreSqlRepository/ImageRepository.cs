@@ -42,7 +42,7 @@ inner join localization_projects as lp
 	on f.id_localization_project = lp.id
 inner join participants as p
 	on lp.id = p.id_localization_project
-where active = true and lp.id = " + (int)userId + @" and   p.id_user =" + (int)projectId + @" --- подставляется значение
+where active = true and lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение
 union
 SELECT i.id, i.name_text, i.date_time_added, i.id_user, i.body, i.url
 FROM public.images as i
@@ -56,7 +56,7 @@ inner join localization_projects as lp
 	on f.id_localization_project = lp.id
 inner join participants as p
 	on lp.id = p.id_localization_project
-where  active = true and  lp.id = " + (int)userId + @" and   p.id_user =" + (int)projectId + @" --- подставляется значение";
+where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение";
 
                     this.LogQuery(sqlString);
                     IEnumerable<Image> images = dbConnection.Query<Image>(sqlString).ToList();
