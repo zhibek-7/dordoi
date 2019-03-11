@@ -16,7 +16,7 @@ namespace Models.Interfaces.Repository
         Task<bool> RemoveAsync(int id);
         Task<bool> UpdateAsync(T item);
 
-        Task<T> GetByIDAsync(int id);
+        Task<T> GetByIDAsync(int id, int? userId);
         Task<IEnumerable<T>> GetAllAsync(int? userId, int? projectId);
     }
 }

@@ -14,7 +14,7 @@ using SqlKata;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class LocalizationProjectRepository : BaseRepository, IRepository<LocalizationProject>, ILocalizationProjectRepository
+    public class LocalizationProjectRepository : BaseRepository, IRepositoryAuthorizeAsync<LocalizationProject>
     {
         /// <summary>
         /// //////мне нужно по ходу переделать запросы под логирования
@@ -28,16 +28,22 @@ namespace DAL.Reposity.PostgreSqlRepository
         //     throw new NotImplementedException();
         // }
 
-        public LocalizationProject GetByID(int Id)
+        public async Task<LocalizationProject> GetByIDAsync(int id, int? userId)
         {
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM localization_projects WHERE id = @Id";
+            var sqlString = @"SELECT lp.*
+            FROM localization_projects as lp
+            inner join participants as p
+
+            on lp.id = p.id_localization_project
+            where active = true and p.id_user = @userId and lp.id = @Id
+            order by lp.name_text";
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { Id };
+                    var param = new { Id = id, @userId = userId };
                     this.LogQuery(sqlString, param);
                     var project = dbConnection.Query<LocalizationProject>(sqlString, param).FirstOrDefault();
                     return project;
@@ -46,14 +52,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByIDAsync)} {nameof(Exception)} ",
                     exception);
                 return null;
             }
@@ -97,10 +103,17 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public IEnumerable<LocalizationProject> GetAll()
+        public async Task<IEnumerable<LocalizationProject>> GetAllAsync(int? userId, int? projectId)
         {
+
             // Sql string to select all rows
-            var sqlString = "SELECT * FROM localization_projects";
+            var sqlString = @"SELECT lp.*
+            FROM localization_projects as lp
+            inner join participants as p
+
+            on lp.id = p.id_localization_project
+            where active = true and p.id_user = " + (int)userId + @"
+            order by lp.name_text";
 
             try
             {
@@ -114,14 +127,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetAll)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetAll)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetAllAsync)} {nameof(Exception)} ",
                     exception);
                 return null;
             }
@@ -183,13 +196,13 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        public async Task<int> AddAsyncInsertProject(LocalizationProject project)
+        public async Task<int> AddAsync(LocalizationProject project)
         {
             var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
                  + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
                  + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.AbleTo_Left_Errors + "','"
                  + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')"
-                  + "RETURNING localization_projects.id";
+                  + " RETURNING localization_projects.id";
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -204,14 +217,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddAsyncInsertProject)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 return 0;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddAsyncInsertProject)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddAsync)} {nameof(Exception)} ",
                     exception);
                 return 0;
             }
@@ -257,7 +270,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Удалить  проект
         /// </summary>
         /// <param name="id"></param>
-        public void DeleteProject(int Id)
+        public async Task<bool> RemoveAsync(int Id)
         {
             try
             {
@@ -269,21 +282,22 @@ namespace DAL.Reposity.PostgreSqlRepository
                     connection.Execute(sqlQuery, param);
 
                     this.LogQuery(sqlQuery);
+                    return true;
                 }
             }
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.DeleteProject)} {nameof(NpgsqlException)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
                     exception);
-
+                return false;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.DeleteProject)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(Exception)} ",
                     exception);
-
+                return false;
             }
         }
 
@@ -291,7 +305,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Обновить проект
         /// </summary>
         /// <param name="project"></param>
-        public void UpdateProject(LocalizationProject project)
+        public async Task<bool> UpdateAsync(LocalizationProject project)
         {
             var sqlQuery = "UPDATE \"localization_projects\" SET" +
                              "\"name_text\"=@Name_text, " +
@@ -323,19 +337,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     this.LogQuery(sqlQuery, project.GetType(), project);
                     dbConnection.Execute(sqlQuery, project);
+
+                    return true;
                 }
             }
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateProject)} {nameof(NpgsqlException)} ",
+                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
                         exception);
+                return false;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateProject)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(Exception)} ",
                     exception);
+                return false;
             }
         }
 
