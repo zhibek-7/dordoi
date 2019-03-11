@@ -14,7 +14,7 @@ namespace DAL.Reposity.PostgreSqlRepository
     /// <summary>
     ///
     /// </summary>
-    public class ImageRepository : BaseRepository, IBaseRepositoryAsync<Image>
+    public class ImageRepository : BaseRepository, IImagesRepository, IBaseRepositoryAsync<Image>
     {
         private PostgreSqlNativeContext context;
         public ImageRepository(string connectionStr) : base(connectionStr)

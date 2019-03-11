@@ -63,6 +63,7 @@ namespace Localization
             services.AddScoped<IInvitationsRepository>(provider => new InvitationsRepository(connectionString));
             services.AddScoped<IUserRepository>(provider => new UserRepository(connectionString));
             services.AddScoped<IParticipantRepository>(provider => new ParticipantRepository(connectionString));
+            services.AddScoped<IImagesRepository>(provider => new ImageRepository(connectionString));
 
             services.AddScoped<FromExcel>();
 
