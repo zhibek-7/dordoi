@@ -28,12 +28,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Возвращает все строки запроса (без группировки по объектам).
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Glossaries>> GetAllAsync()
+        public async Task<IEnumerable<Glossaries>> GetAllAsync(int? userId, int? projectId)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+                    /*
                     var query = new Query("glossaries")
                         .LeftJoin("glossaries_locales", "glossaries_locales.id_glossary", "glossaries.id")
                         .LeftJoin("locales", "locales.id", "glossaries_locales.id_locale")
@@ -48,8 +49,26 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var glossaries = await dbConnection.QueryAsync<Glossaries>(
-                        sql: compiledQuery.Sql,
+                        sql: sql,
                         param: compiledQuery.NamedBindings);
+                    */
+                    var sql = @"select g.id, g.name_text, l.name_text as Locale_Name, lp.name_text as Localization_Project_Name
+from glossaries as g
+inner join glossaries_locales as gl on
+gl.id_glossary = g.id
+inner join locales as l on
+l.id = gl.id_locale
+inner join localization_projects_glossaries as lpg on
+lpg.id_glossary = g.id
+inner join localization_projects as lp on
+lp.id = lpg.id_localization_project
+inner join participants as p
+	on lp.id = p.id_localization_project
+where  active = true and p.id_user = " + (int)userId + @"
+order by g.name_text";
+                    LogQuery(sql);
+                    var glossaries = await dbConnection.QueryAsync<Glossaries>(
+                        sql: sql);
                     return glossaries;
                 }
             }

@@ -50,20 +50,20 @@ table th {
   text-align: justify;
 }
 
-.col-xs-12 {
-  width: 12vw;
+.col-xs-34 {
+  width: 34%;
+}
+
+.col-xs-55 {
+  width: 55%;
 }
 
 .col-xs-10 {
-  width: 10vw;
-}
-
-.col-xs-9 {
-  width: 9vw;
+  width: 10%;
 }
 
 .col-xs-1 {
-  width: 1vw;
+  width: 1%;
 }
 
 .mat-row.selected {

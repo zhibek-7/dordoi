@@ -39,7 +39,10 @@ namespace Localization.Controllers
         [Route("List")]
         public List<LocalizationProject> GetProjects()
         {
-            return _localizationProjectRepository.GetAll()?.ToList();
+
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            return _localizationProjectRepository.GetAllAsync(userId, null).Result?.ToList();
         }
 
         [Authorize]
@@ -47,8 +50,10 @@ namespace Localization.Controllers
         [Route("{Id}")]
         public LocalizationProject GetProjectById(int Id)
         {
-            var project = _localizationProjectRepository.GetByID(Id);
-            return project;
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            var project = _localizationProjectRepository.GetByIDAsync(Id, userId);
+            return project.Result;
         }
 
         /// <summary>
@@ -71,7 +76,7 @@ namespace Localization.Controllers
         [Route("newProject")]
         public async Task<int> newProject([FromBody] LocalizationProject project)
         {
-            int idProj = await _localizationProjectRepository.AddAsyncInsertProject(project);
+            int idProj = await _localizationProjectRepository.AddAsync(project);
             await _userActionRepository.AddCreateProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
             return idProj;
         }
@@ -111,7 +116,7 @@ namespace Localization.Controllers
         [Route("delete/{Id}")]
         public void DeleteProject(int Id)
         {
-            _localizationProjectRepository.DeleteProject(Id);
+            _localizationProjectRepository.RemoveAsync(Id);
         }
 
         [Authorize]
@@ -119,7 +124,7 @@ namespace Localization.Controllers
         [Route("edit/{Id}")]
         public async Task<LocalizationProject> EditProject(LocalizationProject project, int Id)
         {
-            _localizationProjectRepository.UpdateProject(project);
+            _localizationProjectRepository.UpdateAsync(project);
             await _userActionRepository.AddEditProjectActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
 
             return project;

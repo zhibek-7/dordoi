@@ -35,7 +35,9 @@ namespace Localization.Controllers
         [HttpPost]
         public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
         {
-            return await _glossariesService.GetAllToDTOAsync();
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            return await _glossariesService.GetAllToDTOAsync(userId, null);
         }
 
         /// <summary>

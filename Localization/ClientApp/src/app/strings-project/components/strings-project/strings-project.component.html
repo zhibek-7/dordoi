@@ -49,37 +49,36 @@
   <thead>
     <tr>
       <th class="col-xs-1">
-        <!--<th [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'select'"
-              [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'select'"
-              class="col-xs-2">-->
-        <!--<label (click)="sortBy('select')">
-      </label>-->
-        <input type="checkbox" class="checkbox" [value]="isSelectedAll" (change)="allSelected()">
+        <input #checkboxHead type="checkbox" [ngModel]="isSelectedAllCurrentPage" (change)="allSelectedCurrentPage()">
       </th>
-      <th (click)="requestSortBy('substring_to_translate')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
-        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'" class="col-xs-12">
+      <th (click)="requestSortBy('substring_to_translate')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+          class="col-xs-55">
         Строка
       </th>
-      <th (click)="requestSortBy('translation_memories.name_text')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
-        [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'translation_memories.name_text'" class="col-xs-10">
+      <th (click)="requestSortBy('translation_memories.name_text')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
+          class="col-xs-34">
         ТМ
       </th>
-      <th class="col-xs-9">
+      <th class="col-xs-10">
         Действия
       </th>
     </tr>
   </thead>
   <tr *ngFor="let row of dataSource">
     <td class="col-xs-1">
-      <input type="checkbox" class="checkbox" [value]="row.isSelected" (change)="selected(row)">
+      <input type="checkbox" [ngModel]="row.isSelected" (change)="selected(row)">
     </td>
-    <td class="col-xs-12">
-      {{row.model.id}} - {{row.model.substring_to_translate}}
+    <td class="col-xs-55">
+      {{row.model.substring_to_translate}}
     </td>
-    <td class="col-xs-10">
+    <td class="col-xs-34">
       {{row.model.translation_memories_name}}
     </td>
-    <td class="col-xs-9">
+    <td class="col-xs-10">
       <div class="btn-group" role="group">
         <button (click)="getEditing(row.model)" class="btn btn-primary m-1"> Изменить </button>
         <button (click)="getConfirmDelete(row.model)" class="btn btn-warning m-1"> Удалить </button>

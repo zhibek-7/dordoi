@@ -15,7 +15,7 @@ export class ProjectsLocalesService {
 
 
   get currentProjectId(): number {
-    return +sessionStorage.getItem('ProjecID');
+    return +sessionStorage.getItem('ProjectID');
   }
 
   get currentProjectName(): string {

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DAL.Reposity.PostgreSqlRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities.DTO;
 using Models.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace Localization.Controllers
 {
@@ -12,11 +14,13 @@ namespace Localization.Controllers
     public class TranslationMemoryController : ControllerBase
     {
         private readonly TranslationMemoryService _translationMemoryService;
-
+        private UserRepository ur;
 
         public TranslationMemoryController(TranslationMemoryService translationMemoryService)
         {
             _translationMemoryService = translationMemoryService;
+            var connectionString = Settings.GetStringDB();
+            ur = new UserRepository(connectionString);
         }
 
 
@@ -28,7 +32,10 @@ namespace Localization.Controllers
         [HttpPost]
         public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync()
         {
-            return await _translationMemoryService.GetAllDTOAsync();
+
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            return await _translationMemoryService.GetAllDTOAsync(userId, null);
         }
 
         /// <summary>

@@ -542,5 +542,156 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return false;
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// Получает записи из определенного и открытых проектов
+        /// </summary>
+        /// <param name="fileId">id определенного проекта</param>
+        /// <returns></returns>
+        public IEnumerable<TranslationSubstring> GetStringsInVisibleAndCurrentProjectd(int projectId)
+        {
+
+            var query = "SELECT TS.id, " +
+                "TS.substring_to_translate " +
+
+                "FROM translation_substrings AS TS " +
+                "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
+                "INNER JOIN localization_projects AS LP ON LP.id= F.id_localization_project " +
+
+                "where LP.id =@Id ";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id = projectId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationSubstring> strings = dbConnection.Query<TranslationSubstring>(query, param);
+                    return strings;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Метод получения всех по id_locale
+        /// </summary>
+        /// <param name="id_locale">id языка, варианты перевода которой необходимы</param>
+        /// <returns>Список вариантов перевода</returns>
+        public IEnumerable<Translation> GetAllTranslationsByID_locale(int id_locale)
+        {
+            var query = "SELECT t.id_string, " +
+                        "t.translated, " +
+                        "t.confirmed, " +
+                        "t.id_user, " +
+                        "t.datetime, " +
+                        "t.id_locale, " +
+                        "t.selected, " +
+                        "t.id, " +
+                        "u.name_text AS User_Name " +
+                        "FROM translations as t " +
+                        "INNER JOIN users AS u ON u.id = t.id_user " +
+                        "WHERE id_locale = @id_locale";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id = id_locale };
+                    this.LogQuery(query, param);
+                    IEnumerable<Translation> translations = dbConnection.Query<Translation>(query, param);
+                    return translations;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Метод получения всех вариантов перевода конкретной фразы
+        /// </summary>
+        /// <param name="idString">id фразы, варианты перевода которой необходимы</param>
+        /// <returns>Список вариантов перевода</returns>
+        public IEnumerable<Translation> GetAllTranslationsInStringWithLocale(int idString)
+        {
+            var query = "SELECT t.id_string, " +
+                        "t.translated, " +
+                        "t.confirmed, " +
+                        "t.id_user, " +
+                        "t.datetime, " +
+                        "t.id_locale, " +
+                        "t.selected, " +
+                        "t.id, " +
+                        "u.name_text AS User_Name " +
+                        "FROM translations as t " +
+                        "INNER JOIN users AS u ON u.id = t.id_user " +
+                        "WHERE id_string = @Id";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id = idString };
+                    this.LogQuery(query, param);
+                    IEnumerable<Translation> translations = dbConnection.Query<Translation>(query, param);
+                    return translations;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+
+
     }
 }

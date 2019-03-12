@@ -33,9 +33,9 @@ namespace Models.Services
             this._localeRepository = localeRepository;
         }
 
-        public async Task<IEnumerable<Node<File>>> GetAllAsync()
+        public async Task<IEnumerable<Node<File>>> GetAllAsync(int? userId, int? projectId)
         {
-            var files = await this._filesRepository.GetAllAsync();
+            var files = await this._filesRepository.GetAllAsync(userId, projectId);
             return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
         }
 
@@ -94,6 +94,7 @@ namespace Models.Services
             newFile.name_text = fileName;
             newFile.id_folder_owner = parentId;
             newFile.id_localization_project = projectId;
+            newFile.visibility = true;
 
             return await this.AddNodeAsync(newFile, insertToDbAction: this.InsertFileToDbAsync);
         }

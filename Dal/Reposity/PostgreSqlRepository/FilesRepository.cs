@@ -31,7 +31,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "is_last_version, " +
             "id_previous_version, " +
             "translator_name, " +
-            "download_name" +
+            "download_name," +
+            "visibility" +
             ") "
             + "VALUES (" +
             "@ID_Localization_Project," +
@@ -48,8 +49,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Is_Last_Version, " +
             "@Id_Previous_Version, " +
             "@Translator_Name, " +
-            "@Download_Name" +
-            ")";
+            "@Download_Name," +
+            "@visibility)";
 
         private UserActionRepository _action;
         private TranslationSubstringRepository _tsr;
@@ -60,9 +61,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             _tsr = new TranslationSubstringRepository(connectionStr);
         }
 
-        public async Task<IEnumerable<File>> GetAllAsync()
+        public async Task<IEnumerable<File>> GetAllAsync(int? userId, int? projectId)
         {
-            var sqlString = "SELECT * FROM files";
+            var sqlString = @"SELECT f.*
+            FROM files as f
+            inner join  localization_projects as lp
+            on f.id_localization_project = lp.id
+            inner join participants as p
+
+            on lp.id = p.id_localization_project
+            where visibility = true and lp.id = " + (int)projectId + " and p.id_user = " + (int)userId;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -89,6 +97,36 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public async Task<File> GetByIDAsync(int id)
         {
+            var sqlString = "SELECT * FROM files WHERE id = @id";
+            try
+            {
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { id };
+                    this.LogQuery(sqlString, param);
+                    return await connection.QuerySingleOrDefaultAsync<File>(sqlString, param);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+        public async Task<File> GetByIDAsync(int id, int? conditionsId)
+        {
+
+            ///TODO нужно условий проверять
             var sqlString = "SELECT * FROM files WHERE id = @id";
             try
             {
@@ -461,7 +499,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 var query = new Query("files")
                     .Where("id_localization_project", projectId)
-                    .Where("is_last_version", true);
+                    .Where("is_last_version", true)
+                    .Where("visibility", true);
 
                 if (!string.IsNullOrEmpty(fileNamesSearch))
                 {
@@ -626,7 +665,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var query =
                     new Query("files")
                         .Where("id_folder_owner", parentFolderId)
-                        .Where("is_last_version", true);
+                        .Where("is_last_version", true)
+                        .Where("visibility", true);
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);

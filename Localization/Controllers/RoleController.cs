@@ -16,12 +16,21 @@ namespace Localization.Controllers
     {
 
         private RoleRepository _roleRepository = new RoleRepository(Settings.GetStringDB());
+        private readonly UserRepository userRepository;
+
+        public RoleController()
+        {
+            userRepository = new UserRepository(Settings.GetStringDB());
+        }
 
         [Authorize]
         [HttpPost("list")]
         public async Task<IEnumerable<Role>> GetAllRoles()
         {
-            return await this._roleRepository.GetAllAsync();
+            var identityName = User.Identity.Name;
+            int? userId = (int)userRepository.GetID(identityName);
+
+            return await this._roleRepository.GetAllAsync(userId, null);
         }
 
     }

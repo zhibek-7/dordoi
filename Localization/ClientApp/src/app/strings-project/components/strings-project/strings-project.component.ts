@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 
 import { TranslationMemoryService } from "src/app/services/translation-memory.service";
 import { TranslationSubstringService } from "../../../services/translationSubstring.service";
@@ -23,8 +23,12 @@ import { MainListPageComponent } from "src/app/shared/components/main-list-page/
 })
 export class StringsProjectComponent extends MainListPageComponent implements OnInit {
 
-  //dataSource: Selectable<TranslationSubstringTableViewDTO>[];
+  dataSource: Selectable<TranslationSubstringTableViewDTO>[] = [];
+  isDataSourceLoaded: boolean = true;
   
+  @ViewChild("parent")
+  public parent: MainListPageComponent;
+
   //#region Для обращения к модальным окнам
   @ViewChild("confirmDeleteFormModal")
   public confirmDeleteFormModal: ConfirmDeleteStringProjectFormModalComponent;
@@ -37,35 +41,30 @@ export class StringsProjectComponent extends MainListPageComponent implements On
 
   @ViewChild("appointFormModal")
   public appointFormModal: AppointTranslationMemoriesProjectFormModalComponent;
-  //#endregion
-  
+
   isVisibleEditFormModal: boolean = false;
   isVisibleAppointFormModal: boolean = false;
+  //#endregion
 
-  isSelectedAll: boolean = false;
-  isSelected: boolean = false;
-
-  isDataSourceLoaded: boolean = true;
-
+  /** checkbox для всё/ничего. */
+  @ViewChild("checkboxHead")
+  public checkboxHead: ElementRef;
+  
+  
+  /** Для одиночного выбора (для последней колонки с доп. кнопками). */
   translationSubstring: TranslationSubstringForEditingDTO;
+  
+  /** Для множественного выбора (для кнопок над таблицей). */
   translationSubstrings: TranslationSubstringForEditingDTO[] = [];
 
   fileTypes: string;
 
+  /** Список строк на удаления, для окна подтверждения. */
   translationSubstringsSubstringToTranslate: string;
-
-  private idsSelected: number[] = [];
-  private indexSelected: number;
-
+  
   currentProjectId: number;
-
-
-
-  //
-  @ViewChild("parent")
-  public parent: MainListPageComponent;
-  //
-
+  
+  //#region Init
   constructor(
     private translationSubstringService: TranslationSubstringService,
     private projectsService: ProjectsService,
@@ -83,36 +82,15 @@ export class StringsProjectComponent extends MainListPageComponent implements On
     this.loadDropdown();
     this.loadData();
     this.getFileTypes();
-    this.getAllDTO();
   }
+  //#endregion
   
-
-/**
-   * Получение списка памяти переводов для отображения в таблице.
-   */
-  getAllDTO() {
-   /*TODO почему-то небыло фукнции
-скопировал
- this.translationMemoryService.getAllDTO().subscribe(
-      translationMemories =>
-        (this.dataSource.data = translationMemories.map(
-          translationMemory => new Selectable<TranslationMemoryTableViewDTO>(translationMemory, false)
-        )),
-      error => {
-        this.isDataSourceLoaded = false;
-        console.error(error);
-      }
-    );
-*/
-  }
-
   /** Получение списка памятей переводов текущего проекта для фильтра данных таблицы через выпадающий список. */
   loadDropdown() {
     super.loadDropdown();
 
     this.translationMemoryService.getForSelectByProjectAsync(this.currentProjectId).subscribe(
       translationMemories => {
-        //this.filters = translationMemories;
         this.parent.filters = translationMemories;
 
         //this.loadData();
@@ -124,33 +102,14 @@ export class StringsProjectComponent extends MainListPageComponent implements On
       );
   }
 
-  /**
-   * Получение списка строк памяти переводов текущего проекта для отображения в таблице.
-   */
+  /** Получение списка строк памяти переводов текущего проекта для отображения в таблице. */
   loadData(offset = 0) {
     super.loadData();
-
     let sortBy = new Array<string>();
     if (this.sortByColumnName) {
       sortBy = [this.sortByColumnName];
     }
-
-
-
-    console.log("loadData:");
-    console.log("currentProjectId:", this.currentProjectId);
-    console.log("selectedFilterId:", this.parent.filterId);
-    console.log("SearchString:", this.parent.searchString);
-    console.log("pageSize:", this.parent.pageSize);
-    console.log("offset:", this.parent.currentOffset);
-    console.log("sortBy:", sortBy);
-    console.log("isSortingAscending:", this.isSortingAscending);
-
-
-
-
-
-
+    
     this.translationSubstringService.getAllWithTranslationMemoryByProject(
         this.currentProjectId,
         this.parent.filterId,
@@ -161,8 +120,14 @@ export class StringsProjectComponent extends MainListPageComponent implements On
         this.isSortingAscending
       )
       .subscribe(
-        response => {
-          this.dataSource = response.body.map(translationSubstring => new Selectable<TranslationSubstringTableViewDTO>(translationSubstring, false));
+      response => {
+          this.dataSource = response.body.map(translationSubstring =>
+            new Selectable<TranslationSubstringTableViewDTO>(
+              translationSubstring,
+              this.isSelected
+                ? this.translationSubstrings.some(t => t.id == translationSubstring.id)
+                : false)
+          );
           
           this.parent.totalCount = +response.headers.get("totalCount");
           //this.parent.currentOffset = offset;
@@ -170,61 +135,69 @@ export class StringsProjectComponent extends MainListPageComponent implements On
         error => console.log(error)
       );
   }
-
-  //onPageChanged(newOffset: number) {
-  //  super.onPageChanged(newOffset);
-  //  this.loadData(newOffset);
-  //}
   
   //#region Выбранная строка. Его отметка и возврат.
 
+  /** Возвращает выбраны ли все записи таблицы на текущей страницы.
+   *  Установка неопределенного состояния (indeterminate) при не полном выборе.
+   */
+  get isSelectedAllCurrentPage(): boolean {
+    if (this.dataSource.every(t => t.isSelected)) {
+      this.checkboxHead.nativeElement.indeterminate = false;
+      return true;
+    }
+    if (this.dataSource.every(t => !t.isSelected)) {
+      this.checkboxHead.nativeElement.indeterminate = false;
+      return false;
+    }
+
+    this.checkboxHead.nativeElement.indeterminate = true;
+    return false;
+  }
+
+  /** Возвращает есть ли хотя бы один выбранный элемент. */
+  get isSelected(): boolean {
+    return (this.translationSubstrings != undefined &&
+      this.translationSubstrings != null &&
+      this.translationSubstrings.length > 0);
+  }
+
   /**
-   * Фиксация индекса выбранных элементов.
+   * Фиксация выбранного элемента.
    * @param element Выбранный элемент пользователем.
    */
   selected(element: Selectable<TranslationSubstringTableViewDTO>) {
     element.isSelected = !element.isSelected;
     
     if (element.isSelected) {
-      this.idsSelected.push(element.model.id);
+      this.translationSubstrings.push(new TranslationSubstringForEditingDTO(element.model.id, element.model.substring_to_translate));
     }
     if (element.isSelected == false) {
-      let index = this.idsSelected.findIndex(id => id == element.model.id);
-      this.idsSelected.splice(index, 1);
+      let index = this.translationSubstrings.findIndex(t => t.id == element.model.id);
+      this.translationSubstrings.splice(index, 1);
+    }
+  }
+
+  /** Фиксирует выбор всех строк/снятие выбора со всех строк на текущей странице. */
+  allSelectedCurrentPage() {
+    if (!this.isSelectedAllCurrentPage) {
+      this.dataSource.filter(t => !t.isSelected).forEach(t => this.translationSubstrings.push(new TranslationSubstringForEditingDTO(t.model.id, t.model.substring_to_translate)));
+      this.dataSource.forEach(t => t.isSelected = true);
+    }
+    else
+    {
+      this.dataSource.forEach(t => {
+        let index = this.translationSubstrings.findIndex(s => s.id == t.model.id);
+          if (index != -1)
+            this.translationSubstrings.splice(index, 1);
+        }
+      );
+      this.dataSource.forEach(t => t.isSelected = false);
     }
 
-    this.isSelected =
-      this.idsSelected != undefined &&
-      this.idsSelected != null &&
-      this.idsSelected.length > 0;
+    console.log("allSelected: ", this.dataSource);
   }
 
-  allSelected() {
-    if (this.isSelected)
-      this.dataSource.forEach(t => t.isSelected = false);
-    else
-    if (!this.isSelected)
-        this.dataSource.forEach(t => t.isSelected = true);
-
-    this.isSelected = !this.isSelected;
-  }
-
-  /**
-   * Возвращает выбранные элементы пользователем.
-   */
-  getSelected() {
-    this.translationSubstrings = this.dataSource
-                                 .filter(t => this.idsSelected.find(id => id == t.model.id) != null)
-                                 .map(t => new TranslationSubstringForEditingDTO(t.model.id, t.model.substring_to_translate));
-  }
-
-  /**
-   * Возвращает выбранный элемент пользователем.
-   */
-  getCurrentRowSelected() {
-    //var selectedElement = this.dataSource.data[this.indexSelected].model;
-    //this.translationSubstring = new TranslationSubstringForEditingDTO(selectedElement.id, selectedElement.substring_to_translate);
-  }
   //#endregion
 
   /**
@@ -243,7 +216,6 @@ export class StringsProjectComponent extends MainListPageComponent implements On
    * Отображает диалог для редактирования.
    */
   getEditing(currentRow: TranslationSubstringTableViewDTO) {
-    //this.getCurrentRowSelected();
     this.translationSubstring = new TranslationSubstringForEditingDTO(currentRow.id, currentRow.substring_to_translate, "", []);
     this.isVisibleEditFormModal = true;
     setTimeout(() => {
@@ -259,8 +231,7 @@ export class StringsProjectComponent extends MainListPageComponent implements On
     this.requestDataReloadService.requestUpdate();
 
     //Сброс выбранного элемента.
-    this.idsSelected = [];
-    this.isSelected = false;
+    this.translationSubstrings = []; 
   }
 
   //#endregion
@@ -271,7 +242,6 @@ export class StringsProjectComponent extends MainListPageComponent implements On
    * Отображает диалог для получения подтверждения удаления нескольких строк.
    */
   getConfirmSelectedDelete() {
-    this.getSelected();
     setTimeout(() => {
       this.confirmDeleteFormModal.show();
     });
@@ -301,8 +271,7 @@ export class StringsProjectComponent extends MainListPageComponent implements On
       .subscribe(() => this.requestDataReloadService.requestUpdate());
 
     //Сброс выбранного элемента.
-    this.idsSelected = [];
-    this.isSelected = false;
+    this.translationSubstrings = []; 
   }
 
   //#endregion
@@ -341,7 +310,7 @@ export class StringsProjectComponent extends MainListPageComponent implements On
    * Отображает диалог для получения подтверждения.
    */
   getLoad() {
-    this.getSelected();
+    //this.getSelected();
     setTimeout(() => {
       this.loadFormModal.show();
     });

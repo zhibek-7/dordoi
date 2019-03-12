@@ -12,6 +12,6 @@ namespace Models.Interfaces.Repository
     /// <typeparam name="T">Тип с которым работает репозиторий</typeparam>
     public interface IBaseRepositoryAsync<T> where T : BaseEntity
     {
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync(int? userId, int? projectId);
     }
 }

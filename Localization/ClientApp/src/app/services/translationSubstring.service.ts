@@ -106,9 +106,15 @@ export class TranslationSubstringService {
   }
 
 
-  
   /**
    * Возвращает список строк текущего проекта, со строками перечислений имен связанных объектов.
+   * @param projectId Идентификатор проекта.
+   * @param translationMemoryId Идентификатор памяти переводов.
+   * @param searchString Шаблон строки (поиск по substring_to_translate).
+   * @param limit Количество возвращаемых строк.
+   * @param offset Количество пропущенных строк.
+   * @param sortBy Имя сортируемого столбца.
+   * @param sortAscending Порядок сортировки.
    */
   getAllWithTranslationMemoryByProject(
     projectId: number,
@@ -140,16 +146,9 @@ export class TranslationSubstringService {
     return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", projectId,
       {
         params: params,
-        observe: 'response'//,
-        //headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
+        observe: 'response'
       });
   }
-  //getAllWithTranslationMemoryByProject(projectId: number): Observable<TranslationSubstringTableViewDTO[]> {
-  //  //let projectId = this.projectsService.currentProjectId;
-  //  return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", projectId, {
-  //    headers: new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken"))
-  //  });
-  //}
 
   /**
    * Обновление поля substring_to_translate

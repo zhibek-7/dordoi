@@ -72,15 +72,15 @@ export class CurrentProjectTranslationsComponent implements OnInit {
   ngOnInit() {
     this.getProject();
 
-    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
-    console.log("ProjecID=" + sessionStorage.getItem("ProjecID"));
-    console.log("Projec=" + sessionStorage.getItem("Projec"));
+    //console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
+    //console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
+    //console.log("Projec=" + sessionStorage.getItem("Projec"));
 
     this.currentUserName = this.userService.currentUserName;
     //this.currentUserName = sessionStorage.getItem("currentUserName");
 
     this.projectId = this.projectService.currentProjectId;
-    //var projectId = Number(sessionStorage.getItem("ProjecID"));
+    //var projectId = Number(sessionStorage.getItem("ProjectID"));
 
     this.languagesService.getByProjectId(this.projectId).subscribe(
       Languages => {

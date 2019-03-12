@@ -11,8 +11,8 @@ export class DeleteProjectComponent implements OnInit {
   constructor(private router: Router, private projectService: ProjectsService) { }
 
   ngOnInit() {
-    this.currentProjectId = sessionStorage.getItem('ProjecID');
-    console.log('ProjecID=' + sessionStorage.getItem('ProjecID'));
+    this.currentProjectId = sessionStorage.getItem('ProjectID');
+    console.log('ProjectID=' + sessionStorage.getItem('ProjectID'));
   }
 
   deleteProject(): void {

@@ -21,13 +21,43 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public async Task<IEnumerable<Image>> GetAllAsync()
+        public async Task<IEnumerable<Image>> GetAllAsync(int? userId, int? projectId)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var sqlString = "SELECT * FROM images";
+                    //Ограничение выдачи по пользователю и в рамках проекта
+                    var sqlString = @"SELECT i.id, i.name_text, i.date_time_added, i.id_user, i.body, i.url
+FROM public.images as i
+inner join  comments_images as ci
+ on i.id = ci.id_image
+inner join  comments_text as ct
+ on ci.id_comment = ct.id
+inner join translation_substrings as ts
+on ct.id_translation_substrings = ts.id
+inner join files as f
+	on ts.id_file_owner = f.id
+inner join localization_projects as lp
+	on f.id_localization_project = lp.id
+inner join participants as p
+	on lp.id = p.id_localization_project
+where active = true and lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение
+union
+SELECT i.id, i.name_text, i.date_time_added, i.id_user, i.body, i.url
+FROM public.images as i
+inner join  strings_context_images as ci
+ on i.id = ci.id_image
+inner join translation_substrings as ts
+on ci.id_string = ts.id
+inner join files as f
+	on ts.id_file_owner = f.id
+inner join localization_projects as lp
+	on f.id_localization_project = lp.id
+inner join participants as p
+	on lp.id = p.id_localization_project
+where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение";
+
                     this.LogQuery(sqlString);
                     IEnumerable<Image> images = dbConnection.Query<Image>(sqlString).ToList();
                     return images;
@@ -36,8 +66,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
-                    exception);
+                    $"Ошибка в { nameof(ImageRepository)}.{ nameof(ImageRepository.GetAllAsync)}{ nameof(NpgsqlException)}", exception);
                 return null;
             }
             catch (Exception exception)

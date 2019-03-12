@@ -13,7 +13,7 @@ export class ProjectsService {
   constructor(private httpClient: HttpClient) {}
 
   get currentProjectId(): number {
-    return +sessionStorage.getItem("ProjecID");
+    return +sessionStorage.getItem("ProjectID");
   }
 
   get currentProjectName(): string {
@@ -190,5 +190,22 @@ export class ProjectsService {
       this.controllerUrl + "ListLocales",
       null
     );
+  }
+
+
+  /**
+   xml tmx file
+   * @param Id
+   * @param project
+   */
+  private controllerUrlTmx: string = "api/ReadWriteFile/";
+  async tmxFile(Id: number, project: LocalizationProject) {
+    console.log("updateProject-->" + Id);
+    console.log(project);
+    project.id = Id;
+    let asyncResult = await this.httpClient
+      .post<LocalizationProject>(this.controllerUrlTmx + "createTmx", project)
+      .toPromise();
+    return asyncResult;
   }
 }

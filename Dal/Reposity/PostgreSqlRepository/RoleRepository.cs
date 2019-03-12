@@ -18,7 +18,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public async Task<IEnumerable<Role>> GetAllAsync()
+        public async Task<IEnumerable<Role>> GetAllAsync(int? userId, int? projectId)
         {
             try
             {
