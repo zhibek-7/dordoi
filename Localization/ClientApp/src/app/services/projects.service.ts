@@ -191,4 +191,21 @@ export class ProjectsService {
       null
     );
   }
+
+
+  /**
+   xml tmx file
+   * @param Id
+   * @param project
+   */
+  private controllerUrlTmx: string = "api/ReadWriteFile/";
+  async tmxFile(Id: number, project: LocalizationProject) {
+    console.log("updateProject-->" + Id);
+    console.log(project);
+    project.id = Id;
+    let asyncResult = await this.httpClient
+      .post<LocalizationProject>(this.controllerUrlTmx + "createTmx", project)
+      .toPromise();
+    return asyncResult;
+  }
 }

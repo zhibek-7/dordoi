@@ -1171,5 +1171,56 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+
+
+
+
+        /// <summary>
+        /// Получает записи из определенного и открытых проектов
+        /// </summary>
+        /// <param name="projectId">id определенного проекта</param>
+        /// <returns></returns>
+        public IEnumerable<TranslationSubstring> GetStringsInVisibleAndCurrentProjectd(int projectId)
+        {
+
+            var query = "SELECT TS.id, " +
+                "TS.substring_to_translate " +
+
+                "FROM translation_substrings AS TS " +
+                "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
+                "INNER JOIN localization_projects AS LP ON LP.id= F.id_localization_project " +
+
+                "where LP.id =@Id ";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id = projectId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationSubstring> strings = dbConnection.Query<TranslationSubstring>(query, param);
+                    return strings;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+
+
+
+
     }
 }

@@ -358,69 +358,36 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        // /// <summary>
-        // /// Обновить языки в проекте
-        // /// </summary>
-        // /// <param name="project"></param>
-        // public void AddProjectLocales(LocalizationProjectsLocales projectLocales)
-        // {
-        //     var sqlQuery = "UPDATE localization_projects_locales SET" +
-        //                  "percent_of_translation=@PercentOfTranslation," +
-        //                  "percent_of_confirmed=@PercentOfConfirmed," +
-        //                  "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
-        //     try
-        //     {
-        //         using (var dbConnection = new NpgsqlConnection(connectionString))
-        //         {
+        public LocalizationProject GetByID(int Id)
+        {
+            // Sql string to select all rows
+            var sqlString = "SELECT * FROM localization_projects WHERE id = @Id";
 
-        //             this.LogQuery(sqlQuery, projectLocales.GetType(), projectLocales);
-        //             dbConnection.Execute(sqlQuery, projectLocales);
-        //         }
-        //     }
-        //     catch (NpgsqlException exception)
-        //     {
-        //         this._loggerError.WriteLn(
-        //                 $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddProjectLocales)} {nameof(NpgsqlException)} ",
-        //                 exception);
-        //     }
-        //     catch (Exception exception)
-        //     {
-        //         this._loggerError.WriteLn(
-        //             $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddProjectLocales)} {nameof(Exception)} ",
-        //             exception);
-        //     }
-        // }
-
-        // /// <summary>
-        // /// Обновить языки в проекте
-        // /// </summary>
-        // /// <param name="project"></param>
-        // public void DeleteProjectLocales(LocalizationProjectsLocales projectLocales)
-        // {
-        //     var sqlQuery = "DELETE FROM localization_projects_locales " +
-        //                    "WHERE id_localization_project=@ID_LocalizationProject AND id_locale = @ID_Locale";
-        //     try
-        //     {
-        //         using (var dbConnection = new NpgsqlConnection(connectionString))
-        //         {
-
-        //             this.LogQuery(sqlQuery, projectLocales.GetType(), projectLocales);
-        //             dbConnection.Execute(sqlQuery, projectLocales);
-        //         }
-        //     }
-        //     catch (NpgsqlException exception)
-        //     {
-        //         this._loggerError.WriteLn(
-        //                 $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.DeleteProjectLocales)} {nameof(NpgsqlException)} ",
-        //                 exception);
-        //     }
-        //     catch (Exception exception)
-        //     {
-        //         this._loggerError.WriteLn(
-        //             $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.DeleteProjectLocales)} {nameof(Exception)} ",
-        //             exception);
-        //     }
-        // }
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id };
+                    this.LogQuery(sqlString, param);
+                    var project = dbConnection.Query<LocalizationProject>(sqlString, param).FirstOrDefault();
+                    return project;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
 
     }
 }
