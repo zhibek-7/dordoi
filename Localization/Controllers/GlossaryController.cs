@@ -26,6 +26,7 @@ namespace Localization.WebApi
         [HttpPost("list")]
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
+            //TOO поправить потом для фильтрации по проекту
             return await this._glossaryService.GetAllAsync();
         }
 

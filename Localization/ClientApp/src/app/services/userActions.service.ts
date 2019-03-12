@@ -10,8 +10,11 @@ export class UserActionsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getActionsList(): Observable<UserAction[]> {
-    return this.httpClient.post<UserAction[]>(this.url + "List", null);
+  getActionsList(projectId: number): Observable<UserAction[]> {
+    console.log("..projectId=" + projectId);
+    const formData = new FormData();
+    formData.append("project", "" + projectId);
+    return this.httpClient.post<UserAction[]>(this.url + "List", formData);
   }
 
   getUserActionsByProjectId(
@@ -58,9 +61,10 @@ export class UserActionsService {
     });
   }
 
-  getProjectActionsList(project: string): Observable<UserAction[]> {
+  /*getProjectActionsList(project: string): Observable<UserAction[]> {
     return this.getActionsList().pipe(
       map(actions => actions.filter(action => action.project_name === project))
     );
   }
+  */
 }
