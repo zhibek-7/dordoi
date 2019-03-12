@@ -96,24 +96,25 @@ export class MainListPageComponent implements OnInit {
   }
   
   loadData(offset = 0) {
-    console.log("base loadData");
-    this.currentOffset = offset;
   }
 
   reloadData() {
+    this.currentOffset = 0;
     this.changed.emit();
   }
 
   requestSortBy(columnName: string) {
     if (columnName != this.lastSortColumnName) {
       this.isSortingAscending = true;
+    } else {
+      this.isSortingAscending = !this.isSortingAscending;
     }
 
     this.sortByColumnName = columnName;
     this.loadData();
 
     this.lastSortColumnName = columnName;
-    this.isSortingAscending = !this.isSortingAscending;
+    //this.isSortingAscending = !this.isSortingAscending;
   }
 
   onPageChanged(newOffset: number) {
