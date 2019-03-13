@@ -23,9 +23,11 @@ namespace Models.DatabaseEntities
 
         public string status { get; set; }
 
+        public int docxParagraphID { get; set; }
+
         public TranslationSubstring() { }
 
-        public TranslationSubstring(string substringToTranslate, string context, int id_FileOwner, string value, int positionInText)
+        public TranslationSubstring(string substringToTranslate, string context, int id_FileOwner, string value, int positionInText, int docxParagraphID = -1)
         {
             this.substring_to_translate = substringToTranslate;
             this.description = null;
@@ -34,6 +36,7 @@ namespace Models.DatabaseEntities
             this.id_file_owner = id_FileOwner;
             this.value = value;
             this.position_in_text = positionInText;
+            this.docxParagraphID = docxParagraphID;
         }
     }
 }
