@@ -408,6 +408,7 @@ namespace Models.Services
         {
             try
             {
+                file.visibility = true;
                 await this._filesRepository.AddAsync(file);
             }
             catch (Exception exception)
