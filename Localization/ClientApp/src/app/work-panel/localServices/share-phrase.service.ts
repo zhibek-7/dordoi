@@ -5,7 +5,7 @@ import { TranslationService } from '../../services/translationService.service';
 import { TranslationSubstring } from '../../models/database-entities/translationSubstring.type';
 import { Translation } from '../../models/database-entities/translation.type';
 
-declare var $: any;
+//declare var $: any;
 
 @Injectable()
 export class SharePhraseService {

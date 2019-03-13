@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { LocalizationProjectForSelectDTO } from "../models/DTO/localizationProjectForSelectDTO.type";
 import { LocalizationProjectsLocales } from "../models/database-entities/localizationProjectLocales.type";
 import { Locale } from "moment";
@@ -191,7 +191,6 @@ export class ProjectsService {
       null
     );
   }
-
 
   /**
    xml tmx file

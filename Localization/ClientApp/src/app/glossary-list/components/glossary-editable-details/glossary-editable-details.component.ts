@@ -1,23 +1,12 @@
-import {
-  Component,
-  OnInit,
-  NgModule,
-  Input,
-  Output,
-  EventEmitter
-} from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 
 import { GlossariesForEditing } from "src/app/models/DTO/glossariesDTO.type";
-import { GlossaryService } from "src/app/services/glossary.service";
-
+//import { GlossaryService } from "src/app/services/glossary.service";
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { LanguageService } from "src/app/services/languages.service";
-
 import { LocalizationProjectForSelectDTO } from "src/app/models/DTO/localizationProjectForSelectDTO.type";
 import { ProjectsService } from "src/app/services/projects.service";
-
 import { Selectable } from "src/app/shared/models/selectable.model";
-
 import { LoadOnRequestBase } from "src/app/shared/models/load-on-request-base.model";
 
 @Component({

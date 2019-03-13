@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams  } from "@angular/common/http";
 import { Locale } from "../models/database-entities/locale.type";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { LocalizationProjectsLocalesDTO } from "../models/DTO/localizationProjectsLocalesDTO";
 
 @Injectable()

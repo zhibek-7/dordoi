@@ -1,17 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
 import { ProjectsService } from "../services/projects.service";
-import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
-import { Locale } from "src/app/models/database-entities/locale.type";
 import { Router } from "@angular/router";
-import { forEach } from "@angular/router/src/utils/collection";
-import { promise } from "protractor";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-create-project",
@@ -61,7 +53,10 @@ export class CreateProjectComponent implements OnInit {
   ];
 
   //////////////////////////////////////////////////
-  constructor(private router: Router,private projectsService: ProjectsService) { }
+  constructor(
+    private router: Router,
+    private projectsService: ProjectsService
+  ) {}
   currentProjectName = "";
   currentProjectId = 1;
   currentProjectDescription = "";
@@ -108,7 +103,7 @@ export class CreateProjectComponent implements OnInit {
   dropdownSettings = {};
   ngOnInit() {
     let allLangsPr = [];
-    let allLocales = this.projectsService.getLocales().subscribe(
+    this.projectsService.getLocales().subscribe(
       projects => {
         this.allLocale = projects;
         this.allLocale.forEach(lang => {
@@ -129,8 +124,7 @@ export class CreateProjectComponent implements OnInit {
     var target = event.target || event.srcElement || event.currentTarget;
     var idAttr = target.attributes.id;
     var itemNameAttr = target.attributes.name;
-    var selectedAttr = target.attributes.checked;
-    var value = idAttr.nodeValue;
+
     lang.checked = !lang.checked;
     if (lang.checked == true) {
       this.selectedItems.push({
@@ -186,35 +180,31 @@ export class CreateProjectComponent implements OnInit {
   //TODO вернуть как было.
   //this.projectService.addProject(newProject)subscribe(response => console.log(response));
 
-  addProject(): void
-
-  {
+  addProject(): void {
     let project: LocalizationProject = new LocalizationProject(
-      this.currentProjectId,//id
-      this.currentProjectName,//name
+      this.currentProjectId, //id
+      this.currentProjectName, //name
       this.currentProjectDescription, //description
-      this.currentProjecturl,//url
+      this.currentProjecturl, //url
       this.currentProjectPublic, //visibility
       Date.now, //date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
-      this.selectedLang,//id_SourceLocale
+      this.selectedLang, //id_SourceLocale
       this.pjFileTrue, //ableToDownload
       this.pjSkipUntranslStrTrue, //ableToLeftErrors
 
-      this.pjNotificationTrue,//notifyNew
+      this.pjNotificationTrue, //notifyNew
 
       this.pjAllLeft, //notifyFinish
       this.pjAllLeft, //notifyConfirm
-      this.pjAllLeft,//notifynewcomment
-      this.pjExportTrue,//export_only_approved_translations
-      this.pjAllLeft//original_if_string_is_not_translated
+      this.pjAllLeft, //notifynewcomment
+      this.pjExportTrue, //export_only_approved_translations
+      this.pjAllLeft //original_if_string_is_not_translated
 
       //
     ); // поменять на id реального пользователя, когда появится
 
     this.projectsService.newProject(project).subscribe(pr => {
-      
-
       let projectLocales: LocalizationProjectsLocales[] = [];
       this.selectedItems.forEach(lang => {
         projectLocales.push({
@@ -225,44 +215,34 @@ export class CreateProjectComponent implements OnInit {
         });
       });
 
-
       //передает массив языков
       this.projectsService.addProjectLocales(projectLocales);
-
     });
     //собирает добавленные языки в один массив
-
-  
 
     this.router.navigate(["/Projects/" + this.currentProjectId]);
   }
 
-
-
-
-
-
   editTmx(Id: number): void {
     let project: LocalizationProject = new LocalizationProject(
-      this.currentProjectId,//id
-      this.currentProjectName,//name
+      this.currentProjectId, //id
+      this.currentProjectName, //name
       this.currentProjectDescription, //description
-      this.currentProjecturl,//url
+      this.currentProjecturl, //url
       this.currentProjectPublic, //visibility
       Date.now, //date dateOfCreation
       // this.settings_proj.get('pjDescription').value,//date lastActivity
-      this.selectedLang,//id_SourceLocale
+      this.selectedLang, //id_SourceLocale
       this.pjFileTrue, //ableToDownload
       this.pjSkipUntranslStrTrue, //ableToLeftErrors
-      this.pjNotificationTrue,//notifyNew
+      this.pjNotificationTrue, //notifyNew
       this.pjAllLeft, //notifyFinish
       this.pjAllLeft, //notifyConfirm
-      this.pjAllLeft,//notifynewcomment
-      this.pjExportTrue,//export_only_approved_translations
-      this.pjAllLeft//original_if_string_is_not_translated
+      this.pjAllLeft, //notifynewcomment
+      this.pjExportTrue, //export_only_approved_translations
+      this.pjAllLeft //original_if_string_is_not_translated
     ); // поменять на id реального пользователя, когда появится
     Id = this.currentProjectId;
     this.projectsService.tmxFile(Id, project);
-
   }
 }

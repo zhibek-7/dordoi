@@ -70,7 +70,6 @@ export class ProjectPageComponent implements OnInit {
     private projectService: ProjectsService,
     private languagesService: LanguageService,
     private userService: UserService,
-    private userActionsService: UserActionsService,
     private participantsService: ParticipantsService,
     private authenticationService: AuthenticationService
   ) {}

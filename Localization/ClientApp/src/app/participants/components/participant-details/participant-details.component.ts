@@ -1,23 +1,23 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 
-import { ParticipantsService } from 'src/app/services/participants.service';
-import { LanguageService } from 'src/app/services/languages.service';
-import { RolesService } from 'src/app/services/roles.service';
-import { UserService } from 'src/app/services/user.service';
+import { ParticipantsService } from "src/app/services/participants.service";
+import { LanguageService } from "src/app/services/languages.service";
+//import { RolesService } from 'src/app/services/roles.service';
+import { UserService } from "src/app/services/user.service";
 
-import { Participant } from 'src/app/models/Participants/participant.type';
-import { Role } from 'src/app/models/database-entities/role.type';
-import { Locale } from 'src/app/models/database-entities/locale.type';
-import { Selectable } from 'src/app/shared/models/selectable.model';
-import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
+import { Participant } from "src/app/models/Participants/participant.type";
+//import { Role } from 'src/app/models/database-entities/role.type';
+import { Locale } from "src/app/models/database-entities/locale.type";
+//import { Selectable } from 'src/app/shared/models/selectable.model';
+import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 
 @Component({
-  selector: 'app-participant-details',
-  templateUrl: './participant-details.component.html',
-  styleUrls: ['./participant-details.component.css']
+  selector: "app-participant-details",
+  templateUrl: "./participant-details.component.html",
+  styleUrls: ["./participant-details.component.css"]
 })
-export class ParticipantDetailsComponent extends ModalComponent implements OnInit {
-
+export class ParticipantDetailsComponent extends ModalComponent
+  implements OnInit {
   @Output()
   participantDeleted = new EventEmitter();
 
@@ -32,11 +32,12 @@ export class ParticipantDetailsComponent extends ModalComponent implements OnIni
   constructor(
     private participantsService: ParticipantsService,
     private localesService: LanguageService,
-    private usersService: UserService,
-  ) { super(); }
-
-  ngOnInit() {
+    private usersService: UserService
+  ) {
+    super();
   }
+
+  ngOnInit() {}
 
   showParticipant(participant: Participant) {
     this.participant = participant;
@@ -46,31 +47,37 @@ export class ParticipantDetailsComponent extends ModalComponent implements OnIni
   }
 
   loadPhoto() {
-    this.usersService.getPhotoById(this.participant.user_Id)
-      .subscribe(
-        imageBlob => {
-          let reader = new FileReader();
-          reader.addEventListener("load", () => {
+    this.usersService.getPhotoById(this.participant.user_Id).subscribe(
+      imageBlob => {
+        let reader = new FileReader();
+        reader.addEventListener(
+          "load",
+          () => {
             this.participantPhoto = reader.result;
-          }, false);
+          },
+          false
+        );
 
-          if (imageBlob) {
-            reader.readAsDataURL(imageBlob);
-          }
+        if (imageBlob) {
+          reader.readAsDataURL(imageBlob);
+        }
 
-          this.isPhotoLoading = false;
-        },
-        error => {
-          this.isPhotoLoading = false;
-          console.log(error);
-        });
+        this.isPhotoLoading = false;
+      },
+      error => {
+        this.isPhotoLoading = false;
+        console.log(error);
+      }
+    );
   }
 
   loadLocales() {
-    this.localesService.getByUserId(this.participant.user_Id)
+    this.localesService
+      .getByUserId(this.participant.user_Id)
       .subscribe(
-        locales => this.locales = locales,
-        error => console.log(error));
+        locales => (this.locales = locales),
+        error => console.log(error)
+      );
   }
 
   hide() {
@@ -85,12 +92,17 @@ export class ParticipantDetailsComponent extends ModalComponent implements OnIni
   }
 
   deleteParticpant() {
-    this.participantsService.deleteParticipant(this.participant.localization_Project_Id, this.participant.user_Id)
-      .subscribe(() => {
-        this.participantDeleted.emit();
-        this.hide();
-      },
-        error => console.log(error));
+    this.participantsService
+      .deleteParticipant(
+        this.participant.localization_Project_Id,
+        this.participant.user_Id
+      )
+      .subscribe(
+        () => {
+          this.participantDeleted.emit();
+          this.hide();
+        },
+        error => console.log(error)
+      );
   }
-
 }

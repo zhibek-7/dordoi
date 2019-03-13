@@ -1,10 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, ParamMap } from "@angular/router";
-import { switchMap } from "rxjs/operators";
+import { ActivatedRoute } from "@angular/router";
 import { TreeNode } from "primeng/api";
-
 import { TranslationSubstringService } from "src/app/services/translationSubstring.service";
-import { LanguageService } from "src/app/services/languages.service";
 import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
 import { FileService } from "src/app/services/file.service";
 import { FileViewModel } from "src/app/strings/models/file.viewmodel";

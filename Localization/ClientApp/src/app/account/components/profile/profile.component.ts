@@ -5,22 +5,13 @@ import {
   FormControl,
   AbstractControl
 } from "@angular/forms";
+
 import { Router } from "@angular/router";
-import { HttpHeaders } from "@angular/common/http";
-
-import {
-  DropzoneComponent,
-  DropzoneDirective,
-  DropzoneConfigInterface
-} from "ngx-dropzone-wrapper";
-
+import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
 import { Selectable } from "src/app/shared/models/selectable.model";
-
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { LanguageService } from "src/app/services/languages.service";
-
 import { UserService } from "src/app/services/user.service";
-
 import { UserProfile } from "src/app/models/DTO/userProfile.type";
 import { userPasswordChange } from "../../models/userPasswordChange.model";
 
