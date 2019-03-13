@@ -10,6 +10,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
+   // "noUnusedLocals": true, //TODO При компиляции говорит, что что то не используется
     "typeRoots": [
       "node_modules/@types"
     ],
