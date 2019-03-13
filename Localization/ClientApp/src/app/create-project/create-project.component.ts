@@ -186,7 +186,9 @@ export class CreateProjectComponent implements OnInit {
   //TODO вернуть как было.
   //this.projectService.addProject(newProject)subscribe(response => console.log(response));
 
-  addProject(): void {
+  addProject(): void
+
+  {
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId,//id
       this.currentProjectName,//name
@@ -233,5 +235,34 @@ export class CreateProjectComponent implements OnInit {
   
 
     this.router.navigate(["/Projects/" + this.currentProjectId]);
+  }
+
+
+
+
+
+
+  editTmx(Id: number): void {
+    let project: LocalizationProject = new LocalizationProject(
+      this.currentProjectId,//id
+      this.currentProjectName,//name
+      this.currentProjectDescription, //description
+      this.currentProjecturl,//url
+      this.currentProjectPublic, //visibility
+      Date.now, //date dateOfCreation
+      // this.settings_proj.get('pjDescription').value,//date lastActivity
+      this.selectedLang,//id_SourceLocale
+      this.pjFileTrue, //ableToDownload
+      this.pjSkipUntranslStrTrue, //ableToLeftErrors
+      this.pjNotificationTrue,//notifyNew
+      this.pjAllLeft, //notifyFinish
+      this.pjAllLeft, //notifyConfirm
+      this.pjAllLeft,//notifynewcomment
+      this.pjExportTrue,//export_only_approved_translations
+      this.pjAllLeft//original_if_string_is_not_translated
+    ); // поменять на id реального пользователя, когда появится
+    Id = this.currentProjectId;
+    this.projectsService.tmxFile(Id, project);
+
   }
 }
