@@ -99,7 +99,8 @@ export class ContextEditModalComponent extends ModalComponent
     };
 
     super.hide();
-    let dialogRef = this.showImageDialog.open(
+    //TODO не используется let dialogRef = 
+    this.showImageDialog.open(
       ShowImageModalComponent,
       dialogConfig
     );

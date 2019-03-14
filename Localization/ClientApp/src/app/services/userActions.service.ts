@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpResponse, HttpHeaders } from "@angular/common/http";
 import { UserAction } from "../models/database-entities/userAction.type";
-import { Observable, from } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class UserActionsService {
@@ -10,8 +9,11 @@ export class UserActionsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getActionsList(): Observable<UserAction[]> {
-    return this.httpClient.post<UserAction[]>(this.url + "List", null);
+  getActionsList(projectId: number): Observable<UserAction[]> {
+    console.log("..projectId=" + projectId);
+    const formData = new FormData();
+    formData.append("project", "" + projectId);
+    return this.httpClient.post<UserAction[]>(this.url + "List", formData);
   }
 
   getUserActionsByProjectId(
@@ -58,9 +60,10 @@ export class UserActionsService {
     });
   }
 
-  getProjectActionsList(project: string): Observable<UserAction[]> {
+  /*getProjectActionsList(project: string): Observable<UserAction[]> {
     return this.getActionsList().pipe(
       map(actions => actions.filter(action => action.project_name === project))
     );
   }
+  */
 }

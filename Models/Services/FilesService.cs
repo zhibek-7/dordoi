@@ -94,6 +94,7 @@ namespace Models.Services
             newFile.name_text = fileName;
             newFile.id_folder_owner = parentId;
             newFile.id_localization_project = projectId;
+            newFile.visibility = true;
 
             return await this.AddNodeAsync(newFile, insertToDbAction: this.InsertFileToDbAsync);
         }
@@ -407,6 +408,7 @@ namespace Models.Services
         {
             try
             {
+                file.visibility = true;
                 await this._filesRepository.AddAsync(file);
             }
             catch (Exception exception)

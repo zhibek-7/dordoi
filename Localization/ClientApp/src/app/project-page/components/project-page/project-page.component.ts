@@ -70,7 +70,6 @@ export class ProjectPageComponent implements OnInit {
     private projectService: ProjectsService,
     private languagesService: LanguageService,
     private userService: UserService,
-    private userActionsService: UserActionsService,
     private participantsService: ParticipantsService,
     private authenticationService: AuthenticationService
   ) {}
@@ -145,15 +144,15 @@ export class ProjectPageComponent implements OnInit {
       },
       error => console.error(error)
     );
-
-    this.userActionsService.getActionsList().subscribe(
+/*
+    this.userActionsService.getActionsList(this.projectService.currentProjectId).subscribe(
       actions => {
         this.userActionsList = actions;
         this.userActionsDataSource = new MatTableDataSource(this.userActionsList);
       },
       error => console.error(error)
     );
-
+  */
     this.filtredUsers = this.userList;
   }
 

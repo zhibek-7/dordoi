@@ -1,6 +1,6 @@
-import { Params } from "@angular/router";
+//import { Params } from "@angular/router";
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import { HttpClient,  HttpHeaders } from "@angular/common/http";
 import { TranslatedWordsReportRow } from "../models/Reports/TranslatedWordsReportRow";
 import { Observable } from "rxjs";
 

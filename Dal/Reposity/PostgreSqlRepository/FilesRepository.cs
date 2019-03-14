@@ -31,7 +31,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "is_last_version, " +
             "id_previous_version, " +
             "translator_name, " +
-            "download_name" +
+            "download_name," +
+            "visibility" +
             ") "
             + "VALUES (" +
             "@ID_Localization_Project," +
@@ -48,8 +49,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             "@Is_Last_Version, " +
             "@Id_Previous_Version, " +
             "@Translator_Name, " +
-            "@Download_Name" +
-            ")";
+            "@Download_Name," +
+            "@visibility)";
 
         private UserActionRepository _action;
         private TranslationSubstringRepository _tsr;
@@ -69,7 +70,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             inner join participants as p
 
             on lp.id = p.id_localization_project
-            where lp.id = " + (int)projectId + " and p.id_user = " + (int)userId;
+            where visibility = true and lp.id = " + (int)projectId + " and p.id_user = " + (int)userId;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -498,7 +499,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 var query = new Query("files")
                     .Where("id_localization_project", projectId)
-                    .Where("is_last_version", true);
+                    .Where("is_last_version", true)
+                    .Where("visibility", true);
 
                 if (!string.IsNullOrEmpty(fileNamesSearch))
                 {
@@ -663,7 +665,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var query =
                     new Query("files")
                         .Where("id_folder_owner", parentFolderId)
-                        .Where("is_last_version", true);
+                        .Where("is_last_version", true)
+                        .Where("visibility", true);
 
                 var compiledQuery = this._compiler.Compile(query);
                 this.LogQuery(compiledQuery);

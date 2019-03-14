@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 
@@ -8,7 +8,7 @@ import { File as FileData } from "../models/database-entities/file.type";
 import { Locale } from "../models/database-entities/locale.type";
 import { FileTranslationInfo } from "../models/database-entities/fileTranslationInfo.type";
 import { FolderModel } from "../models/DTO/folder.type";
-import { ProjectsService } from "./projects.service";
+//import { ProjectsService } from "./projects.service";
 
 @Injectable({
   providedIn: "root"
@@ -19,9 +19,8 @@ export class FileService {
   constructor(private http: HttpClient) {}
 
   getFiles(prId: number): Observable<TreeNode[]> {
- 
- console.log("project=="+ prId);
-  const formData = new FormData();
+    console.log("project==" + prId);
+    const formData = new FormData();
     formData.append("project", "" + prId);
 
     return this.http

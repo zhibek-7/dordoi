@@ -44,9 +44,13 @@ namespace Models.Interfaces.Repository
         /// Возвращает строки (со связанными объектами).
         /// </summary>
         /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
-        Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(int projectId);
-
         Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(
             int projectId,
             int offset,
@@ -56,6 +60,13 @@ namespace Models.Interfaces.Repository
             string[] sortBy = null,
             bool sortAscending = true);
 
+        /// <summary>
+        /// Возвращает количество строк.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
+        /// <returns></returns>
         Task<int> GetAllWithTranslationMemoryByProjectCountAsync(
             int projectId,
             int? translationMemoryId = null,

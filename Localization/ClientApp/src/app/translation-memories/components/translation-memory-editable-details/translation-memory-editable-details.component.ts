@@ -1,6 +1,6 @@
-import { Component, OnInit, NgModule, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 
-import { TranslationMemoryService } from "src/app/services/translation-memory.service";
+//import { TranslationMemoryService } from "src/app/services/translation-memory.service";
 import { TranslationMemoryForEditingDTO } from "src/app/models/DTO/translationMemoryDTO.type";
 
 import { Locale } from "src/app/models/database-entities/locale.type";
@@ -14,17 +14,20 @@ import { Selectable } from "src/app/shared/models/selectable.model";
 import { LoadOnRequestBase } from "src/app/shared/models/load-on-request-base.model";
 
 @Component({
-  selector: 'app-translation-memory-editable-details',
-  templateUrl: './translation-memory-editable-details.component.html',
-  styleUrls: ['./translation-memory-editable-details.component.css']
+  selector: "app-translation-memory-editable-details",
+  templateUrl: "./translation-memory-editable-details.component.html",
+  styleUrls: ["./translation-memory-editable-details.component.css"]
 })
-export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase implements OnInit {
+export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase
+  implements OnInit {
   @Input()
   translationMemory: TranslationMemoryForEditingDTO;
 
   availableLocales: Selectable<Locale>[] = [];
 
-  availableLocalizationProjects: Selectable<LocalizationProjectForSelectDTO>[] = [];
+  availableLocalizationProjects: Selectable<
+    LocalizationProjectForSelectDTO
+  >[] = [];
 
   //errorsRequiredLocales: boolean = false;
   errorsRequiredLocalizationProjects: boolean = false;
@@ -38,7 +41,7 @@ export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase
 
   //#region init
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   load() {
     super.load();
@@ -55,12 +58,12 @@ export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase
       locale => {
         this.availableLocales = locale.map(
           local =>
-          new Selectable<Locale>(
-            local,
+            new Selectable<Locale>(
+              local,
               this.translationMemory.locales_ids.some(
-              selectedLocaleId => selectedLocaleId == local.id
+                selectedLocaleId => selectedLocaleId == local.id
+              )
             )
-          )
         );
       },
       error => console.error(error)
@@ -113,4 +116,3 @@ export class TranslationMemoryEditableDetailsComponent extends LoadOnRequestBase
 
   //#endregion
 }
-

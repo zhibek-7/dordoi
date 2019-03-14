@@ -24,5 +24,6 @@ namespace Models.DatabaseEntities
         public int? id_previous_version { get; set; }
         public string translator_name { get; set; }
         public string download_name { get; set; }
+        public bool? visibility { get; set; }
     }
 }

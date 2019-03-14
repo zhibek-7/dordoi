@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { LocalizationProjectForSelectDTO } from "../models/DTO/localizationProjectForSelectDTO.type";
 import { LocalizationProjectsLocales } from "../models/database-entities/localizationProjectLocales.type";
 import { Locale } from "moment";
@@ -190,5 +190,21 @@ export class ProjectsService {
       this.controllerUrl + "ListLocales",
       null
     );
+  }
+
+  /**
+   xml tmx file
+   * @param Id
+   * @param project
+   */
+  private controllerUrlTmx: string = "api/ReadWriteFile/";
+  async tmxFile(Id: number, project: LocalizationProject) {
+    console.log("updateProject-->" + Id);
+    console.log(project);
+    project.id = Id;
+    let asyncResult = await this.httpClient
+      .post<LocalizationProject>(this.controllerUrlTmx + "createTmx", project)
+      .toPromise();
+    return asyncResult;
   }
 }

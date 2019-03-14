@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders  } from '@angular/common/http';
+import { HttpClient  } from '@angular/common/http';
 
-import { HttpClientModule } from '@angular/common/http';
+//import { HttpClientModule } from '@angular/common/http';
 import { LocalizationProjectsLocales } from '../models/database-entities/localizationProjectLocales.type';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+//import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ProjectsLocalesService {

@@ -4,8 +4,8 @@ import { Router } from "@angular/router";
 
 import { UserService } from "src/app/services/user.service";
 import { AuthenticationService } from "src/app/services/authentication.service";
-import { InvitationsService } from 'src/app/services/invitations.service';
-import { ParticipantsService } from 'src/app/services/participants.service';
+import { InvitationsService } from "src/app/services/invitations.service";
+//import { ParticipantsService } from "src/app/services/participants.service";
 
 import { User } from "src/app/models/database-entities/user.type";
 
@@ -16,13 +16,12 @@ import { User } from "src/app/models/database-entities/user.type";
 })
 export class LoginComponent implements OnInit {
   constructor(
-    private router: Router, 
+    private router: Router,
     private userService: UserService,
     private authenticationService: AuthenticationService,
-    private invitationsService: InvitationsService,
-    private participantsService: ParticipantsService,
-  ) { }
-  
+    private invitationsService: InvitationsService
+  ) {}
+
   hidePassword: boolean;
   formGroup: FormGroup;
 
@@ -45,39 +44,45 @@ export class LoginComponent implements OnInit {
 
     if (this.formGroup.valid) {
       let user = this.getUser();
-      this.userService
-        .login(user)
-        .subscribe( async response => {    
+      this.userService.login(user).subscribe(
+        async response => {
           this.authenticationService.saveToken(response.token);
 
           if (this.invitationsService.currentInvitationId) {
-            const currentInvitation = await this.invitationsService.getInvitationById(this.invitationsService.currentInvitationId).toPromise();
-            const currentUserProfile = await this.userService.getProfile().toPromise();
+            const currentInvitation = await this.invitationsService
+              .getInvitationById(this.invitationsService.currentInvitationId)
+              .toPromise();
+            const currentUserProfile = await this.userService
+              .getProfile()
+              .toPromise();
             if (currentUserProfile.email == currentInvitation.email) {
               this.invitationsService
                 .activateInvitation(this.invitationsService.currentInvitationId)
-                .subscribe(() => this.invitationsService.currentInvitationId = null);
+                .subscribe(
+                  () => (this.invitationsService.currentInvitationId = null)
+                );
             }
           }
 
-          // this.userService.getProfile().subscribe(); 
+          //this.userService.getProfile().subscribe();
           this.router.navigate(["/Profile"]);
-            this.authenticationService.authorizeUser();
-            this.authenticationService.setUserRole(response.role);
-            this.authenticationService.setUserName(response.username);
-          },
+
+          this.authenticationService.authorizeUser();
+          this.authenticationService.setUserRole(response.role);
+          this.authenticationService.setUserName(response.username);
+        },
         error => {
           this.formGroup.setErrors({ login: true });
-            //alert("Авторизация не пройдена");
-          }
-          
-          // user => this.checkExistUser(<User>user),
-          // error => console.error(error)
-        );
+          //alert("Авторизация не пройдена");
+        }
+
+        // user => this.checkExistUser(<User>user),
+        // error => console.error(error)
+      );
     }
   }
 
-  logOut(){
+  logOut() {
     this.authenticationService.logOut();
   }
 

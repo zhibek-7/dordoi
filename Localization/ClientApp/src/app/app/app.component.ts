@@ -17,40 +17,21 @@ export class AppComponent implements OnInit {
   projects: LocalizationProject[];
   currentProject: LocalizationProject;
   name = "";
-  projectVisibility = true;
+  projectVisibility = false;
 
   userAuthorized: boolean = false;
-  currentUserID = -1;
+  currentUserName: string;
 
   constructor(
     private projectService: ProjectsService,
     private authenticationService: AuthenticationService,
     private router: Router,
-    private usersService: UserService
+    public usersService: UserService
   ) {
-    this.currentUserID = this.usersService.currentUserId;
-    console.log("this.currentUserID=" + this.currentUserID);
-    /// const count = 1;
-    //if (count === 0) {
-    //  router.navigate(["/dashboard"]);
-    //}
+    this.currentUserName = this.usersService.currentUserName;
   }
 
   ngOnInit() {
-    // this.getProjects();
-    console.log("app ngOnInit ---!!!!!!!!!");
-    console.log("ProjectName ==" + sessionStorage.getItem("ProjectName"));
-    var role = sessionStorage.getItem("userRole");
-
-    /*
-    if (
-      role=="Менеджер" ||
-      role=="Владелец проекта" ||
-      role=="Программист"
-    ) {
-      this.projectVisibility = true;
-    }
-    */
     this.name = sessionStorage.getItem("ProjectName");
   }
 
@@ -91,12 +72,12 @@ export class AppComponent implements OnInit {
   checkAuthorization() {
     this.authenticationService.checkUserAuthorisationAsync().subscribe(
       response => {
-                this.userAuthorized = response;
-              },
-              error => {
-                console.log("Ошибка: " + error);
-                alert("Необходимо авторизироваться");
-                this.userAuthorized = false;
+        this.userAuthorized = response;
+      },
+      error => {
+        console.log("Ошибка: " + error);
+        alert("Необходимо авторизироваться");
+        this.userAuthorized = false;
         this.router.navigate(["account"]);
       }
     );

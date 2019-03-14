@@ -244,18 +244,21 @@ namespace Localization.WebApi
             await this.stringRepository.AddTranslationLocalesAsync(translationSubstringId: translationSubstringId, localesIds: localesIds);
         }
 
-        
+
         /// <summary>
-        /// Возвращает строки (со связанными объектами).
+        /// Возвращает строки (со связанными объектами) и их количество.
         /// </summary>
         /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         [Authorize]
         [HttpPost("getAllWithTranslationMemoryByProject")]
-        public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(//[FromBody] int projectId)
-        //{
-        //    return await stringRepository.GetAllWithTranslationMemoryByProjectAsync(projectId);
-
+        public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(
             int projectId,
             int? offset,
             int? limit,

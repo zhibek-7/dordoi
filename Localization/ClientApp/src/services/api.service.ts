@@ -555,32 +555,4 @@ export class ApiService {
 
 }
 
-const users = [
-  {
-    id: '123',
-    name: 'Peter',
-    role: 'Администратор',
-    creationDate: '01.08.2018',
-    foldersWeight: '8Гб',
-    maxFoldersWeight: '10Гб',
-    condition: 'Работает'
-  },
-  {
-    id: '456',
-    name: 'Henry',
-    role: 'Пользователь',
-    creationDate: '02.08.2018',
-    foldersWeight: '8Гб',
-    maxFoldersWeight: '10Гб',
-    condition: 'Заблокирован'
-  },
-  {
-    id: '789',
-    name: 'Olha',
-    role: 'Администратор',
-    creationDate: '10.08.2018',
-    foldersWeight: '8Гб',
-    maxFoldersWeight: '10Гб',
-    condition: 'Работает'
-  }
-];
+

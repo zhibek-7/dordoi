@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ProjectsService } from "../services/projects.service";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
-import { User } from "./user";
 import * as moment from "moment";
 import { UserService } from "src/app/services/user.service";
 

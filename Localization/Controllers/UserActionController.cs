@@ -20,6 +20,7 @@ namespace Localization.Controllers
             this._userActionRepository = userActionRepository;
         }
 
+        /*
         /// <summary>
         /// Получить список всех действий пользователей по всем проектам
         /// </summary>
@@ -27,10 +28,13 @@ namespace Localization.Controllers
         [Authorize]
         [HttpPost]
         [Route("List")]
-        public async Task<IEnumerable<UserAction>> GetAll()
+        public async Task<IEnumerable<UserAction>> GetAll([FromBody] int projectId)
         {
+            //TOO поправить потом для фильтрации по проекту
+
             return await this._userActionRepository.GetAllAsync();
         }
+        */
 
         public class GetAllByProjectIdArgs
         {

@@ -601,11 +601,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
 
-                var query = new Query("translation_substrings")
+                var query = new Query("translation_substrings").Join("files", "translation_substrings.id_file_owner", "files.id")
                .Select(
-                   "id",
+                   "translation_substrings.id",
                    "substring_to_translate",
-                   "description",
+                   "translation_substrings.description",
                    "context",
                    "translation_max_length",
                    "id_file_owner",
@@ -625,7 +625,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .WhereIn("id_file_owner",
                             new Query("files")
                                 .Select("id")
-                                .Where("id_localization_project", projectId));
+                                .Where("id_localization_project", projectId)
+                                );
                 }
 
                 if (!string.IsNullOrEmpty(searchString))
@@ -634,6 +635,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     query = query.WhereLike("substring_to_translate", searchPattern);
                 }
 
+                query = query.Where("visibility", true);
                 return query;
             }
             catch (NpgsqlException exception)
@@ -927,50 +929,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Возвращает строки (со связанными объектами).
         /// </summary>
         /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(int projectId)
-        {
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    var query = new Query("translation_substrings")
-                        .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
-                        .Join("translation_memories", "translation_memories.id", "translation_memories_strings.id_translation_memory")
-                        .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
-                        .Where("localization_projects_translation_memories.id_localization_project", projectId)
-                        .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name")
-                        .OrderBy("translation_substrings.substring_to_translate");
-
-                    var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
-                    var temp = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
-                        sql: compiledQuery.Sql,
-                        param: compiledQuery.NamedBindings
-                    );
-
-                    var translationSubstrings = temp.GroupBy(t => t.id).Select(t => new TranslationSubstringTableViewDTO
-                    {
-                        id = t.Key,
-                        substring_to_translate = t.FirstOrDefault().substring_to_translate,
-                        translation_memories_name = string.Join(", ", t.Select(x => x.translation_memories_name).Distinct().OrderBy(n => n))
-                    });
-
-                    return translationSubstrings;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectAsync)} {nameof(NpgsqlException)} ", exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectAsync)} {nameof(Exception)} ", exception);
-                return null;
-            }
-        }
-
         public async Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(
             int projectId,
             int offset,
@@ -1005,13 +970,21 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sortBy: sortBy,
                         sortAscending: sortAscending);
 
-                    var compiledQuery = this._compiler.Compile(query);
-                    this.LogQuery(compiledQuery);
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
 
-                    var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
+                    var temp = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
-                        );
+                    );
+
+                    var translationSubstrings = temp.GroupBy(t => t.id).Select(t => new TranslationSubstringTableViewDTO
+                    {
+                        id = t.Key,
+                        substring_to_translate = t.FirstOrDefault().substring_to_translate,
+                        translation_memories_name = string.Join(", ", t.Select(x => x.translation_memories_name).Distinct().OrderBy(n => n))
+                    });
+
                     return translationSubstrings;
                 }
             }
@@ -1027,6 +1000,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Возвращает количество строк.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
+        /// <returns></returns>
         public async Task<int> GetAllWithTranslationMemoryByProjectCountAsync(
             int projectId,
             int? translationMemoryId = null,
@@ -1044,7 +1024,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
                     var compiledQuery = _compiler.Compile(query);
-                    this.LogQuery(compiledQuery);
+                    LogQuery(compiledQuery);
 
                     var count = await dbConnection.ExecuteScalarAsync<int>(
                         sql: compiledQuery.Sql,
@@ -1066,6 +1046,13 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
+        /// <summary>
+        /// Возвращает запрос строк (со связанными объектами).
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
+        /// <returns></returns>
         private Query GetAllWithTranslationMemoryByProjectQuery(
             int projectId,
             int? translationMemoryId = null,
@@ -1078,13 +1065,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
                     .Join("translation_memories", "translation_memories.id", "translation_memories_strings.id_translation_memory")
                     .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
-                    //.Where("localization_projects_translation_memories.id_localization_project", projectId)
-                    .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name")
-                    //.OrderBy("translation_substrings.substring_to_translate")
-                    ;
+                    .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name");
 
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
+                var compiledQuery = _compiler.Compile(query);
+                LogQuery(compiledQuery);
                 if (translationMemoryId != null)
                 {
                     query = query.Where("translation_memories.id", translationMemoryId);
@@ -1133,8 +1117,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Where("id", translationSubstring.id)
                         .AsUpdate(forSave);
 
-                    var compiledQuery = this._compiler.Compile(query);
-                    this.LogQuery(compiledQuery);
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
                     await dbConnection.ExecuteAsync(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
@@ -1188,6 +1172,57 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return false;
             }
         }
+
+
+
+
+
+        /// <summary>
+        /// Получает записи из определенного и открытых проектов
+        /// </summary>
+        /// <param name="projectId">id определенного проекта</param>
+        /// <returns></returns>
+        public IEnumerable<TranslationSubstring> GetStringsInVisibleAndCurrentProjectd(int projectId)
+        {
+
+            var query = "SELECT TS.id, " +
+                "TS.substring_to_translate " +
+
+                "FROM translation_substrings AS TS " +
+                "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
+                "INNER JOIN localization_projects AS LP ON LP.id= F.id_localization_project " +
+
+                "where LP.id =@Id ";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id = projectId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationSubstring> strings = dbConnection.Query<TranslationSubstring>(query, param);
+                    return strings;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetStringsInVisibleAndCurrentProjectdAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+
+
+
 
     }
 }

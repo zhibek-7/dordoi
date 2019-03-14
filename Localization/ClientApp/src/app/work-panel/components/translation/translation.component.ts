@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 
 import { ShowImageModalComponent } from "../show-image-modal/show-image-modal";
@@ -77,7 +77,8 @@ export class TranslationComponent implements OnInit, OnDestroy {
       left: positionX
     };
 
-    let dialogRef = this.selectionDialog.open(
+    //TODO не используется let dialogRef = 
+    this.selectionDialog.open(
       SelectedWordModalComponent,
       dialogConfig
     );
@@ -198,7 +199,8 @@ export class TranslationComponent implements OnInit, OnDestroy {
       selectedImage: image
     };
 
-    let dialogRef = this.showImageDialog.open(
+    //TODO не используется let dialogRef = 
+    this.showImageDialog.open(
       ShowImageModalComponent,
       dialogConfig
     );

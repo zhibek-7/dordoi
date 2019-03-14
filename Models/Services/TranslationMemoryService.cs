@@ -79,6 +79,7 @@ namespace Models.Services
                     date_of_change = DateTime.Now,
                     is_folder = false,
                     is_last_version = true,
+                    visibility = false
                 });
                 translationMemory.id_file = newTranslationMemoryFileId;
                 await _translationMemoryRepository.AddAsync(translationMemory);

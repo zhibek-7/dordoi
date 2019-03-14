@@ -43,7 +43,8 @@ import { MainListPageComponent } from './components/main-list-page/main-list-pag
     ModalComponent,
     SetTimeZoneComponent,
     SetLanguagesWithNativeComponent,
-    MainListPageComponent
+    MainListPageComponent,
+    OrderByPipe
   ]
 })
 export class SharedModule { }

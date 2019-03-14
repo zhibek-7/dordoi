@@ -403,6 +403,43 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
+
+
+
+
+
+        public Locale GetByID(int Id)
+        {
+            // Sql string to select all rows
+            var sqlString = "SELECT * FROM locales WHERE id = @Id";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id };
+                    this.LogQuery(sqlString, param);
+                    var project = dbConnection.Query<Locale>(sqlString, param).FirstOrDefault();
+                    return project;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByID)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+
     }
 }
 
