@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { User } from "../models/database-entities/user.type";
-import { Observable, from } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { UserProfile } from "../models/DTO/userProfile.type";
 import { userPasswordChange } from "../account/models/userPasswordChange.model";
 
@@ -119,6 +118,6 @@ export class UserService {
   /** Удаление пользователя. */
   delete(): Observable<boolean> {
     let id = sessionStorage.getItem("currentUserID");
-    return this.httpClient.delete<boolean>(this.url + "delete");
+    return this.httpClient.delete<boolean>(this.url + "delete/" + id);
   }
 }

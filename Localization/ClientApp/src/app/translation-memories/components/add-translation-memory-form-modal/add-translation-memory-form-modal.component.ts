@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit,  Output, EventEmitter } from "@angular/core";
 
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 

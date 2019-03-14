@@ -5,7 +5,7 @@ import { Router } from "@angular/router";
 import { UserService } from "src/app/services/user.service";
 import { AuthenticationService } from "src/app/services/authentication.service";
 import { InvitationsService } from "src/app/services/invitations.service";
-import { ParticipantsService } from "src/app/services/participants.service";
+//import { ParticipantsService } from "src/app/services/participants.service";
 
 import { User } from "src/app/models/database-entities/user.type";
 
@@ -19,8 +19,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private authenticationService: AuthenticationService,
-    private invitationsService: InvitationsService,
-    private participantsService: ParticipantsService
+    private invitationsService: InvitationsService
   ) {}
 
   hidePassword: boolean;

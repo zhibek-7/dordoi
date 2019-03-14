@@ -28,30 +28,10 @@ export class AppComponent implements OnInit {
     private router: Router,
     public usersService: UserService
   ) {
-    //this.currentUserID = this.usersService.currentUserId;
     this.currentUserName = this.usersService.currentUserName;
-
-    /// const count = 1;
-    //if (count === 0) {
-    //  router.navigate(["/dashboard"]);
-    //}
   }
 
   ngOnInit() {
-    // this.getProjects();
-    console.log("app ngOnInit ---!!!!!!!!!");
-    console.log("ProjectName ==" + sessionStorage.getItem("ProjectName"));
-    var role = sessionStorage.getItem("userRole");
-
-    /*
-    if (
-      role=="Менеджер" ||
-      role=="Владелец проекта" ||
-      role=="Программист"
-    ) {
-      this.projectVisibility = true;
-    }
-    */
     this.name = sessionStorage.getItem("ProjectName");
   }
 

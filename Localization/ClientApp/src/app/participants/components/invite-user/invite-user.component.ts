@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 import { InvitationsService } from "src/app/services/invitations.service";
@@ -33,7 +33,7 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
   constructor(
     private invitationsService: InvitationsService,
     private guidsService: GuidsService,
-    private appConfigService: AppConfigService,
+    private appConfigService: AppConfigService
   ) {
     super();
   }
@@ -68,7 +68,9 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
         this.invitationId = newGuid;
         const hostProtocol = this.appConfigService.config.host.protocol;
         const hostName = this.appConfigService.config.host.name;
-        this.invitationLink = `${hostProtocol}://${hostName}/invitation/${this.invitationId}`;
+        this.invitationLink = `${hostProtocol}://${hostName}/invitation/${
+          this.invitationId
+        }`;
       },
       error => console.log(error)
     );

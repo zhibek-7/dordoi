@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { HttpClient, HttpHeaders  } from '@angular/common/http';
+
 
 import { Locale } from '../models/database-entities/locale.type';
 import { LocalizationProject } from '../models/database-entities/localizationProject.type';
@@ -29,7 +29,7 @@ export class NewProjectComponent implements OnInit {
     language: new FormControl(null)
   });
 
-  constructor(private languageService: LanguageService, private projectsService: ProjectsService, private httpClient: HttpClient) { }
+  constructor(private languageService: LanguageService, private projectsService: ProjectsService) { }
 
   ngOnInit() {
     this.languageService.getLanguageList()

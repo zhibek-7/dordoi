@@ -1,6 +1,4 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { MatIconModule } from "@angular/material";
-
 import { TranslationSubstring } from "../../../models/database-entities/translationSubstring.type";
 import { SharePhraseService } from "../../localServices/share-phrase.service";
 import { TranslationSubstringService } from "../../../services/translationSubstring.service";

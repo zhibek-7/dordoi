@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from "@angular/router";
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
@@ -14,7 +14,7 @@ import {
   MatCheckboxModule
 } from "@angular/material";
 
-import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
+import { RequestInterceptorService } from "src/app/services/requestInterceptor.service";
 
 import { LanguageService } from "src/app/services/languages.service";
 import { UserService } from "src/app/services/user.service";
@@ -48,14 +48,22 @@ import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
     MatSelectModule,
     MatCheckboxModule,
 
-    CurrentProjectSettingsRoutingModule,
+    CurrentProjectSettingsRoutingModule
   ],
-  exports: [CurrentProjectSettingsRoutingModule, CurrentProjectSettingsComponent, TranslatorsListComponent],
+  exports: [
+    CurrentProjectSettingsRoutingModule,
+    CurrentProjectSettingsComponent,
+    TranslatorsListComponent
+  ],
   providers: [
     LanguageService,
     UserService,
     TranslatorsService,
-    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestInterceptorService,
+      multi: true
+    }
   ]
 })
-export class CurrentProjectSettingsModule { }
+export class CurrentProjectSettingsModule {}

@@ -1,25 +1,26 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, of as observableOf  } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
-import { UserService } from './user.service';
+//import { UserService } from './user.service';
 
 @Injectable()
 export class AuthenticationService {
-
-  private url: string = 'api/User/';
+  private url: string = "api/User/";
 
   private userAuthorized: boolean;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   //Устаревший метод, но пока не удаляю
-  async checkUserAuthorisation() {    
-    this.userAuthorized = await this.http.post<boolean>(this.url + "checkUserAuthorisation", null).toPromise();       
+  async checkUserAuthorisation() {
+    this.userAuthorized = await this.http
+      .post<boolean>(this.url + "checkUserAuthorisation", null)
+      .toPromise();
 
-    return await this.userAuthorized;           
+    return await this.userAuthorized;
   }
 
   checkUserAuthorisationAsync() {
@@ -30,21 +31,21 @@ export class AuthenticationService {
     return sessionStorage.getItem("userToken");
   }
 
-  saveToken(token: string){
-    sessionStorage.setItem('userToken', token);  
+  saveToken(token: string) {
+    sessionStorage.setItem("userToken", token);
   }
-  
-  logOut(){
+
+  logOut() {
     this.userAuthorized = false;
     sessionStorage.clear();
-  }  
+  }
 
-  authorizeUser(){
+  authorizeUser() {
     this.userAuthorized = true;
   }
 
   isLoggedIn(): boolean {
-    if(this.userAuthorized){
+    if (this.userAuthorized) {
       return true;
     } else {
       return false;
@@ -53,59 +54,63 @@ export class AuthenticationService {
 
   refreshTokenRequest(): any {
     return this.http.post(this.url + "refreshToken", null);
-  }  
-
-  getUserName(): string {    
-    return sessionStorage.getItem('userName');
   }
 
-  setUserName(userName: string) {    
-    sessionStorage.setItem('userName', userName);
+  getUserName(): string {
+    return sessionStorage.getItem("userName");
+  }
+
+  setUserName(userName: string) {
+    sessionStorage.setItem("userName", userName);
   }
 
   getUserRole(): string {
-     return sessionStorage.getItem('userRole');
+    return sessionStorage.getItem("userRole");
   }
 
   setUserRole(userRole: string) {
-    sessionStorage.setItem('userRole', userRole);
+    sessionStorage.setItem("userRole", userRole);
   }
 
-  refreshToken(): Observable<string> {  
-
+  refreshToken(): Observable<string> {
     let userName = this.getUserName();
     let userRole = this.getUserRole();
 
-    const params = new HttpParams().set('userName', userName).set('userRole', userRole);
+    const params = new HttpParams()
+      .set("userName", userName)
+      .set("userRole", userRole);
 
-    return this.http.post(this.url + "refreshToken", params).pipe(map(data => {
-          let currentToken = data["token"];
-          this.saveToken(data["token"]); 
-          return currentToken;
-        }));
+    return this.http.post(this.url + "refreshToken", params).pipe(
+      map(data => {
+        let currentToken = data["token"];
+        this.saveToken(data["token"]);
+        return currentToken;
+      })
+    );
   }
 
   setUserRoleAccordingToProject() {
+    let projectId = sessionStorage.getItem("ProjectID");
 
-    let projectId = sessionStorage.getItem('ProjectID');
+    const params = new HttpParams().set("ProjectID", projectId);
 
-    const params = new HttpParams().set('ProjectID', projectId);
-
-    return this.http.post<string>(this.url + "setUserRoleAccordingToProject", params).pipe(map(data => {
+    return this.http
+      .post<string>(this.url + "setUserRoleAccordingToProject", params)
+      .pipe(
+        map(data => {
           let currentRole = data["role"];
           this.setUserRole(currentRole);
           return currentRole;
-        }));;
+        })
+      );
   }
 
   provideAccessOnlyFor(acceptableRoles: string[]): boolean {
-
     let accessProvided = false;
     let currentRole = this.getUserRole();
 
-
-    acceptableRoles.some(function(item){
-      if(item == currentRole){
+    acceptableRoles.some(function(item) {
+      if (item == currentRole) {
         accessProvided = true;
         return accessProvided;
       }
@@ -113,5 +118,4 @@ export class AuthenticationService {
 
     return accessProvided;
   }
-
 }

@@ -1,57 +1,59 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders} from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
-import { Comment } from '../models/database-entities/comment.type';
-import { CommentWithUser } from '../work-panel/localEntites/comments/commentWithUser.type';
+import { Comment } from "../models/database-entities/comment.type";
+import { CommentWithUser } from "../work-panel/localEntites/comments/commentWithUser.type";
 
-import { Observable, of  } from 'rxjs';
+import { Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 @Injectable()
 export class CommentService {
+  private url: string =
+    document.getElementsByTagName("base")[0].href + "api/comment/";
 
-    private url: string = document.getElementsByTagName('base')[0].href + "api/comment/";
+  constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) {
+  async createComment(comment: Comment) {
+    let asyncResult = await this.http
+      .post<CommentWithUser>(this.url + "AddComment", comment)
+      .toPromise();
+    return asyncResult;
+  }
 
-    }
+  uploadImageToComment(fileToUpload: File[], commentId: number) {
+    const formData: FormData = new FormData();
 
-    async createComment(comment: Comment){
-        let asyncResult = await this.http.post<CommentWithUser>(this.url + "AddComment", comment).toPromise();
-        return asyncResult;
-    }
+    // fileToUpload.forEach(element => {
+    formData.set("Image", fileToUpload[0]);
+    formData.append("CommentId", commentId.toString());
+    return this.http.post(this.url + "UploadImageToComment", formData);
+    // });
+  }
 
-    uploadImageToComment(fileToUpload: File[], commentId: number) {
-        const formData: FormData = new FormData();
+  getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]> {
+    return this.http
+      .post<CommentWithUser[]>(this.url + "InString/" + idString, idString)
+      .pipe(catchError(this.handleError("Get comments in string", [])));
+  }
 
-        // fileToUpload.forEach(element => {
-            formData.set('Image', fileToUpload[0]); 
-            formData.append('CommentId', commentId.toString());
-            return this.http.post(this.url + "UploadImageToComment", formData);
-        // });        
-    }
+  deleteComment(commentId: number) {
+    return this.http
+      .delete<boolean>(this.url + "DeleteComment/" + commentId)
+      .toPromise();
+  }
 
-    getAllCommentsInStringById(idString: number): Observable<CommentWithUser[]>{    
-        return this.http.post<CommentWithUser[]>(this.url + 'InString/' + idString, idString)
-                .pipe(
-                    catchError(this.handleError('Get comments in string', []))
-                );
-    }    
+  updateComment(comment: Comment) {
+    return this.http
+      .put<boolean>(this.url + "UpdateComment/" + comment.id, comment)
+      .toPromise();
+  }
 
-    deleteComment(commentId: number){
-        return this.http.delete<boolean>(this.url + "DeleteComment/" + commentId).toPromise();
-    }
+  handleError<T>(operation = "Operation", result?: T) {
+    return (error: any): Observable<T> => {
+      console.log(`${operation} failed: ${error.message}`);
 
-    updateComment(comment: Comment){
-        return this.http.put<boolean>(this.url + "UpdateComment/" + comment.id, comment).toPromise();
-    }
-
-    handleError<T>(operation = 'Operation', result?: T) {
-        return (error: any): Observable<T> => {
-          console.log(`${operation} failed: ${error.message}`);
-    
-          return of(result as T);
-        }
-    }
-
+      return of(result as T);
+    };
+  }
 }

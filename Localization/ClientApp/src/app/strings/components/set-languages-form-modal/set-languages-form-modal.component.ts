@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';

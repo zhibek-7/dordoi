@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { LocalizationProject } from "../../../models/database-entities/localizationProject.type";
 import { ProjectsService } from "../../../services/projects.service";
@@ -10,8 +10,6 @@ import { LanguageService } from "src/app/services/languages.service";
 import { UserService } from "src/app/services/user.service";
 
 import { Locale } from "src/app/models/database-entities/locale.type";
-import { User } from "src/app/models/database-entities/user.type";
-import { UserAction } from "src/app/models/database-entities/userAction.type";
 import { LocalizationProjectsLocalesDTO } from "src/app/models/DTO/localizationProjectsLocalesDTO";
 import { Participant } from "src/app/models/Participants/participant.type";
 

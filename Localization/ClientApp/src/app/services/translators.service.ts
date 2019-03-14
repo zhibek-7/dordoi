@@ -1,20 +1,12 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpParams,
-  HttpResponse,
-  HttpHeaders
-} from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Translator } from 'src/app/models/Translators/translator.type';
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+//import { Translator } from 'src/app/models/Translators/translator.type';
 
 @Injectable()
 export class TranslatorsService {
-  constructor(private httpClient: HttpClient) {}
+  constructor() {}
 
   getAllPublicTranslators() {
-
     let translators = Observable.create(function(observer) {
       observer.next(
         [

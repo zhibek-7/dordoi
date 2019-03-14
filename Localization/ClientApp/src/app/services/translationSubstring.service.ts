@@ -3,7 +3,7 @@ import { HttpClient, HttpParams, HttpResponse, HttpHeaders } from '@angular/comm
 import { Observable } from 'rxjs';
 
 import { TranslationSubstring } from 'src/app/models/database-entities/translationSubstring.type';
-import { TranslationSubstringForEditingDTO, TranslationSubstringTableViewDTO } from 'src/app/models/DTO/TranslationSubstringDTO.type';
+import { TranslationSubstringTableViewDTO } from 'src/app/models/DTO/TranslationSubstringDTO.type';
 
 import { Locale } from 'src/app/models/database-entities/locale.type';
 import { Image } from '../models/database-entities/image.type';

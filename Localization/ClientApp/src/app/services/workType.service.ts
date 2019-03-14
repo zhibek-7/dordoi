@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse, HttpHeaders  } from '@angular/common/http';
+import { HttpClient  } from '@angular/common/http';
 import { WorkType } from "../models/database-entities/workType.type";
 import { Observable } from 'rxjs';
 

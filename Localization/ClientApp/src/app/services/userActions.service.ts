@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpResponse, HttpHeaders } from "@angular/common/http";
 import { UserAction } from "../models/database-entities/userAction.type";
-import { Observable, from } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class UserActionsService {

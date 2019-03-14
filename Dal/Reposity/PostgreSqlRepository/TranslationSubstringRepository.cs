@@ -601,11 +601,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             try
             {
 
-                var query = new Query("translation_substrings")
+                var query = new Query("translation_substrings").Join("files", "translation_substrings.id_file_owner", "files.id")
                .Select(
-                   "id",
+                   "translation_substrings.id",
                    "substring_to_translate",
-                   "description",
+                   "translation_substrings.description",
                    "context",
                    "translation_max_length",
                    "id_file_owner",
@@ -625,7 +625,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .WhereIn("id_file_owner",
                             new Query("files")
                                 .Select("id")
-                                .Where("id_localization_project", projectId));
+                                .Where("id_localization_project", projectId)
+                                );
                 }
 
                 if (!string.IsNullOrEmpty(searchString))
@@ -634,6 +635,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     query = query.WhereLike("substring_to_translate", searchPattern);
                 }
 
+                query = query.Where("visibility", true);
                 return query;
             }
             catch (NpgsqlException exception)
@@ -922,7 +924,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        
+
         /// <summary>
         /// Возвращает строки (со связанными объектами).
         /// </summary>
@@ -1043,7 +1045,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
 
         }
-        
+
         /// <summary>
         /// Возвращает запрос строк (со связанными объектами).
         /// </summary>
