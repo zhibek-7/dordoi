@@ -8,6 +8,9 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="jumbotron" *ngIf="!filtredTranslators.length">
+        Согласно заданным параметрам фильтра не найдено ни одного переводчика.
+      </div>
       <div class="jumbotron" *ngFor="let item of filtredTranslators| sortBy: sortingColumn: isDesc; let i=index">
         <div class="row">
           <div class="col-2">
