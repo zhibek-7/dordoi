@@ -56,7 +56,8 @@ inner join localization_projects as lp
 	on f.id_localization_project = lp.id
 inner join participants as p
 	on lp.id = p.id_localization_project
-where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение";
+where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение
+order by name_text";
 
                     this.LogQuery(sqlString);
                     IEnumerable<Image> images = dbConnection.Query<Image>(sqlString).ToList();
