@@ -12,10 +12,8 @@ export class ImagesService {
   constructor(private http: HttpClient) { }
 
   public getByProjectId(projectId: number): Observable<Image[]> {
-    let body : any = {};
-    body.projectId = projectId;
     return this.http
-      .post<Image[]>(this._url + "/getByProjectId", body, {
+      .post<Image[]>(this._url + "/getByProjectId", projectId, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
