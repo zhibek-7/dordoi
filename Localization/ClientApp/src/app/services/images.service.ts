@@ -21,4 +21,14 @@ export class ImagesService {
       });
   }
 
+  updateImage(updatedImage: Image): Observable<Object> {
+    return this.http
+      .post(this._url + "/update", updatedImage, {
+        headers: new HttpHeaders().set(
+          "Authorization",
+          "Bearer " + sessionStorage.getItem("userToken")
+        )
+      });
+  }
+
 }

@@ -6,5 +6,6 @@ namespace Models.Interfaces.Repository
 {
     public interface IImagesRepository : IBaseRepositoryAsync<Image>
     {
+        Task<bool> UpdateAsync(Image image);
     }
 }

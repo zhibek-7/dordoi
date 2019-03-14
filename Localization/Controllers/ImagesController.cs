@@ -34,5 +34,12 @@ namespace Localization.Controllers
                 projectId: projectId);
         }
 
+        [HttpPost("update")]
+        [Authorize]
+        public async Task UpdateImageAsync([FromBody] Image updatedImage)
+        {
+            await this._imagesRepository.UpdateAsync(updatedImage);
+        }
+
     }
 }

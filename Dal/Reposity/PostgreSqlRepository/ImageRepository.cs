@@ -80,5 +80,38 @@ order by name_text";
 
         }
 
+        public async Task<bool> UpdateAsync(Image image)
+        {
+            var sql = "update images set " +
+                "name_text = @Name_text," +
+                "date_time_added = @Date_Time_Added," +
+                "id_user = @ID_User," +
+                "body = @body," +
+                "url = @URL " +
+                "where id = @id";
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    this.LogQuery(sql, image);
+                    await dbConnection.ExecuteAsync(sql, image);
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в { nameof(ImageRepository)}.{ nameof(ImageRepository.UpdateAsync)}{ nameof(NpgsqlException)}", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
+                return false;
+            }
+        }
+
     }
 }
