@@ -24,13 +24,15 @@ import { CurrentProjectSettingsRoutingModule } from './current-project-settings-
 import { CurrentProjectSettingsComponent } from '../components/current-project-settings/current-project-settings.component';
 import { TranslatorsListComponent } from '../../translators-list/translators-list.component';
 import { TranslatorsService } from 'src/app/services/translators.service';
+import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
 
 
 @NgModule({
   declarations: [
     CurrentProjectSettingsComponent,
     CurrentProjectTranslationsComponent,
-    TranslatorsListComponent
+    TranslatorsListComponent,
+    ItemsSortBy
   ],
   imports: [
     CommonModule,

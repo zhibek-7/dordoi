@@ -1,8 +1,14 @@
 <div class="container-fluide">
   <div class="row">
     <div class="col-9">
-      <button mat-button (click)="sortBy('user_Name')">Сортировать по имени</button>
-      <div class="jumbotron" *ngFor="let item of translators let i=index">
+      <mat-form-field style="width:50%">
+        <mat-select placeholder="Сортировать по..." (ngModelChange)="sortBy($event)" [(ngModel)]="selectedSorting" name="sortBy">
+          <mat-option *ngFor="let sorting of sortingList" [value]="sorting.value">
+            {{sorting.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="jumbotron" *ngFor="let item of filtredTranslators| sortBy: sortingColumn: isDesc; let i=index">
         <div class="row">
           <div class="col-2">
             <img class="width-to-parent" [src]="item.user_pic" alt="Participant avatar" *ngIf="item.user_pic; else noImageFound" class="rounded float-left" style="height: 4rem;">
@@ -19,10 +25,10 @@
           <div class="col">
             <div class="row">
               <div class="col" style="padding:0rem"><span class="amount">{{item.cost}}</span></div>
-              <div class="col-6" style="padding:0rem; line-height:1; padding-top: 5px;"><span style="color: grey; ">за <br> слово</span></div>
+              <div class="col-5" style="padding:0rem; line-height:1; padding-top: 5px;"><span style="color: grey; ">за <br> слово</span></div>
             </div>
           </div>
-          <div class="col">
+          <div class="col" style="display: flex; justify-content: flex-end;">
             <button mat-button color="primary" style="text-transform: uppercase;">Пригласить в проект</button>
           </div>
         </div>
@@ -57,9 +63,13 @@
     <div class="col-3" style="font-size: 14px;">
       <div class="content-top">
         <div class="row">
-          <div class="col-2" style="display: flex; align-items: center;"><mat-icon>people</mat-icon></div>
+          <div class="col-2" style="display: flex; align-items: center;">
+            <mat-icon>people</mat-icon>
+          </div>
           <div class="col">Собрать команду фрилансеров</div>
-          <div class="col-2" style="display: flex; align-items: center;"><mat-icon>chevron_right</mat-icon></div>
+          <div class="col-2" style="display: flex; align-items: center;">
+            <mat-icon>chevron_right</mat-icon>
+          </div>
         </div>
 
         <span></span>
@@ -102,18 +112,26 @@
         <legend>Ставка за слово</legend>
         <div class="row">
           <div class="col-6">
-              <label for="min">от</label>
-              <input matInput id="min" name="min" />
+            <label for="min">от</label>
+            <input matInput type="number" id="min" name="min" [(ngModel)]="min"/>
           </div>
           <div class="col-6">
-              <label for="max">до</label>
-              <input matInput id="max" name="max" />
+            <label for="max">до</label>
+            <input matInput type="number" id="max" name="max" [(ngModel)]="max"/>
           </div>
         </div>
       </fieldset>
       <div class="row row-buttons">
-          <button mat-button>Очистить</button>
-          <button mat-button color="primary">Поиск</button>
+        <button mat-button (click)="clearSearch()">Очистить</button>
+        <button mat-button color="primary" (click)="filtredFn({
+          currentLanguage: selectedCurrentLanguage,
+          translateLanguage: selectedTranslateLanguage,
+          itsNativeLanguage: nativeLanguage,
+          service: selectedService,
+          topics: topics.value,
+          min: min,
+          max: max
+        })">Поиск</button>
       </div>
     </div>
   </div>

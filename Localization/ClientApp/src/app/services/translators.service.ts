@@ -25,7 +25,9 @@ export class TranslatorsService {
             translationRating: 95,
             termRating: 99,
             topics: ['Маркетинг', 'Машиностроение'],
+            languages: ['Русский', 'Английский'],
             wordsQuantity: 25.693,
+            service: 'Перевод',
             cost: 5.689
           },
           {
@@ -35,8 +37,22 @@ export class TranslatorsService {
             translationRating: 100,
             termRating: 90,
             topics: ['PR', 'Машиностроение', 'ИТ', 'Финансы'],
+            languages: ['Русский', 'Английский', 'Испанский'],
             wordsQuantity: 325.693,
+            service: 'Перевод',
             cost: 1.68
+          },
+          {
+            user_Id: 186,
+            Profile: true,
+            user_Name: 'Ivan Petrov',
+            translationRating: 100,
+            termRating: 90,
+            topics: ['PR', 'Машиностроение', 'ИТ'],
+            languages: ['Русский', 'Английский', 'Французский'],
+            wordsQuantity: 45.693,
+            service: 'Редактура',
+            cost: 3.68
           },
         ]
       );
