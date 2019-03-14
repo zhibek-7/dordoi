@@ -12,7 +12,7 @@
     "target": "es5",
    // "noUnusedLocals": true, //TODO При компиляции говорит, что что то не используется
    //"charset": "utf8", // TODO Кодировка входных файлов.
-   // "allowUnreachableCode": false // Сообщить об ошибке в случае обнаружения кода, который никогда не будет выполнен?
+    //"allowUnreachableCode": false, // Сообщить об ошибке в случае обнаружения кода, который никогда не будет выполнен?
     "typeRoots": [
       "node_modules/@types"
     ],
