@@ -51,6 +51,11 @@ const routes: Routes = [
           "src/app/create-project/create-project.module#CreateProjectModule",
         canActivate: [AuthenticationGuard]
       },
+      {
+        path: "images",
+        loadChildren: "src/app/images/images.module#ImagesModule",
+        canActivate: [AuthenticationGuard]
+      },
 
       {
         path: "", //path: 'translations',
