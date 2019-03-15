@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
+using Models.Interfaces.Repository;
 using Utilities;
 
 namespace Localization.Controllers
@@ -17,11 +18,11 @@ namespace Localization.Controllers
     [ApiController]
     public class ProjectTranslationMemoryController : ControllerBase
     {
-        private readonly ProjectTranslationMemoryRepository _projectTranslationMemoryRepository;
+        private readonly IProjectTranslationMemoryRepository _projectTranslationMemoryRepository;
 
-        public ProjectTranslationMemoryController()
+        public ProjectTranslationMemoryController(IProjectTranslationMemoryRepository projectTranslationMemoryRepository)
         {
-            _projectTranslationMemoryRepository = new ProjectTranslationMemoryRepository(Settings.GetStringDB());
+            _projectTranslationMemoryRepository = projectTranslationMemoryRepository;
         }
 
         /// <summary>

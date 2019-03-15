@@ -64,6 +64,7 @@ namespace Localization
             services.AddScoped<IUserRepository>(provider => new UserRepository(connectionString));
             services.AddScoped<IParticipantRepository>(provider => new ParticipantRepository(connectionString));
             services.AddScoped<IImagesRepository>(provider => new ImageRepository(connectionString));
+            services.AddScoped<IProjectTranslationMemoryRepository>(provider => new ProjectTranslationMemoryRepository(connectionString));
 
             services.AddScoped<FromExcel>();
 

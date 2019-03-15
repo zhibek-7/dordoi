@@ -45,21 +45,6 @@ namespace Models.Services
         {
             try
             {
-                //var temp = await _translationMemoryRepository.GetAllByUserIdAsync(userId, offset, limit, projectId, searchString, sortBy, sortAscending);
-                ////Создание списка памяти переводов со строками перечислений имен связанных объектов.
-                //var resultDTO = temp.GroupBy(t => t.id).Select(t => new TranslationMemoryTableViewDTO
-                //{
-                //    id = t.Key,
-                //    name_text = t.FirstOrDefault().name_text,
-
-                //    string_count = t.FirstOrDefault().string_count.Value,
-
-                //    locales_name = string.Join(", ", t.Select(x => x.locale_name).Distinct().OrderBy(n => n)),
-                //    localization_projects_name = string.Join(", ", t.Select(x => x.localization_project_name).Distinct().OrderBy(n => n))
-                //});
-
-                //return resultDTO;
-
                 return await _translationMemoryRepository.GetAllByUserIdAsync(userId, offset, limit, projectId, searchString, sortBy, sortAscending);
             }
             catch (Exception exception)
@@ -91,35 +76,6 @@ namespace Models.Services
         }
 
         /// <summary>
-        /// Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync(int? userId, int? projectId)
-        {
-            try
-            {
-                var temp = await _translationMemoryRepository.GetAllAsync(userId, projectId);
-                //Создание списка памяти переводов со строками перечислений имен связанных объектов.
-                var resultDTO = temp.GroupBy(t => t.id).Select(t => new TranslationMemoryTableViewDTO
-                {
-                    id = t.Key,
-                    name_text = t.FirstOrDefault().name_text,
-
-                    string_count = t.FirstOrDefault().string_count.Value,
-
-                    locales_name = string.Join(", ", t.Select(x => x.locale_name).Distinct().OrderBy(n => n)),
-                    localization_projects_name = string.Join(", ", t.Select(x => x.localization_project_name).Distinct().OrderBy(n => n))
-                }).OrderBy(t => t.name_text);
-
-                return resultDTO;
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(WriteLn(exception.Message, exception), exception);
-            }
-        }
-
-        /// <summary>
         /// Возвращает список памятей переводов назначенных на проект локализации.
         /// </summary>
         /// <param name="projectId">Идентификатор проекта локализации.</param>
@@ -132,9 +88,10 @@ namespace Models.Services
         /// <summary>
         /// Добавление новой памяти переводов.
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Новая память переводов.</param>
         /// <returns></returns>
-        public async Task AddAsync(TranslationMemoryForEditingDTO translationMemory)
+        public async Task AddAsync(int userId, TranslationMemoryForEditingDTO translationMemory)
         {
             try
             {
@@ -148,7 +105,7 @@ namespace Models.Services
                     visibility = false
                 });
                 translationMemory.id_file = newTranslationMemoryFileId;
-                await _translationMemoryRepository.AddAsync(translationMemory);
+                await _translationMemoryRepository.AddAsync(userId, translationMemory);
             }
             catch (Exception exception)
             {
@@ -186,13 +143,14 @@ namespace Models.Services
         /// <summary>
         /// Сохранение изменений в памяти переводов.
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Отредактированная память переводов.</param>
         /// <returns></returns>
-        public async Task UpdateAsync(TranslationMemoryForEditingDTO translationMemory)
+        public async Task UpdateAsync(int userId, TranslationMemoryForEditingDTO translationMemory)
         {
             try
             {
-                await _translationMemoryRepository.UpdateAsync(translationMemory);
+                await _translationMemoryRepository.UpdateAsync(userId, translationMemory);
             }
             catch (Exception exception)
             {

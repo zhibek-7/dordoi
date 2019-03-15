@@ -74,20 +74,6 @@ namespace Localization.Controllers
         }
 
 
-        ///// <summary>
-        ///// Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Authorize]
-        //[HttpPost]
-        //public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync()
-        //{
-
-        //    var identityName = User.Identity.Name;
-        //    int? userId = (int)ur.GetID(identityName);
-        //    return await _translationMemoryService.GetAllDTOAsync(userId, null);
-        //}
-
         /// <summary>
         /// Возвращает список памятей переводов назначенных на проект локализации.
         /// </summary>
@@ -109,7 +95,8 @@ namespace Localization.Controllers
         [HttpPost("create")]
         public async Task AddAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            await _translationMemoryService.AddAsync(translationMemory);
+            var userId = (int)ur.GetID(User.Identity.Name);
+            await _translationMemoryService.AddAsync(userId, translationMemory);
         }
 
         /// <summary>
@@ -133,7 +120,8 @@ namespace Localization.Controllers
         [HttpPost("editSave")]
         public async Task UpdateAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            await _translationMemoryService.UpdateAsync(translationMemory);
+            var userId = (int)ur.GetID(User.Identity.Name);
+            await _translationMemoryService.UpdateAsync(userId, translationMemory);
         }
 
         /// <summary>

@@ -56,16 +56,18 @@ namespace Models.Interfaces.Repository
         /// <summary>
         /// Добавление новой памяти переводов.
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Новая память переводов.</param>
         /// <returns></returns>
-        Task AddAsync(TranslationMemoryForEditingDTO translationMemory);
+        Task AddAsync(int userId, TranslationMemoryForEditingDTO translationMemory);
 
         /// <summary>
         /// Сохранение изменений в памяти переводов.
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Отредактированная память переводов.</param>
         /// <returns></returns>
-        Task UpdateAsync(TranslationMemoryForEditingDTO translationMemory);
+        Task UpdateAsync(int userId, TranslationMemoryForEditingDTO translationMemory);
 
         /// <summary>
         /// Удаление памяти переводов.

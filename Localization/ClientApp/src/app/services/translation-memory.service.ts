@@ -54,15 +54,7 @@ export class TranslationMemoryService {
         observe: 'response'
       });
   }
-
-
-  ///**
-  // * Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
-  // */
-  //getAllDTO(): Observable<TranslationMemoryTableViewDTO[]> {
-  //  return this.httpClient.post<TranslationMemoryTableViewDTO[]>(TranslationMemoryService.connectionUrl, null);
-  //}
-
+  
   /**
    * Возвращает список памятей переводов назначенных на проект локализации.
    * @param projectId Идентификатор проекта локализации.
