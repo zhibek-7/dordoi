@@ -23,6 +23,72 @@ namespace Models.Services
             _translationSubstringRepository = translationSubstringRepository;
         }
 
+        /// <summary>
+        /// Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllByUserIdAsync(
+            int? userId,
+            int offset,
+            int limit,
+            int? projectId = null,
+            string searchString = null,
+            string[] sortBy = null,
+            bool sortAscending = true)
+        {
+            try
+            {
+                //var temp = await _translationMemoryRepository.GetAllByUserIdAsync(userId, offset, limit, projectId, searchString, sortBy, sortAscending);
+                ////Создание списка памяти переводов со строками перечислений имен связанных объектов.
+                //var resultDTO = temp.GroupBy(t => t.id).Select(t => new TranslationMemoryTableViewDTO
+                //{
+                //    id = t.Key,
+                //    name_text = t.FirstOrDefault().name_text,
+
+                //    string_count = t.FirstOrDefault().string_count.Value,
+
+                //    locales_name = string.Join(", ", t.Select(x => x.locale_name).Distinct().OrderBy(n => n)),
+                //    localization_projects_name = string.Join(", ", t.Select(x => x.localization_project_name).Distinct().OrderBy(n => n))
+                //});
+
+                //return resultDTO;
+
+                return await _translationMemoryRepository.GetAllByUserIdAsync(userId, offset, limit, projectId, searchString, sortBy, sortAscending);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(WriteLn(exception.Message, exception), exception);
+            }
+        }
+
+        /// <summary>
+        /// Возвращает количество памятей переводов.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <returns></returns>
+        public async Task<int> GetAllByUserIdCountAsync(
+            int? userId,
+            int? projectId = null,
+            string searchString = null)
+        {
+            try
+            {
+                return await _translationMemoryRepository.GetAllByUserIdCountAsync(userId, projectId, searchString);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(WriteLn(exception.Message, exception), exception);
+            }
+        }
 
         /// <summary>
         /// Возвращает список памяти переводов, со строками перечислений имен связанных объектов.

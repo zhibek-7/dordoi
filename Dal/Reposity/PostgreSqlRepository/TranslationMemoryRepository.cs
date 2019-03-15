@@ -21,6 +21,209 @@ namespace DAL.Reposity.PostgreSqlRepository
             fr = new FilesRepository(connectionStr);
         }
 
+        
+        public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
+        {
+            { "id", "translation_memories.id" },
+            { "name_text", "translation_memories.name_text" },
+            { "locales_name", "locales_tm.locales_name"},//"locales.name_text" },
+            { "localization_projects_name", "localization_projects_tm.localization_projects_name"},//"localization_projects.name_text" },
+            { "string_count", "string_count" }
+        };
+
+
+        /// <summary>
+        /// Возвращает памяти переводов (со связанными объектами).
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllByUserIdAsync(
+            int? userId,
+            int offset,
+            int limit,
+            int? projectId = null,
+            string searchString = null,
+            string[] sortBy = null,
+            bool sortAscending = true)
+        {
+            if (sortBy == null || !sortBy.Any())
+            {
+                sortBy = new[] { "id" };
+            }
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = GetAllByUserIdQuery(
+                        userId,
+                        projectId,
+                        searchString);
+
+                    query = ApplyPagination(
+                        query: query,
+                        offset: offset,
+                        limit: limit);
+
+                    query = ApplySorting(
+                        query: query,
+                        columnNamesMappings: TranslationMemoryRepository.SortColumnNamesMapping,
+                        sortBy: sortBy,
+                        sortAscending: sortAscending);
+
+                    var compiledQuery = this._compiler.Compile(query);
+                    LogQuery(compiledQuery);
+
+                    var translationMemories = await dbConnection.QueryAsync<TranslationMemoryTableViewDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+
+                    return translationMemories;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Возвращает количество памятей переводов.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <returns></returns>
+        public async Task<int> GetAllByUserIdCountAsync(
+            int? userId,
+            int? projectId = null,
+            string searchString = null)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = GetAllByUserIdQuery(
+                        userId,
+                        projectId,
+                        searchString);
+                    query = query.Distinct().AsCount("translation_memories.id");
+
+
+                    var compiledQuery = _compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+                    return count;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdCountAsync)} {nameof(NpgsqlException)} ", exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdCountAsync)} {nameof(Exception)} ", exception);
+                return 0;
+            }
+
+        }
+
+        /// <summary>
+        /// Возвращает запрос памятей переводов (со связанными объектами).
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <returns></returns>
+        private Query GetAllByUserIdQuery(
+            int? userId,
+            int? projectId = null,
+            string searchString = null)
+        {
+            try
+            {
+                var queryLocalesTranslationMemories = new Query("translation_memories")
+                    .LeftJoin("translation_memories_locales", "translation_memories_locales.id_translation_memory", "translation_memories.id")
+                    .LeftJoin("locales", "locales.id", "translation_memories_locales.id_locale")
+                    .Select("translation_memories.id as tm_id")
+                    .GroupBy("translation_memories.id")
+                    .SelectRaw("string_agg(locales.name_text, ', ' order by locales.name_text) as locales_name");
+
+                var queryLocalizationProjectsTranslationMemories = new Query("translation_memories")
+                    .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
+                    .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")
+                    .Join("participants", "participants.id_localization_project", "localization_projects.id")
+                    .WhereTrue("participants.active")
+                    .Where("participants.id_user", (int)userId)
+                    .Select("translation_memories.id as tm_id")
+                    .GroupBy("translation_memories.id")
+                    .SelectRaw("string_agg(localization_projects.name_text, ', ' order by localization_projects.name_text) as localization_projects_name");
+
+                if (projectId != null)
+                {
+                    queryLocalizationProjectsTranslationMemories = queryLocalizationProjectsTranslationMemories.Where("localization_projects.id", projectId);
+                }
+
+
+                var query = new Query("translation_memories")
+                    .With("locales_tm", queryLocalesTranslationMemories)
+                    .With("localization_projects_tm", queryLocalizationProjectsTranslationMemories)
+                    .LeftJoin("translation_memories_strings", "translation_memories_strings.id_translation_memory", "translation_memories.id")
+                    .Join("locales_tm", "locales_tm.tm_id", "translation_memories.id")
+                    .Join("localization_projects_tm", "localization_projects_tm.tm_id", "translation_memories.id")
+                    .Select(
+                        "translation_memories.id",
+                        "translation_memories.name_text",
+                        "locales_tm.locales_name",
+                        "localization_projects_tm.localization_projects_name"
+                    )
+                    .SelectRaw("COUNT(translation_memories_strings.id_translation_memory) AS string_count")
+                    .GroupBy("translation_memories.id",
+                        "translation_memories.name_text",
+                        "locales_tm.locales_name",
+                        "localization_projects_tm.localization_projects_name");
+                
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    var searchPattern = $"%{searchString}%";
+                    query = query.WhereLike("translation_memories.name_text", searchPattern);
+                }
+
+                var compiledQuery = _compiler.Compile(query);
+                LogQuery(compiledQuery);
+
+                return query;
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdQuery)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdQuery)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
 
         /// <summary>
         /// Возвращает все строки запроса (без группировки по объектам).
@@ -28,73 +231,73 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <returns></returns>
         public async Task<IEnumerable<TranslationMemory>> GetAllAsync(int? userId, int? projectId)
         {
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    /*
-                    var query = new Query("translation_memories")
-                        .LeftJoin("translation_memories_locales", "translation_memories_locales.id_translation_memory", "translation_memories.id")
-                        .LeftJoin("locales", "locales.id", "translation_memories_locales.id_locale")
-                        .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
-                        .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")
-                        .LeftJoin("translation_memories_strings", "translation_memories_strings.id_translation_memory", "translation_memories.id")
-                        .Select(
-                            "translation_memories.id",
-                            "translation_memories.name_text",
-                            "locales.name_text as locale_name",
-                            "localization_projects.name_text as localization_project_name"//,
-                                                                                          //"COUNT(translation_memories_strings.id_translation_memory) AS string_count"
-                        )
-                        .SelectRaw("COUNT(translation_memories_strings.id_translation_memory) AS string_count")
-                        .GroupBy("translation_memories.id",
-                            "translation_memories.name_text",
-                            "locales.name_text",
-                            "localization_projects.name_text");
-                    //.Select(countQuery, "string_count");
-                    var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
+            //            try
+            //            {
+            //                using (var dbConnection = new NpgsqlConnection(connectionString))
+            //                {
+            //                    /*
+            //                    var query = new Query("translation_memories")
+            //                        .LeftJoin("translation_memories_locales", "translation_memories_locales.id_translation_memory", "translation_memories.id")
+            //                        .LeftJoin("locales", "locales.id", "translation_memories_locales.id_locale")
+            //                        .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
+            //                        .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")
+            //                        .LeftJoin("translation_memories_strings", "translation_memories_strings.id_translation_memory", "translation_memories.id")
+            //                        .Select(
+            //                            "translation_memories.id",
+            //                            "translation_memories.name_text",
+            //                            "locales.name_text as locale_name",
+            //                            "localization_projects.name_text as localization_project_name"//,
+            //                                                                                          //"COUNT(translation_memories_strings.id_translation_memory) AS string_count"
+            //                        )
+            //                        .SelectRaw("COUNT(translation_memories_strings.id_translation_memory) AS string_count")
+            //                        .GroupBy("translation_memories.id",
+            //                            "translation_memories.name_text",
+            //                            "locales.name_text",
+            //                            "localization_projects.name_text");
+            //                    //.Select(countQuery, "string_count");
+            //                    var compiledQuery = _compiler.Compile(query);
+            //                    LogQuery(compiledQuery);
 
-                    var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
-                        sql: compiledQuery.Sql,
-                        param: compiledQuery.NamedBindings);
-                    */
-                    var sql =
-                        @"SELECT tm.id, tm.name_text, l.name_text AS locale_name, lp.name_text AS localization_project_name, 
-COUNT(tms.id_translation_memory) AS string_count
-FROM translation_memories  as tm
-LEFT JOIN translation_memories_locales as tml 
-ON tml.id_translation_memory = tm.id
-LEFT JOIN locales  as l 
-ON l.id = tml.id_locale
-LEFT JOIN localization_projects_translation_memories as lptm 
-ON lptm.id_translation_memory = tm.id
-LEFT JOIN localization_projects  as lp 
-ON lp.id = lptm.id_localization_project
-LEFT JOIN translation_memories_strings as tms 
-ON tms.id_translation_memory = tm.id
-inner join participants as p
-	on lp.id = p.id_localization_project
-where  active = true and p.id_user = " + (int)userId + @"
-GROUP BY tm.id, tm.name_text, l.name_text, lp.name_text";
-                    LogQuery(sql);
+            //                    var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
+            //                        sql: compiledQuery.Sql,
+            //                        param: compiledQuery.NamedBindings);
+            //                    */
+            //                    var sql =
+            //                        @"SELECT tm.id, tm.name_text, l.name_text AS locale_name, lp.name_text AS localization_project_name, 
+            //COUNT(tms.id_translation_memory) AS string_count
+            //FROM translation_memories  as tm
+            //LEFT JOIN translation_memories_locales as tml 
+            //ON tml.id_translation_memory = tm.id
+            //LEFT JOIN locales  as l 
+            //ON l.id = tml.id_locale
+            //LEFT JOIN localization_projects_translation_memories as lptm 
+            //ON lptm.id_translation_memory = tm.id
+            //LEFT JOIN localization_projects  as lp 
+            //ON lp.id = lptm.id_localization_project
+            //LEFT JOIN translation_memories_strings as tms 
+            //ON tms.id_translation_memory = tm.id
+            //inner join participants as p
+            //	on lp.id = p.id_localization_project
+            //where  active = true and p.id_user = " + (int)userId + @"
+            //GROUP BY tm.id, tm.name_text, l.name_text, lp.name_text";
+            //                    LogQuery(sql);
 
-                    var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
-                        sql: sql);
+            //                    var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
+            //                        sql: sql);
 
-                    return translationMemories;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(NpgsqlException)} ", exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(Exception)} ", exception);
-                return null;
-            }
+            //                    return translationMemories;
+            //                }
+            //            }
+            //            catch (NpgsqlException exception)
+            //            {
+            //                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(NpgsqlException)} ", exception);
+            //                return null;
+            //            }
+            //            catch (Exception exception)
+            //            {
+            //                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(Exception)} ", exception);
+            return null;
+            //            }
         }
 
         /// <summary>
@@ -123,12 +326,12 @@ GROUP BY tm.id, tm.name_text, l.name_text, lp.name_text";
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetForSelectByProjectAsync)} {nameof(NpgsqlException)} ", exception);
                 return null;
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetForSelectByProjectAsync)} {nameof(Exception)} ", exception);
                 return null;
             }
         }

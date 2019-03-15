@@ -8,11 +8,36 @@ namespace Models.Interfaces.Repository
     public interface ITranslationMemoryRepository : IBaseRepositoryAsync<TranslationMemory>
     {
         /// <summary>
-        /// Добавление новой памяти переводов.
+        /// Возвращает памяти переводов (со связанными объектами).
         /// </summary>
-        /// <param name="translationMemory">Новая память переводов.</param>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
-        Task AddAsync(TranslationMemoryForEditingDTO translationMemory);
+        Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllByUserIdAsync(
+            int? userId,
+            int offset,
+            int limit,
+            int? projectId = null,
+            string searchString = null,
+            string[] sortBy = null,
+            bool sortAscending = true);
+
+        /// <summary>
+        /// Возвращает количество памятей переводов.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <returns></returns>
+        Task<int> GetAllByUserIdCountAsync(
+            int? userId,
+            int? projectId = null,
+            string searchString = null);
 
         /// <summary>
         /// Возвращает память переводов для редактирования (без группировки по объектам).
@@ -27,6 +52,13 @@ namespace Models.Interfaces.Repository
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns>TranslationMemoryForSelectDTO</returns>
         Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(int projectId);
+
+        /// <summary>
+        /// Добавление новой памяти переводов.
+        /// </summary>
+        /// <param name="translationMemory">Новая память переводов.</param>
+        /// <returns></returns>
+        Task AddAsync(TranslationMemoryForEditingDTO translationMemory);
 
         /// <summary>
         /// Сохранение изменений в памяти переводов.
