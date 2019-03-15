@@ -96,7 +96,6 @@ export class StringsProjectComponent extends MainListPageComponent implements On
         //this.loadData();
       },
         error => {
-          this.isDataSourceLoaded = false;
           console.error(error);
         }
       );
@@ -132,7 +131,10 @@ export class StringsProjectComponent extends MainListPageComponent implements On
           this.parent.totalCount = +response.headers.get("totalCount");
           //this.parent.currentOffset = offset;
         },
-        error => console.log(error)
+      error => {
+        this.isDataSourceLoaded = false;
+        console.log(error);
+      }
       );
   }
   

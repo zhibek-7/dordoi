@@ -14,7 +14,7 @@ namespace DAL.Reposity.PostgreSqlRepository
     /// <summary>
     ///
     /// </summary>
-    public class ImageRepository : BaseRepository, IBaseRepositoryAsync<Image>
+    public class ImageRepository : BaseRepository, IImagesRepository, IBaseRepositoryAsync<Image>
     {
         private PostgreSqlNativeContext context;
         public ImageRepository(string connectionStr) : base(connectionStr)
@@ -56,7 +56,8 @@ inner join localization_projects as lp
 	on f.id_localization_project = lp.id
 inner join participants as p
 	on lp.id = p.id_localization_project
-where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение";
+where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение
+order by name_text";
 
                     this.LogQuery(sqlString);
                     IEnumerable<Image> images = dbConnection.Query<Image>(sqlString).ToList();
@@ -77,6 +78,39 @@ where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (
                 return null;
             }
 
+        }
+
+        public async Task<bool> UpdateAsync(Image image)
+        {
+            var sql = "update images set " +
+                "name_text = @Name_text," +
+                "date_time_added = @Date_Time_Added," +
+                "id_user = @ID_User," +
+                "body = @body," +
+                "url = @URL " +
+                "where id = @id";
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    this.LogQuery(sql, image);
+                    await dbConnection.ExecuteAsync(sql, image);
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в { nameof(ImageRepository)}.{ nameof(ImageRepository.UpdateAsync)}{ nameof(NpgsqlException)}", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(ImageRepository)}.{nameof(ImageRepository.UpdateAsync)} {nameof(Exception)} ",
+                    exception);
+                return false;
+            }
         }
 
     }
