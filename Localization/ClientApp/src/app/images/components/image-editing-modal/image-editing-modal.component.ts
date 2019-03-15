@@ -20,6 +20,7 @@ export interface ImageEditingModalComponentInputData {
 })
 export class ImageEditingModalComponent implements OnInit {
 
+
   currentImg: ImageModel;
 
   mouse = {
@@ -122,6 +123,9 @@ export class ImageEditingModalComponent implements OnInit {
       startY: 0
     };
 
+
+
+
     function makeResizableDiv(element) {
       const resizers = document.querySelectorAll('.resizer');
       const minimum_size = 20;
@@ -156,6 +160,7 @@ export class ImageEditingModalComponent implements OnInit {
               // mouse.x = e.pageX;
               // mouse.y = e.pageY;
               // element.style.width = mouse.x - element.getBoundingClientRect().left + 'px';
+		//TODO Координаты
               const width = original_width + (e.pageX - original_mouse_x);
               const height = original_height + (e.pageY - original_mouse_y);
               if (width > minimum_size) {
@@ -585,7 +590,7 @@ export class ImageEditingModalComponent implements OnInit {
         cellText[0].style.position = 'absolute';
         cellText[0].style.left = ev.offsetX + 'px';
         cellText[0].style.top = ev.offsetY + 'px';
-        cellText[0].style.width = '200px';
+        cellText[0].style.width = '300px';
         cellText[0].style.color = 'red';
         cellText[0].style['background-color'] = 'inherit';
         modalBody.append(cellText[0]);
@@ -601,7 +606,7 @@ export class ImageEditingModalComponent implements OnInit {
       const element = inputsArr[i];
       if (element.value !== '') {
         ctx.lineWidth = 1;
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = 'red'; //TODO цвет текста
         ctx.lineStyle = '#ffff00';
         ctx.font = '18px sans-serif';
         const pos = $('.txt-input').position();
