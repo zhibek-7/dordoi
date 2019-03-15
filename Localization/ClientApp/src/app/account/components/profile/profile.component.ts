@@ -43,9 +43,9 @@ export class ProfileComponent implements OnInit {
   timeZones: [number, string];
 
   public config: DropzoneConfigInterface = {
-    url: "http://localhost:62184/api/User/Photo",
+    url: "http://localhost:53249/api/User/Photo",
     paramName: "file",
-    headers: null, // new HttpHeaders().set('Authorization', "Bearer " + sessionStorage.getItem("userToken")),
+    headers: { Authorization: `Bearer ${sessionStorage.getItem("userToken")}` },
     method: "post",
     maxFiles: 1,
     maxFilesize: 1,
