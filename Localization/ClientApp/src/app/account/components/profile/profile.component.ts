@@ -14,6 +14,7 @@ import { LanguageService } from "src/app/services/languages.service";
 import { UserService } from "src/app/services/user.service";
 import { UserProfile } from "src/app/models/DTO/userProfile.type";
 import { userPasswordChange } from "../../models/userPasswordChange.model";
+import { AppConfigService } from "src/services/app-config.service";
 
 @Component({
   selector: "app-profile",
@@ -24,7 +25,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private router: Router,
     private userService: UserService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private appConfigService: AppConfigService
   ) {}
 
   hidePassword: boolean;
@@ -43,7 +45,7 @@ export class ProfileComponent implements OnInit {
   timeZones: [number, string];
 
   public config: DropzoneConfigInterface = {
-    url: "http://localhost:53249/api/User/Photo",
+    url: `${this.appConfigService.config.host.protocol}://${this.appConfigService.config.host.name}/api/User/Photo`,
     paramName: "file",
     headers: { Authorization: `Bearer ${sessionStorage.getItem("userToken")}` },
     method: "post",
