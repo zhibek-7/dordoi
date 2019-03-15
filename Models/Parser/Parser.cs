@@ -51,7 +51,8 @@ namespace Models.Parser
                 {"rc", ParseAsRc },
                 {"yml", ParseAsYml_Yaml },
                 {"yaml", ParseAsYml_Yaml },
-                {"docx", ParseAsDocx }
+                {"docx", ParseAsDocx },
+                {"odt", ParseAsDocx }
             };
         }
 
@@ -455,24 +456,19 @@ namespace Models.Parser
             //var path = Path.GetTempPath() + Guid.NewGuid();
             //using (var zf = ZipFile.Open(file, ZipArchiveMode.Read)) zf.ExtractToDirectory(path);
             //var docPath = path + @"\word\document.xml";
-            //var text = File.ReadAllText(DownloadsFolderPath + @"\Input\openapi.yml");
+            //var text = File.ReadAllText(docPath);
             var ts = new List<TranslationSubstring>();
-            var pattern_pr = "<w:p(?:\\s*\\w+:?\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>(((?<!</w:p>).)*)</w:p>";
-            var pattern_r = "<w:r(?:\\s*\\w+:?\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>(((?<!</w:r>).)*)</w:r>";
-            var pattern_t = "<w:t(?:\\s*\\w+:?\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>(((?<!</w:t>).)*)</w:t>";
-            var prs = Regex.Matches(file.original_full_text, pattern_pr, RegexOptions.Singleline);
+            var pattern_p = "<w:p(?:\\s*\\w+:?\\w+\\s*=\\s*\"[^\"]*\"\\s*)*>(((?<!</w:p>).)*)</w:p>";
+            var pattern_t = ">([^>]+)<";
+            var prs = Regex.Matches(file.original_full_text, pattern_p);
             int n = 0;
-            foreach (Match m_pr in prs)
+            foreach (Match m_p in prs)
             {
-                var rs = Regex.Matches(m_pr.Groups[1].Value, pattern_r);
-                foreach (Match m_r in rs)
+                var txs = Regex.Matches(m_p.Groups[1].Value, pattern_t);
+                foreach (Match m_t in txs)
                 {
-                    var txs = Regex.Matches(m_r.Groups[1].Value, pattern_t);
-                    foreach (Match m_t in txs)
-                    {
-                        var pos = m_pr.Groups[1].Index + m_r.Groups[1].Index + m_t.Groups[1].Index;
-                        ts.Add(new TranslationSubstring(m_t.Groups[1].Value, string.Empty, file.id, m_t.Groups[1].Value, pos, n));
-                    }
+                    var pos = m_p.Groups[1].Index + m_t.Groups[1].Index;
+                    ts.Add(new TranslationSubstring(m_t.Groups[1].Value, string.Empty, file.id, m_t.Groups[1].Value, pos, n));
                 }
                 n++;
             }
@@ -481,5 +477,38 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'odt'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
+        private List<TranslationSubstring> ParseAsOdt(File file)
+        {
+            //Предполагается, что в качестве original_full_text будет выступать content.xml из соответствующего архива odt
+            _logger.WriteLn("Parser: " + string.Format("К файлу {0} применяется парсер для файлов с расширением 'odt'", file.name_text));
+            //var file = DownloadsFolderPath + @"\Краткая инструкция VS2017.odt";
+            //var path = Path.GetTempPath() + Guid.NewGuid();
+            //using (var zf = ZipFile.Open(file, ZipArchiveMode.Read)) zf.ExtractToDirectory(path);
+            //var docPath = path + @"\content.odt";
+            //var text = File.ReadAllText(docPath);
+            var ts = new List<TranslationSubstring>();
+            var pattern_p = "<text:(?<type>p|h)(?:\\s*\\w+:?[\\w-]+=\"[^\"]*\"\\s*)*(>((?<!</text:\\k<type>>).)*<)/text:\\k<type>>";
+            var pattern_t = ">([^>]+)<";
+            var prs = Regex.Matches(file.original_full_text, pattern_p);
+            int n = 0;
+            foreach (Match m_p in prs)
+            {
+                var txs = Regex.Matches(m_p.Groups[1].Value, pattern_t);
+                foreach (Match m_t in txs)
+                {
+                    var pos = m_p.Groups[1].Index + m_t.Groups[1].Index;
+                    ts.Add(new TranslationSubstring(m_t.Groups[1].Value, string.Empty, file.id, m_t.Groups[1].Value, pos, n));
+                }
+                n++;
+            }
+            //Directory.Delete(path, true);
+            _logger.WriteLn("Parser: " + string.Format("Парсер 'odt'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
+            return ts;
+        }
     }
 }
