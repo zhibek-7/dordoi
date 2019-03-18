@@ -11,7 +11,8 @@ import {
   MatSortModule,
   MatMenuModule,
   MatSelectModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatPaginatorModule
 } from "@angular/material";
 
 import { RequestInterceptorService } from "src/app/services/requestInterceptor.service";
@@ -47,6 +48,7 @@ import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
     MatMenuModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatPaginatorModule,
 
     CurrentProjectSettingsRoutingModule
   ],

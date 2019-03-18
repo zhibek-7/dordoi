@@ -62,6 +62,13 @@
           </div>
         </div>
       </div>
+      <mat-paginator
+          [length]="listLength"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          (page)="onPageChanged($event)"
+          style="margin-bottom: 1rem;">
+      </mat-paginator>
     </div>
     <div class="col-3" style="font-size: 14px;">
       <div class="content-top">

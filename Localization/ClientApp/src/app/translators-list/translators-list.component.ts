@@ -9,6 +9,7 @@ import { LanguageService } from 'src/app/services/languages.service';
 
 import { ItemsSortBy } from './itemsSortBy.pipe';
 import { checkAndUpdateBinding } from '@angular/core/src/view/util';
+import {PageEvent} from '@angular/material';
 
 @Component({
   selector: 'app-translators-list',
@@ -23,6 +24,10 @@ export class TranslatorsListComponent implements OnInit {
   selectedTranslateLanguage;
   nativeLanguage;
   selectedService;
+  listLength: number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [10, 25, 100];
+  pageEvent: PageEvent;
   min;
   max;
   sortingColumn: string;
@@ -119,22 +124,6 @@ export class TranslatorsListComponent implements OnInit {
       if(this.check(item, searchingVal)) {
         this.filtredTranslators.push(item);
       }
-      // if (
-      //   searchingVal['topics'] ||
-      //   searchingVal['min'] ||
-      //   searchingVal['max']
-      // ) {
-      //   let found;
-      //   if (searchingVal['topics']) {
-      //     found = item.topics.some(r => searchingVal['topics'].indexOf(r) >= 0);
-      //   }
-      //   if (
-      //     found &&
-      //     (item.cost > searchingVal['min'] && item.cost < searchingVal['max'])
-      //   ) {
-      //     this.filtredTranslators.push(item);
-      //   }
-      // }
     });
   }
 
@@ -160,11 +149,19 @@ export class TranslatorsListComponent implements OnInit {
     });
   }
 
-  loadPublicTranslators() {
+  onPageChanged(args: PageEvent) {
+    this.pageSize = args.pageSize;
+    const currentOffset = args.pageSize * args.pageIndex;
+    this.loadPublicTranslators(currentOffset);
+    this.filtredTranslators = this.translators;
+  }
+
+  loadPublicTranslators(pageIndex = 0) {
     this.translationService.getAllPublicTranslators().subscribe({
       next: response => {
         // console.log('next', response);
-        this.translators = response;
+        this.translators = response.slice(pageIndex, this.pageSize + pageIndex);
+        this.listLength = response.length;
       },
       error: err => console.log(err),
       complete: () => {
