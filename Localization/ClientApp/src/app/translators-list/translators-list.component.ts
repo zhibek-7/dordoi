@@ -1,12 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Translator } from 'src/app/models/Translators/translator.type';
 import { TranslatorsService } from 'src/app/services/translators.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { ItemsSortBy } from './itemsSortBy.pipe';
 import { checkAndUpdateBinding } from '@angular/core/src/view/util';
 import {PageEvent} from '@angular/material';
+
+export interface DialogData {
+  animal: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-translators-list',
@@ -49,7 +55,8 @@ export class TranslatorsListComponent implements OnInit {
   constructor(
     private translationService: TranslatorsService,
     private usersService: UserService,
-    private languagesService: LanguageService
+    private languagesService: LanguageService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -61,6 +68,17 @@ export class TranslatorsListComponent implements OnInit {
   sortBy(parametrs) {
     this.sortingColumn = parametrs[1];
     this.isDesc = parametrs[0];
+  }
+
+  openDialog(translator): void {
+    const dialogRef = this.dialog.open(DialogInviteTranslator, {
+      width: '650px',
+      data: {item: translator, name: translator.user_Name}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   checkValue(translator, filter, name) {
@@ -190,4 +208,20 @@ export class TranslatorsListComponent implements OnInit {
       }
     );
   }
+}
+
+@Component({
+  selector: 'dialog-invite-translator',
+  templateUrl: 'dialog-invite-translator.html',
+})
+export class DialogInviteTranslator {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogInviteTranslator>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }
