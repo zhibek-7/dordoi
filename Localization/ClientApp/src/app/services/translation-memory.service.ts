@@ -16,7 +16,7 @@ export class TranslationMemoryService {
   /**
    * Возвращает список памяти переводов текущего пользователя, со строками перечислений имен связанных объектов.
    * @param projectId Идентификатор проекта.
-   * @param searchString Шаблон строки (поиск по substring_to_translate).
+   * @param searchString Шаблон строки (поиск по name_text).
    * @param limit Количество возвращаемых строк.
    * @param offset Количество пропущенных строк.
    * @param sortBy Имя сортируемого столбца.

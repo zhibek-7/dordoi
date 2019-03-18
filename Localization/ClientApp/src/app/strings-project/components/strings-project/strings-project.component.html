@@ -68,7 +68,8 @@
       </th>
     </tr>
   </thead>
-  <tr *ngFor="let row of dataSource">
+  <tr *ngFor="let row of dataSource"
+      [class.row-selected]="row.isSelected">
     <td class="col-xs-1">
       <input type="checkbox" [ngModel]="row.isSelected" (change)="selected(row)">
     </td>
