@@ -52,7 +52,7 @@ namespace Models.Interfaces.Repository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
-        Task AddNewGlossaryAsync(int userId, GlossariesForEditingDTO glossary);
+        Task AddAsync(int userId, GlossariesForEditingDTO glossary);
 
         /// <summary>
         /// Сохранение изменений в глоссарии.
@@ -60,13 +60,13 @@ namespace Models.Interfaces.Repository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
-        Task EditGlossaryAsync(int userId, GlossariesForEditingDTO glossary);
+        Task UpdateAsync(int userId, GlossariesForEditingDTO glossary);
 
         /// <summary>
         /// удаление глоссария.
         /// </summary>
         /// <param name="id">идентификатор глоссария.</param>
         /// <returns></returns>
-        Task DeleteGlossaryAsync(int id);
+        Task DeleteAsync(int id);
     }
 }
