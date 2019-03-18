@@ -15,9 +15,14 @@ export class SharePhraseService {
 
   onClick: EventEmitter<TranslationSubstring> = new EventEmitter();
   onClick2: EventEmitter<Translation[]> = new EventEmitter();
+  onClickCheckBoxChanged: EventEmitter<string> = new EventEmitter();
 
     constructor(private translateService: TranslationService){
 
+    }
+
+    setStatusOfTranslationSubstring(status: string){
+        this.onClickCheckBoxChanged.emit(status);
     }
 
     async addSharedPhrase(sharedPhrase){

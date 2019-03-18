@@ -11,7 +11,9 @@ import {
   MatSortModule,
   MatMenuModule,
   MatSelectModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatPaginatorModule,
+  MatDialogModule
 } from "@angular/material";
 
 import { RequestInterceptorService } from "src/app/services/requestInterceptor.service";
@@ -22,7 +24,7 @@ import { UserService } from "src/app/services/user.service";
 import { CurrentProjectTranslationsComponent } from '../components/current-project-translations/current-project-translations.component';
 import { CurrentProjectSettingsRoutingModule } from './current-project-settings-routing.module';
 import { CurrentProjectSettingsComponent } from '../components/current-project-settings/current-project-settings.component';
-import { TranslatorsListComponent } from '../../translators-list/translators-list.component';
+import { TranslatorsListComponent, DialogInviteTranslator } from '../../translators-list/translators-list.component';
 import { TranslatorsService } from 'src/app/services/translators.service';
 import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
 
@@ -32,8 +34,10 @@ import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
     CurrentProjectSettingsComponent,
     CurrentProjectTranslationsComponent,
     TranslatorsListComponent,
+    DialogInviteTranslator,
     ItemsSortBy
   ],
+  entryComponents: [DialogInviteTranslator],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -47,6 +51,8 @@ import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
     MatMenuModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatPaginatorModule,
+    MatDialogModule,
 
     CurrentProjectSettingsRoutingModule
   ],

@@ -96,11 +96,6 @@ const routes: Routes = [
     loadChildren: "../account/module/account.module#AccountModule"
   },
   {
-    path: "user-registration",
-    //component: UserRegistrationComponent
-    loadChildren: "../user-registration/user-registration.modele#UserRegistrationModule",
-  },
-  {
     path: "invitation",
     loadChildren: "../invitations/invitations.module#InvitationsModule",
   },

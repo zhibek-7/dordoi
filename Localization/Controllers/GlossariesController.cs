@@ -24,35 +24,56 @@ namespace Localization.Controllers
             _userActionRepository = new UserActionRepository(connectionString);
 
             ur = new UserRepository(connectionString);
-
         }
 
 
         /// <summary>
-        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов.
+        /// Возвращает список глоссариев (со связанными объектами) и их количество.
         /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
-        {
-            var identityName = User.Identity.Name;
-            int? userId = (int)ur.GetID(identityName);
-            return await _glossariesService.GetAllToDTOAsync(userId, null);
-        }
-
-        /// <summary>
-        /// Добавление нового глоссария.
-        /// </summary>
-        /// <param name="glossary">Новый глоссарий.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия глоссария (поиск по name_text).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("newGlossary")]
-        public async Task AddGlossaryAsync(GlossariesForEditingDTO glossary)
+        [HttpPost("byUserId")]
+        public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(
+            int? offset,
+            int? limit,
+            int? projectId,
+            string searchString,
+            string[] sortBy,
+            bool? sortAscending)
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
-            await _userActionRepository.AddCreateGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.AddNewGlossaryAsync(glossary);
+
+            Response.Headers.Add(
+                key: "totalCount",
+                value: (await _glossariesService.GetAllByUserIdCountAsync(
+                    userId: userId,
+                    projectId: projectId,
+                    searchString: searchString
+                )).ToString());
+
+            var strings = await _glossariesService.GetAllByUserIdAsync(
+                userId: userId,
+                offset: offset ?? 0,
+                limit: limit ?? 25,
+                projectId: projectId,
+                searchString: searchString,
+                sortBy: sortBy,
+                sortAscending: sortAscending ?? true
+            );
+
+            if (strings == null)
+            {
+                return BadRequest("Glossaries not found");
+            }
+
+            return Ok(strings);
         }
 
         /// <summary>
@@ -65,6 +86,21 @@ namespace Localization.Controllers
         {
             return await _glossariesService.GetGlossaryForEditAsync(glossaryId);
         }
+        
+        /// <summary>
+        /// Добавление нового глоссария.
+        /// </summary>
+        /// <param name="glossary">Новый глоссарий.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("newGlossary")]
+        public async Task AddAsync(GlossariesForEditingDTO glossary)
+        {
+            var identityName = User.Identity.Name;
+            int? userId = (int)ur.GetID(identityName);
+            await _userActionRepository.AddCreateGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
+            await _glossariesService.AddAsync((int)userId,  glossary);
+        }
 
         /// <summary>
         /// Сохранение изменений в глоссарии.
@@ -73,12 +109,12 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("editSaveGlossary")]
-        public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
+        public async Task UpdateAsync(GlossariesForEditingDTO glossary)
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddEditGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.EditGlossaryAsync(glossary);
+            await _glossariesService.UpdateAsync((int)userId, glossary);
         }
 
         /// <summary>
@@ -88,12 +124,12 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpDelete("deleteGlossary/{glossaryId}")]
-        public async Task DeleteGlossaryAsync(int glossaryId)
+        public async Task DeleteAsync(int glossaryId)
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddDeleteGlossaryActionAsync((int)userId, identityName, glossaryId, "");
-            await _glossariesService.DeleteGlossaryAsync(glossaryId);
+            await _glossariesService.DeleteAsync(glossaryId);
         }
 
         /// <summary>
@@ -102,9 +138,9 @@ namespace Localization.Controllers
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         [HttpDelete("clearGlossary/{glossaryId}")]
-        public async Task ClearGlossaryAsync(int glossaryId)
+        public async Task ClearAsync(int glossaryId)
         {
-            await _glossariesService.ClearGlossaryAsync(glossaryId);
+            await _glossariesService.ClearAsync(glossaryId);
         }
 
     }

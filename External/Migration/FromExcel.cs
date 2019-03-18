@@ -52,13 +52,44 @@ namespace Models.Migration
                 var locales = new List<Locale>();
                 using (var xlPackage = new ExcelPackage(new System.IO.FileInfo(tempFileName)))
                 {
-                    var myWorksheet = xlPackage.Workbook.Worksheets[1];
+                    var myWorksheet = xlPackage.Workbook.Worksheets[0];
                     var totalRows = myWorksheet.Dimension.End.Row;
                     var totalColumns = myWorksheet.Dimension.End.Column;
+                    //TODO первая строка заголовок
                     for (int i = 2; i <= totalRows; i++)
                     {
                         string[] input = myWorksheet.Cells[i, 1, i, totalColumns].Select(c => c.Value == null ? string.Empty : c.Value.ToString()).ToArray();
-                        locales.Add(new Locale(input[0], string.Empty, input[1], null, input[2]));
+
+                        if (input == null || input.Length == 0 || input.Length < 5)
+                        {
+                            break;
+
+                        }
+                        _logger.WriteLn(i + " Чтение строки:" + input[0]);
+
+
+                        Locale lc = new Locale(input[0], input[0], false, input[2], DateTime.Now, input[3]);
+
+                        if (input[4] != null && input[4].Equals("true"))
+                        {
+                            lc.is_used = true;
+                        }
+                        else
+                        {
+                            lc.is_used = false;
+                        }
+
+                        if (input[1] != null && input[1].Equals("true"))
+                        {
+                            lc.flag = true;
+                        }
+                        else
+                        {
+                            lc.flag = false;
+                        }
+
+
+                        locales.Add(lc);
 
                     }
                 }

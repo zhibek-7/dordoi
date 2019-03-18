@@ -15,18 +15,20 @@ namespace Models.DatabaseEntities
         [Required]
         public string description { get; set; }
 
-        [Required]
-        public string flag { get; set; }
 
+        public bool flag { get; set; }
+
+        [Required]
         public string code { get; set; }
 
         public DateTime? data_create { get; set; }
 
         public string url { get; set; }
+        public bool is_used { get; set; }
 
         public Locale() { }
 
-        public Locale(string name, string description, string flag, DateTime? data_create, string url)
+        public Locale(string name, string description, bool flag, DateTime? data_create, string url)
         {
             this.name_text = name;
             this.description = description;
@@ -35,7 +37,7 @@ namespace Models.DatabaseEntities
             this.url = url;
         }
 
-        public Locale(string name, string description, string flag, string code, DateTime? data_create, string url)
+        public Locale(string name, string description, bool flag, string code, DateTime? data_create, string url)
         {
             this.name_text = name;
             this.description = description;
@@ -44,7 +46,7 @@ namespace Models.DatabaseEntities
             this.data_create = data_create;
             this.url = url;
         }
-        public Locale(int id, string name, string description, string flag, string code, DateTime data_create, string url)
+        public Locale(int id, string name, string description, bool flag, string code, DateTime data_create, string url)
         {
             base.id = id;
             this.name_text = name;

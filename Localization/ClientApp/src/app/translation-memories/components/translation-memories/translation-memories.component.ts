@@ -23,8 +23,7 @@ import { ProjectsService } from "src/app/services/projects.service";
   providers: [TranslationMemoryService]
 })
 export class TranslationMemoriesComponent extends MainListPageComponent implements OnInit {
-
-
+  
   dataSource: Selectable<TranslationMemoryTableViewDTO>[] = [];
   isDataSourceLoaded: boolean = true;
 
@@ -70,7 +69,7 @@ export class TranslationMemoriesComponent extends MainListPageComponent implemen
     this.getFileTypes();
   }
 
-  /** Получение списка памятей переводов текущего проекта для фильтра данных таблицы через выпадающий список. */
+  /** Получение списка проектов для фильтра данных таблицы через выпадающий список. */
   loadDropdown() {
     super.loadDropdown();
 
@@ -86,7 +85,7 @@ export class TranslationMemoriesComponent extends MainListPageComponent implemen
     );
   }
 
-  /** Получение списка строк памяти переводов текущего проекта для отображения в таблице. */
+  /** Получение списка памяти переводов для отображения в таблице. */
   loadData(offset = 0) {
     super.loadData();
     let sortBy = new Array<string>();
@@ -125,7 +124,6 @@ export class TranslationMemoriesComponent extends MainListPageComponent implemen
    * @param element Выбранный элемент пользователем.
    */
   selected(element: Selectable<TranslationMemoryTableViewDTO>) {
-    console.log("selected: ", element);
     if (this.dataSource.filter(t => t.isSelected).length > 0) {
       this.dataSource[this.indexSelected].isSelected = false;
     }

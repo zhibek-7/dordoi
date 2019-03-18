@@ -24,113 +24,210 @@ namespace DAL.Reposity.PostgreSqlRepository
             fr = new FilesRepository(connectionStr);
         }
 
-        /// <summary>
-        /// Возвращает все строки запроса (без группировки по объектам).
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<Glossaries>> GetAllAsync(int? userId, int? projectId)
+
+
+        public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
         {
+            { "id", "glossaries.id" },
+            { "name_text", "glossaries.name_text" },
+            { "locales_name", "locales_g.locales_name"},
+            { "localization_projects_name", "localization_projects_g.localization_projects_name"},
+            { "string_count", "string_count" }
+        };
+
+
+        /// <summary>
+        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия глоссария (поиск по name_text).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllByUserIdAsync(
+            int? userId,
+            int offset,
+            int limit,
+            int? projectId = null,
+            string searchString = null,
+            string[] sortBy = null,
+            bool sortAscending = true)
+        {
+            if (sortBy == null || !sortBy.Any())
+            {
+                sortBy = new[] { "id" };
+            }
+
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    /*
-                    var query = new Query("glossaries")
-                        .LeftJoin("glossaries_locales", "glossaries_locales.id_glossary", "glossaries.id")
-                        .LeftJoin("locales", "locales.id", "glossaries_locales.id_locale")
-                        .LeftJoin("localization_projects_glossaries", "localization_projects_glossaries.id_glossary", "glossaries.id")
-                        .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_glossaries.id_localization_project")
-                        .Select(
-                            "glossaries.id",
-                            "glossaries.name_text",
-                            "locales.name_text as Locale_Name",
-                            "localization_projects.name_text as Localization_Project_Name"
-                        );
-                    var compiledQuery = _compiler.Compile(query);
+                    var query = GetAllByUserIdQuery(
+                        userId,
+                        projectId,
+                        searchString);
+
+                    query = ApplyPagination(
+                        query: query,
+                        offset: offset,
+                        limit: limit);
+
+                    query = ApplySorting(
+                        query: query,
+                        columnNamesMappings: GlossariesRepository.SortColumnNamesMapping,
+                        sortBy: sortBy,
+                        sortAscending: sortAscending);
+
+                    var compiledQuery = this._compiler.Compile(query);
                     LogQuery(compiledQuery);
-                    var glossaries = await dbConnection.QueryAsync<Glossaries>(
-                        sql: sql,
-                        param: compiledQuery.NamedBindings);
-                    */
-                    var sql = @"select g.id, g.name_text, l.name_text as Locale_Name, lp.name_text as Localization_Project_Name
-from glossaries as g
-inner join glossaries_locales as gl on
-gl.id_glossary = g.id
-inner join locales as l on
-l.id = gl.id_locale
-inner join localization_projects_glossaries as lpg on
-lpg.id_glossary = g.id
-inner join localization_projects as lp on
-lp.id = lpg.id_localization_project
-inner join participants as p
-	on lp.id = p.id_localization_project
-where  active = true and p.id_user = " + (int)userId + @"
-order by g.name_text";
-                    LogQuery(sql);
-                    var glossaries = await dbConnection.QueryAsync<Glossaries>(
-                        sql: sql);
+
+                    var glossaries = await dbConnection.QueryAsync<GlossariesTableViewDTO>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+
                     return glossaries;
                 }
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllByUserIdAsync)} {nameof(NpgsqlException)} ", exception);
                 return null;
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllByUserIdAsync)} {nameof(Exception)} ", exception);
                 return null;
             }
         }
 
         /// <summary>
-        /// Добавление нового глоссария.
+        /// Возвращает количество глоссариев.
         /// </summary>
-        /// <param name="glossary">Новый глоссарий.</param>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия глоссария (поиск по name_text).</param>
         /// <returns></returns>
-        public async Task AddNewGlossaryAsync(GlossariesForEditingDTO glossary)
+        public async Task<int> GetAllByUserIdCountAsync(
+            int? userId,
+            int? projectId = null,
+            string searchString = null)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    //Добавление нового глоссария
-                    var newGlossaries = new
-                    {
-                        name_text = glossary.Name_text,
-                        description = glossary.Description,
-                        id_file = glossary.ID_File
-                    };
-                    var query = new Query("glossaries").AsInsert(newGlossaries, true); //true - вернуть сгенерированный id нового объекта
+                    var query = GetAllByUserIdQuery(
+                        userId,
+                        projectId,
+                        searchString);
+                    query = query.Distinct().AsCount("glossaries.id");
+
+
                     var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
+                    this.LogQuery(compiledQuery);
 
-                    //После выполнение запроса получаем сгенерированный id нового объекта
-                    var idOfNewGlossary = await dbConnection
-                        .ExecuteScalarAsync<int>(
-                            sql: compiledQuery.Sql,
-                            param: compiledQuery.NamedBindings);
-
-                    //Добавление в таблицу "GlossariesLocales" записей связи глоссария с языками перевода (Glossaries с Locales)
-                    var loc = ConvertData.ConverLocale(glossary.Locales_Ids);
-
-                    await EditGlossariesLocalesAsync(idOfNewGlossary, loc, glossary.ID_File, false);
-
-                    //Добавление в таблицу "localization_projectsGlossaries" записей связи глоссария с проектами локализации (Glossaries с localization_projects)
-                    await EditGlossarieslocalization_projectsAsync(idOfNewGlossary, glossary.Localization_Projects_Ids, false);
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+                    return count;
                 }
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.AddNewGlossaryAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllByUserIdCountAsync)} {nameof(NpgsqlException)} ", exception);
+                return 0;
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.AddNewGlossaryAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllByUserIdCountAsync)} {nameof(Exception)} ", exception);
+                return 0;
+            }
+
+        }
+
+        /// <summary>
+        /// Возвращает запрос глоссариев (со связанными объектами).
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия глоссария (поиск по name_text).</param>
+        /// <returns></returns>
+        private Query GetAllByUserIdQuery(
+            int? userId,
+            int? projectId = null,
+            string searchString = null)
+        {
+            try
+            {
+                var queryLocalesGlossaries = new Query("glossaries")
+                    .LeftJoin("glossaries_locales", "glossaries_locales.id_glossary", "glossaries.id")
+                    .LeftJoin("locales", "locales.id", "glossaries_locales.id_locale")
+                    .Select("glossaries.id as tm_id")
+                    .GroupBy("glossaries.id")
+                    .SelectRaw("string_agg(locales.name_text, ', ' order by locales.name_text) as locales_name");
+
+                var queryLocalizationProjectsGlossaries = new Query("glossaries")
+                    .LeftJoin("localization_projects_glossaries", "localization_projects_glossaries.id_glossary", "glossaries.id")
+                    .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_glossaries.id_localization_project")
+                    .Join("participants", "participants.id_localization_project", "localization_projects.id")
+                    .WhereTrue("participants.active")
+                    .Where("participants.id_user", (int)userId)
+                    .Select("glossaries.id as tm_id")
+                    .GroupBy("glossaries.id")
+                    .SelectRaw("string_agg(localization_projects.name_text, ', ' order by localization_projects.name_text) as localization_projects_name");
+
+
+                var query = new Query("glossaries")
+                    .With("locales_g", queryLocalesGlossaries)
+                    .With("localization_projects_g", queryLocalizationProjectsGlossaries)
+                    .Join("locales_g", "locales_g.tm_id", "glossaries.id")
+                    .Join("localization_projects_g", "localization_projects_g.tm_id", "glossaries.id")
+                    .Select(
+                        "glossaries.id",
+                        "glossaries.name_text",
+                        "locales_g.locales_name",
+                        "localization_projects_g.localization_projects_name"
+                    );
+
+                if (projectId != null)
+                {
+                    query = query
+                        .Join("localization_projects_glossaries", "localization_projects_glossaries.id_glossary", "glossaries.id")
+                        .Where("localization_projects_glossaries.id_localization_project", projectId);
+                }
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    var searchPattern = $"%{searchString}%";
+                    query = query.WhereLike("glossaries.name_text", searchPattern);
+                }
+
+                var compiledQuery = _compiler.Compile(query);
+                LogQuery(compiledQuery);
+
+                return query;
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllByUserIdQuery)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.GetAllByUserIdQuery)} {nameof(Exception)} ", exception);
+                return null;
             }
         }
 
+        public async Task<IEnumerable<Glossaries>> GetAllAsync(int? userId, int? projectId)
+        {
+            return null;
+        }
 
         /// <summary>
         /// Возвращает глоссарий для редактирования (без группировки по объектам).
@@ -178,11 +275,60 @@ order by g.name_text";
         }
 
         /// <summary>
+        /// Добавление нового глоссария.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="glossary">Новый глоссарий.</param>
+        /// <returns></returns>
+        public async Task AddAsync(int userId, GlossariesForEditingDTO glossary)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    //Добавление нового глоссария
+                    var newGlossaries = new
+                    {
+                        name_text = glossary.Name_text,
+                        description = glossary.Description,
+                        id_file = glossary.ID_File
+                    };
+                    var query = new Query("glossaries").AsInsert(newGlossaries, true); //true - вернуть сгенерированный id нового объекта
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+
+                    //После выполнение запроса получаем сгенерированный id нового объекта
+                    var idOfNewGlossary = await dbConnection
+                        .ExecuteScalarAsync<int>(
+                            sql: compiledQuery.Sql,
+                            param: compiledQuery.NamedBindings);
+
+                    //Добавление в таблицу "GlossariesLocales" записей связи глоссария с языками перевода (Glossaries с Locales)
+                    var loc = ConvertData.ConverLocale(glossary.Locales_Ids);
+
+                    await EditGlossariesLocalesAsync(idOfNewGlossary, loc, glossary.ID_File, false);
+
+                    //Добавление в таблицу "localization_projectsGlossaries" записей связи глоссария с проектами локализации (Glossaries с localization_projects)
+                    await EditGlossariesLocalizationProjectsAsync(userId, idOfNewGlossary, glossary.Localization_Projects_Ids, false);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.AddAsync)} {nameof(NpgsqlException)} ", exception);
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.AddAsync)} {nameof(Exception)} ", exception);
+            }
+        }
+
+        /// <summary>
         /// Сохранение изменений в глоссарии.
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
-        public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
+        public async Task UpdateAsync(int userId, GlossariesForEditingDTO glossary)
         {
             try
             {
@@ -207,16 +353,16 @@ order by g.name_text";
                     await EditGlossariesLocalesAsync(glossary.id, loc, glossary.ID_File);
 
                     //Пересоздание связей глоссария с проектами локализации (Glossaries с localization_projects)
-                    await EditGlossarieslocalization_projectsAsync(glossary.id, glossary.Localization_Projects_Ids);
+                    await EditGlossariesLocalizationProjectsAsync(userId, glossary.id, glossary.Localization_Projects_Ids);
                 }
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossaryAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.UpdateAsync)} {nameof(NpgsqlException)} ", exception);
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossaryAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.UpdateAsync)} {nameof(Exception)} ", exception);
             }
         }
 
@@ -227,7 +373,7 @@ order by g.name_text";
         /// <param name="localesIds">Выбранные языки перевода.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task EditGlossariesLocalesAsync(int glossaryId, IEnumerable<int> localesIds, int? filId, bool isDeleteOldRecords = true)
+        private async Task EditGlossariesLocalesAsync(int glossaryId, IEnumerable<int> localesIds, int? filId, bool isDeleteOldRecords = true)
         {
             try
             {
@@ -280,11 +426,12 @@ order by g.name_text";
         /// <summary>
         /// Пересоздание связей глоссария с проектами локализации (Glossaries с localization_projects).
         /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <param name="localization_projectsIds">Выбранные проекты локализации.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task EditGlossarieslocalization_projectsAsync(int glossaryId, IEnumerable<int?> localization_projectsIds, bool isDeleteOldRecords = true)
+        private async Task EditGlossariesLocalizationProjectsAsync(int userId, int glossaryId, IEnumerable<int?> localization_projectsIds, bool isDeleteOldRecords = true)
         {
             try
             {
@@ -292,38 +439,48 @@ order by g.name_text";
                 {
                     if (isDeleteOldRecords)
                     {
-                        var querylocalization_projectsGlossariesDelete = new Query("localization_projects_glossaries").Where("id_glossary", glossaryId).AsDelete();
-                        var compiledQuerylocalization_projectsGlossariesDelete = _compiler.Compile(querylocalization_projectsGlossariesDelete);
-                        LogQuery(compiledQuerylocalization_projectsGlossariesDelete);
+                        var queryDelete = new Query("localization_projects_glossaries")
+                            .Where("id_glossary", glossaryId)
+                            .WhereIn("id_localization_project",
+                                new Query("localization_projects_glossaries")
+                                    .Join("participants", "participants.id_localization_project", "localization_projects_glossaries.id_localization_project")
+                                    .WhereTrue("participants.active")
+                                    .Where("participants.id_user", userId)
+                                    .Where("localization_projects_glossaries.id_glossary", glossaryId)
+                                    .Select("localization_projects_glossaries.id_localization_project")
+                            )
+                            .AsDelete();
+                        var compiledQueryDelete = _compiler.Compile(queryDelete);
+                        LogQuery(compiledQueryDelete);
                         await dbConnection.ExecuteAsync(
-                            sql: compiledQuerylocalization_projectsGlossariesDelete.Sql,
-                            param: compiledQuerylocalization_projectsGlossariesDelete.NamedBindings);
+                            sql: compiledQueryDelete.Sql,
+                            param: compiledQueryDelete.NamedBindings);
                     }
 
-                    var localization_projectsGlossaries = localization_projectsIds.Select(t => new
+                    var localizationProjectsGlossaries = localization_projectsIds.Select(t => new
                     {
                         id_glossary = glossaryId,
                         id_localization_project = t
                     }).ToList();
 
-                    foreach (var element in localization_projectsGlossaries)
+                    foreach (var element in localizationProjectsGlossaries)
                     {
-                        var querylocalization_projectsGlossariesInsert = new Query("localization_projects_glossaries").AsInsert(element);
-                        var compiledQuerylocalization_projectsGlossariesInsert = _compiler.Compile(querylocalization_projectsGlossariesInsert);
-                        LogQuery(compiledQuerylocalization_projectsGlossariesInsert);
+                        var queryInsert = new Query("localization_projects_glossaries").AsInsert(element);
+                        var compiledQueryInsert = _compiler.Compile(queryInsert);
+                        LogQuery(compiledQueryInsert);
                         await dbConnection.ExecuteAsync(
-                                sql: compiledQuerylocalization_projectsGlossariesInsert.Sql,
-                                param: compiledQuerylocalization_projectsGlossariesInsert.NamedBindings);
+                                sql: compiledQueryInsert.Sql,
+                                param: compiledQueryInsert.NamedBindings);
                     }
                 }
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossarieslocalization_projectsAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossariesLocalizationProjectsAsync)} {nameof(NpgsqlException)} ", exception);
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossarieslocalization_projectsAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.EditGlossariesLocalizationProjectsAsync)} {nameof(Exception)} ", exception);
             }
         }
 
@@ -332,7 +489,7 @@ order by g.name_text";
         /// </summary>
         /// <param name="id">Идентификатор глоссария.</param>
         /// <returns></returns>
-        public async Task DeleteGlossaryAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             try
             {
@@ -446,11 +603,11 @@ order by g.name_text";
             }
             catch (NpgsqlException exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.DeleteGlossaryAsync)} {nameof(NpgsqlException)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.DeleteAsync)} {nameof(NpgsqlException)} ", exception);
             }
             catch (Exception exception)
             {
-                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.DeleteGlossaryAsync)} {nameof(Exception)} ", exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(GlossariesRepository)}.{nameof(GlossariesRepository.DeleteAsync)} {nameof(Exception)} ", exception);
             }
         }
 

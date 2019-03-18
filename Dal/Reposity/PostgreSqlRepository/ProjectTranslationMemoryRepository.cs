@@ -19,7 +19,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
         /// <summary>
-        /// Возвращает список связок проект - ((не)назначенных) памяти переводов (без группировки по объектам).
+        /// Возвращает список связок проект - ((не)назначенных)памяти переводов (без группировки по объектам).
         /// </summary>
         /// <param name="idProject">Идентификатор проекта локализации.</param>
         /// <returns></returns>
@@ -29,25 +29,17 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("translation_memories")
-                        .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
-                        .LeftJoin(new Query("localization_projects")
-                                .Where("localization_projects.id", idProject)
-                                .As("projects"),
-                            j => j.On("projects.id", "localization_projects_translation_memories.id_localization_project"))
-                        .Select(
-                            "translation_memories.id as translationMemory_id",
-                            "translation_memories.name_text as translationMemory_name_text",
-                            "projects.id as project_id",
-                            "projects.name_text as project_name_text"
-                            );
-                    
-                    var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
-                    var projectTranslationMemory = await dbConnection.QueryAsync<ProjectTranslationMemory>(
-                        sql: compiledQuery.Sql,
-                        param: compiledQuery.NamedBindings);
-                    return projectTranslationMemory;
+                    string SQLQuery = @"SELECT translation_memories.id AS translationMemory_id, 
+	   translation_memories.name_text AS translationMemory_name_text, 
+	   localization_projects_translation_memories.id_localization_project AS project_id
+FROM translation_memories 
+LEFT JOIN localization_projects_translation_memories ON 
+		  localization_projects_translation_memories.id_translation_memory = translation_memories.id and 
+		  localization_projects_translation_memories.id_localization_project = @idProject";
+                    var param = new { idProject };
+                        this.LogQuery(SQLQuery, param);
+                    var projectTranslationMemory = await dbConnection.QueryAsync<ProjectTranslationMemory>(SQLQuery, param);
+                        return projectTranslationMemory;
                 }
             }
             catch (NpgsqlException exception)

@@ -22,15 +22,15 @@ namespace DAL.Reposity.PostgreSqlRepository
             "flag, " +
             "code, " +
             "data_create, " +
-            "url, " +
+            "url, is_used " +
             ") " +
             "VALUES (" +
-            "@Name, " +
+            "@name_text, " +
             "@Description, " +
             "@Flag, " +
             "@code, " +
             "@data_create, " +
-            "@url" +
+            "@url" + ", @is_used" +
             ")";
 
         public LocaleRepository(string connectionStr) : base(connectionStr)
@@ -299,7 +299,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Where("localization_projects_translation_memories.id_translation_memory", idTranslationMemory)
                         .Select("localization_projects.id_source_locale")
                     );
-                    
+
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var translationMemoriesLocales = await dbConnection.QueryAsync<Locale>(
@@ -319,7 +319,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
-        
+
         /// <summary>
         /// Возвращает список языков назначенных на строки.
         /// </summary>

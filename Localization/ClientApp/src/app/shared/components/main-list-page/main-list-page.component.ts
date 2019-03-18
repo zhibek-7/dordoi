@@ -114,7 +114,6 @@ export class MainListPageComponent implements OnInit {
     this.loadData();
 
     this.lastSortColumnName = columnName;
-    //this.isSortingAscending = !this.isSortingAscending;
   }
 
   onPageChanged(newOffset: number) {

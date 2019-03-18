@@ -25,12 +25,12 @@ namespace Localization.Controllers
 
 
         /// <summary>
-        /// Возвращает строки (со связанными объектами) и их количество.
+        /// Возвращает список памяти переводов текущего пользователя (со связанными объектами) и их количество.
         /// </summary>
         /// <param name="offset">Количество пропущенных строк.</param>
         /// <param name="limit">Количество возвращаемых строк.</param>
         /// <param name="projectId">Идентификатор проекта.</param>
-        /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
         /// <param name="sortBy">Имя сортируемого столбца.</param>
         /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>

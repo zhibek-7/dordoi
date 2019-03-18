@@ -8,6 +8,7 @@ import { MatTableDataSource, MatSort } from "@angular/material";
 
 import { LanguageService } from "src/app/services/languages.service";
 import { UserService } from "src/app/services/user.service";
+import { AuthenticationService } from "src/app/services/authentication.service";
 
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { LocalizationProjectsLocalesDTO } from "src/app/models/DTO/localizationProjectsLocalesDTO";
@@ -59,7 +60,8 @@ export class CurrentProjectTranslationsComponent implements OnInit {
     private projectService: ProjectsService,
     private router: Router,
     private languagesService: LanguageService,
-    private userService: UserService
+    private userService: UserService,
+    private authenticationService: AuthenticationService
   ) {}
 
   // Загрузка файлов
@@ -70,15 +72,10 @@ export class CurrentProjectTranslationsComponent implements OnInit {
   ngOnInit() {
     this.getProject();
 
-    //console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
-    //console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
-    //console.log("Projec=" + sessionStorage.getItem("Projec"));
 
     this.currentUserName = this.userService.currentUserName;
-    //this.currentUserName = sessionStorage.getItem("currentUserName");
 
     this.projectId = this.projectService.currentProjectId;
-    //var projectId = Number(sessionStorage.getItem("ProjectID"));
 
     this.languagesService.getByProjectId(this.projectId).subscribe(
       Languages => {
@@ -108,6 +105,12 @@ export class CurrentProjectTranslationsComponent implements OnInit {
       },
       error => console.error(error)
     );
+
+    this.authenticationService.setUserRoleAccordingToProject().subscribe(
+      success => {
+        this.authenticationService.refreshToken().subscribe();
+      }
+    );
   }
 
   ngAfterViewInit() {
@@ -117,7 +120,7 @@ export class CurrentProjectTranslationsComponent implements OnInit {
   getProject() {
     this.route.params.subscribe((params: Params) => {
       this.projectService
-        .getProject(this.route.snapshot.params["id"])
+        .getProject(this.route.snapshot.params["projectId"])
         .subscribe(
           project => {
             this.currentProject = project;
@@ -126,7 +129,6 @@ export class CurrentProjectTranslationsComponent implements OnInit {
           },
           error => console.error(error)
         );
-      console.log("snapshot=" + this.route.snapshot.params["id"]);
     });
   }
 
