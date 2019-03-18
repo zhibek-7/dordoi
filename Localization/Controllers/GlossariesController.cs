@@ -29,17 +29,65 @@ namespace Localization.Controllers
 
 
         /// <summary>
-        /// Возвращает список глоссариев, со строками перечислений имен связанных объектов.
+        /// Возвращает список глоссариев (со связанными объектами) и их количество.
         /// </summary>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия глоссария (поиск по name_text).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllToDTOAsync()
+        [Authorize]
+        [HttpPost("byUserId")]
+        public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(
+            int? offset,
+            int? limit,
+            int? projectId,
+            string searchString,
+            string[] sortBy,
+            bool? sortAscending)
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
-            return await _glossariesService.GetAllToDTOAsync(userId, null);
+
+            Response.Headers.Add(
+                key: "totalCount",
+                value: (await _glossariesService.GetAllByUserIdCountAsync(
+                    userId: userId,
+                    projectId: projectId,
+                    searchString: searchString
+                )).ToString());
+
+            var strings = await _glossariesService.GetAllByUserIdAsync(
+                userId: userId,
+                offset: offset ?? 0,
+                limit: limit ?? 25,
+                projectId: projectId,
+                searchString: searchString,
+                sortBy: sortBy,
+                sortAscending: sortAscending ?? true
+            );
+
+            if (strings == null)
+            {
+                return BadRequest("Glossaries not found");
+            }
+
+            return Ok(strings);
         }
 
+        /// <summary>
+        /// Возвращает глоссарий для редактирования (со связанными объектами).
+        /// </summary>
+        /// <param name="glossaryId">Идентификатор глоссария.</param>
+        /// <returns></returns>
+        [HttpPost("edit")]
+        public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync([FromBody] int glossaryId)
+        {
+            return await _glossariesService.GetGlossaryForEditAsync(glossaryId);
+        }
+        
         /// <summary>
         /// Добавление нового глоссария.
         /// </summary>
@@ -52,18 +100,7 @@ namespace Localization.Controllers
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddCreateGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.AddNewGlossaryAsync(glossary);
-        }
-
-        /// <summary>
-        /// Возвращает глоссарий для редактирования (со связанными объектами).
-        /// </summary>
-        /// <param name="glossaryId">Идентификатор глоссария.</param>
-        /// <returns></returns>
-        [HttpPost("edit")]
-        public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync([FromBody] int glossaryId)
-        {
-            return await _glossariesService.GetGlossaryForEditAsync(glossaryId);
+            await _glossariesService.AddNewGlossaryAsync((int)userId,  glossary);
         }
 
         /// <summary>
@@ -78,7 +115,7 @@ namespace Localization.Controllers
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddEditGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.EditGlossaryAsync(glossary);
+            await _glossariesService.EditGlossaryAsync((int)userId, glossary);
         }
 
         /// <summary>
