@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material";
+import { MatDialog, PageEvent } from "@angular/material";
 
 import { ImageEditingModalComponent } from '../image-editing-modal/image-editing-modal.component';
 
@@ -18,6 +18,10 @@ export class ImagesTilesComponent implements OnInit {
 
   imgs: Image[] = [];
 
+  pageSize: number = 10;
+  totalCount: number = 0;
+  imageNameFilter: string = "";
+
   constructor(
     private imagesService: ImagesService,
     private projectsService: ProjectsService,
@@ -25,14 +29,19 @@ export class ImagesTilesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.imagesService.getByProjectId(this.projectsService.currentProjectId)
-      .subscribe(images => {
-        this.imgs = images;
+    this.loadImages();
+  }
+
+  loadImages(offset: number = 0) {
+    this.imagesService.getByProjectId(this.projectsService.currentProjectId, this.imageNameFilter, offset, this.pageSize)
+      .subscribe(imagesResponse => {
+        this.totalCount = +imagesResponse.headers.get('totalCount');
+        this.imgs = imagesResponse.body;
       },
-      error => {
-        console.log(error);
-        alert(error);
-      });
+        error => {
+          console.log(error);
+          alert(error);
+        });
   }
 
   showModal(clickEventArgs, image: Image) {
@@ -40,6 +49,12 @@ export class ImagesTilesComponent implements OnInit {
       data: { clickEventArgs: clickEventArgs, image: image }
     });
     dialogRef.componentInstance
+  }
+
+  onPageChanged(args: PageEvent) {
+    this.pageSize = args.pageSize;
+    const currentOffset = args.pageSize * args.pageIndex;
+    this.loadImages(currentOffset);
   }
 
 }

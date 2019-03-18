@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Image } from 'src/app/models/database-entities/image.type';
@@ -11,13 +11,25 @@ export class ImagesService {
 
   constructor(private http: HttpClient) { }
 
-  public getByProjectId(projectId: number): Observable<Image[]> {
+  public getByProjectId(projectId: number, imageNameFilter: string, offset: number, limit: number): Observable<HttpResponse<Image[]>> {
+    let body: any = {};
+    body.projectId = projectId;
+    if (limit) {
+      body.limit = limit;
+    }
+    if (imageNameFilter && imageNameFilter != "") {
+      body.imageNameFilter = imageNameFilter;
+    }
+    if (offset) {
+      body.offset = offset;
+    }
     return this.http
-      .post<Image[]>(this._url + "/getByProjectId", projectId, {
+      .post<Image[]>(this._url + "/getByProjectId", body, {
         headers: new HttpHeaders().set(
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
-        )
+        ),
+        observe: "response"
       });
   }
 

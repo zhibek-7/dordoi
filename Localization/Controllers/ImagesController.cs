@@ -24,14 +24,34 @@ namespace Localization.Controllers
             this._imagesRepository = imagesRepository;
         }
 
+
+        public class GetImagesByProjectIdAsyncParam
+        {
+            public int projectId { get; set; }
+            public string imageNameFilter { get; set; }
+            public int? offset { get; set; }
+            public int? limit { get; set; }
+        }
         [HttpPost("getByProjectId")]
         [Authorize]
-        public async Task<IEnumerable<Image>> GetImagesByProjectIdAsync([FromBody] int projectId)
+        public async Task<IEnumerable<Image>> GetImagesByProjectIdAsync([FromBody] GetImagesByProjectIdAsyncParam param)
         {
-            var userId = this._userRepository.GetID(this.User.Identity.Name);
-            return await this._imagesRepository.GetAllAsync(
+            var userId = this._userRepository.GetID(this.User.Identity.Name).Value;
+            this.Response.Headers.Add(
+                key: "totalCount",
+                value: (await this._imagesRepository
+                        .GetFilteredCountAsync(
+                            userId: userId,
+                            projectId: param.projectId,
+                            imageNameFilter: param.imageNameFilter))
+                    .ToString());
+            return await this._imagesRepository.GetFilteredAsync(
                 userId: userId,
-                projectId: projectId);
+                projectId: param.projectId,
+                imageNameFilter: param.imageNameFilter,
+                limit: param.limit ?? 25,
+                offset: param.offset ?? 0
+                );
         }
 
         [HttpPost("update")]
