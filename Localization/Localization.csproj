@@ -58,15 +58,9 @@
     <None Remove="ClientApp\src\app\services\reports.service.ts" />
     <None Remove="ClientApp\src\app\services\strings-project.service.ts" />
     <None Remove="ClientApp\src\app\services\translation-memory.service.ts" />
-    <None Remove="ClientApp\src\app\services\user-registration.service.ts" />
     <None Remove="ClientApp\src\app\strings-project\models\settingFileLoad.ts" />
     <None Remove="ClientApp\src\app\translation-memories\models\settingFileLoad.ts" />
     <None Remove="ClientApp\src\app\user-account\user.ts" />
-    <None Remove="ClientApp\src\app\user-registration\example.ts" />
-    <None Remove="ClientApp\src\app\user-registration\user-registration-routing.module.ts" />
-    <None Remove="ClientApp\src\app\user-registration\user-registration.component.ts" />
-    <None Remove="ClientApp\src\app\user-registration\user-registration.model.ts" />
-    <None Remove="ClientApp\src\app\user-registration\user-registration.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,15 +85,9 @@
     <TypeScriptCompile Include="ClientApp\src\app\services\glossary.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\reports.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\services\translation-memory.service.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\services\user-registration.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\strings-project\models\settingFileLoad.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\translation-memories\models\settingFileLoad.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-account\user.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\user-registration\example.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration-routing.module.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration.component.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration.model.ts" />
-    <TypeScriptCompile Include="ClientApp\src\app\user-registration\user-registration.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
