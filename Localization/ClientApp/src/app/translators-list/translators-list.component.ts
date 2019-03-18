@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+
 import { Translator } from 'src/app/models/Translators/translator.type';
+
 import { TranslatorsService } from 'src/app/services/translators.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
+
 import { ItemsSortBy } from './itemsSortBy.pipe';
 import { checkAndUpdateBinding } from '@angular/core/src/view/util';
 
@@ -193,4 +196,17 @@ export class TranslatorsListComponent implements OnInit {
       }
     );
   }
+
+  onMinPriceChange(minPrice: number){
+    if(this.max != undefined && (this.min > this.max) || (this.min < 0)) {      
+      this.min = undefined;
+    }
+  }
+
+  onMaxPriceChange(minPrice: number){
+    if((this.min > this.max) || (this.max < 0)) {      
+      this.max = undefined;
+    }
+  }
+
 }
