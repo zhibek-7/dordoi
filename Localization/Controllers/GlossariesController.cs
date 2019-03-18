@@ -24,7 +24,6 @@ namespace Localization.Controllers
             _userActionRepository = new UserActionRepository(connectionString);
 
             ur = new UserRepository(connectionString);
-
         }
 
 
@@ -95,12 +94,12 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("newGlossary")]
-        public async Task AddGlossaryAsync(GlossariesForEditingDTO glossary)
+        public async Task AddAsync(GlossariesForEditingDTO glossary)
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddCreateGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.AddNewGlossaryAsync((int)userId,  glossary);
+            await _glossariesService.AddAsync((int)userId,  glossary);
         }
 
         /// <summary>
@@ -110,12 +109,12 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("editSaveGlossary")]
-        public async Task EditGlossaryAsync(GlossariesForEditingDTO glossary)
+        public async Task UpdateAsync(GlossariesForEditingDTO glossary)
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddEditGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.EditGlossaryAsync((int)userId, glossary);
+            await _glossariesService.UpdateAsync((int)userId, glossary);
         }
 
         /// <summary>
@@ -125,12 +124,12 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpDelete("deleteGlossary/{glossaryId}")]
-        public async Task DeleteGlossaryAsync(int glossaryId)
+        public async Task DeleteAsync(int glossaryId)
         {
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
             await _userActionRepository.AddDeleteGlossaryActionAsync((int)userId, identityName, glossaryId, "");
-            await _glossariesService.DeleteGlossaryAsync(glossaryId);
+            await _glossariesService.DeleteAsync(glossaryId);
         }
 
         /// <summary>
@@ -139,9 +138,9 @@ namespace Localization.Controllers
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         [HttpDelete("clearGlossary/{glossaryId}")]
-        public async Task ClearGlossaryAsync(int glossaryId)
+        public async Task ClearAsync(int glossaryId)
         {
-            await _glossariesService.ClearGlossaryAsync(glossaryId);
+            await _glossariesService.ClearAsync(glossaryId);
         }
 
     }
