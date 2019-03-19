@@ -489,7 +489,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             { "value", "value" },
             { "positionin_text", "positionin_text" },
             { "outdated", "outdated" },
-            { "translation_memories.name_text", "translation_memories.name_text"}
+            { "translation_memories.name_text", "translation_memories_str.translation_memories_name"}
         };
 
         public async Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
@@ -1026,17 +1026,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
 
-                    var temp = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
+                    var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
                     );
-
-                    var translationSubstrings = temp.GroupBy(t => t.id).Select(t => new TranslationSubstringTableViewDTO
-                    {
-                        id = t.Key,
-                        substring_to_translate = t.FirstOrDefault().substring_to_translate,
-                        translation_memories_name = string.Join(", ", t.Select(x => x.translation_memories_name).Distinct().OrderBy(n => n))
-                    });
 
                     return translationSubstrings;
                 }
@@ -1113,22 +1106,35 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-
-                var query = new Query("translation_substrings")
+                var queryTranslationMemoriesStrings = new Query("translation_substrings")
                     .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
-                    .Join("translation_memories", "translation_memories.id", "translation_memories_strings.id_translation_memory")
-                    .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
-                    .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name");
+                    .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_strings.id_translation_memory")
+                    .Join("translation_memories", "translation_memories.id", "localization_projects_translation_memories.id_translation_memory")
+                    .Where("localization_projects_translation_memories.id_localization_project", projectId)
+                    .Select("translation_substrings.id as ts_id")
+                    .GroupBy("translation_substrings.id")
+                    .SelectRaw("string_agg(translation_memories.name_text, ', ' order by translation_memories.name_text) as translation_memories_name");
 
-                var compiledQuery = _compiler.Compile(query);
-                LogQuery(compiledQuery);
+                
+                var query = new Query("translation_substrings")
+                    .With("translation_memories_str", queryTranslationMemoriesStrings)
+                    .Join("translation_memories_str", "translation_memories_str.ts_id", "translation_substrings.id")
+                    .Select(
+                        "translation_substrings.id", 
+                        "translation_substrings.substring_to_translate",
+                        "translation_memories_str.translation_memories_name"
+                    ).Distinct();
+                
                 if (translationMemoryId != null)
                 {
-                    query = query.Where("translation_memories.id", translationMemoryId);
+                    query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                                 .Where("translation_memories_strings.id_translation_memory", translationMemoryId);
                 }
                 else
                 {
-                    query = query.Where("localization_projects_translation_memories.id_localization_project", projectId);
+                    query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                                 .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_strings.id_translation_memory")
+                                 .Where("localization_projects_translation_memories.id_localization_project", projectId);
                 }
 
                 if (!string.IsNullOrEmpty(searchString))
@@ -1136,6 +1142,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var searchPattern = $"%{searchString}%";
                     query = query.WhereLike("substring_to_translate", searchPattern);
                 }
+
+                var compiledQuery = _compiler.Compile(query);
+                LogQuery(compiledQuery);
 
                 return query;
             }

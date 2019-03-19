@@ -18,7 +18,7 @@ export class GlossaryService {
   /**
    * Возвращает список глоссариев текущего пользователя, со строками перечислений имен связанных объектов.
    * @param projectId Идентификатор проекта.
-   * @param searchString Шаблон строки (поиск по substring_to_translate).
+   * @param searchString Шаблон названия глоссария (поиск по name_text).
    * @param limit Количество возвращаемых строк.
    * @param offset Количество пропущенных строк.
    * @param sortBy Имя сортируемого столбца.
@@ -58,17 +58,6 @@ export class GlossaryService {
   }
 
   /**
-   * Добавление нового глоссария.
-   * @param glossary Новый глоссарий.
-   */
-  addNewGlossary(glossary: GlossariesForEditing): Observable<Object> {
-    return this.httpClient.post(
-      GlossaryService.connectionUrl + "newGlossary",
-      glossary
-    );
-  }
-
-  /**
    * Возвращает глоссарий для редактирования (со связанными объектами).
    * @param glossaryId Идентификатор глоссария.
    */
@@ -83,6 +72,17 @@ export class GlossaryService {
       .pipe(catchError(this.handleError("getGlossaryForEditing", null)))
       .toPromise();
     return result;
+  }
+
+  /**
+   * Добавление нового глоссария.
+   * @param glossary Новый глоссарий.
+   */
+  addNewGlossary(glossary: GlossariesForEditing): Observable<Object> {
+    return this.httpClient.post(
+      GlossaryService.connectionUrl + "newGlossary",
+      glossary
+    );
   }
 
   /**

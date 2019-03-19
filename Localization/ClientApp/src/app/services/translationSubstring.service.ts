@@ -132,6 +132,9 @@ export class TranslationSubstringService {
     sortBy?: string[],
     sortAscending?: boolean): Observable<HttpResponse<TranslationSubstringTableViewDTO[]>> {
     let params = new HttpParams();
+    if (projectId) {
+      params = params.set('projectId', projectId.toString());
+    }
     if (searchString && searchString != '') {
       params = params.set('searchString', searchString);
     }
@@ -150,7 +153,7 @@ export class TranslationSubstringService {
         params = params.set('sortAscending', sortAscending.toString());
       }
     }
-    return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", projectId,
+    return this.http.post<TranslationSubstringTableViewDTO[]>(this.url + "getAllWithTranslationMemoryByProject", null,
       {
         params: params,
         observe: 'response'

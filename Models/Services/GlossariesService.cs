@@ -110,7 +110,7 @@ namespace Models.Services
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
-        public async Task AddNewGlossaryAsync(int userId, GlossariesForEditingDTO glossary)
+        public async Task AddAsync(int userId, GlossariesForEditingDTO glossary)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace Models.Services
                     visibility = true
                 });
                 glossary.ID_File = newGlossaryFileId;
-                await _glossariesRepository.AddNewGlossaryAsync(userId, glossary);
+                await _glossariesRepository.AddAsync(userId, glossary);
             }
             catch (Exception exception)
             {
@@ -138,11 +138,11 @@ namespace Models.Services
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
-        public async Task EditGlossaryAsync(int userId, GlossariesForEditingDTO glossary)
+        public async Task UpdateAsync(int userId, GlossariesForEditingDTO glossary)
         {
             try
             {
-                await _glossariesRepository.EditGlossaryAsync(userId, glossary);
+                await _glossariesRepository.UpdateAsync(userId, glossary);
             }
             catch (Exception exception)
             {
@@ -155,11 +155,11 @@ namespace Models.Services
         /// </summary>
         /// <param name="id">Идентификатор глоссария.</param>
         /// <returns></returns>
-        public async Task DeleteGlossaryAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             try
             {
-                await _glossariesRepository.DeleteGlossaryAsync(id);
+                await _glossariesRepository.DeleteAsync(id);
             }
             catch (Exception exception)
             {
@@ -172,11 +172,11 @@ namespace Models.Services
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
-        public async Task ClearGlossaryAsync(int id)
+        public async Task ClearAsync(int glossaryId)
         {
             try
             {
-                await _glossaryService.DeleteTermsByGlossaryAsync(id);
+                await _glossaryService.DeleteTermsByGlossaryAsync(glossaryId);
             }
             catch (Exception exception)
             {

@@ -9,6 +9,7 @@ import {
 } from '@angular/material';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import 'hammerjs';
 import * as $ from 'jquery';
 
@@ -34,6 +35,7 @@ import { ImagesService } from 'src/app/services/images.service';
     MatButtonModule,
     MatDialogModule,
     MatTooltipModule,
+    MatPaginatorModule,
     ImagesRoutingModule,
   ],
   providers: [
