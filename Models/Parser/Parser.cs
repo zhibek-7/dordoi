@@ -481,5 +481,28 @@ namespace Models.Parser
             return ts;
         }
 
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'xlsx'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
+        private List<TranslationSubstring> ParseAsXlsx(File file)
+        {
+            //Предполагается, что в качестве original_full_text будет выступать xl\sharedStrings.xml из соответствующего архива xlsx
+            _logger.WriteLn("Parser: " + string.Format("К файлу {0} применяется парсер для файлов с расширением 'xlsx'", file.name_text));
+            //var file = DownloadsFolderPath + @"\Краткая инструкция VS2017.docx";
+            //var path = Path.GetTempPath() + Guid.NewGuid();
+            //using (var zf = ZipFile.Open(file, ZipArchiveMode.Read)) zf.ExtractToDirectory(path);
+            //var docPath = path + @"\word\document.xml";
+            //var text = File.ReadAllText(DownloadsFolderPath + @"\Input\openapi.yml");
+            var ts = new List<TranslationSubstring>();
+            var pattern = "<t>(((?<!</t>).)*)</t>";
+            var matches = Regex.Matches(file.original_full_text, pattern);
+            foreach (Match m in matches) ts.Add(new TranslationSubstring(m.Groups[1].Value, string.Empty, file.id, m.Groups[1].Value, m.Groups[1].Index));
+            //Directory.Delete(path, true);
+            _logger.WriteLn("Parser: " + string.Format("Парсер 'xlsx'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
+            return ts;
+        }
+
     }
 }
