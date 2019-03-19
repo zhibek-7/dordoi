@@ -18,7 +18,7 @@ export class GlossariesTableViewDTO {
   id: number;
   name: string;
 
-  localesName: string;
+  locales_name: string;
 
-  localizationProjectsName: string;
+  localization_projects_name: string;
 }

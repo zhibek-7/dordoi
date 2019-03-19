@@ -9,11 +9,11 @@ namespace Models.DatabaseEntities.DTO
     [Serializable]
     public class GlossariesTableViewDTO : BaseEntity
     {
-        public string Name_text { get; set; }
+        public string name_text { get; set; }
 
-        public string Locales_Name { get; set; }
+        public string locales_name { get; set; }
 
-        public string Localization_Projects_Name { get; set; }
+        public string localization_projects_name { get; set; }
 
     }
 }

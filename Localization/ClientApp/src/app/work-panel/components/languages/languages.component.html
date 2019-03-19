@@ -35,8 +35,10 @@
                 </div>
                 <div class="col-1 "> <input type="checkbox" class="form-check-input" [(ngModel)]="translation.confirmed"
                     (change)="changeTranslation(translation)"> </div>
-                <div *ngIf="checkAccessToSelectTranslation()" class="col-1 "> <input type="checkbox" class="form-check-input" [(ngModel)]="translation.selected"
+                <div *ngIf="!finalTranslationSelected || translation.selected" class="col-1 ">
+                  <div *ngIf="checkAccessToSelectTranslation()"> <input type="checkbox" class="form-check-input" [(ngModel)]="translation.selected"
                     (change)="changeSelectedTranslation(translation)"> </div>
+                </div>                
                 <div *ngIf="!translation.selected && !translation.confirmed" class="col-1 align-self-center"><img (click)="deleteTranslateClick(translation.id)"
                     class="utilitiesIcon" src="../../../assets/icons/main/bin.png"></div>
               </div>

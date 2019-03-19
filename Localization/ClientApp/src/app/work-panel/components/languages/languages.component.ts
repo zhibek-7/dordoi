@@ -31,6 +31,8 @@ export class LanguagesComponent implements OnInit {
 
     searchByMemoryText: string = "";
 
+    finalTranslationSelected: boolean;
+
     constructor(private sharePhraseService: SharePhraseService,
                 private shareTranslatedPhraseService: ShareTranslatedPhraseService,
                 private translationService: TranslationService,
@@ -47,7 +49,9 @@ export class LanguagesComponent implements OnInit {
             this.listOfTranslations = translationsOfTheString;
             this.listOfTranslationsByMemory = [];  
             this.listOfSimilarTranslations = [];
+            this.finalTranslationSelected = false;
         
+            this.checkFinalTranslationSelected();
             this.findSimilarTranslations();
         });
 
@@ -101,7 +105,15 @@ export class LanguagesComponent implements OnInit {
             return false;
         }
     }
-    
+
+    // Проверяет наличие галочки в checkbox'е selected
+    checkFinalTranslationSelected() {        
+        this.listOfTranslations.forEach(element => {
+            if(element.selected){
+                this.finalTranslationSelected = true;
+            }
+        });
+    }    
 
     // Функция проверки наличия фразы
     checkPhrase(): boolean{
@@ -141,6 +153,22 @@ export class LanguagesComponent implements OnInit {
         else {
             return true;
         }
+    }   
+
+    async changeStatusOfTranslationSubstring(){
+        let status = "Empty";
+
+        this.listOfTranslations.some(function(item){            
+            if(item.confirmed == true){
+                status = "Confirmed";
+            }
+            if(item.selected == true){
+                status = "Selected";
+            }
+            return(item.selected == true)
+        });        
+        
+        this.sharePhraseService.setStatusOfTranslationSubstring(status);        
     }
 
     // Изменение подтвержедние перевода
@@ -151,18 +179,22 @@ export class LanguagesComponent implements OnInit {
         else {
             this.translationService.acceptTranslate(translation.id);
         }
+        this.changeStatusOfTranslationSubstring();
     }
 
     // Изменение выбранного финального перевода 
     async changeSelectedTranslation(translation: Translation){
         if(translation.selected == false){
-            translation.confirmed = false;
+            this.finalTranslationSelected = false;
+            translation.confirmed = false;            
             this.translationService.rejectFinalTranslattion(translation.id);
         }
         else {
+            this.finalTranslationSelected = true;
             translation.confirmed = true;
             this.translationService.acceptFinalTranslation(translation.id);
         }
+        this.changeStatusOfTranslationSubstring();
     }
 
     // Удаление варианта перевода

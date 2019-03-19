@@ -9,7 +9,6 @@ namespace Models.DatabaseEntities
         /// <summary>
         /// ссылка на изображение
         /// </summary>
-        [Required]
         public string URL { get; set; }
 
         /// <summary>

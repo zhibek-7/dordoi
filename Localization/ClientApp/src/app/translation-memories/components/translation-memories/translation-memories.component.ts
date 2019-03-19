@@ -13,6 +13,8 @@ import { LoadTranslationMemoryFormModalComponent } from "../load-translation-mem
 import { Selectable } from "src/app/shared/models/selectable.model";
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
 import { settingFileLoad, fileType } from "../../models/settingFileLoad";
+import { MainListPageComponent } from "src/app/shared/components/main-list-page/main-list-page.component";
+import { ProjectsService } from "src/app/services/projects.service";
 
 @Component({
   selector: 'app-translation-memories',
@@ -20,20 +22,13 @@ import { settingFileLoad, fileType } from "../../models/settingFileLoad";
   styleUrls: ['./translation-memories.component.css'],
   providers: [TranslationMemoryService]
 })
-export class TranslationMemoriesComponent implements OnInit {
+export class TranslationMemoriesComponent extends MainListPageComponent implements OnInit {
+  
+  dataSource: Selectable<TranslationMemoryTableViewDTO>[] = [];
+  isDataSourceLoaded: boolean = true;
 
-  //#region для настройки таблицы (mat-table)
-  displayedColumns: string[] = [
-    "name_text",
-    "string_count",
-    "localesName",
-    "localizationProjectsName",
-    "additionalButtons"
-  ];
-  private dataSource = new MatTableDataSource<Selectable<TranslationMemoryTableViewDTO>>();
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  //#endregion
+  @ViewChild("parent")
+  public parent: MainListPageComponent;
 
   //#region Для обращения к модальным окнам
   @ViewChild("confirmDeleteFormModal")
@@ -47,14 +42,11 @@ export class TranslationMemoriesComponent implements OnInit {
 
   @ViewChild("loadFormModal")
   public loadFormModal: LoadTranslationMemoryFormModalComponent;
-  //#endregion
 
   isVisibleEditFormModal: boolean = false;
-
   isSelectedTranslationMemory: boolean = false;
-
-  isDataSourceLoaded: boolean = true;
-
+  //#endregion
+  
   translationMemory: TranslationMemoryForEditingDTO = new TranslationMemoryForEditingDTO();
 
   fileTypes: string;
@@ -63,51 +55,80 @@ export class TranslationMemoriesComponent implements OnInit {
 
   constructor(
     private translationMemoryService: TranslationMemoryService,
+    private projectsService: ProjectsService,
     private requestDataReloadService: RequestDataReloadService
   ) {
-    this.requestDataReloadService.updateRequested.subscribe(() =>
-      this.getAllDTO()
-    );
+    super();
+    this.requestDataReloadService.updateRequested
+      .subscribe(() => this.loadData());
   }
 
   ngOnInit() {
-    this.getAllDTO();
+    this.loadDropdown();
+    this.loadData();
     this.getFileTypes();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
+  /** Получение списка проектов для фильтра данных таблицы через выпадающий список. */
+  loadDropdown() {
+    super.loadDropdown();
 
-  /**
-   * Получение списка памяти переводов для отображения в таблице.
-   */
-  getAllDTO() {
-    this.translationMemoryService.getAllDTO().subscribe(
-      translationMemories =>
-        (this.dataSource.data = translationMemories.map(
-          translationMemory => new Selectable<TranslationMemoryTableViewDTO>(translationMemory, false)
-        )),
+    this.projectsService.getLocalizationProjectForSelectDTOByUser().subscribe(
+      projects => {
+        this.parent.filters = projects;
+
+        //this.loadData();
+      },
       error => {
-        this.isDataSourceLoaded = false;
         console.error(error);
       }
     );
   }
 
-  //#region Выбранная памятьи переводов. Его отметка и возврат.
+  /** Получение списка памяти переводов для отображения в таблице. */
+  loadData(offset = 0) {
+    super.loadData();
+    let sortBy = new Array<string>();
+    if (this.sortByColumnName) {
+      sortBy = [this.sortByColumnName];
+    }
 
+    this.translationMemoryService.getAllByUserId(
+        this.parent.filterId,
+        this.parent.searchString,
+        this.parent.pageSize,
+        this.parent.currentOffset,
+        sortBy,
+        this.isSortingAscending
+      )
+      .subscribe(
+        response => {
+          this.dataSource = response.body.map(translationMemory =>
+            new Selectable<TranslationMemoryTableViewDTO>(translationMemory, false)
+          );
+
+          this.parent.totalCount = +response.headers.get("totalCount");
+          //this.parent.currentOffset = offset;
+        },
+        error => {
+          this.isDataSourceLoaded = false;
+          console.log(error);
+        }
+      );
+  }
+
+  //#region Выбранная памятьи переводов. Его отметка и возврат.
+  
   /**
-   * Фиксация индекса выбранного элемента.
+   * Фиксация выбранного элемента.
    * @param element Выбранный элемент пользователем.
    */
   selected(element: Selectable<TranslationMemoryTableViewDTO>) {
-    if (this.dataSource.data.filter(t => t.isSelected).length > 0) {
-      this.dataSource.data[this.indexSelected].isSelected = false;
+    if (this.dataSource.filter(t => t.isSelected).length > 0) {
+      this.dataSource[this.indexSelected].isSelected = false;
     }
     element.isSelected = !element.isSelected;
-    this.indexSelected = this.dataSource.data.findIndex(t => t.isSelected);
+    this.indexSelected = this.dataSource.findIndex(t => t.isSelected);
 
     this.isSelectedTranslationMemory =
       this.indexSelected != undefined &&
@@ -119,7 +140,7 @@ export class TranslationMemoriesComponent implements OnInit {
    * Возвращает выбранный элемент пользователем.
    */
   getSelectedTranslationMemoriesy() {
-    var selectedElement = this.dataSource.data[this.indexSelected].model;
+    var selectedElement = this.dataSource[this.indexSelected].model;
     this.translationMemory = new TranslationMemoryForEditingDTO();
     this.translationMemory.id = selectedElement.id;
     this.translationMemory.name_text = selectedElement.name_text;

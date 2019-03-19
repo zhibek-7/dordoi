@@ -66,8 +66,8 @@ table th {
   width: 1%;
 }
 
-.mat-row.selected {
-  background: #A4BF82;
+.row-selected {
+  background: #A4BF82 !important;
 }
 
 /*////*/

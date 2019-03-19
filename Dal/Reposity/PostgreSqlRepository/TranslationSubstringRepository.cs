@@ -1020,7 +1020,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         projectId,
                         translationMemoryId,
                         searchString);
-                    query = query.AsCount();
+                    query = query.Distinct().AsCount("translation_substrings.id");
 
 
                     var compiledQuery = _compiler.Compile(query);

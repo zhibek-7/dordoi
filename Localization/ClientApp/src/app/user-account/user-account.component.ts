@@ -22,10 +22,12 @@ export class UserAccountComponent implements OnInit {
     private userService: UserService
   ) {}
 
-  ngOnInit() {
-    // sessionStorage.setItem('currentUserName', 'Иван Иванов');
-    // sessionStorage.setItem('currentUserID', '300');
-    //this.currentUserName = sessionStorage.getItem('currentUserName');
+  getPickedProject(pickedProject) {    
+    sessionStorage.setItem("ProjectName", pickedProject.name_text);
+    sessionStorage.setItem("ProjectID", pickedProject.id.toString());
+  }
+
+  ngOnInit() {    
     this.currentUserName = this.userService.currentUserName;
 
     this.projectsService.getProjects().subscribe(
@@ -33,7 +35,7 @@ export class UserAccountComponent implements OnInit {
         this.projectsArr = project;
       },
       error => console.error(error)
-    );
+    );    
 
     //TODO пока не нужно
     //this.projectsArr.forEach((element)=>{element.lastActivity = new Date();});

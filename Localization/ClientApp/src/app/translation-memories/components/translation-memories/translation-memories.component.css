@@ -58,8 +58,8 @@ table th {
   width: 1vw;
 }
 
-.mat-row.selected {
-  background: #999;
+.row-selected {
+  background: #A4BF82 !important;
 }
 
 /*////*/
@@ -72,4 +72,38 @@ input[type="file"] {
   display: inline-block;
   /*padding: 6px 12px;*/
   cursor: pointer;
+}
+
+/*//*/
+
+/*.dropdown-item {
+  padding: .1rem 1rem;
+}
+
+.dropdown-menu {
+  min-width: 7rem!important;
+}*/
+
+/*//Sort//*/
+.headerSortDown:after,
+.headerSortUp:after {
+  content: ' ';
+  position: relative;
+  left: 2px;
+  border: 8px solid transparent;
+}
+
+.headerSortDown:after {
+  top: 10px;
+  border-top-color: silver;
+}
+
+.headerSortUp:after {
+  bottom: 15px;
+  border-bottom-color: silver;
+}
+
+.headerSortDown,
+.headerSortUp {
+  padding-right: 5px;
 }

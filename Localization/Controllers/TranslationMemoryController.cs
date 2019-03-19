@@ -25,18 +25,54 @@ namespace Localization.Controllers
 
 
         /// <summary>
-        /// Возвращает список памяти переводов, со строками перечислений имен связанных объектов.
+        /// Возвращает список памяти переводов текущего пользователя (со связанными объектами) и их количество.
         /// </summary>
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="projectId">Идентификатор проекта.</param>
+        /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost]
-        public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllDTOAsync()
+        [HttpPost("byUserId")]
+        public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(
+            int? offset,
+            int? limit,
+            int? projectId,
+            string searchString,
+            string[] sortBy,
+            bool? sortAscending)
         {
-
             var identityName = User.Identity.Name;
             int? userId = (int)ur.GetID(identityName);
-            return await _translationMemoryService.GetAllDTOAsync(userId, null);
+
+            Response.Headers.Add(
+                key: "totalCount",
+                value: (await _translationMemoryService.GetAllByUserIdCountAsync(
+                    userId: userId,
+                    projectId: projectId,
+                    searchString: searchString
+                )).ToString());
+
+            var strings = await _translationMemoryService.GetAllByUserIdAsync(
+                userId: userId,
+                offset: offset ?? 0,
+                limit: limit ?? 25,
+                projectId: projectId,
+                searchString: searchString,
+                sortBy: sortBy,
+                sortAscending: sortAscending ?? true
+            );
+
+            if (strings == null)
+            {
+                return BadRequest("Translation_memory not found");
+            }
+
+            return Ok(strings);
         }
+
 
         /// <summary>
         /// Возвращает список памятей переводов назначенных на проект локализации.
@@ -59,7 +95,8 @@ namespace Localization.Controllers
         [HttpPost("create")]
         public async Task AddAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            await _translationMemoryService.AddAsync(translationMemory);
+            var userId = (int)ur.GetID(User.Identity.Name);
+            await _translationMemoryService.AddAsync(userId, translationMemory);
         }
 
         /// <summary>
@@ -83,7 +120,8 @@ namespace Localization.Controllers
         [HttpPost("editSave")]
         public async Task UpdateAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            await _translationMemoryService.UpdateAsync(translationMemory);
+            var userId = (int)ur.GetID(User.Identity.Name);
+            await _translationMemoryService.UpdateAsync(userId, translationMemory);
         }
 
         /// <summary>

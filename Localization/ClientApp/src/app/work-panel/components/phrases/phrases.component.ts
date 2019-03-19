@@ -28,7 +28,13 @@ export class PhrasesComponent implements OnInit {
     private sharePhraseService: SharePhraseService,
     private stringService: TranslationSubstringService
   ) {
+
     this.phrasesList = new Array<TranslationSubstring>();
+
+    this.sharePhraseService.onClickCheckBoxChanged.subscribe(status => {  
+      this.pickedPhrase.status = status;
+    });
+
   }
 
   ngOnInit(): void {
