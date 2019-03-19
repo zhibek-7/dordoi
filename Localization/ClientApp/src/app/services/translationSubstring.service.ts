@@ -53,6 +53,13 @@ export class TranslationSubstringService {
     return this.http.post<string>(this.url + "Status/" + translationSubstringId, null);
   }
 
+  setTranslationSubstringStatus(translationSubstringId: number, status: string): Observable<string>{
+
+    let params = new HttpParams().set('translationSubstringId', translationSubstringId.toString()).set('status', status);
+
+    return this.http.post<string>(this.url + "SetStatus/", params);
+  }
+
   getStringsByProjectId(
     projectId: number,
     fileId?: number,

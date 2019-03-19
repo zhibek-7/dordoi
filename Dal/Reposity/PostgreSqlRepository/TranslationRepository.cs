@@ -11,6 +11,7 @@ using Models.Interfaces.Repository;
 using Models.DatabaseEntities.PartialEntities.Translations;
 using Npgsql;
 using SqlKata;
+using Models.DatabaseEntities.PartialEntities.Translation;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -269,6 +270,52 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
+        /// Метод получения всех вариантов перевода конкретной фразы с учётом языка
+        /// </summary>
+        /// <param name="idString">id фразы, варианты перевода которой необходимы</param>
+        /// <returns>Список вариантов перевода</returns>
+        public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByIDByLocale(int idString, int localeId)
+        {
+            var query = "SELECT t.id_string, " +
+                        "t.translated, " +
+                        "t.confirmed, " +
+                        "t.id_user, " +
+                        "t.datetime, " +
+                        "t.id_locale, " +
+                        "t.selected, " +
+                        "t.id, " +
+                        "u.name_text AS User_Name " +
+                        "FROM translations as t " +
+                        "INNER JOIN users AS u ON u.id = t.id_user " +
+                        "WHERE id_string = @idString AND id_locale = @localeId";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { idString, localeId };
+                    this.LogQuery(query, param);
+                    IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query, param);
+                    return translations;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllTranslationsInStringByID)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Принять перевод
         /// </summary>
         /// <param name="idTranslation">id перевода</param>
@@ -423,7 +470,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
-        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, TranslationSubstring translationSubstring)
+        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, int localeId, TranslationSubstring translationSubstring)
         {
             var query = "SELECT substring_to_translate AS translation_text, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
                         "files.name_text AS file_owner_name, translations.translated AS translation_variant" +
@@ -433,17 +480,61 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
                         "WHERE (localization_projects.id = @ProjectId " +
                         "AND substring_to_translate % @TranslationSubstringText " +
-                        "AND translation_substrings.id != @TranslationSubstringId);";
+                        "AND translation_substrings.id != @TranslationSubstringId " +
+                        "AND translations.id_locale = @localeId);";
 
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { TranslationSubstringText = translationSubstring.substring_to_translate, TranslationSubstringId = translationSubstring.id, ProjectId = currentProjectId };
+                    var param = new { TranslationSubstringText = translationSubstring.substring_to_translate, TranslationSubstringId = translationSubstring.id, ProjectId = currentProjectId, localeId };
                     this.LogQuery(query, param);
                     IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query, param);
                     return similarTranslations;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetSimilarTranslationsAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetSimilarTranslationsAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<TranslationWithLocaleText>> GetTranslationsInOtherLanguages(
+            int currentProjectId,
+            int translationSubstringId,
+            int localeId)
+        {
+            var query = "SELECT " +
+                        "translations.translated AS translation_text, " +
+                        "locales.name_text AS locale_name_text " +
+                        "FROM files " +
+                        "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
+                        "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
+                        "INNER JOIN locales ON locales.id = translations.id_locale " +
+                        "WHERE (files.id_localization_project = @currentProjectId " +
+                        "AND translation_substrings.id = @translationSubstringId " +
+                        "AND translations.id_locale != @localeId);";
+
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { currentProjectId, translationSubstringId, localeId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationWithLocaleText> translationsInOtherLanguages = await dbConnection.QueryAsync<TranslationWithLocaleText>(query, param);
+                    return translationsInOtherLanguages;
                 }
             }
             catch (NpgsqlException exception)

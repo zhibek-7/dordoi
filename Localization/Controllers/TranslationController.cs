@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Cors;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.PartialEntities.Translations;
 using Utilities;
+using Models.DatabaseEntities.PartialEntities.Translation;
 
 namespace Localization.WebApi
 {
@@ -94,6 +95,37 @@ namespace Localization.WebApi
 
             IEnumerable<Translation> translations = await translationRepository.GetAllTranslationsInStringByID(idString);
             return Ok(translations);
+        }
+
+        /// <summary>
+        /// Получить все варианты перевода конкретной фразы с учётом языка
+        /// </summary>
+        /// <param name="idString">id фразы, переводы которой необходимы</param>
+        /// <returns>Список вариантов перевода</returns>
+        [Authorize]
+        [HttpPost]
+        [Route("InStringWithLocale")]
+        public async Task<ActionResult<IEnumerable<Translation>>> GetTranslationsInString()
+        {
+            var stringId = Request.Form["stringId"].ToString();
+            var localeId = Request.Form["localeId"].ToString();            
+
+            IEnumerable<Translation> translations = await translationRepository.GetAllTranslationsInStringByIDByLocale(Convert.ToInt32(stringId), Convert.ToInt32(localeId));
+            return Ok(translations);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("FindTranslationsInOtherLanguages")]
+        public async Task<ActionResult<IEnumerable<TranslationWithLocaleText>>> GetTranslationsInOtherLanguages()
+        {
+            var currentProjectId = Request.Form["currentProjectId"].ToString();
+            var translationSubstingId = Request.Form["translationSubstingId"].ToString();
+            var localeId = Request.Form["localeId"].ToString();
+
+            IEnumerable<TranslationWithLocaleText> translationsInOtherLanguages = await translationRepository.GetTranslationsInOtherLanguages(Convert.ToInt32(currentProjectId),
+                Convert.ToInt32(translationSubstingId), Convert.ToInt32(localeId));
+            return Ok(translationsInOtherLanguages);
         }
 
         /// <summary>
@@ -295,11 +327,11 @@ namespace Localization.WebApi
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("FindSimilarTranslations/{currentProjectId}")]
+        [Route("FindSimilarTranslations/{currentProjectId}/{localeId}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, [FromBody] TranslationSubstring translationSubstring)
+        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, int localeId, [FromBody] TranslationSubstring translationSubstring)
         {
-            var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, translationSubstring);
+            var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, localeId, translationSubstring);
             return Ok(similarTranslations);
         }
 

@@ -130,9 +130,28 @@ namespace Localization.WebApi
                 return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
             }
 
-            string status = await stringRepository.GetStatusOfTranslationSubstringAsync(translationSubstringId);
+            string status = await stringRepository.GetStatusOfTranslationSubstringAsync(translationSubstringId, null);
 
             return "";
+        }
+
+        [Authorize]
+        [HttpPost("SetStatus")]
+        public async Task<ActionResult> SetStatusOfTranslationSubstring()
+        {
+            var translationSubstringId = Convert.ToInt32(Request.Form["translationSubstringId"].ToString());
+            var status = Request.Form["status"].ToString();
+
+            var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
+
+            if (foundedString == null)
+            {
+                return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            }
+
+            await stringRepository.SetStatusOfTranslationSubstringAsync(translationSubstringId, status);
+
+            return Ok();
         }
 
         /// <summary> 

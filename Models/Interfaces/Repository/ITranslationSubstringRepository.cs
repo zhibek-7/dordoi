@@ -7,13 +7,49 @@ namespace Models.Interfaces.Repository
 {
     public interface ITranslationSubstringRepository : IRepositoryAsync<TranslationSubstring>
     {
-        Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId, int? localeId);
         //Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId);
         //Task<IEnumerable<TranslationSubstring>> FilterByString(
         //    string filtredString, IEnumerable<TranslationSubstring> filtredListOfStrings);
+
+        /// <summary>
+        /// Возвращает все строки принадлежащие определенному файлу вместе с всеми переводами для них (также можно получить переводы только для определенного языка)
+        /// </summary>
+        /// <param name="fileId">id файла в котором требуется найти все строки</param>
+        /// <param name="localeId">(опциональный параметр) id языка на котором нужны варианты перевода</param>
+        /// <returns></returns>
+        Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId, int? localeId);
+
+        /// <summary>
+        /// Возвращает скриншоты для определенной строки
+        /// </summary>
+        /// <param name="translationSubstringId">id строки для которой требуются скриншоты</param>
+        /// <returns></returns>
         Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId);
+
+        /// <summary>
+        /// Загружает скриншот к определенной строке
+        /// </summary>
+        /// <param name="image">Скриншот</param>
+        /// <param name="translationSubstringId">id строки к которой загружается скриншот</param>
+        /// <returns></returns>
         Task<int> UploadImageAsync(Image image, int translationSubstringId);
-        Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId);
+
+        /// <summary>
+        /// Возвращает текущий статус строки (устарел, т.к. параметр status в таблице отсутсвует)
+        /// </summary>
+        /// <param name="translationSubstringId">id строки для которой необходимо получить текущий статус</param>
+        /// <param name="localeId">id языка на котором требуется получить текущий статус строки</param>
+        /// <returns></returns>
+        Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId, int? localeId);
+
+        /// <summary>
+        /// Устанавливает текущий статус строки (устарел, т.к. параметр status в таблице отсутсвует)
+        /// </summary>
+        /// <param name="translationSubstringId">id строки для которой необходимо установить текущий статус</param>
+        /// <param name="status">id языка на котором требуется установить текущий статус строки</param>
+        /// <returns></returns>
+        Task SetStatusOfTranslationSubstringAsync(int translationSubstringId, string status);
+
 
         Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
             int projectId,

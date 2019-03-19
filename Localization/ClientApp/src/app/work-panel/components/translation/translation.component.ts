@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter, OnDestroy, Input } from "@angular/core";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 
 import { ShowImageModalComponent } from "../show-image-modal/show-image-modal";
@@ -28,6 +28,8 @@ export class TranslationComponent implements OnInit, OnDestroy {
   showRightBlock: boolean = true;
   @Output() onChangedLeftBlock = new EventEmitter<boolean>();
   @Output() onChangedRightBlock = new EventEmitter<boolean>();
+
+  @Input() localeId: number;
 
   translatedText: string;
   phraseForTranslate: TranslationSubstring;
@@ -153,8 +155,8 @@ export class TranslationComponent implements OnInit, OnDestroy {
     this.translatedPhrase = new Translation(
       this.translatedText,
       this.phraseForTranslate.id,
-      300
-    ); // Todo указывать язык, а не константу
+      this.localeId
+    );
     let insertedTranslationId = await this.translationService.createTranslation(
       this.translatedPhrase
     );

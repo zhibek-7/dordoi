@@ -269,7 +269,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     if (localeId != null)
                     {
                         var param = new { FileId = fileId, LocaleId = localeId };
-                        this.LogQuery(queryForSubstingsInFile, param);
+                        this.LogQuery(queryForSubstingsInFileWithLocale, param);
                         stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(queryForSubstingsInFileWithLocale, param);
                     }
                     else
@@ -279,10 +279,20 @@ namespace DAL.Reposity.PostgreSqlRepository
                         stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(queryForSubstingsInFile, param);
                     }
 
-                    foreach (var translationSubstring in stringsInFile)
+                    if(localeId != null)
                     {
-                        translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id);
+                        foreach (var translationSubstring in stringsInFile)
+                        {
+                            translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id, localeId);
+                        }
                     }
+                    else
+                    {
+                        foreach (var translationSubstring in stringsInFile)
+                        {
+                            translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id, null);
+                        }
+                    }                    
 
                     return stringsInFile;
                 }
@@ -834,18 +844,31 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId)
+        public async Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId, int? localeId)
         {
-            var query = "SELECT * " +
+            var query = "";
+
+            if(localeId != null)
+            {
+                query = "SELECT * " +
+                        "FROM translations AS T " +
+                        "WHERE T.id_string = @translationSubstringId AND T.id_locale = @localeId;";
+            }
+            else
+            {
+                query = "SELECT * " +
                         "FROM translations AS T " +
                         "WHERE T.id_string = @translationSubstringId;";
+            }
+            
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(query, translationSubstringId);
-                    var translationsOfTheString = await dbConnection.QueryAsync<Translation>(query, new { TranslationSubstringId = translationSubstringId });
+                    var param = new { TranslationSubstringId = translationSubstringId, localeId };
+                    this.LogQuery(query, param);
+                    var translationsOfTheString = await dbConnection.QueryAsync<Translation>(query, param);
 
                     string status = "Empty";
 
@@ -881,6 +904,36 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+
+        public async Task SetStatusOfTranslationSubstringAsync(int translationSubstringId, string status)
+        {
+            var setStatusOfStringQuery =
+                "UPDATE translation_substrings SET " +
+                "status = @status " +
+                "WHERE id = @translationSubstringId";
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { translationSubstringId, status };
+                    this.LogQuery(setStatusOfStringQuery, param);
+                    var result = await dbConnection.QueryAsync<Translation>(setStatusOfStringQuery, param);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.SetStatusOfTranslationSubstringAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.SetStatusOfTranslationSubstringAsync)} {nameof(Exception)} ",
+                    exception);
+            }
+        }
 
 
         /// <summary>

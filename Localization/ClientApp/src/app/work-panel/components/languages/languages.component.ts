@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { SharePhraseService } from '../../localServices/share-phrase.service';
 import { ShareTranslatedPhraseService } from '../../localServices/share-translated-phrase.service';
@@ -10,6 +10,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Translation } from '../../../models/database-entities/translation.type';
 import { TranslationWithFile } from '../../localEntites/translations/translationWithFile.type';
 import { SimilarTranslation } from '../../localEntites/translations/similarTranslation.type';
+import { TranslationWithLocaleText } from '../../localEntites/translations/translationWithLocaleText.type';
 
 // import 'jquery-ui/ui/widgets/tabs.js';
 import * as $ from 'jquery';
@@ -27,11 +28,15 @@ export class LanguagesComponent implements OnInit {
 
     listOfSimilarTranslations: SimilarTranslation[];
 
+    listOfTranslationsInOtherLanguages: TranslationWithLocaleText[];
+
     newTranslation: Translation;
 
     searchByMemoryText: string = "";
 
     finalTranslationSelected: boolean;
+
+    @Input() localeId: number;
 
     constructor(private sharePhraseService: SharePhraseService,
                 private shareTranslatedPhraseService: ShareTranslatedPhraseService,
@@ -43,16 +48,19 @@ export class LanguagesComponent implements OnInit {
         this.listOfTranslations = [];
         this.listOfTranslationsByMemory = [];
         this.listOfSimilarTranslations = [];
+        this.listOfTranslationsInOtherLanguages = [];
 
         // Событие, срабатываемое при выборе фразы для перевода
         this.sharePhraseService.onClick2.subscribe(translationsOfTheString => {
             this.listOfTranslations = translationsOfTheString;
             this.listOfTranslationsByMemory = [];  
             this.listOfSimilarTranslations = [];
+            this.listOfTranslationsInOtherLanguages = [];
             this.finalTranslationSelected = false;
         
             this.checkFinalTranslationSelected();
             this.findSimilarTranslations();
+            this.findTranslationsInOtherLanguages();
         });
 
         // Событие, срабатываемое при выборе фразы для перевода
@@ -155,6 +163,16 @@ export class LanguagesComponent implements OnInit {
         }
     }   
 
+    checkNumberOfTranslationsInOtherLanguages(){
+        if(this.listOfTranslationsInOtherLanguages.length == 0){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }   
+
+    // Изменяет статус фразы для перевода если меняется значение checkbox'а
     async changeStatusOfTranslationSubstring(){
         let status = "Empty";
 
@@ -213,7 +231,7 @@ export class LanguagesComponent implements OnInit {
         let phraseForTranslation = this.sharePhraseService.getSharedPhrase();
         let currentProjectId = this.projectService.currentProjectId;
 
-        this.translationService.findSimilarTranslations(currentProjectId, phraseForTranslation)
+        this.translationService.findSimilarTranslations(currentProjectId, phraseForTranslation, this.localeId)
                 .subscribe(
                     similarTranslations => {
 
@@ -228,6 +246,31 @@ export class LanguagesComponent implements OnInit {
                           
                         similarTranslations.sort(sortBySimilarValue);                                              
                         this.listOfSimilarTranslations = similarTranslations;
+                    }
+                )
+    }
+
+    findTranslationsInOtherLanguages(){
+        let phraseForTranslation = this.sharePhraseService.getSharedPhrase();
+        let currentProjectId = this.projectService.currentProjectId;
+
+        this.translationService.findTranslationsInOtherLanguages(currentProjectId,
+             phraseForTranslation, 
+             this.localeId)
+                    .subscribe( translationsInOtherLanguages => {
+
+                        // Функция сортировки списка схожих вариантов перевода по убыванию
+                        function sortBySimilarValue(a,b) {
+                            if (a.locale_name_text > b.locale_name_text)
+                                return -1;
+                            if (a.locale_name_text < b.locale_name_text)
+                                return 1;
+                            return 0;
+                        }
+                          
+                        translationsInOtherLanguages.sort(sortBySimilarValue);    
+                        
+                        this.listOfTranslationsInOtherLanguages = translationsInOtherLanguages;
                     }
                 )
     }

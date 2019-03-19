@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 
 import { Translation } from "../models/database-entities/translation.type";
 import { TranslationWithFile } from "../work-panel/localEntites/translations/translationWithFile.type";
@@ -8,6 +8,7 @@ import { TranslationSubstring } from "../models/database-entities/translationSub
 
 import { Observable } from "rxjs";
 import { TranslationDTO } from "../models/DTO/translationDTO";
+import { TranslationWithLocaleText } from "../work-panel/localEntites/translations/translationWithLocaleText.type";
 
 @Injectable()
 export class TranslationService {
@@ -16,15 +17,24 @@ export class TranslationService {
 
   constructor(private http: HttpClient) {}
 
-  async createTranslation(translate: Translation) {
+  async createTranslation(translation: Translation) {
     return await this.http
-      .post<number>(this.url + "/Create", translate)
+      .post<number>(this.url + "/Create", translation)
       .toPromise();
   }
 
   async getAllTranslationsInStringById(idString: number) {
     let translations: Translation[] = await this.http
       .post<Translation[]>(this.url + "/InString/" + idString, idString)
+      .toPromise();
+    return translations;
+  }
+
+  async getAllTranslationsInStringByIdAndLocale(idString: number, localeId: number) {
+    const params = new HttpParams().set("stringId", idString.toString()).set("localeId", localeId.toString());
+
+    let translations: Translation[] = await this.http
+      .post<Translation[]>(this.url + "/InStringWithLocale/", params)
       .toPromise();
     return translations;
   }
@@ -80,12 +90,26 @@ export class TranslationService {
     );
   }
 
+  findTranslationsInOtherLanguages(
+    currentProjectId: number,
+    translationSubsting: TranslationSubstring,
+    localeId: number
+  ): Observable<TranslationWithLocaleText[]>{
+
+    const params = new HttpParams().set("currentProjectId", currentProjectId.toString())
+                                   .set("translationSubstingId", translationSubsting.id.toString())
+                                   .set("localeId", localeId.toString());
+
+    return this.http.post<TranslationWithLocaleText[]>(this.url + "/FindTranslationsInOtherLanguages/", params);
+  }
+
   findSimilarTranslations(
     currentProjectId: number,
-    translationSubsting: TranslationSubstring
+    translationSubsting: TranslationSubstring,
+    localeId: number
   ): Observable<SimilarTranslation[]> {
     return this.http.post<SimilarTranslation[]>(
-      this.url + "/FindSimilarTranslations/" + currentProjectId,
+      this.url + "/FindSimilarTranslations/" + currentProjectId + "/" + localeId,
       translationSubsting
     );
   }
