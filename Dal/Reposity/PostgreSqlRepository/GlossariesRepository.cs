@@ -167,7 +167,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var queryLocalesGlossaries = new Query("glossaries")
                     .LeftJoin("glossaries_locales", "glossaries_locales.id_glossary", "glossaries.id")
                     .LeftJoin("locales", "locales.id", "glossaries_locales.id_locale")
-                    .Select("glossaries.id as tm_id")
+                    .Select("glossaries.id as g_id")
                     .GroupBy("glossaries.id")
                     .SelectRaw("string_agg(locales.name_text, ', ' order by locales.name_text) as locales_name");
 
@@ -177,7 +177,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Join("participants", "participants.id_localization_project", "localization_projects.id")
                     .WhereTrue("participants.active")
                     .Where("participants.id_user", (int)userId)
-                    .Select("glossaries.id as tm_id")
+                    .Select("glossaries.id as g_id")
                     .GroupBy("glossaries.id")
                     .SelectRaw("string_agg(localization_projects.name_text, ', ' order by localization_projects.name_text) as localization_projects_name");
 
@@ -185,8 +185,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 var query = new Query("glossaries")
                     .With("locales_g", queryLocalesGlossaries)
                     .With("localization_projects_g", queryLocalizationProjectsGlossaries)
-                    .Join("locales_g", "locales_g.tm_id", "glossaries.id")
-                    .Join("localization_projects_g", "localization_projects_g.tm_id", "glossaries.id")
+                    .Join("locales_g", "locales_g.g_id", "glossaries.id")
+                    .Join("localization_projects_g", "localization_projects_g.g_id", "glossaries.id")
                     .Select(
                         "glossaries.id",
                         "glossaries.name_text",

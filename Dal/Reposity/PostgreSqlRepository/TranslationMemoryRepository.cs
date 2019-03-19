@@ -245,7 +245,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     var query = new Query("translation_memories")
-                        .LeftJoin("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
+                        .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
                         .Where("localization_projects_translation_memories.id_localization_project", projectId)
                         .Select("translation_memories.id",
                                 "translation_memories.name_text");
