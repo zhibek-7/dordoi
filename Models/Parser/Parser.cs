@@ -527,7 +527,7 @@ namespace Models.Parser
             //var docPath = path + @"\xl\sharedStrings.xml";
             //var text = File.ReadAllText(docPath);
             var ts = new List<TranslationSubstring>();
-            var pattern = "<t>(((?<!</t>).)*)</t>";
+            var pattern = "<t(?:\\s*\\w+:?[\\w-]+=\"[^\"]*\"\\s*)*>(((?<!</t>).)*)</t>";
             var matches = Regex.Matches(file.original_full_text, pattern);
             foreach (Match m in matches) ts.Add(new TranslationSubstring(m.Groups[1].Value, string.Empty, file.id, m.Groups[1].Value, m.Groups[1].Index));
             //Directory.Delete(path, true);
