@@ -507,20 +507,13 @@ namespace Models.Services
                         }
                         else
                         {
-                            var fileContent = await this._filesRepository
-                                .GetFileContentAsync(
-                                    id: currentLevelFile.id,
-                                    id_locale: localeId.HasValue ? localeId.Value : -1);
-
                             System.IO.Directory.CreateDirectory(currentLevelPath);
                             var filePath = System.IO.Path.Combine(currentLevelPath, fileName);
-                            using (var fileStream = System.IO.File.Create(filePath))
-                            using (var streamWriter = new System.IO.StreamWriter(
-                                stream: fileStream,
-                                encoding: Encoding.GetEncoding(currentLevelFile.encod)))
-                            {
-                                streamWriter.Write(fileContent);
-                            }
+                            var fileStream = await this.WriteFileAsync(
+                                file: currentLevelFile,
+                                filePath: filePath,
+                                localeId: localeId);
+                            fileStream.Dispose();
                         }
                     }
                     currentLevelFiles = newLevelFiles;
@@ -535,23 +528,40 @@ namespace Models.Services
             }
             else
             {
-                var fileContent = await this._filesRepository
-                    .GetFileContentAsync(
-                        id: fileId,
-                        id_locale: localeId.HasValue ? localeId.Value : -1);
                 var tempFileName = System.IO.Path.GetTempFileName();
-                var fileStream = System.IO.File.Create(tempFileName);
-                using (var sw = new System.IO.StreamWriter(
+                return await this.WriteFileAsync(
+                    file: file,
+                    filePath: tempFileName,
+                    localeId: localeId);
+            }
+        }
+
+        public async Task<System.IO.FileStream> WriteFileAsync(File file, string filePath, int? localeId)
+        {
+            var fileContent = await this._filesRepository
+                .GetFileContentAsync(
+                    id: file.id,
+                    id_locale: localeId.HasValue ? localeId.Value : -1);
+
+            var fileStream = System.IO.File.Create(filePath);
+            try
+            {
+                using (var streamWriter = new System.IO.StreamWriter(
                     stream: fileStream,
                     encoding: Encoding.GetEncoding(file.encod),
                     bufferSize: this._defaultFileStreamBufferSize,
                     leaveOpen: true))
                 {
-                    sw.Write(fileContent);
+                    await streamWriter.WriteAsync(fileContent);
                 }
                 fileStream.Seek(0, System.IO.SeekOrigin.Begin);
-                return fileStream;
             }
+            catch (Exception)
+            {
+                fileStream.Dispose();
+                throw;
+            }
+            return fileStream;
         }
 
     }
