@@ -185,9 +185,9 @@ namespace Localization.WebApi
 
         [HttpPut("{fileId}/locales")]
         [Authorize]
-        public async Task SetTranslationLocalesForTermAsync(int fileId, [FromBody] IEnumerable<int> localesIds)
+        public async Task SetTranslationLocalesForFileAsync(int fileId, [FromBody] IEnumerable<int> localesIds)
         {
-            await this._filesService.UpdateTranslationLocalesForTermAsync(
+            await this._filesService.UpdateTranslationLocalesForFileAsync(
                 fileId: fileId,
                 localesIds: localesIds);
         }

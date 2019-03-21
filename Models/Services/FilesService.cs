@@ -141,7 +141,7 @@ namespace Models.Services
             {
                 var localesIds = (await this._filesRepository.GetLocalesForFileAsync(fileId: lastVersionDbFile.id))
                                  .Select(x => x.id);
-                await this.UpdateTranslationLocalesForTermAsync(fileId: newNode.Data.id, localesIds: localesIds);
+                await this.UpdateTranslationLocalesForFileAsync(fileId: newNode.Data.id, localesIds: localesIds);
             }
             return newNode;
         }
@@ -466,7 +466,7 @@ namespace Models.Services
             return await this._filesRepository.GetLocalesForFileAsync(fileId: fileId);
         }
 
-        public async Task UpdateTranslationLocalesForTermAsync(int fileId, IEnumerable<int> localesIds)
+        public async Task UpdateTranslationLocalesForFileAsync(int fileId, IEnumerable<int> localesIds)
         {
             await this._filesRepository.DeleteTranslationLocalesAsync(fileId: fileId);
             await this._filesRepository.AddTranslationLocalesAsync(fileId: fileId, localesIds: localesIds);
