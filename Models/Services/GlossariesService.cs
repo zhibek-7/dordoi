@@ -36,10 +36,10 @@ namespace Models.Services
         /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         public async Task<IEnumerable<GlossariesTableViewDTO>> GetAllByUserIdAsync(
-            int? userId,
+            Guid? userId,
             int offset,
             int limit,
-            int? projectId = null,
+            Guid? projectId = null,
             string searchString = null,
             string[] sortBy = null,
             bool sortAscending = true)
@@ -62,8 +62,8 @@ namespace Models.Services
         /// <param name="searchString">Шаблон названия глоссария (поиск по name_text).</param>
         /// <returns></returns>
         public async Task<int> GetAllByUserIdCountAsync(
-            int? userId,
-            int? projectId = null,
+            Guid? userId,
+            Guid? projectId = null,
             string searchString = null)
         {
             try
@@ -72,7 +72,7 @@ namespace Models.Services
             }
             catch (Exception exception)
             {
-                throw new Exception(WriteLn(exception.Message, exception), exception);
+                 throw new Exception(WriteLn(exception.Message, exception), exception);
             }
         }
 
@@ -81,7 +81,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
-        public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync(int glossaryId)
+        public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync(Guid glossaryId)
         {
             try
             {
@@ -110,20 +110,10 @@ namespace Models.Services
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
-        public async Task AddAsync(int userId, GlossariesForEditingDTO glossary)
+        public async Task AddAsync(Guid userId, GlossariesForEditingDTO glossary)
         {
             try
             {
-                var newGlossaryFileId = await this._filesRepository.AddAsync(new File()
-                {
-                    id_localization_project = glossary.Localization_Projects_Ids.First(x => x.HasValue).Value,
-                    name_text = glossary.Name_text,
-                    date_of_change = DateTime.Now,
-                    is_folder = false,
-                    is_last_version = true,
-                    visibility = true
-                });
-                glossary.ID_File = newGlossaryFileId;
                 await _glossariesRepository.AddAsync(userId, glossary);
             }
             catch (Exception exception)
@@ -135,14 +125,13 @@ namespace Models.Services
         /// <summary>
         /// Сохранение изменений в глоссарии.
         /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
-        public async Task UpdateAsync(int userId, GlossariesForEditingDTO glossary)
+        public async Task UpdateAsync(Guid userId,GlossariesForEditingDTO glossary)
         {
             try
             {
-                await _glossariesRepository.UpdateAsync(userId, glossary);
+                await _glossariesRepository.UpdateAsync(userId,glossary);
             }
             catch (Exception exception)
             {
@@ -155,7 +144,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="id">Идентификатор глоссария.</param>
         /// <returns></returns>
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             try
             {
@@ -172,7 +161,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
-        public async Task ClearAsync(int glossaryId)
+        public async Task ClearAsync(Guid glossaryId)
         {
             try
             {

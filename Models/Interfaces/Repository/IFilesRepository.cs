@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 
@@ -7,22 +8,22 @@ namespace Models.Interfaces.Repository
     public interface IFilesRepository : IRepositoryAuthorizeAsync<File>
     {
         Task<bool> UploadAsync(File item, IEnumerable<Locale> locales);
-        Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch);
-        Task<File> GetLastVersionByNameAndParentIdAsync(string name, int? parentId);
-        IEnumerable<File> GetInitialFolders(int projectId);
-        Task ChangeParentFolderAsync(int fileId, int? newParentId);
-        Task AddTranslationLocalesAsync(int fileId, IEnumerable<int> localesIds);
-        Task<IEnumerable<Locale>> GetLocalesForFileAsync(int fileId);
-        Task DeleteTranslationLocalesAsync(int fileId);
-        Task<string> GetFileContentAsync(int id, int id_locale = -1);
-        Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(int fileId);
-        Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(int parentFolderId);
+        Task<IEnumerable<File>> GetByProjectIdAsync(Guid projectId, string fileNamesSearch);
+        Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId);
+        IEnumerable<File> GetInitialFolders(Guid projectId);
+        Task ChangeParentFolderAsync(Guid fileId, Guid? newParentId);
+        Task AddTranslationLocalesAsync(Guid fileId, IEnumerable<Guid> localesIds);
+        Task<IEnumerable<Locale>> GetLocalesForFileAsync(Guid fileId);
+        Task DeleteTranslationLocalesAsync(Guid fileId);
+        Task<string> GetFileContentAsync(Guid id, Guid? id_locale = null);
+        Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(Guid fileId);
+        Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(Guid parentFolderId);
         /// <summary>
         /// Для внутреннего использования
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<File> GetByIDAsync(int id);
+        Task<File> GetByIDAsync(Guid? id);
 
     }
 

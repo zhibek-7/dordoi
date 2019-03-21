@@ -5,7 +5,7 @@ import { Translation } from "../models/database-entities/translation.type";
 import { TranslationWithFile } from "../work-panel/localEntites/translations/translationWithFile.type";
 import { SimilarTranslation } from "../work-panel/localEntites/translations/similarTranslation.type";
 import { TranslationSubstring } from "../models/database-entities/translationSubstring.type";
-
+import { Guid } from "guid-typescript";
 import { Observable } from "rxjs";
 import { TranslationDTO } from "../models/DTO/translationDTO";
 import { TranslationWithLocaleText } from "../work-panel/localEntites/translations/translationWithLocaleText.type";
@@ -19,19 +19,24 @@ export class TranslationService {
 
   async createTranslation(translation: Translation) {
     return await this.http
-      .post<number>(this.url + "/Create", translation)
+      .post<Guid>(this.url + "/Create", translation)
       .toPromise();
   }
 
-  async getAllTranslationsInStringById(idString: number) {
+  async getAllTranslationsInStringById(idString: Guid) {
     let translations: Translation[] = await this.http
       .post<Translation[]>(this.url + "/InString/" + idString, idString)
       .toPromise();
     return translations;
   }
 
-  async getAllTranslationsInStringByIdAndLocale(idString: number, localeId: number) {
-    const params = new HttpParams().set("stringId", idString.toString()).set("localeId", localeId.toString());
+  async getAllTranslationsInStringByIdAndLocale(
+    idString: Guid,
+    localeId: Guid
+  ) {
+    const params = new HttpParams()
+      .set("stringId", idString.toString())
+      .set("localeId", localeId.toString());
 
     let translations: Translation[] = await this.http
       .post<Translation[]>(this.url + "/InStringWithLocale/", params)
@@ -39,45 +44,67 @@ export class TranslationService {
     return translations;
   }
 
-  async deleteTranslation(idTranslation: number) {
+  async deleteTranslation(idTranslation: Guid) {
     await this.http
       .delete(this.url + "/DeleteTranslation/" + idTranslation)
       .toPromise();
   }
 
-  async acceptTranslate(translationId: number) {
+  async acceptTranslate(translationId: Guid) {
     await this.http
       .put(this.url + "/AcceptTranslation/" + translationId, true)
       .toPromise();
   }
 
-  async acceptFinalTranslation(translationId: number) {
+  async acceptFinalTranslation(translationId: Guid) {
     await this.http
       .put(this.url + "/AcceptFinalTranslation/" + translationId, true)
       .toPromise();
   }
 
-  async rejectFinalTranslattion(translationId: number) {
+  async rejectFinalTranslattion(translationId: Guid) {
     await this.http
       .put(this.url + "/RejectFinalTranslation/" + translationId, false)
       .toPromise();
   }
 
-  async rejectTranslate(translationId: number) {
+  async rejectTranslate(translationId: Guid) {
     await this.http
       .put(this.url + "/RejectTranslation/" + translationId, false)
       .toPromise();
   }
 
   updateTranslation(updatedTranslation: Translation): Observable<Object> {
-    return this.http.put(
-      this.url + "/" + updatedTranslation.id,
-      updatedTranslation
+    //let body: any ={};
+    //body.text= updatedTranslation;
+    /*
+    let body: any = updatedTranslation;
+    const t: Translation = new Translation(
+      updatedTranslation.Translated,
+      updatedTranslation.ID_String,
+      updatedTranslation.ID_Locale,
+      updatedTranslation.id
     );
+
+    t.id = null; //updatedTranslation.id;
+    t.ID_String = null; // updatedTranslation.ID_String;
+    t.Translated = updatedTranslation.Translated;
+    t.Confirmed = updatedTranslation.Confirmed;
+    t.ID_User = null; // updatedTranslation.ID_User;
+    t.User_Name = updatedTranslation.User_Name;
+    t.DateTime = updatedTranslation.DateTime;
+    t.ID_Locale = null; //updatedTranslation.ID_Locale;
+    t.Selected = updatedTranslation.Selected;
+    */
+
+    let t: Translation2 = new Translation2(Guid.createEmpty());
+    //t.id = Guid.createEmpty();
+
+    return this.http.put(this.url + "/" + updatedTranslation.id, t);
   }
 
   findTranslationByMemory(
-    currentProjectId: number,
+    currentProjectId: Guid,
     translationText: string
   ): Observable<TranslationWithFile[]> {
     return this.http.post<TranslationWithFile[]>(
@@ -91,25 +118,32 @@ export class TranslationService {
   }
 
   findTranslationsInOtherLanguages(
-    currentProjectId: number,
+    currentProjectId: Guid,
     translationSubsting: TranslationSubstring,
-    localeId: number
-  ): Observable<TranslationWithLocaleText[]>{
+    localeId: Guid
+  ): Observable<TranslationWithLocaleText[]> {
+    const params = new HttpParams()
+      .set("currentProjectId", currentProjectId.toString())
+      .set("translationSubstingId", translationSubsting.id.toString())
+      .set("localeId", localeId.toString());
 
-    const params = new HttpParams().set("currentProjectId", currentProjectId.toString())
-                                   .set("translationSubstingId", translationSubsting.id.toString())
-                                   .set("localeId", localeId.toString());
-
-    return this.http.post<TranslationWithLocaleText[]>(this.url + "/FindTranslationsInOtherLanguages/", params);
+    return this.http.post<TranslationWithLocaleText[]>(
+      this.url + "/FindTranslationsInOtherLanguages/",
+      params
+    );
   }
 
   findSimilarTranslations(
-    currentProjectId: number,
+    currentProjectId: Guid,
     translationSubsting: TranslationSubstring,
-    localeId: number
+    localeId: Guid
   ): Observable<SimilarTranslation[]> {
     return this.http.post<SimilarTranslation[]>(
-      this.url + "/FindSimilarTranslations/" + currentProjectId + "/" + localeId,
+      this.url +
+        "/FindSimilarTranslations/" +
+        currentProjectId +
+        "/" +
+        localeId,
       translationSubsting
     );
   }
@@ -118,8 +152,13 @@ export class TranslationService {
    * Возвращает все варианты перевода конкретной фразы с языком перевода.
    * @param idString Идентификатор фразы.
    */
-  getAllTranslationsInStringWithLocaleById(idString: number): Observable<TranslationDTO[]> {
-    return this.http.post<TranslationDTO[]>(this.url + "/InStringWithLocale/" + idString, idString);
+  getAllTranslationsInStringWithLocaleById(
+    idString: Guid
+  ): Observable<TranslationDTO[]> {
+    return this.http.post<TranslationDTO[]>(
+      this.url + "/InStringWithLocale/" + idString,
+      idString
+    );
   }
 
   /**
@@ -129,5 +168,11 @@ export class TranslationService {
   saveTranslated(translations: TranslationDTO[]): Observable<boolean> {
     return this.http.post<boolean>(this.url + "/saveTranslated", translations);
   }
+}
 
+export class Translation2 {
+  public id: Guid = Guid.createEmpty();
+  constructor(id: Guid) {
+    this.id = id;
+  }
 }

@@ -18,7 +18,32 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public async Task<IEnumerable<Role>> GetAllAsync(int? userId, int? projectId)
+
+        public async Task<IEnumerable<Role>> GetAsync(Guid? userId, string nameRole)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("roles").WhereNot("roles.short", nameRole);
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var roles = await dbConnection.QueryAsync<Role>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return roles;
+                }
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(RoleRepository)}.{nameof(RoleRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
+        public async Task<IEnumerable<Role>> GetAllAsync(Guid? userId, Guid? projectId)
         {
             try
             {
@@ -49,7 +74,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="dbConnection"></param>
         /// <param name="shortName"></param>
         /// <returns></returns>
-        public int? GetRoleId(string shortName)
+        public Guid? GetRoleId(string shortName)
         {
             try
             {
@@ -57,7 +82,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var sqlString = "SELECT id FROM public.roles where short =  '" + shortName + "'";
                     this.LogQuery(sqlString);
-                    var idRole = dbConnection.ExecuteScalar<int>(sqlString);
+                    var idRole = dbConnection.ExecuteScalar<Guid>(sqlString);
 
                     return idRole;
 

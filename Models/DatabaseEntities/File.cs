@@ -19,9 +19,9 @@ namespace Models.DatabaseEntities
 
         public bool is_folder { get; set; }
 
-        public int id_localization_project { get; set; }
-        public int? id_folder_owner { get; set; }
-        public int? id_previous_version { get; set; }
+        public Guid? id_localization_project { get; set; }
+        public Guid? id_folder_owner { get; set; }
+        public Guid? id_previous_version { get; set; }
         public string translator_name { get; set; }
         public string download_name { get; set; }
         public bool? visibility { get; set; }

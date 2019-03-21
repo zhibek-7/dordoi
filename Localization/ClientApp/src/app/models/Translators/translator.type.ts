@@ -1,6 +1,8 @@
+import { Guid } from 'guid-typescript';
+
 export class Translator {
   constructor(
-    public user_Id?: number,
+    public user_Id?: Guid,
     public publicProfile?: boolean, // публичный или скрытый аккаунт
     public user_Name?: string,
     public service?: string, // услуга (перевод, редактура)

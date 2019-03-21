@@ -27,16 +27,17 @@ namespace Localization.Controllers
 
         public class GetImagesByProjectIdAsyncParam
         {
-            public int projectId { get; set; }
+            public Guid projectId { get; set; }
             public string imageNameFilter { get; set; }
             public int? offset { get; set; }
             public int? limit { get; set; }
         }
-        [HttpPost("getByProjectId")]
+        [HttpPost("getByProjectId/{projectId}")]
         [Authorize]
-        public async Task<IEnumerable<Image>> GetImagesByProjectIdAsync([FromBody] GetImagesByProjectIdAsyncParam param)
+        public async Task<IEnumerable<Image>> GetImagesByProjectIdAsync(Guid projectId, [FromBody] GetImagesByProjectIdAsyncParam param)
         {
             var userId = this._userRepository.GetID(this.User.Identity.Name).Value;
+            param.projectId = projectId;
             this.Response.Headers.Add(
                 key: "totalCount",
                 value: (await this._imagesRepository

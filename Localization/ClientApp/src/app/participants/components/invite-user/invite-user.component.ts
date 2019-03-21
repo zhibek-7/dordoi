@@ -8,6 +8,7 @@ import { Role } from "src/app/models/database-entities/role.type";
 import { Invitation } from "src/app/models/database-entities/invitation.type";
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 import { AppConfigService } from "src/services/app-config.service";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: "app-invite-user",
@@ -16,12 +17,12 @@ import { AppConfigService } from "src/services/app-config.service";
 })
 export class InviteUserComponent extends ModalComponent implements OnInit {
   @Input()
-  projectId: number;
+  projectId: Guid;
 
   @Input()
   roles: Role[];
 
-  selectedRoleId: number = -1;
+  selectedRoleId: Guid;
 
   invitationId: string = "";
 

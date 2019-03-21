@@ -4,7 +4,7 @@ import { ProjectsService } from "../../../services/projects.service";
 //import { ProjectsLocalesService } from "../../../services/projectsLocales.service";
 import { FormControl, FormGroup } from "@angular/forms";
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
-
+import { Guid } from 'guid-typescript';
 import { Router } from "@angular/router";
 
 @Component({
@@ -29,10 +29,10 @@ export class AllSettingsComponent implements OnInit {
   currentProjectExportTrue = false;
   currentProjectNotificationTrue = false;
   currentProjectdateOfCreation = Date.now();
-  currentProjectID_SourceLocale = 1;
+  currentProjectID_SourceLocale = null;
   currentProjectlastActivity = Date.now();
   currentProjectlogo = "";
-  currentProjectid = 1;
+  currentProjectid = null;
   currentProjecturl = "";
   isChecked = true;
 
@@ -46,7 +46,7 @@ export class AllSettingsComponent implements OnInit {
   pjExportTrue = false;
   pjNotificationTrue = false;
   pjAllLeft = false;
-  selectedLang: number;
+  selectedLang: Guid;
   //public project: LocalizationProject;
 
   settings_proj = new FormGroup({
@@ -207,9 +207,9 @@ export class AllSettingsComponent implements OnInit {
     });
   }
 
-  idPrLocale: number;
-  idLocale: number;
-  editProject(Id: number): void {
+  idPrLocale: Guid;
+  idLocale: Guid;
+  editProject(Id: Guid): void {
     if (this.pjPublic == "public") {
       this.currentProjectPublic = true;
     } else {
@@ -288,7 +288,7 @@ export class AllSettingsComponent implements OnInit {
     this.router.navigate(["/Projects/" + Id]);
   }
 
-  editTmx(Id: number): void {
+  editTmx(Id: Guid): void {
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId, //id
       this.currentProjectName, //name

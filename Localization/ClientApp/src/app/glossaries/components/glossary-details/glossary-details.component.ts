@@ -15,6 +15,7 @@ import { TermViewModel } from "src/app/glossaries/models/term.viewmodel";
 import { SortingArgs } from "src/app/shared/models/sorting.args";
 import { Term } from "src/app/models/Glossaries/term.type";
 import { GlossariesForEditing } from "src/app/models/DTO/glossariesDTO.type";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: "app-glossary-details",
@@ -57,7 +58,7 @@ export class GlossaryDetailsComponent implements OnInit {
     private glossariesService: GlossariesService,
     private glossaryService: GlossaryService,
     private requestDataReloadService: RequestDataReloadService,
-    public dialog: MatDialog,
+    public dialog: MatDialog
   ) {
     this.requestDataReloadService.updateRequested.subscribe(() =>
       this.loadTerms(this.currentOffset)
@@ -66,7 +67,7 @@ export class GlossaryDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      let glossaryId = +params["id"];
+      let glossaryId = params["id"];
       this.glossariesService
         .get(glossaryId)
         .subscribe(glossary => (this.glossary = glossary));

@@ -9,6 +9,7 @@ import { Locale } from "../models/database-entities/locale.type";
 import { FileTranslationInfo } from "../models/database-entities/fileTranslationInfo.type";
 import { FolderModel } from "../models/DTO/folder.type";
 //import { ProjectsService } from "./projects.service";
+import { Guid } from "guid-typescript";
 
 @Injectable({
   providedIn: "root"
@@ -18,7 +19,7 @@ export class FileService {
 
   constructor(private http: HttpClient) {}
 
-  getFiles(prId: number): Observable<TreeNode[]> {
+  getFiles(prId: Guid): Observable<TreeNode[]> {
     console.log("project==" + prId);
     const formData = new FormData();
     formData.append("project", "" + prId);
@@ -37,7 +38,7 @@ export class FileService {
   }
 
   getFilesByProjectIdAsTree(
-    projectId: number,
+    projectId: Guid,
     fileNamesSearch?: string
   ): Observable<TreeNode[]> {
     let body: any = {};
@@ -55,7 +56,7 @@ export class FileService {
   }
 
   //Нужно для формирования отчетов
-  getInitialProjectFolders(projectId: number): Observable<FileData[]> {
+  getInitialProjectFolders(projectId: Guid): Observable<FileData[]> {
     const url = `${this._url}/ForProject:${projectId}`;
     return this.http.post<FileData[]>(url, projectId, {
       headers: new HttpHeaders().set(
@@ -65,11 +66,7 @@ export class FileService {
     });
   }
 
-  addFile(
-    file: File,
-    projectId: number,
-    parentId?: number
-  ): Observable<TreeNode> {
+  addFile(file: File, projectId: Guid, parentId?: Guid): Observable<TreeNode> {
     const url = `${this._url}/add/fileByProjectId/${projectId}`;
 
     const formData = new FormData();
@@ -95,8 +92,8 @@ export class FileService {
   updateFileVersion(
     file: File,
     fileName: string,
-    projectId: number,
-    parentId?: number
+    projectId: Guid,
+    parentId?: Guid
   ): Observable<TreeNode> {
     const url = `${this._url}/updateFileVersion/byProjectId/${projectId}`;
 
@@ -121,8 +118,8 @@ export class FileService {
 
   addFolder(
     name: string,
-    projectId: number,
-    parentId?: number
+    projectId: Guid,
+    parentId?: Guid
   ): Observable<TreeNode> {
     const url = `${this._url}/add/folderByProjectId/${projectId}`;
     const folderModel = new FolderModel(name, projectId, parentId);
@@ -138,9 +135,9 @@ export class FileService {
 
   uploadFolder(
     files,
-    projectId: number,
+    projectId: Guid,
     signalrClientId: string,
-    parentId?: number
+    parentId?: Guid
   ): Observable<any> {
     const url = `${this._url}/upload/folderByProjectId/${projectId}`;
 
@@ -194,7 +191,7 @@ export class FileService {
 
   changeParentFolder(
     fileData: FileData,
-    newParentId?: number
+    newParentId?: Guid
   ): Observable<Object> {
     const url = `${this._url}/${fileData.id}/changeParentFolder/${newParentId}`;
 
@@ -225,7 +222,7 @@ export class FileService {
 
   updateTranslationLocalesForFileAsync(
     fileData: FileData,
-    localesIds: number[]
+    localesIds: Guid[]
   ): Observable<Locale[]> {
     const url = `${this._url}/${fileData.id}/locales`;
 
@@ -241,13 +238,13 @@ export class FileService {
       );
   }
 
-  downloadFile(fileData: FileData, localeId?: number): Observable<Blob> {
+  downloadFile(fileData: FileData, localeId?: Guid): Observable<Blob> {
     const url = `${this._url}/${fileData.id}/download`;
     if (!localeId) {
-      localeId = -1;
+      localeId = null;
     }
 
-    return this.http.post(url, localeId, {
+    return this.http.post(url + "/" + localeId, localeId, {
       headers: new HttpHeaders().set(
         "Authorization",
         "Bearer " + sessionStorage.getItem("userToken")

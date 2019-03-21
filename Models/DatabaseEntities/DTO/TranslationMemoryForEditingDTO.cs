@@ -13,10 +13,10 @@ namespace Models.DatabaseEntities.DTO
     {
         public string name_text { get; set; }
 
-        public int? id_file { get; set; }
+        public Guid? id_file { get; set; }
 
-        public IEnumerable<int?> locales_ids { get; set; }
+        public IEnumerable<Guid> locales_ids { get; set; }
 
-        public IEnumerable<int?> localization_projects_ids { get; set; }
+        public IEnumerable<Guid> localization_projects_ids { get; set; }
     }
 }

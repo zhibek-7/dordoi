@@ -82,7 +82,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         //    }
         //}
 
-        public IEnumerable<User> GetByProjectID(int Id)
+        public IEnumerable<User> GetByProjectID(Guid Id)
         {
             try
             {
@@ -238,7 +238,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         //}
 
-        public async Task<byte[]> GetPhotoByIdAsync(int id)
+        public async Task<byte[]> GetPhotoByIdAsync(Guid id)
         {
             try
             {
@@ -332,7 +332,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings);
 
-                    return count == 0;
+                    return (count == 0);
                 }
             }
             catch (NpgsqlException exception)
@@ -447,7 +447,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<int?> CreateUser(User user)
+        public async Task<Guid?> CreateUser(User user)
         {
             try
             {
@@ -462,15 +462,22 @@ namespace DAL.Reposity.PostgreSqlRepository
                         password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
                         data_create = DateTime.Now
                     };
-                    var query = new Query("users").AsInsert(newUser,
-                        true); //true - вернуть сгенерированный id нового объекта
-                    var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
+                    /* var query = new Query("users").AsInsert(newUser,
+                         true); //true - вернуть сгенерированный id нового объекта
+                     var compiledQuery = _compiler.Compile(query);
+                     LogQuery(compiledQuery);
 
+                     var idOfNewUser = await dbConnection
+                         .ExecuteScalarAsync<Guid>(
+                             sql: compiledQuery.Sql,
+                             param: compiledQuery.NamedBindings);
+                      */
+
+                    var sql = "INSERT INTO users (name_text, email,password_text, data_create) VALUES('" +
+                              newUser.name_text + "', " + newUser.email + ", " + newUser.password_text + ", " +
+                              newUser.data_create + ") RETURNING  users.id";
                     var idOfNewUser = await dbConnection
-                        .ExecuteScalarAsync<int>(
-                            sql: compiledQuery.Sql,
-                            param: compiledQuery.NamedBindings);
+                        .ExecuteScalarAsync<Guid>(sql);
 
 
                     ///создание записи в participants
@@ -478,7 +485,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     Participant newParticipant = new Participant();
                     newParticipant.ID_Localization_Project = null;
                     newParticipant.Active = true;
-                    newParticipant.ID_Role = (int)id;
+                    newParticipant.ID_Role = (Guid)id;
                     newParticipant.ID_User = idOfNewUser;
 
                     participant.AddAsync(newParticipant);
@@ -502,7 +509,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<String> GetRoleAsync(string userName, int? projectId)
+        public async Task<String> GetRoleAsync(string userName, Guid? projectId)
         {
             try
             {
@@ -566,10 +573,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                                       u.photo as Photo, 
                                       u.email as Email, 
                                       u.joined as Joined, 
-                                      roles.name_text as Role 
-                                      FROM users  as u
-                                      INNER JOIN participants as p ON p.id_user = u.id 
-                                      INNER JOIN roles ON roles.id = p.id_role 
+                                      'Наблюдатель' as Role 
+                                      FROM users  as u                                      
                                       WHERE (u.name_text = @Name_text OR email = @Email) AND password_text = @Password_text  limit 1";
 
                     var param = new { user.Name_text, user.Email, user.Password_text };
@@ -618,7 +623,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     //Создание пользователя с вложенными списками идентификаторов связанных данных.
                     var resultDTO = new UserProfileForEditingDTO
                     {
-                        id = temp.FirstOrDefault()?.id ?? -1,
+                        id = (Guid)temp.FirstOrDefault()?.id,
                         name_text = temp.FirstOrDefault().name_text,
                         email = temp.FirstOrDefault().email,
                         photo = temp.FirstOrDefault().photo,
@@ -628,7 +633,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         id_time_zones = temp.FirstOrDefault().id_time_zones,
 
                         locales_id_is_native = temp.Count(t => t.LocaleId != null) > 0
-                        ? temp.Select(t => Tuple.Create<int, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
+                        ? temp.Select(t => Tuple.Create<Guid, bool>(t.LocaleId.Value, t.LocaleIsNative)).Distinct()
                         : null
                     };
 
@@ -652,7 +657,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public int? GetID(string name)
+        public Guid? GetID(string name)
         {
             try
             {
@@ -663,7 +668,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
                     this.LogQuery(query);
-                    var idOfInsertedRow = dbConnection.ExecuteScalar<int>(query);
+                    var idOfInsertedRow = dbConnection.ExecuteScalar<Guid>(query);
                     return idOfInsertedRow;
 
                 }
@@ -721,7 +726,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Select("users.id");
                     var compiledQueryId = _compiler.Compile(queryId);
                     LogQuery(compiledQueryId);
-                    var id = await dbConnection.QueryFirstOrDefaultAsync<int>(
+                    var id = await dbConnection.QueryFirstOrDefaultAsync<Guid>(
                         sql: compiledQueryId.Sql,
                         param: compiledQueryId.NamedBindings);
 
@@ -746,7 +751,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="localesIds">Выбранные языки перевода.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task UpdateUsersLocalesAsync(int userId, IEnumerable<Tuple<int, bool>> localesIdIsNative, bool isDeleteOldRecords = true)
+        public async Task UpdateUsersLocalesAsync(Guid userId, IEnumerable<Tuple<Guid, bool>> localesIdIsNative, bool isDeleteOldRecords = true)
         {
             try
             {

@@ -1,3 +1,4 @@
+import { Guid } from 'guid-typescript';
 import { Component, OnInit } from "@angular/core";
 import {
   Validators,
@@ -195,7 +196,7 @@ export class ProfileComponent implements OnInit {
    */
   setSelectedLocales(newSelection: Locale[]) {
     this.user.locales_id_is_native = newSelection.map(
-      (t): { item1: number; item2: boolean } => {
+      (t): { item1: Guid; item2: boolean } => {
         return { item1: t.id, item2: t.isNative };
       }
     );

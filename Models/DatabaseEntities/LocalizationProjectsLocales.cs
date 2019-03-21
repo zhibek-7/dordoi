@@ -9,9 +9,9 @@ namespace Models.DatabaseEntities
     public class LocalizationProjectsLocales
     {
         [Required]
-        public int ID_Localization_Project { get; set; }
+        public Guid ID_Localization_Project { get; set; }
         [Required]
-        public int ID_Locale { get; set; }
+        public Guid ID_Locale { get; set; }
         [Required]
         public float Percent_Of_Translation { get; set; }
         [Required]

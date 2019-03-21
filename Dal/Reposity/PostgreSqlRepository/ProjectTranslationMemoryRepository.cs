@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Models.DatabaseEntities;
 using Npgsql;
 using System;
+using System.Data;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -19,11 +20,11 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
         /// <summary>
-        /// Возвращает список связок проект - ((не)назначенных)памяти переводов (без группировки по объектам).
+        /// Возвращает список связок проект - ((не)назначенных) памяти переводов (без группировки по объектам).
         /// </summary>
         /// <param name="idProject">Идентификатор проекта локализации.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<ProjectTranslationMemory>> GetByProject(int idProject)
+        public async Task<IEnumerable<ProjectTranslationMemory>> GetByProject(Guid idProject)
         {
             try
             {
@@ -37,9 +38,9 @@ LEFT JOIN localization_projects_translation_memories ON
 		  localization_projects_translation_memories.id_translation_memory = translation_memories.id and 
 		  localization_projects_translation_memories.id_localization_project = @idProject";
                     var param = new { idProject };
-                        this.LogQuery(SQLQuery, param);
+                    this.LogQuery(SQLQuery, param);
                     var projectTranslationMemory = await dbConnection.QueryAsync<ProjectTranslationMemory>(SQLQuery, param);
-                        return projectTranslationMemory;
+                    return projectTranslationMemory;
                 }
             }
             catch (NpgsqlException exception)
@@ -61,7 +62,7 @@ LEFT JOIN localization_projects_translation_memories ON
         /// <param name="idTranslationMemories">Идентификаторы памятей переводов.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task<bool> UpdateProjectTranslationMemories(int idProject, int[] idTranslationMemories, bool isDeleteOldRecords = true)
+        public async Task<bool> UpdateProjectTranslationMemories(Guid idProject, Guid[] idTranslationMemories, bool isDeleteOldRecords = true)
         {
             try
             {
@@ -111,6 +112,30 @@ LEFT JOIN localization_projects_translation_memories ON
             }
         }
 
+
+
+        /*/// <summary>
+        /// Пересоздание в таблице "localization_projects_translation_memories" связей памяти переводов с проектами локализации (translation_memories с localization_projects).
+        /// Удаляются старые записи, в которых указаны проекты назначенные на пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="localizationProjectsIds">Выбранные проекты локализации.</param>
+        /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
+        /// <returns></returns>
+        public async Task<bool> UpdateTranslationMemoriesLocalizationProjectsAsync(Guid userId,
+            Guid translationMemoryId, IEnumerable<Guid> localizationProjectsIdsbool, NpgsqlConnection dbConnection, IDbTransaction transaction, bool isDeleteOldRecords = true)
+
+        {
+            //using (var dbConnection = new NpgsqlConnection(connectionString))
+            //{
+            return await UpdateTranslationMemoriesLocalizationProjectsAsync(userId, translationMemoryId,
+                localizationProjectsIdsbool, dbConnection, transaction, isDeleteOldRecords);
+            //}
+
+        }
+        */
+
         /// <summary>
         /// Пересоздание в таблице "localization_projects_translation_memories" связей памяти переводов с проектами локализации (translation_memories с localization_projects).
         /// Удаляются старые записи, в которых указаны проекты назначенные на пользователя.
@@ -120,11 +145,30 @@ LEFT JOIN localization_projects_translation_memories ON
         /// <param name="localizationProjectsIds">Выбранные проекты локализации.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task<bool> UpdateTranslationMemoriesLocalizationProjectsAsync(int userId, int translationMemoryId, IEnumerable<int?> localizationProjectsIds, bool isDeleteOldRecords = true)
+        public async Task<bool> UpdateTranslationMemoriesLocalizationProjectsAsync(Guid userId,
+            Guid translationMemoryId, IEnumerable<Guid> localizationProjectsIds, bool isDeleteOldRecords = true)
+        {
+            using (var dbConnection = new NpgsqlConnection(connectionString))
+            {
+                return await UpdateTranslationMemoriesLocalizationProjectsAsync(userId, translationMemoryId,
+                    localizationProjectsIds, dbConnection, null, isDeleteOldRecords);
+            }
+        }
+
+        /// <summary>
+        /// Пересоздание в таблице "localization_projects_translation_memories" связей памяти переводов с проектами локализации (translation_memories с localization_projects).
+        /// Удаляются старые записи, в которых указаны проекты назначенные на пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
+        /// <param name="localizationProjectsIds">Выбранные проекты локализации.</param>
+        /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
+        /// <returns></returns>
+        public async Task<bool> UpdateTranslationMemoriesLocalizationProjectsAsync(Guid userId, Guid translationMemoryId, IEnumerable<Guid> localizationProjectsIds, NpgsqlConnection dbConnection, IDbTransaction transaction, bool isDeleteOldRecords = true)
         {
             try
             {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
+                //using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     if (isDeleteOldRecords)
                     {
@@ -143,7 +187,7 @@ LEFT JOIN localization_projects_translation_memories ON
                         LogQuery(compiledQueryDelete);
                         await dbConnection.ExecuteAsync(
                             sql: compiledQueryDelete.Sql,
-                            param: compiledQueryDelete.NamedBindings);
+                            param: compiledQueryDelete.NamedBindings, transaction: transaction);
                     }
 
                     var localizationProjectsTranslationMemories = localizationProjectsIds.Select(t => new
@@ -159,7 +203,7 @@ LEFT JOIN localization_projects_translation_memories ON
                         LogQuery(compiledQueryInsert);
                         await dbConnection.ExecuteAsync(
                                 sql: compiledQueryInsert.Sql,
-                                param: compiledQueryInsert.NamedBindings);
+                                param: compiledQueryInsert.NamedBindings, transaction: transaction);
                     }
 
                     return true;

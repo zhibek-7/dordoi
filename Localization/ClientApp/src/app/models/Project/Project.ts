@@ -1,3 +1,5 @@
+import { Guid } from 'guid-typescript';
+
 export class Project {
 
   name_text?: string;
@@ -6,19 +8,19 @@ export class Project {
   date_Of_Creation?: Date;
   default_String?: string;
   description?: string;
-  ID_Source_Locale?: number;
+  ID_Source_Locale?: Guid;
   last_Activity?: Date;
   logo?: string;
   notify_Confirm?: boolean;
   notify_Finish?: boolean;
   notify_New?: boolean;
   visibility?: boolean;
-  id?: number;
+  id?: Guid;
   url?: string;
 
 
   constructor(name: string, ableToDownload: boolean, ableToLeftErrors: boolean, dateOfCreation: Date, defaultString: string, description: string,
-    ID_SourceLocale: number, lastActivity: Date, logo: string, notifyConfirm: boolean, notifyFinish: boolean, notifyNew: boolean, visibility: boolean, id: number, url: string) {
+    ID_SourceLocale: Guid, lastActivity: Date, logo: string, notifyConfirm: boolean, notifyFinish: boolean, notifyNew: boolean, visibility: boolean, id: Guid, url: string) {
     this.name_text = name;
     this.able_To_Download = ableToDownload;
     this.able_To_Left_Errors = ableToLeftErrors;

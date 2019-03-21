@@ -13,7 +13,7 @@ namespace Models.DatabaseEntities
 
         public int? translation_max_length { get; set; }
 
-        public int id_file_owner { get; set; }
+        public Guid id_file_owner { get; set; }
 
         public string value { get; set; }
 
@@ -27,7 +27,7 @@ namespace Models.DatabaseEntities
 
         public TranslationSubstring() { }
 
-        public TranslationSubstring(string substringToTranslate, string context, int id_FileOwner, string value, int positionInText, int docxParagraphID = -1)
+        public TranslationSubstring(string substringToTranslate, string context, Guid id_FileOwner, string value, int positionInText, int docxParagraphID = -1)
         {
             this.substring_to_translate = substringToTranslate;
             this.description = null;

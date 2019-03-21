@@ -9,7 +9,7 @@ using Npgsql;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
-    public class WorkTypeRepository : BaseRepository, IRepositoryAsync<WorkType>
+    public class WorkTypeRepository : BaseRepository//, IRepositoryAsync<WorkType>
     {
         public WorkTypeRepository(string connectionStr) : base(connectionStr)
         {
@@ -21,7 +21,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var _sql = "INSERT INTO work_types (name_text) VALUES (@Name_text)";
+                    var _sql = "INSERT INTO work_types (name_text) VALUES (@Name_text) RETURNING  id";
                     var _params = new { workType.Name_text };
                     LogQuery(_sql, _params);
                     var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
@@ -45,7 +45,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<WorkType> GetByIDAsync(int id)
+        public async Task<WorkType> GetByIDAsync(Guid id)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
             try
             {

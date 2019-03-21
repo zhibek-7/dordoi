@@ -10,7 +10,7 @@ namespace Models.DatabaseEntities
     public class UserAction : BaseEntity
     {
         [Required]
-        public int id_user { get; set; }
+        public Guid id_user { get; set; }
 
         public string user_name { get; set; }
 
@@ -24,38 +24,38 @@ namespace Models.DatabaseEntities
 
         public string description { get; set; }
 
-        public int? id_locale { get; set; }
+        public Guid? id_locale { get; set; }
 
         public string locale_name { get; set; }
 
-        public int? id_file { get; set; }
+        public Guid? id_file { get; set; }
 
         public string file_name { get; set; }
 
-        public int? id_string { get; set; }
+        public Guid? id_string { get; set; }
 
         public string translation_substring_name { get; set; }
 
-        public int? id_translation { get; set; }
+        public Guid? id_translation { get; set; }
 
         public string translation { get; set; }
 
-        public int? id_project { get; set; }
+        public Guid? id_project { get; set; }
 
         public string project_name { get; set; }
 
-        public int? id_user_participant { get; set; }
+        public Guid? id_user_participant { get; set; }
 
-        public int? id_role_participant { get; set; }
+        public Guid? id_role_participant { get; set; }
 
-        public int? id_glossary { get; set; }
+        public Guid? id_glossary { get; set; }
 
         public string glossary_name { get; set; }
 
 
         public UserAction() { }
 
-        public UserAction(int userId, string userName, string descript, int actionTypeID, string actionName)
+        public UserAction(Guid userId, string userName, string descript, int actionTypeID, string actionName)
         {
             this.id_user = userId;
             this.user_name = userName;

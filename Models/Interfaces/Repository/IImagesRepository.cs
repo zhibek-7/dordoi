@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 
@@ -8,13 +9,13 @@ namespace Models.Interfaces.Repository
     {
         Task<bool> UpdateAsync(Image image);
         Task<int> GetFilteredCountAsync(
-            int userId,
-            int projectId,
+            Guid userId,
+            Guid projectId,
             string imageNameFilter
             );
         Task<IEnumerable<Image>> GetFilteredAsync(
-            int userId,
-            int projectId,
+            Guid userId,
+            Guid projectId,
             string imageNameFilter,
             int limit,
             int offset

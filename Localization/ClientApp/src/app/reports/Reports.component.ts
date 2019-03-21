@@ -4,6 +4,7 @@ import { Location } from "@angular/common";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
 
 import { ProjectsService } from "../services/projects.service";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: "app-reports",
@@ -11,7 +12,7 @@ import { ProjectsService } from "../services/projects.service";
   styleUrls: ["./Reports.component.css"]
 })
 export class ReportsComponent implements OnInit {
-  public projectId: number;
+  public projectId: Guid;
   public project: LocalizationProject;
 
   showProjectStatus: boolean = false;
@@ -29,7 +30,7 @@ export class ReportsComponent implements OnInit {
   ngOnInit() {
     console.log("--Reports.component ngOnInit-");
     console.log(
-      "--Reports.component ngOnInit-1 ==" + this.route.snapshot.params["id"]
+      "--Reports.component ngOnInit-1 ==" + this.route.snapshot.params["projectId"]
     );
     console.log(
       "--Reports.component ngOnInit2 = ==-" +

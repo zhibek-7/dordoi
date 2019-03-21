@@ -4,16 +4,12 @@ import { User } from "../models/database-entities/user.type";
 import { Observable } from "rxjs";
 import { UserProfile } from "../models/DTO/userProfile.type";
 import { userPasswordChange } from "../account/models/userPasswordChange.model";
-
+import { Guid } from "guid-typescript";
 @Injectable()
 export class UserService {
   private url: string = "api/User/";
 
   constructor(private httpClient: HttpClient) {}
-
-  get currentUserId(): number {
-    return +sessionStorage.getItem("currentUserID");
-  }
 
   get currentUserName(): string {
     return sessionStorage.getItem("userName");
@@ -23,14 +19,14 @@ export class UserService {
     return this.httpClient.post<User[]>(this.url + "List", null);
   }
 
-  getProjectParticipantList(projectId: number): Observable<User[]> {
+  getProjectParticipantList(projectId: Guid): Observable<User[]> {
     return this.httpClient.post<User[]>(
       this.url + "List/projectId:" + projectId,
       null
     );
   }
 
-  getPhotoById(userId: number): Observable<Blob> {
+  getPhotoById(userId: Guid): Observable<Blob> {
     return this.httpClient.post(
       this.url + userId.toString() + "/getPhoto/",
       null,

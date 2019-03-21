@@ -18,7 +18,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public Task<int> AddAsync(Glossary item)
+        public Task<Guid?> AddAsync(Glossary item)
         {
             throw new NotImplementedException();
         }
@@ -51,7 +51,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<Glossary> GetByIDAsync(int id)
+        public async Task<Glossary> GetByIDAsync(Guid id)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<Glossary> GetByFileIdAsync(int fileId)
+        public async Task<Glossary> GetByFileIdAsync(Guid fileId)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public Task<bool> RemoveAsync(int id)
+        public Task<bool> RemoveAsync(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -155,7 +155,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task DeleteTermAsync(int glossaryId, int termId)
+        public async Task DeleteTermAsync(Guid glossaryId, Guid termId)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
-        public async Task<int> AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
+        public async Task<Guid?> AddNewTermAsync(Guid glossaryId, TranslationSubstring newTerm, Guid? partOfSpeechId)
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
             newTerm.id_file_owner = glossary.ID_File;
@@ -230,7 +230,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var insertNewStingParam = newTerm;
                     this.LogQuery(insertNewStingSql, newTerm.GetType(), insertNewStingParam);
                     var idOfNewTerm = await dbConnection
-                        .ExecuteScalarAsync<int>(
+                        .ExecuteScalarAsync<Guid>(
                             sql: insertNewStingSql,
                             param: insertNewStingParam);
 
@@ -251,18 +251,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                       $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.AddNewTermAsync)} {nameof(NpgsqlException)} ",
                       exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.AddNewTermAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
-        public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)
+        public async Task UpdateTermAsync(Guid glossaryId, TranslationSubstring updatedTerm, Guid? partOfSpeechId)
         {
             try
             {
@@ -326,7 +326,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         };
 
         public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
-            int glossaryId,
+            Guid glossaryId,
             int limit,
             int offset,
             string termPart = null,
@@ -378,7 +378,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart)
+        public async Task<int?> GetAssotiatedTermsCountAsync(Guid glossaryId, string termPart)
         {
             try
             {
@@ -400,18 +400,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                       $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsCountAsync)} {nameof(NpgsqlException)} ",
                       exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(GlossaryRepository)}.{nameof(GlossaryRepository.GetAssotiatedTermsCountAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
-        private Query GetAssotiatedTermsQuery(int glossaryId, string termPart)
+        private Query GetAssotiatedTermsQuery(Guid glossaryId, string termPart)
         {
             var query =
                 new Query("glossaries_strings")
@@ -446,7 +446,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             return query;
         }
 
-        public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
+        public async Task<Locale> GetLocaleByIdAsync(Guid glossaryId)
         {
             try
             {
@@ -482,7 +482,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<Locale> GetLocaleByTermByIdAsync(int termId)
+        public async Task<Locale> GetLocaleByTermByIdAsync(Guid termId)
         {
             try
             {
@@ -518,7 +518,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(int glossaryId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesAsync(Guid glossaryId)
         {
             try
             {
@@ -560,7 +560,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
+        public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(Guid projectId)
         {
             string query = "SELECT " +
                             "DISTINCT ON (TS.id) TS.id AS id," +
@@ -613,7 +613,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария</param>
         /// <returns></returns>
-        public async Task DeleteTermsByGlossaryAsync(int glossaryId)
+        public async Task DeleteTermsByGlossaryAsync(Guid glossaryId)
         {
             try
             {
@@ -622,7 +622,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var queryGetTranslationSubstringsID = new Query("glossaries_strings").Where("id_glossary", glossaryId).Select("glossaries_strings.id_string");
                     var compiledQueryGetTranslationSubstringsID = _compiler.Compile(queryGetTranslationSubstringsID);
                     LogQuery(compiledQueryGetTranslationSubstringsID);
-                    var idsTranslationSubstrings = await dbConnection.QueryAsync<int>(
+                    var idsTranslationSubstrings = await dbConnection.QueryAsync<Guid>(
                         sql: compiledQueryGetTranslationSubstringsID.Sql,
                         param: compiledQueryGetTranslationSubstringsID.NamedBindings);
 

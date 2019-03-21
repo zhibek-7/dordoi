@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
-
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-main-list-page',
@@ -76,11 +76,11 @@ export class MainListPageComponent implements OnInit {
   get filters(): any {
     return this._filtersViewModels;
   }
-  private _selectedFilterId: number | null = null;
-  set filterId(id: number) {
+  private _selectedFilterId: Guid | null = null;
+  set filterId(id: Guid) {
     this._selectedFilterId = id;
   }
-  get filterId(): number {
+  get filterId(): Guid {
     return this._selectedFilterId;
   }
 

@@ -11,7 +11,7 @@ namespace Models.DatabaseEntities.PartialEntities.Comment
         /// <summary>
         /// Идентификатор комментария
         /// </summary>
-        public int comment_id { get; set; }
+        public Guid comment_id { get; set; }
 
         /// <summary>
         /// Текст комментария
@@ -26,7 +26,7 @@ namespace Models.DatabaseEntities.PartialEntities.Comment
         /// <summary>
         /// Идентификатор пользователя
         /// </summary>
-        public int user_Id { get; set; }
+        public Guid user_Id { get; set; }
 
         /// <summary>
         /// Имя пользователя

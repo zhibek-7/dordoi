@@ -9,7 +9,7 @@ namespace Models.DatabaseEntities.PartialEntities.Glossaries
         /// <summary>
         /// Глоссарий в котором содержится термин
         /// </summary>
-        public int Glossary_Id { get; set; }
+        public Guid Glossary_Id { get; set; }
 
         /// <summary>
         /// Глоссарий в котором содержится термин

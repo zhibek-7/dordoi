@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using Dapper;
 using Models.DatabaseEntities;
+using DAL.Context;
 using Models.Interfaces.Repository;
 using Npgsql;
 using System.Threading.Tasks;
@@ -19,7 +21,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public async Task<IEnumerable<Image>> GetAllAsync(int? userId, int? projectId)
+        public async Task<IEnumerable<Image>> GetAllAsync(Guid? userId, Guid? projectId)
         {
             try
             {
@@ -40,7 +42,7 @@ inner join localization_projects as lp
 	on f.id_localization_project = lp.id
 inner join participants as p
 	on lp.id = p.id_localization_project
-where active = true and lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение
+where active = true and lp.id = '" + (Guid)projectId + @"' and   p.id_user ='" + (Guid)userId + @"' --- подставляется значение
 union
 SELECT i.id, i.name_text, i.date_time_added, i.id_user, i.body, i.url
 FROM public.images as i
@@ -54,7 +56,7 @@ inner join localization_projects as lp
 	on f.id_localization_project = lp.id
 inner join participants as p
 	on lp.id = p.id_localization_project
-where  active = true and  lp.id = " + (int)projectId + @" and   p.id_user =" + (int)userId + @" --- подставляется значение
+where  active = true and  lp.id = '" + (Guid)projectId + @"' and   p.id_user ='" + (Guid)userId + @"' --- подставляется значение
 order by name_text";
 
                     this.LogQuery(sqlString);
@@ -79,8 +81,8 @@ order by name_text";
         }
 
         public async Task<int> GetFilteredCountAsync(
-            int userId,
-            int projectId,
+            Guid userId,
+            Guid projectId,
             string imageNameFilter
             )
         {
@@ -121,8 +123,8 @@ order by name_text";
         }
 
         public async Task<IEnumerable<Image>> GetFilteredAsync(
-            int userId,
-            int projectId,
+            Guid userId,
+            Guid projectId,
             string imageNameFilter,
             int limit,
             int offset

@@ -5,15 +5,21 @@ import { Observable } from "rxjs";
 import { LocalizationProjectForSelectDTO } from "../models/DTO/localizationProjectForSelectDTO.type";
 import { LocalizationProjectsLocales } from "../models/database-entities/localizationProjectLocales.type";
 import { Locale } from "moment";
-
+import { Guid } from "guid-typescript";
 @Injectable()
 export class ProjectsService {
   private controllerUrl: string = "api/Project/";
 
   constructor(private httpClient: HttpClient) {}
 
-  get currentProjectId(): number {
-    return +sessionStorage.getItem("ProjectID");
+  get currentProjectId(): Guid {
+    let id: string = sessionStorage.getItem("ProjectID");
+
+    if (id == null || id == "") {
+      return Guid.createEmpty();
+    } else {
+      return Guid.parse(sessionStorage.getItem("ProjectID"));
+    }
   }
 
   get currentProjectName(): string {
@@ -28,7 +34,7 @@ export class ProjectsService {
     );
   }
 
-  getProject(id: number): Observable<LocalizationProject> {
+  getProject(id: Guid): Observable<LocalizationProject> {
     console.log("service projects = getProject=" + id);
     console.log("service projects = getProject===" + this.controllerUrl + id);
     return this.httpClient.post<LocalizationProject>(
@@ -41,9 +47,9 @@ export class ProjectsService {
    * Возвращает проект локализации с подробной иформацией из связанных данных.
    * @param id Идентификатор проекта локализации.
    */
-  getProjectWithDetails(id: number): Observable<LocalizationProject> {
+  getProjectWithDetails(id: Guid): Observable<LocalizationProject> {
     return this.httpClient.post<LocalizationProject>(
-      this.controllerUrl + "details",
+      this.controllerUrl + "details" + "/" + id,
       id
     );
   }
@@ -75,7 +81,7 @@ export class ProjectsService {
       .toPromise();
     return asyncResult;
   }
-  async updateProject(Id: number, project: LocalizationProject) {
+  async updateProject(Id: Guid, project: LocalizationProject) {
     console.log("updateProject-->" + Id);
     console.log(project);
     project.id = Id;
@@ -87,7 +93,7 @@ export class ProjectsService {
   }
 
   //удаление проекта
-  async deleteProject(Id: number) {
+  async deleteProject(Id: Guid) {
     console.log("updateProject-->" + Id);
     let asyncResult = await this.httpClient
       .post<LocalizationProject>(this.controllerUrl + "delete/" + Id, Id)
@@ -96,9 +102,7 @@ export class ProjectsService {
   }
 
   //удаление языков
-  deleteProjectLocalesById(
-    Id: number
-  ): Observable<LocalizationProjectsLocales> {
+  deleteProjectLocalesById(Id: Guid): Observable<LocalizationProjectsLocales> {
     console.log("updateProject-->" + Id);
     let asyncResult = this.httpClient.post<LocalizationProjectsLocales>(
       this.controllerUrl + "deleteLocales/" + Id,
@@ -141,7 +145,7 @@ export class ProjectsService {
 
   //обновление языков
   async updateProjectLocales(
-    Id: number,
+    Id: Guid,
     projectLocale: LocalizationProjectsLocales[]
   ) {
     console.log("updateProject-->" + Id);
@@ -178,7 +182,7 @@ export class ProjectsService {
   }
 
   //все языки 1 проекта
-  getProjectLocales(Id: number): Observable<LocalizationProjectsLocales[]> {
+  getProjectLocales(Id: Guid): Observable<LocalizationProjectsLocales[]> {
     return this.httpClient.post<LocalizationProjectsLocales[]>(
       this.controllerUrl + "ListProjectLocales/" + Id,
       Id
@@ -198,7 +202,7 @@ export class ProjectsService {
    * @param project
    */
   private controllerUrlTmx: string = "api/ReadWriteFile/";
-  async tmxFile(Id: number, project: LocalizationProject) {
+  async tmxFile(Id: Guid, project: LocalizationProject) {
     console.log("updateProject-->" + Id);
     console.log(project);
     project.id = Id;

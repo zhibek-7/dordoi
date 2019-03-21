@@ -1,21 +1,23 @@
+import { Guid } from 'guid-typescript';
+
 /**
  * Для создания нового и редактирования глоссария
  */
 export class GlossariesForEditing {
-  id: number;
+  id: Guid;
   name_text: string;
   description: string;
 
-  locales_Ids: number[];
+  locales_Ids: Guid[];
 
-  localization_Projects_Ids: number[];
+  localization_Projects_Ids: Guid[];
 }
 
 /**
  * Для отображения в таблице списка глоссарий
  */
 export class GlossariesTableViewDTO {
-  id: number;
+  id: Guid;
   name: string;
 
   locales_name: string;

@@ -22,7 +22,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public async Task<int> AddAsync(TranslationTrouble item)
+        public async Task<Guid?> AddAsync(TranslationTrouble item)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var _sql = "INSERT INTO translations_troubles" +
                                " (id_trouble, trouble, id_translation) " +
-                               "VALUES (@ID_Trouble, @Trouble, @ID_Translation)";
+                               "VALUES (@ID_Trouble, @Trouble, @ID_Translation) RETURNING  id";
                     var _params = new
                     {
                         item.ID_Trouble,
@@ -38,7 +38,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         item.ID_Translation
                     };
                     LogQuery(_sql, _params);
-                    var insertedId = await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
+                    var insertedId = await dbConnection.ExecuteScalarAsync<Guid>(_sql, _params);
                     return insertedId;
                 }
             }
@@ -47,18 +47,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.AddAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(TranslationTroubleRepository)}.{nameof(TranslationTroubleRepository.AddAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
-        public async Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         ID = item.id
                     };
                     LogQuery(_sql, _params);
-                    await dbConnection.ExecuteScalarAsync<int>(_sql, _params);
+                    await dbConnection.ExecuteScalarAsync<Guid>(_sql, _params);
                     return true;
                 }
             }
@@ -125,7 +125,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<TranslationTrouble> GetByIDAsync(int id)
+        public async Task<TranslationTrouble> GetByIDAsync(Guid id)
         {
             try
             {
@@ -183,7 +183,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<TranslationTrouble>> GetByTranslationIdAsync(int translationId)
+        public async Task<IEnumerable<TranslationTrouble>> GetByTranslationIdAsync(Guid translationId)
         {
             try
             {

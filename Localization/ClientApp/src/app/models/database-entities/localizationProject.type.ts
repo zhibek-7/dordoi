@@ -1,13 +1,15 @@
+import { Guid } from 'guid-typescript';
+
 /** Модель проектов */
 export class LocalizationProject {
-  id?: number;
+  id?: Guid;
   name_text: string;
   description: string;
   url: string;
   visibility: boolean;
   date_Of_Creation?: any;
   last_Activity?: any;
-  ID_Source_Locale?: number;
+  ID_Source_Locale?: Guid;
   //Исходный язык
   source_Locale_Name: string;
   // Количество активных пользователей
@@ -25,14 +27,14 @@ export class LocalizationProject {
   //public dateTime: Date = new Date(Date.now()),
   //public id?: number
   public constructor(
-    id: number,
+    id: Guid,
     name: string,
     description: string,
     url: string,
     visibility: boolean,
     dateOfCreation: any,
     // lastActivity: "12.12.2018",
-    id_SourceLocale: number,
+    id_SourceLocale: Guid,
     ableToDownload: boolean,
     ableToLeftErrors: boolean,
     //defaultString: string,
@@ -49,7 +51,7 @@ export class LocalizationProject {
     this.url = url;
     this.visibility = visibility;
     this.date_Of_Creation = dateOfCreation;
-    this.last_Activity = "12.12.2018"; // lastActivity;//"12.12.2018";
+    this.last_Activity = dateOfCreation; // lastActivity;//"12.12.2018";
     this.ID_Source_Locale = id_SourceLocale;
     this.able_To_Download = ableToDownload;
     this.able_To_Left_Errors = ableToLeftErrors;

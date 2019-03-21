@@ -31,7 +31,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Метод добавления варианта перевода
         /// </summary>
         /// <param name="item">Вариант перевода</param>
-        public async Task<int> AddAsync(Translation item)
+        public async Task<Guid?> AddAsync(Translation item)
         {
             var query = "INSERT INTO translations (id_string, translated, confirmed, id_user, datetime, id_locale)" +
                         "VALUES (@ID_String, @Translated, @Confirmed, @ID_User, @DateTime, @ID_Locale) " +
@@ -42,7 +42,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(query, item.GetType(), item);
-                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, item);
+                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<Guid>(query, item);
 
                     /*Логироание*/
                     _action.AddAddTraslationActionAsync(item, idOfInsertedRow, WorkTypes.AddTraslation);
@@ -56,14 +56,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.AddAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.AddAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
@@ -106,7 +106,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id необходимого варианта перевода</param>
         /// <returns>Вариант перевода</returns>
-        public async Task<Translation> GetByIDAsync(int id)
+        public async Task<Translation> GetByIDAsync(Guid id)
         {
             var query = "SELECT * FROM translations WHERE id = @id";
 
@@ -141,7 +141,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Метод удаления варианта перевода по конкретному id
         /// </summary>
         /// <param name="id">id варианта перевода который нужно удалить</param>
-        public async Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
             var query = "DELETE " +
                         "FROM translations AS T " +
@@ -228,7 +228,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idString">id фразы, варианты перевода которой необходимы</param>
         /// <returns>Список вариантов перевода</returns>
-        public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByID(int idString)
+        public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByID(Guid idString)
         {
             var query = "SELECT t.id_string, " +
                         "t.translated, " +
@@ -274,7 +274,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idString">id фразы, варианты перевода которой необходимы</param>
         /// <returns>Список вариантов перевода</returns>
-        public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByIDByLocale(int idString, int localeId)
+        public async Task<IEnumerable<Translation>> GetAllTranslationsInStringByIDByLocale(Guid idString, Guid localeId)
         {
             var query = "SELECT t.id_string, " +
                         "t.translated, " +
@@ -320,13 +320,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idTranslation">id перевода</param>
         /// <returns></returns>
-        public async Task<bool> AcceptTranslation(int idTranslation, bool selectTranslation = false)
+        public async Task<bool> AcceptTranslation(Guid idTranslation, bool selectTranslation = false)
         {
             var query = "UPDATE translations " +
                         "SET confirmed = true " +
                         "WHERE id = @Id";
 
-            var querySelectedTranslation = 
+            var querySelectedTranslation =
                         "UPDATE translations " +
                         "SET confirmed = true, selected = true " +
                         "WHERE id = @Id";
@@ -348,9 +348,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         var updatedRows = await dbConnection.ExecuteAsync(query, param);
 
-                    return updatedRows > 0;
+                        return updatedRows > 0;
+                    }
                 }
-            }
             }
             catch (NpgsqlException exception)
             {
@@ -373,7 +373,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idTranslation">id Перевода</param>
         /// <returns></returns>
-        public async Task<bool> RejectTranslation(int idTranslation, bool selectTranslation = false)
+        public async Task<bool> RejectTranslation(Guid idTranslation, bool selectTranslation = false)
         {
             var query = "UPDATE translations " +
                         "SET confirmed = false " +
@@ -400,11 +400,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
                     else
                     {
-                    var updatedRows = await dbConnection.ExecuteAsync(query, param);
+                        var updatedRows = await dbConnection.ExecuteAsync(query, param);
 
-                    return updatedRows > 0;
+                        return updatedRows > 0;
+                    }
                 }
-            }
             }
             catch (NpgsqlException exception)
             {
@@ -427,7 +427,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="translationText">Фраза по которой необходимо найти переводы</param>
         /// <returns>Список вариантов перевода</returns>
-        public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(int currentProjectId, string translationText)
+        public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(Guid currentProjectId, string translationText)
         {
             var query = "SELECT F.name_text AS file_Owner_Name, T.translated AS translation_Variant, " +
                         "TS.substring_to_translate AS translation_Text " +
@@ -470,7 +470,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
-        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(int currentProjectId, int localeId, TranslationSubstring translationSubstring)
+        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(Guid currentProjectId, Guid localeId, TranslationSubstring translationSubstring)
         {
             var query = "SELECT substring_to_translate AS translation_text, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
                         "files.name_text AS file_owner_name, translations.translated AS translation_variant" +
@@ -511,9 +511,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         public async Task<IEnumerable<TranslationWithLocaleText>> GetTranslationsInOtherLanguages(
-            int currentProjectId,
-            int translationSubstringId,
-            int localeId)
+            Guid currentProjectId,
+            Guid translationSubstringId,
+            Guid localeId)
         {
             var query = "SELECT " +
                         "translations.translated AS translation_text, " +
@@ -558,7 +558,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idString">id фразы</param>
         /// <returns>Список вариантов перевода</returns>
-        public async Task<IEnumerable<TranslationDTO>> GetAllTranslationsInStringWithLocaleByID(int idString)
+        public async Task<IEnumerable<TranslationDTO>> GetAllTranslationsInStringWithLocaleByID(Guid idString)
         {
             try
             {
@@ -608,7 +608,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     {
                         var query = new Query("translations")
                             .Where("id", translation.id)
-                            .AsUpdate(new {translation.translated});
+                            .AsUpdate(new { translation.translated });
 
                         var compiledQuery = _compiler.Compile(query);
                         LogQuery(compiledQuery);
@@ -649,7 +649,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="fileId">id определенного проекта</param>
         /// <returns></returns>
-        public IEnumerable<TranslationSubstring> GetStringsInVisibleAndCurrentProjectd(int projectId)
+        public IEnumerable<TranslationSubstring> GetStringsInVisibleAndCurrentProjectd(Guid projectId)
         {
 
             var query = "SELECT TS.id, " +
@@ -693,7 +693,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id_locale">id языка, варианты перевода которой необходимы</param>
         /// <returns>Список вариантов перевода</returns>
-        public IEnumerable<Translation> GetAllTranslationsByID_locale(int id_locale)
+        public IEnumerable<Translation> GetAllTranslationsByID_locale(Guid id_locale)
         {
             var query = "SELECT t.id_string, " +
                         "t.translated, " +
@@ -741,7 +741,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idString">id фразы, варианты перевода которой необходимы</param>
         /// <returns>Список вариантов перевода</returns>
-        public IEnumerable<Translation> GetAllTranslationsInStringWithLocale(int idString)
+        public IEnumerable<Translation> GetAllTranslationsInStringWithLocale(Guid idString)
         {
             var query = "SELECT t.id_string, " +
                         "t.translated, " +

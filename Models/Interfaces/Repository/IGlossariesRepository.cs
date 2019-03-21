@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
@@ -19,10 +20,10 @@ namespace Models.Interfaces.Repository
         /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         Task<IEnumerable<GlossariesTableViewDTO>> GetAllByUserIdAsync(
-            int? userId,
+            Guid? userId,
             int offset,
             int limit,
-            int? projectId = null,
+            Guid? projectId = null,
             string searchString = null,
             string[] sortBy = null,
             bool sortAscending = true);
@@ -35,8 +36,8 @@ namespace Models.Interfaces.Repository
         /// <param name="searchString">Шаблон названия глоссария (поиск по name_text).</param>
         /// <returns></returns>
         Task<int> GetAllByUserIdCountAsync(
-            int? userId,
-            int? projectId = null,
+            Guid? userId,
+            Guid? projectId = null,
             string searchString = null);
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Models.Interfaces.Repository
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
-        Task<IEnumerable<Glossaries>> GetGlossaryForEditAsync(int glossaryId);
+        Task<IEnumerable<Glossaries>> GetGlossaryForEditAsync(Guid glossaryId);
 
         /// <summary>
         /// Добавление нового глоссария.
@@ -52,7 +53,7 @@ namespace Models.Interfaces.Repository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Новый глоссарий.</param>
         /// <returns></returns>
-        Task AddAsync(int userId, GlossariesForEditingDTO glossary);
+        Task AddAsync(Guid userId, GlossariesForEditingDTO glossary);
 
         /// <summary>
         /// Сохранение изменений в глоссарии.
@@ -60,13 +61,13 @@ namespace Models.Interfaces.Repository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="glossary">Отредактированный глоссарий.</param>
         /// <returns></returns>
-        Task UpdateAsync(int userId, GlossariesForEditingDTO glossary);
+        Task UpdateAsync(Guid userId, GlossariesForEditingDTO glossary);
 
         /// <summary>
         /// удаление глоссария.
         /// </summary>
         /// <param name="id">идентификатор глоссария.</param>
         /// <returns></returns>
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
     }
 }

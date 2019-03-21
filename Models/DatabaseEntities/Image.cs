@@ -26,7 +26,7 @@ namespace Models.DatabaseEntities
         /// <summary>
         /// Пользователь, добавивший изображение
         /// </summary>
-        public int ID_User { get; set; }
+        public Guid ID_User { get; set; }
 
         /// <summary>
         /// Исхдные данные изображения

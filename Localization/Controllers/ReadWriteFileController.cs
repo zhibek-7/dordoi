@@ -43,14 +43,16 @@ namespace Localization.Controllers
         [Route("createTmx")]
         public void TmxCreate(string xmlPath)
         {
-            int defaultLang = _localizationProjectRepository.GetByID(0).ID_Source_Locale;
+
+            //TODO потом переделать
+            Guid defaultLang = Guid.Empty;//_localizationProjectRepository.GetByID(Guid.NewGuid()).ID_Source_Locale;
             string defaultLangLocale = _localeRepository.GetByID(defaultLang).code;
 
             //по id_locale находим translations.id
             IEnumerable<Translation> allTranslations = (IEnumerable<Translation>)_translationRepository.GetAllTranslationsByID_locale(defaultLang);
 
             //по id_locale находим translations.id
-            IEnumerable<TranslationSubstring> substring_to_trans = (IEnumerable<TranslationSubstring>)_translationSubstringRepository.GetStringsInVisibleAndCurrentProjectd(0);
+            IEnumerable<TranslationSubstring> substring_to_trans = (IEnumerable<TranslationSubstring>)_translationSubstringRepository.GetStringsInVisibleAndCurrentProjectd(Guid.Empty);
 
             XmlDocument doc = new XmlDocument();
 
@@ -160,10 +162,13 @@ namespace Localization.Controllers
                     listOfNodesForHeader4.AppendChild(listOfNodesForHeader5);
                 }
             }
-            
-            doc.Save("test5.tmx");
+
+
+
+
+
+            doc.Save("test3.tmx");
+
         }
-
-
     }
 }

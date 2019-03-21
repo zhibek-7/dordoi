@@ -28,7 +28,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         //     throw new NotImplementedException();
         // }
 
-        public async Task<LocalizationProject> GetByIDAsync(int id, int? userId)
+        public async Task<LocalizationProject> GetByIDAsync(Guid id, Guid? userId)
         {
             // Sql string to select all rows
             var sqlString = @"SELECT lp.*
@@ -70,7 +70,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">Идентификатор проекта локализации.</param>
         /// <returns></returns>
-        public async Task<LocalizationProject> GetWithDetailsById(int id)
+        public async Task<LocalizationProject> GetWithDetailsById(Guid id)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<LocalizationProject>> GetAllAsync(int? userId, int? projectId)
+        public async Task<IEnumerable<LocalizationProject>> GetAllAsync(Guid? userId, Guid? projectId)
         {
 
             // Sql string to select all rows
@@ -112,7 +112,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             inner join participants as p
 
             on lp.id = p.id_localization_project
-            where active = true and p.id_user = " + (int)userId + @"
+            where active = true and p.id_user = '" + (Guid)userId + @"'
             order by lp.name_text";
 
             try
@@ -197,7 +197,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        public async Task<int> AddAsync(LocalizationProject project)
+        public async Task<Guid?> AddAsync(LocalizationProject project)
         {
             var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
                  + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
@@ -210,8 +210,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
 
                     this.LogQuery(sqlQuery);
-                    int? projectId = await dbConnection.ExecuteScalarAsync<int>(sqlQuery, project);
-                    return project.id = (int)projectId;
+                    Guid? projectId = await dbConnection.ExecuteScalarAsync<Guid>(sqlQuery, project);
+                    return project.id = (Guid)projectId;
                 }
             }
 
@@ -220,14 +220,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.AddAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
@@ -247,8 +247,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                   + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')";
 
                     this.LogQuery(sqlQuery);
-                    int? projectId = dbConnection.Query<int>(sqlQuery, project).FirstOrDefault();
-                    project.id = (int)projectId;
+                    Guid? projectId = dbConnection.Query<Guid>(sqlQuery, project).FirstOrDefault();
+                    project.id = (Guid)projectId;
                 }
             }
             catch (NpgsqlException exception)
@@ -271,7 +271,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Удалить  проект
         /// </summary>
         /// <param name="id"></param>
-        public async Task<bool> RemoveAsync(int Id)
+        public async Task<bool> RemoveAsync(Guid Id)
         {
             try
             {
@@ -359,7 +359,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        public LocalizationProject GetByID(int Id)
+        public LocalizationProject GetByID(Guid Id)
         {
             // Sql string to select all rows
             var sqlString = "SELECT * FROM localization_projects WHERE id = @Id";

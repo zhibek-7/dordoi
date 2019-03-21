@@ -1,5 +1,6 @@
+import { Guid } from "guid-typescript";
 export class File {
-  id: number;
+  id: Guid;
   name_text: string;
   description: string;
   date_of_change: Date;
@@ -10,10 +11,10 @@ export class File {
   output_name: string;
   is_folder: boolean;
   folder: string;
-  id_localization_project: number;
-  id_folder_owner: number;
+  id_localization_project: Guid;
+  id_folder_owner: Guid;
   is_last_version: boolean;
-  id_previous_version: number;
+  id_previous_version: Guid;
   translator_name: string;
   download_name: string;
   percent_of_translation?: number;

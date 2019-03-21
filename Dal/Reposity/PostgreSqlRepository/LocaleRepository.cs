@@ -66,7 +66,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
-        public async Task<IEnumerable<Locale>> GetAllForProject(int projectId)
+        public async Task<IEnumerable<Locale>> GetAllForProject(Guid projectId)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent(int projectId)
+        public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent(Guid projectId)
         {
             try
             {
@@ -149,7 +149,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        public async Task<IEnumerable<Locale>> GetByUserIdAsync(int userId)
+        public async Task<IEnumerable<Locale>> GetByUserIdAsync(Guid userId)
         {
             try
             {
@@ -195,7 +195,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 try
                 {
                     this.LogQuery(sqlString, newLocale);
-                    var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, newLocale);
+                    var insertedId = await connection.ExecuteScalarAsync<Guid?>(sqlString, newLocale);
                     if (!insertedId.HasValue)
                     {
                         this._loggerError.WriteLn("Insertion into Locales didn't return id.");
@@ -280,7 +280,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="idTranslationMemory">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Locale>> GetByTranslationMemory(int idTranslationMemory)
+        public async Task<IEnumerable<Locale>> GetByTranslationMemory(Guid idTranslationMemory)
         {
             try
             {
@@ -326,7 +326,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <param name="idsTranslationSubstring">Идентификаторы строк.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Locale>> GetByIdsTranslationSubstring(int projectId, IEnumerable<int> idsTranslationSubstring)
+        public async Task<IEnumerable<Locale>> GetByIdsTranslationSubstring(Guid projectId, IEnumerable<Guid> idsTranslationSubstring)
         {
             try
             {
@@ -374,7 +374,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">Идентификатор проекта локализации.</param>
         /// <returns></returns>
-        public async Task<Locale> GetSourceLocaleLocalizationProject(int idProject)
+        public async Task<Locale> GetSourceLocaleLocalizationProject(Guid idProject)
         {
             try
             {
@@ -408,7 +408,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        public Locale GetByID(int Id)
+        public Locale GetByID(Guid Id)
         {
             // Sql string to select all rows
             var sqlString = "SELECT * FROM locales WHERE id = @Id";

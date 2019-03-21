@@ -54,7 +54,7 @@ namespace Models.Parser
                 {"docx", ParseAsDocx },
                 {"odt", ParseAsOdt },
                 {"xlsx", ParseAsXlsx },
-                {"xlsx", ParseAsOds }
+                {"ods", ParseAsOds }
             };
         }
 

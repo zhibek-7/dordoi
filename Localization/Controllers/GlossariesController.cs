@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Utilities;
+using System;
 
 namespace Localization.Controllers
 {
@@ -42,13 +43,13 @@ namespace Localization.Controllers
         public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(
             int? offset,
             int? limit,
-            int? projectId,
+            Guid? projectId,
             string searchString,
             string[] sortBy,
             bool? sortAscending)
         {
             var identityName = User.Identity.Name;
-            int? userId = (int)ur.GetID(identityName);
+            Guid? userId = (Guid)ur.GetID(identityName);
 
             Response.Headers.Add(
                 key: "totalCount",
@@ -81,12 +82,12 @@ namespace Localization.Controllers
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
-        [HttpPost("edit")]
-        public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync([FromBody] int glossaryId)
+        [HttpPost("edit/{glossaryId}")]
+        public async Task<GlossariesForEditingDTO> GetGlossaryForEditAsync(Guid glossaryId)
         {
             return await _glossariesService.GetGlossaryForEditAsync(glossaryId);
         }
-        
+
         /// <summary>
         /// Добавление нового глоссария.
         /// </summary>
@@ -97,9 +98,9 @@ namespace Localization.Controllers
         public async Task AddAsync(GlossariesForEditingDTO glossary)
         {
             var identityName = User.Identity.Name;
-            int? userId = (int)ur.GetID(identityName);
-            await _userActionRepository.AddCreateGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.AddAsync((int)userId,  glossary);
+            Guid? userId = (Guid)ur.GetID(identityName);
+            await _userActionRepository.AddCreateGlossaryActionAsync((Guid)userId, identityName, glossary.id, glossary.Name_text);
+            await _glossariesService.AddAsync((Guid)userId, glossary);
         }
 
         /// <summary>
@@ -112,9 +113,9 @@ namespace Localization.Controllers
         public async Task UpdateAsync(GlossariesForEditingDTO glossary)
         {
             var identityName = User.Identity.Name;
-            int? userId = (int)ur.GetID(identityName);
-            await _userActionRepository.AddEditGlossaryActionAsync((int)userId, identityName, glossary.id, glossary.Name_text);
-            await _glossariesService.UpdateAsync((int)userId, glossary);
+            Guid userId = (Guid)ur.GetID(identityName);
+            await _userActionRepository.AddEditGlossaryActionAsync(userId, identityName, glossary.id, glossary.Name_text);
+            await _glossariesService.UpdateAsync(userId, glossary);
         }
 
         /// <summary>
@@ -124,11 +125,11 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpDelete("deleteGlossary/{glossaryId}")]
-        public async Task DeleteAsync(int glossaryId)
+        public async Task DeleteAsync(Guid glossaryId)
         {
             var identityName = User.Identity.Name;
-            int? userId = (int)ur.GetID(identityName);
-            await _userActionRepository.AddDeleteGlossaryActionAsync((int)userId, identityName, glossaryId, "");
+            Guid userId = (Guid)ur.GetID(identityName);
+            await _userActionRepository.AddDeleteGlossaryActionAsync(userId, identityName, glossaryId, "");
             await _glossariesService.DeleteAsync(glossaryId);
         }
 
@@ -138,7 +139,7 @@ namespace Localization.Controllers
         /// <param name="glossaryId">Идентификатор глоссария.</param>
         /// <returns></returns>
         [HttpDelete("clearGlossary/{glossaryId}")]
-        public async Task ClearAsync(int glossaryId)
+        public async Task ClearAsync(Guid glossaryId)
         {
             await _glossariesService.ClearAsync(glossaryId);
         }

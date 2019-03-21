@@ -11,7 +11,7 @@ import { ProjectsService } from "src/app/services/projects.service";
 import { FilesSignalRService } from "src/app/services/filesSignalR.service";
 
 import { UploadingLogModalComponent } from "../uploading-log-modal/uploading-log-modal.component";
-
+import { Guid } from 'guid-typescript';
 import { File as FileData } from "src/app/models/database-entities/file.type";
 
 @Component({
@@ -34,8 +34,8 @@ export class FilesComponent implements OnInit {
 
   // Переменные для работы при выборе файлов для перевода
   isSelectionFileForTranslation: boolean = false;
-  selectedProjectId: number;
-  selectedLanguageId: number;
+  selectedProjectId: Guid;
+  selectedLanguageId: Guid;
 
   constructor(
     private activatedRoute: ActivatedRoute,

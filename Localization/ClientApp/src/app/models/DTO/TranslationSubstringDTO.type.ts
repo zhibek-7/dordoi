@@ -1,10 +1,11 @@
 import { TranslationDTO } from "./translationDTO";
+import { Guid } from 'guid-typescript';
 
 /**
  * Для отображения в таблице (в разделе текущего проекта)
  */
 export class TranslationSubstringTableViewDTO {
-  id: number;
+  id: Guid;
   substring_to_translate: string;
 
   translation_memories_name: string;
@@ -14,7 +15,7 @@ export class TranslationSubstringTableViewDTO {
 export class TranslationSubstringForEditingDTO {
 
   public constructor(
-    public id: number,
+    public id: Guid,
     public substring_to_translate: string,
     public localization_project_source_locale_name?: string,
 

@@ -61,7 +61,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             _tsr = new TranslationSubstringRepository(connectionStr);
         }
 
-        public async Task<IEnumerable<File>> GetAllAsync(int? userId, int? projectId)
+        public async Task<IEnumerable<File>> GetAllAsync(Guid? userId, Guid? projectId)
         {
             var sqlString = @"SELECT f.*
             FROM files as f
@@ -70,7 +70,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             inner join participants as p
 
             on lp.id = p.id_localization_project
-            where visibility = true and lp.id = " + (int)projectId + " and p.id_user = " + (int)userId;
+            where visibility = true and lp.id = '" + projectId + "' and p.id_user = '" + userId + "'";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -95,7 +95,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetByIDAsync(int id)
+        public async Task<File> GetByIDAsync(Guid? id)
         {
             var sqlString = "SELECT * FROM files WHERE id = @id";
             try
@@ -123,7 +123,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetByIDAsync(int id, int? conditionsId)
+        public async Task<File> GetByIDAsync(Guid id, Guid? conditionsId)
         {
 
             ///TODO нужно условий проверять
@@ -153,24 +153,34 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, int? parentId)
+        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId)
         {
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                return await GetLastVersionByNameAndParentIdAsync(name, parentId, connection, null);
+            }
+
+        }
+
+        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId, NpgsqlConnection connection, IDbTransaction transaction)
+        {
+
             try
             {
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    var query = new Query("files")
-                        .Where("id_folder_owner", parentId)
-                        .WhereLike("name_text", name)
-                        .Where("is_last_version", true);
+                //using (var connection = new NpgsqlConnection(connectionString))
+                //{
+                var query = new Query("files")
+                    .Where("id_folder_owner", parentId)
+                    .WhereLike("name_text", name)
+                    .Where("is_last_version", true);
 
-                    var compiledQuery = this._compiler.Compile(query);
-                    this.LogQuery(compiledQuery);
-                    return await connection.QuerySingleOrDefaultAsync<File>(
-                        sql: compiledQuery.Sql,
-                        param: compiledQuery.NamedBindings
-                    );
-                }
+                var compiledQuery = this._compiler.Compile(query);
+                this.LogQuery(compiledQuery);
+                return await connection.QuerySingleOrDefaultAsync<File>(
+                    sql: compiledQuery.Sql,
+                    param: compiledQuery.NamedBindings, transaction: transaction
+                );
+                //}
             }
             catch (NpgsqlException exception)
             {
@@ -189,7 +199,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         //Нужно для формирования отчетов
-        public IEnumerable<File> GetInitialFolders(int projectId)
+        public IEnumerable<File> GetInitialFolders(Guid projectId)
         {
             var sqlString =
                 $"SELECT * FROM files WHERE id_localization_project = @projectId AND id_folder_owner IS NULL " +
@@ -219,17 +229,25 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<int> AddAsync(File file)
+        public async Task<Guid?> AddAsync(File file)
         {
-            var sqlString = this._insertFileSql + " RETURNING id";
             using (var connection = new NpgsqlConnection(connectionString))
             {
-                this.LogQuery(sqlString, param: file);
-                return await connection.ExecuteScalarAsync<int>(sqlString, file);
+                return await AddAsync(file, connection, null);
             }
         }
 
-        public async Task<bool> RemoveAsync(int id)
+        public async Task<Guid?> AddAsync(File file, NpgsqlConnection connection, IDbTransaction transaction)
+        {
+            var sqlString = this._insertFileSql + " RETURNING id";
+            //using (var connection = new NpgsqlConnection(connectionString))
+            {
+                this.LogQuery(sqlString, param: file);
+                return await connection.ExecuteScalarAsync<Guid>(sqlString, file, transaction);
+            }
+        }
+
+        public async Task<bool> RemoveAsync(Guid id)
         {
 
 
@@ -237,12 +255,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                         where t.id_translation_substrings in (
                             select ts.id
                             from public.translation_substrings as ts
-            WHERE id_file_owner= " + id + ")";
+            WHERE id_file_owner= '" + id + "')";
 
             var sqlStringTrSub = @"DELETE FROM public.translation_substrings as ts
-            WHERE id_file_owner = " + id;
+            WHERE id_file_owner = '" + id + "'";
 
-            var sqlString = "DELETE FROM files WHERE id = " + id;
+            var sqlString = "DELETE FROM files WHERE id = '" + id + "'";
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
@@ -327,7 +345,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     try
                     {
                         this.LogQuery(sqlString, file.GetType(), file);
-                        var insertedId = await connection.ExecuteScalarAsync<int?>(sqlString, file, transaction);
+                        var insertedId = await connection.ExecuteScalarAsync<Guid?>(sqlString, file, transaction);
                         if (!insertedId.HasValue)
                         {
                             this._loggerError.WriteLn("Не удалось загрузить файл в базу");
@@ -361,7 +379,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                             {
                                 n--;
                                 //Мапим языки
-                                List<int> newLoc = new List<int>();
+                                List<Guid> newLoc = new List<Guid>();
                                 foreach (var lc in locales)
                                 {
                                     newLoc.Add(lc.id);
@@ -411,7 +429,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<string> GetFileContentAsync(int id, int id_locale = -1)
+        public async Task<string> GetFileContentAsync(Guid id, Guid? id_locale)
         {
             var sqlFileQuery = "SELECT * FROM files WHERE id = @id";
             using (var connection = new NpgsqlConnection(connectionString))
@@ -422,7 +440,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var param = new { id };
                     this.LogQuery(sqlFileQuery, param);
                     var file = await connection.QuerySingleOrDefaultAsync<File>(sqlFileQuery, param);
-                    if (id_locale == -1)
+                    if (id_locale == null)
                     {
                         return file.original_full_text;
                     }
@@ -493,7 +511,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<File>> GetByProjectIdAsync(int projectId, string fileNamesSearch = null)
+        public async Task<IEnumerable<File>> GetByProjectIdAsync(Guid projectId, string fileNamesSearch = null)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
@@ -518,7 +536,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        public async Task ChangeParentFolderAsync(Guid fileId, Guid? newParentId)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
@@ -536,68 +554,81 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task AddTranslationLocalesAsync(int fileId, IEnumerable<int> localesIds)
+        public async Task AddTranslationLocalesAsync(Guid fileId, IEnumerable<Guid> localesIds
+        )
         {
+            //TODO УБрать, оставить только с транзакциям
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
                 dbConnection.Open();
                 using (IDbTransaction transaction = dbConnection.BeginTransaction(IsolationLevel.ReadCommitted))
                 {
-                    try
-                    {
-                        foreach (var localeId in localesIds)
-                        {
-                            var sql =
-                                "INSERT INTO files_locales " +
-                                "(" +
-                                "id_file, " +
-                                "id_locale, " +
-                                "percent_of_confirmed, " +
-                                "percent_of_translation" +
-                                ") VALUES " +
-                                "(" +
-                                "@ID_File, " +
-                                "@ID_Locale, " +
-                                "0, " +
-                                "0" +
-                                ")";
-                            var param = new { ID_File = fileId, ID_Locale = localeId };
-                            this.LogQuery(sql, param);
+                    await AddTranslationLocalesAsync(fileId, localesIds, dbConnection, transaction);
 
-                            await dbConnection.ExecuteAsync(
-                                sql: sql,
-                                param: param, transaction: transaction);
-                        }
 
-                        //вставить обновление локалей
 
-                        // не знаю чей это метод, но я добавил вторым параметром id языка для перевода, если нужно, то применяй
-                        var strings = _tsr.GetStringsByFileIdAsync(fileId, null);
-                        foreach (var str in strings.Result)
-                        {
-                            _tsr.AddTranslationLocalesTransactAsync(str.id, localesIds, dbConnection, transaction);
-                        }
+                    transaction.Commit();
 
-                    }
-                    catch (NpgsqlException exception)
-                    {
-                        this._loggerError.WriteLn(
-                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddTranslationLocalesAsync)} {nameof(NpgsqlException)} ",
-                            exception);
-                        transaction.Rollback();
-                    }
-                    catch (Exception exception)
-                    {
-                        this._loggerError.WriteLn(
-                            $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddTranslationLocalesAsync)} {nameof(Exception)} ",
-                            exception);
-                        transaction.Rollback();
-                    }
                 }
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetLocalesForFileAsync(int fileId)
+        public async Task AddTranslationLocalesAsync(Guid fileId, IEnumerable<Guid> localesIds, NpgsqlConnection dbConnection, IDbTransaction transaction)
+        {
+            try
+            {
+                foreach (var localeId in localesIds)
+                {
+                    var sql =
+                        "INSERT INTO files_locales " +
+                        "(" +
+                        "id_file, " +
+                        "id_locale, " +
+                        "percent_of_confirmed, " +
+                        "percent_of_translation" +
+                        ") VALUES " +
+                        "(" +
+                        "@ID_File, " +
+                        "@ID_Locale, " +
+                        "0, " +
+                        "0" +
+                        ")";
+                    var param = new { ID_File = fileId, ID_Locale = localeId };
+                    this.LogQuery(sql, param);
+
+                    await dbConnection.ExecuteAsync(
+                        sql: sql,
+                        param: param, transaction: transaction);
+                }
+
+                //вставить обновление локалей
+
+                // не знаю чей это метод, но я добавил вторым параметром id языка для перевода, если нужно, то применяй
+                var strings = _tsr.GetStringsByFileIdAsync(fileId, null);
+                foreach (var str in strings.Result)
+                {
+                    _tsr.AddTranslationLocalesTransactAsync(str.id, localesIds, dbConnection, transaction);
+                }
+
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddTranslationLocalesAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                transaction.Rollback();
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FilesRepository)}.{nameof(FilesRepository.AddTranslationLocalesAsync)} {nameof(Exception)} ",
+                    exception);
+                transaction.Rollback();
+            }
+        }
+
+
+        public async Task<IEnumerable<Locale>> GetLocalesForFileAsync(Guid fileId)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
@@ -618,25 +649,33 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task DeleteTranslationLocalesAsync(int fileId)
+        public async Task DeleteTranslationLocalesAsync(Guid fileId)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
-                var query =
-                    new Query("files_locales")
-                        .Where("id_file", fileId)
-                        .AsDelete();
-
-                var compiledQuery = this._compiler.Compile(query);
-                this.LogQuery(compiledQuery);
-
-                await dbConnection.ExecuteAsync(
-                    sql: compiledQuery.Sql,
-                    param: compiledQuery.NamedBindings);
+                await DeleteTranslationLocalesAsync(fileId, dbConnection, null);
             }
         }
 
-        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(int fileId)
+        public async Task DeleteTranslationLocalesAsync(Guid fileId, NpgsqlConnection dbConnection, IDbTransaction transaction)
+        {
+            // using (var dbConnection = new NpgsqlConnection(connectionString))
+            //{
+            var query =
+                new Query("files_locales")
+                    .Where("id_file", fileId)
+                    .AsDelete();
+
+            var compiledQuery = this._compiler.Compile(query);
+            this.LogQuery(compiledQuery);
+
+            await dbConnection.ExecuteAsync(
+                sql: compiledQuery.Sql,
+                param: compiledQuery.NamedBindings);
+            //}
+        }
+
+        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoByIdAsync(Guid fileId)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
@@ -658,7 +697,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(int parentFolderId)
+        public async Task<IEnumerable<File>> GetFilesByParentFolderIdAsync(Guid parentFolderId)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {

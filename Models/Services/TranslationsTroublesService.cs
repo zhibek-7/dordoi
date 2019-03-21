@@ -26,7 +26,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<IEnumerable<TranslationTrouble>> GetAllByTranslationIdAsync(int traslationId)
+        public async Task<IEnumerable<TranslationTrouble>> GetAllByTranslationIdAsync(Guid traslationId)
         {
 
 
@@ -41,7 +41,7 @@ namespace Models.Services
 
         }
 
-        public async Task<int> AddNewGlossaryAsync(TranslationTrouble trouble)
+        public async Task<Guid?> AddNewGlossaryAsync(TranslationTrouble trouble)
         {
 
 
@@ -55,7 +55,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<bool> DeleteTranslationTroubleAsync(int id)
+        public async Task<bool> DeleteTranslationTroubleAsync(Guid id)
         {
 
 

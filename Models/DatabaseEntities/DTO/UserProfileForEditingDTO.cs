@@ -35,6 +35,6 @@ namespace Models.DatabaseEntities.DTO
         /// <summary>
         /// Выбранные языки перевода (идентификатор языка перевода, язык перевода является родным)
         /// </summary>
-        public IEnumerable<Tuple<int, bool>> locales_id_is_native { get; set; }
+        public IEnumerable<Tuple<Guid, bool>> locales_id_is_native { get; set; }
     }
 }

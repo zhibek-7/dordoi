@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders , HttpResponse } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { Participant } from "src/app/models/Participants/participant.type";
-
+import { Guid } from 'guid-typescript';
 @Injectable()
 export class ParticipantsService {
   private url: string = "api/participants/";
@@ -10,10 +10,10 @@ export class ParticipantsService {
   constructor(private httpClient: HttpClient) {}
 
   getParticipantsByProjectId(
-    projectId: number,
+    projectId: Guid,
     search: string,
-    roleIds: number[],
-    localeIds: number[],
+    roleIds: Guid[],
+    localeIds: Guid[],
     limit: number,
     offset: number,
     sortBy: string[],
@@ -59,8 +59,8 @@ export class ParticipantsService {
   }
 
   deleteParticipant(
-    projectId: number,
-    participantUserId: number
+    projectId: Guid,
+    participantUserId: Guid
   ): Observable<Object> {
     return this.httpClient.delete(
       this.url + "byProjectId/" + projectId + "/" + participantUserId
@@ -68,9 +68,9 @@ export class ParticipantsService {
   }
 
   addParticipant(
-    projectId: number,
-    userId: number,
-    roleId: number
+    projectId: Guid,
+    userId: Guid,
+    roleId: Guid
   ): Observable<Object> {
     return this.httpClient.post(
       this.url + projectId + "/" + userId + "/" + roleId,
