@@ -5,16 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using DAL.Reposity.PostgreSqlRepository;
-
 using System.Data;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
-
+using Models.Extensions;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Utilities;
 using System.Xml;
+using Attribute = Models.DatabaseEntities.Attribute;
 
 namespace Localization.Controllers
 {
@@ -27,6 +26,8 @@ namespace Localization.Controllers
         private readonly LocaleRepository _localeRepository;
         private readonly TranslationRepository _translationRepository;
         private readonly TranslationSubstringRepository _translationSubstringRepository;
+        private readonly IXmlNodeExtensions _IXmlNodeExtensions;
+
 
         public ReadWriteFileController()
         {
@@ -35,11 +36,7 @@ namespace Localization.Controllers
             _localeRepository = new LocaleRepository(connectionString);
             _translationRepository = new TranslationRepository(connectionString);
             _translationSubstringRepository = new TranslationSubstringRepository(connectionString);
-
-            //_localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(connectionString);
-            //_localeRepository = new LocaleRepository(connectionString);
-            //_userActionRepository = new UserActionRepository(connectionString);
-            //ur = new UserRepository(connectionString);
+            _IXmlNodeExtensions = new IXmlNodeExtensions(connectionString);
         }
 
         [HttpPost]
@@ -47,152 +44,127 @@ namespace Localization.Controllers
         public void TmxCreate(string xmlPath)
         {
 
-
-            int defaultLang = _localizationProjectRepository.GetByID(0).ID_Source_Locale;
+            //TODO потом переделать
+            Guid defaultLang = Guid.Empty;//_localizationProjectRepository.GetByID(Guid.NewGuid()).ID_Source_Locale;
             string defaultLangLocale = _localeRepository.GetByID(defaultLang).code;
 
             //по id_locale находим translations.id
             IEnumerable<Translation> allTranslations = (IEnumerable<Translation>)_translationRepository.GetAllTranslationsByID_locale(defaultLang);
 
             //по id_locale находим translations.id
-            IEnumerable<TranslationSubstring> substring_to_trans = (IEnumerable<TranslationSubstring>)_translationSubstringRepository.GetStringsInVisibleAndCurrentProjectd(0);
+            IEnumerable<TranslationSubstring> substring_to_trans = (IEnumerable<TranslationSubstring>)_translationSubstringRepository.GetStringsInVisibleAndCurrentProjectd(Guid.Empty);
 
             XmlDocument doc = new XmlDocument();
+
             XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
             doc.AppendChild(docNode);
 
 
-            XmlNode productsNode = doc.CreateElement("tmx");
-            XmlAttribute productAttributeEnd0 = doc.CreateAttribute("version");
-            productAttributeEnd0.Value = "1.4";
-            productsNode.Attributes.Append(productAttributeEnd0);
-            doc.AppendChild(productsNode);
-
-            XmlNode productNodeEnd = doc.CreateElement("header");
-            XmlAttribute productAttributeEnd = doc.CreateAttribute("creationtool");
-            productAttributeEnd.Value = "Coderlink";
-            productNodeEnd.Attributes.Append(productAttributeEnd);
-
-            XmlAttribute productAttributeEnd1 = doc.CreateAttribute("creationtoolversion");
-            productAttributeEnd1.Value = "1.0";
-            productNodeEnd.Attributes.Append(productAttributeEnd1);
-
-            XmlAttribute productAttributeEnd2 = doc.CreateAttribute("segtype");
-            productAttributeEnd2.Value = "sentence";
-            productNodeEnd.Attributes.Append(productAttributeEnd2);
-
-            XmlAttribute productAttributeEnd3 = doc.CreateAttribute("adminlang");
-            productAttributeEnd3.Value = "en";
-            productNodeEnd.Attributes.Append(productAttributeEnd3);
-
-            XmlAttribute productAttributeEnd4 = doc.CreateAttribute("srclang");
-            productAttributeEnd4.Value = defaultLangLocale;//localization_projects. id_source_locale
-            productNodeEnd.Attributes.Append(productAttributeEnd4);
-
-            XmlAttribute productAttributeEnd5 = doc.CreateAttribute("o-tmf");
-            productAttributeEnd5.Value = "unknown";
-            productNodeEnd.Attributes.Append(productAttributeEnd5);
-
-            XmlAttribute productAttributeEnd6 = doc.CreateAttribute("creationid");
-            productAttributeEnd6.Value = "Nemo";
-            productNodeEnd.Attributes.Append(productAttributeEnd6);
-
-            XmlAttribute productAttributeEnd7 = doc.CreateAttribute("creationdate");
-            productAttributeEnd7.Value = DateTime.Now.ToString();
-            productNodeEnd.Attributes.Append(productAttributeEnd7);
-
-            productsNode.AppendChild(productNodeEnd);
 
 
-            XmlNode productNodeBody = doc.CreateElement("body");
-            productsNode.AppendChild(productNodeBody);
+            Attribute[] listAttributesForTmx = new Attribute[1];
+            listAttributesForTmx[0] = new Attribute(1, "version", "1.4");
 
-            ///
+
+
+
+            Attribute[] listAttributesForHeader = new Attribute[8];
+            listAttributesForHeader[0] = new Attribute(1, "creationtool", "Coderlink");
+            listAttributesForHeader[1] = new Attribute(2, "creationtoolversion", "1.0");
+            listAttributesForHeader[2] = new Attribute(3, "segtype", "sentence");
+            listAttributesForHeader[3] = new Attribute(4, "adminlang", "en");
+            listAttributesForHeader[4] = new Attribute(5, "srclang", defaultLangLocale);
+            listAttributesForHeader[5] = new Attribute(6, "o-tmf", "unknown");
+            listAttributesForHeader[6] = new Attribute(7, "creationid", "Nemo");
+            listAttributesForHeader[7] = new Attribute(8, "creationdate", DateTime.Now.ToString());
+
+            IEnumerable<Attribute> listAttributes = new List<Attribute>();
+            listAttributes = listAttributesForHeader;
+            Element[] listOfNodesForHeader = new Element[8];
+
+            listOfNodesForHeader[0] = new Element(1, "tmx", null, listAttributesForTmx);
+
+            XmlNode listOfNodesForHeader0 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[0]);
+            doc.AppendChild(listOfNodesForHeader0);
+
+
+
+            listOfNodesForHeader[1] = new Element(2, "header", null, listAttributes);
+            XmlNode listOfNodesForHeader1 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[1]);
+            listOfNodesForHeader0.AppendChild(listOfNodesForHeader1);
+
+
+
+            listOfNodesForHeader[2] = new Element(3, "body", null, null);
+            XmlNode listOfNodesForHeader2 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[2]);
+            listOfNodesForHeader1.AppendChild(listOfNodesForHeader2);
+
+
+
             foreach (var item in substring_to_trans)
             {
+                Attribute[] listAttributesForTu = new Attribute[1];
+                listAttributesForTu[0] = new Attribute(1, "tuid", item.id.ToString());
+                listOfNodesForHeader[3] = new Element(4, "tu", null, listAttributesForTu);
+                XmlNode listOfNodesForHeader3 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[3]);
+                listOfNodesForHeader2.AppendChild(listOfNodesForHeader3);
 
-                XmlNode productNodeTu = doc.CreateElement("tu");
-                XmlAttribute productAttributeTu = doc.CreateAttribute("tuid");
-                productAttributeTu.Value = item.id.ToString();//translation_substrings.id
-                productNodeTu.Attributes.Append(productAttributeTu);
-                productNodeBody.AppendChild(productNodeTu);
 
-                //type = "primary:translation_substrings.id"
+
+
+
                 IEnumerable<Translation> allTranslations1 = (IEnumerable<Translation>)_translationRepository.GetAllTranslationsInStringWithLocale(item.id);
                 if (allTranslations1.Count() != 0)
                 {
-                    XmlNode productNodeTuvP = doc.CreateElement("tuv");
-                    XmlAttribute productAttributeTuvP = doc.CreateAttribute("xml:lang");
-                    productAttributeTuvP.Value = defaultLangLocale;
-                    productNodeTuvP.Attributes.Append(productAttributeTuvP);
 
-                    XmlAttribute productAttributeTuvTypeP = doc.CreateAttribute("type");
-                    productAttributeTuvTypeP.Value = "primary:" + item.id.ToString();
-                    productNodeTuvP.Attributes.Append(productAttributeTuvTypeP);
-
-                    productNodeTu.AppendChild(productNodeTuvP);
+                    Attribute[] listAttributesForTuvP = new Attribute[2];
+                    listAttributesForTuvP[0] = new Attribute(1, "xml:lang", defaultLangLocale);
+                    listAttributesForTuvP[1] = new Attribute(2, "type", "primary:" + item.id.ToString());
+                    listOfNodesForHeader[4] = new Element(5, "tuv", null, listAttributesForTuvP);
+                    XmlNode listOfNodesForHeader4 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[4]);
+                    listOfNodesForHeader3.AppendChild(listOfNodesForHeader4);
 
 
-                    XmlNode productNodeSegP = doc.CreateElement("seg");
+                    listOfNodesForHeader[5] = new Element(6, "seg", item.substring_to_translate, null);
+                    XmlNode listOfNodesForHeader5 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[5]);
+                    listOfNodesForHeader4.AppendChild(listOfNodesForHeader5);
 
-                    productNodeSegP.AppendChild(doc.CreateTextNode(item.substring_to_translate));
-
-                    productNodeTuvP.AppendChild(productNodeSegP);
 
                     foreach (var item_sub in allTranslations1)
                     {
                         string defaultLangLocaleTranslations = _localeRepository.GetByID(item_sub.ID_Locale).code;
-                        XmlNode productNodeTuv = doc.CreateElement("tuv");
-                        XmlAttribute productAttributeTuv = doc.CreateAttribute("xml:lang");
-                        productAttributeTuv.Value = defaultLangLocaleTranslations;
-                        productNodeTuv.Attributes.Append(productAttributeTuv);
 
-                        XmlAttribute productAttributeTuvType = doc.CreateAttribute("type");
-                        productAttributeTuvType.Value = "id:" + item_sub.id.ToString();
-                        productNodeTuv.Attributes.Append(productAttributeTuvType);
-
-                        productNodeTu.AppendChild(productNodeTuv);
+                        Attribute[] listAttributesForTuv = new Attribute[2];
+                        listAttributesForTuv[0] = new Attribute(1, "xml:lang", defaultLangLocaleTranslations);
+                        listAttributesForTuv[1] = new Attribute(2, "type", "id:" + item_sub.id.ToString());
+                        listOfNodesForHeader[6] = new Element(7, "tuv", null, listAttributesForTuv);
+                        XmlNode listOfNodesForHeader6 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[6]);
+                        listOfNodesForHeader3.AppendChild(listOfNodesForHeader6);
 
 
-                        XmlNode productNodeSeg = doc.CreateElement("seg");
-
-                        productNodeSeg.AppendChild(doc.CreateTextNode(item_sub.Translated));
-
-                        productNodeTuv.AppendChild(productNodeSeg);
+                        listOfNodesForHeader[7] = new Element(8, "seg", item_sub.Translated, null);
+                        XmlNode listOfNodesForHeader7 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[7]);
+                        listOfNodesForHeader6.AppendChild(listOfNodesForHeader7);
 
                     }
-
                 }
                 else
                 {
+                    Attribute[] listAttributesForTuvP = new Attribute[2];
+                    listAttributesForTuvP[0] = new Attribute(1, "xml:lang", defaultLangLocale);
+                    listAttributesForTuvP[1] = new Attribute(2, "type", "primary:" + item.id.ToString());
+                    listOfNodesForHeader[4] = new Element(5, "tuv", null, listAttributesForTuvP);
+                    XmlNode listOfNodesForHeader4 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[4]);
+                    listOfNodesForHeader3.AppendChild(listOfNodesForHeader4);
 
-
-                    XmlNode productNodeTuv = doc.CreateElement("tuv");
-                    XmlAttribute productAttributeTuv = doc.CreateAttribute("xml:lang");
-                    productAttributeTuv.Value = defaultLangLocale;
-                    productNodeTuv.Attributes.Append(productAttributeTuv);
-
-                    XmlAttribute productAttributeTuvType = doc.CreateAttribute("type");
-                    productAttributeTuvType.Value = "primary:" + item.id.ToString();
-                    productNodeTuv.Attributes.Append(productAttributeTuvType);
-
-                    productNodeTu.AppendChild(productNodeTuv);
-
-
-                    XmlNode productNodeSeg = doc.CreateElement("seg");
-
-                    productNodeSeg.AppendChild(doc.CreateTextNode(item.substring_to_translate));
-
-                    productNodeTuv.AppendChild(productNodeSeg);
-
-
+                    listOfNodesForHeader[5] = new Element(6, "seg", item.substring_to_translate, null);
+                    XmlNode listOfNodesForHeader5 = _IXmlNodeExtensions.AddElement(doc, listOfNodesForHeader[5]);
+                    listOfNodesForHeader4.AppendChild(listOfNodesForHeader5);
                 }
-
-
             }
 
 
-            
+
 
 
             doc.Save("test3.tmx");

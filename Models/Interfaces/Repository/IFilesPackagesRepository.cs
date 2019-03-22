@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Models.DatabaseEntities;
 
 namespace Models.Interfaces.Repository
@@ -6,7 +7,7 @@ namespace Models.Interfaces.Repository
     public interface IFilesPackagesRepository
     {
 
-        Task<FilePackage> GetByFileIdAsync(int fileId);
+        Task<FilePackage> GetByFileIdAsync(Guid fileId);
 
         Task<bool> AddAsync(FilePackage filePackage);
 

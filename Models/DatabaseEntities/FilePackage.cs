@@ -8,7 +8,7 @@ namespace Models.DatabaseEntities
     {
 
         [Key]
-        public int file_id { get; set; }
+        public Guid file_id { get; set; }
 
         public byte[] data { get; set; }
 

@@ -1,14 +1,14 @@
 <div class="commentsAndTermsBlock">
 
   <div class="directoryBlock">
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#nav-comment">Комментарий</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#nav-condition">Словари</a>
-  </li>
-</ul>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#nav-comment">Комментарий</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#nav-condition">Словари</a>
+      </li>
+    </ul>
   </div>
 
   <div class="tabsBlock">
@@ -21,7 +21,7 @@
               <li class="list-group-item list-group-item-action" *ngFor="let comment of commentsList">
                 <div class="oneCommentBlock">
                   <div class="row">
-                    <div class="col-6">{{comment.user_name}}</div>
+                    <div class="col-6 termName">{{comment.user_name}}</div>
                     <div class="col-6">{{comment.datetime | date: 'd.M.yyyy H:m'}}</div>
                   </div>
                   <div *ngIf="!commentEdited">
@@ -29,7 +29,7 @@
                       <div class="col-12">{{comment.comment_text}} </div>
                     </div>
                     <ul class="row">
-                      <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">
+                      <li class="list-group-item imageBlock" (click)="showImage(image)" *ngFor="let image of comment.images">
                         <div>
                           <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
                         </div>
@@ -44,7 +44,7 @@
                     <div class="row">
                       <div class="col-12">
                         <div class="form-group">
-                          <textarea class="form-control" rows="2" [(ngModel)]="changedComment.comment_text"></textarea>
+                          <textarea class="form-control" [(ngModel)]="changedComment.comment_text"></textarea>
                         </div>
                       </div>
                     </div>
@@ -60,7 +60,7 @@
                       </ul>
 
                       <div class="col-4"><button class="btn btn-success btn-sm m-1" (click)="saveChangedComment(comment)">Сохранить</button>
-                      <button class="btn btn-primary btn-sm m-1" (click)="cancelChangingComment(comment.comment_id)">Отменить</button></div>
+                        <button class="btn btn-primary btn-sm m-1" (click)="cancelChangingComment(comment.comment_id)">Отменить</button></div>
                     </div>
                   </div>
                 </div>
@@ -70,15 +70,15 @@
         </div>
 
         <div class="addCommentBlock">
-          <div class="container align-center" style="padding:0px;">
-            <div class="row" style="width: 100%;">
+          <div class="container align-center">
+            <div class="row">
               <form class="col-10">
                 <div class=" inputSearch">
                   <input type="text" id="addCommentInput" name="first" class="form-control input-lg" placeholder="Новый комментарий"
                     [(ngModel)]="addCommentText" class="col-11" (keyup)="onEnterPressComment($event)">
                 </div>
               </form>
-              <div class="col-1 float-right align-center arrowIcon" style="padding:0px;">
+              <div class="col-1 float-right align-center arrowIcon">
                 <mat-icon (click)="addComment()">add_comment</mat-icon>
               </div>
             </div>
@@ -135,9 +135,9 @@
                             <button class="btn btn-link" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
                           </div>
                         </div>
- 
 
-                        </div>
+
+                      </div>
                     </li>
                   </ul>
                 </div>

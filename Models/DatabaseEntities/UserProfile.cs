@@ -15,7 +15,7 @@ namespace Models.DatabaseEntities
         /// Имя пользователя (логин/ник)
         /// </summary>
         public string name_text { get; set; }
-        
+
         public Byte[] photo { get; set; }
 
         public string email { get; set; }
@@ -26,7 +26,7 @@ namespace Models.DatabaseEntities
         /// ФИО
         /// </summary>
         public string full_name { get; set; }
-        
+
         public int? id_time_zones { get; set; }
 
         public string about_me { get; set; }
@@ -34,7 +34,7 @@ namespace Models.DatabaseEntities
         public bool? gender { get; set; }
 
         //Выбранный язык:
-        public int? LocaleId { get; set; }
+        public Guid? LocaleId { get; set; }
         /// <summary>
         /// Выбранный язык перевода является родным
         /// </summary>

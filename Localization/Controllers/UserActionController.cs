@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -41,8 +42,8 @@ namespace Localization.Controllers
             public int? offset { get; set; }
             public int? limit { get; set; }
             public int? workTypeId { get; set; }
-            public int? userId { get; set; }
-            public int? localeId { get; set; }
+            public Guid userId { get; set; }
+            public Guid localeId { get; set; }
             public string[] sortBy { get; set; }
             public bool? sortAscending { get; set; }
         }
@@ -54,22 +55,22 @@ namespace Localization.Controllers
         [Authorize]
         [HttpPost]
         [Route("List/byProjectId/{projectId}")]
-        public async Task<IEnumerable<UserAction>> GetAllByProjectId(int projectId, [FromBody] GetAllByProjectIdArgs param)
+        public async Task<IEnumerable<UserAction>> GetAllByProjectId(Guid projectId, [FromBody] GetAllByProjectIdArgs param)
         {
             this.Response.Headers.Add(
                 key: "totalCount",
                 value: (await this._userActionRepository.GetAllByProjectIdCountAsync(
                     projectId: projectId,
                     workTypeId: param.workTypeId ?? -1,
-                    userId: param.userId ?? -1,
-                    localeId: param.localeId ?? -1)).ToString());
+                    userId: param.userId,
+                    localeId: param.localeId)).ToString());
             return await this._userActionRepository.GetAllByProjectIdAsync(
                 projectId: projectId,
                 offset: param.offset ?? 0,
                 limit: param.limit ?? 25,
                 workTypeId: param.workTypeId ?? -1,
-                userId: param.userId ?? -1,
-                localeId: param.localeId ?? -1,
+                userId: param.userId,
+                localeId: param.localeId,
                 sortBy: param.sortBy,
                 sortAscending: param.sortAscending ?? true
                 );

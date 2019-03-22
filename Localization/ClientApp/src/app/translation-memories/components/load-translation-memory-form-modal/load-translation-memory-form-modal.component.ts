@@ -6,6 +6,7 @@ import { settingFileLoad, fileType } from "../../models/settingFileLoad";
 
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { LanguageService } from "src/app/services/languages.service";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-load-translation-memory-form-modal',
@@ -15,7 +16,7 @@ import { LanguageService } from "src/app/services/languages.service";
 export class LoadTranslationMemoryFormModalComponent extends ModalComponent implements OnInit {
 
   @Input()
-  id: number;
+  id: Guid;
 
   setting: settingFileLoad;
   types = [];

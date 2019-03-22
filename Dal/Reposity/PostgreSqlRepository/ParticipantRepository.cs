@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DAL.Context;
 using Dapper;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO.Participants;
@@ -20,7 +19,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        public async Task<int> AddAsync(Participant newParticipant)
+        public async Task<Guid?> AddAsync(Participant newParticipant)
         {
             try
             {
@@ -56,28 +55,28 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.AddAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.AddAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
-        public Task<IEnumerable<Models.DatabaseEntities.Participant>> GetAllAsync()
+        public Task<IEnumerable<Participant>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Models.DatabaseEntities.Participant> GetByIDAsync(int id)
+        public Task<Participant> GetByIDAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> RemoveAsync(int id)
+        public Task<bool> RemoveAsync(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -140,10 +139,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         };
 
         public async Task<IEnumerable<ParticipantDTO>> GetByProjectIdAsync(
-            int projectId,
+            Guid projectId,
             string search,
-            int[] roleIds,
-            int[] localeIds,
+            Guid[] roleIds,
+            Guid[] localeIds,
             int limit,
             int offset,
             string[] sortBy = null,
@@ -202,7 +201,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        protected async Task<bool> InactiveParticipantsContainsAsync(int projectId, int userId)
+        protected async Task<bool> InactiveParticipantsContainsAsync(Guid projectId, Guid userId)
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
@@ -237,7 +236,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task AddOrActivateParticipant(int projectId, int userId, int roleId)
+        public async Task AddOrActivateParticipant(Guid projectId, Guid userId, Guid roleId)
         {
             var participant = new Models.DatabaseEntities.Participant()
             {
@@ -257,7 +256,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task SetInactiveAsync(int projectId, int userId)
+        public async Task SetInactiveAsync(Guid projectId, Guid userId)
         {
             try
             {
@@ -293,11 +292,11 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        public async Task<int> GetAllByProjectIdCountAsync(
-            int projectId,
+        public async Task<int?> GetAllByProjectIdCountAsync(
+            Guid projectId,
             string search,
-            int[] roleIds,
-            int[] localeIds
+            Guid[] roleIds,
+            Guid[] localeIds
             )
         {
             try
@@ -326,14 +325,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetAllByProjectIdCountAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(ParticipantRepository)}.{nameof(ParticipantRepository.GetAllByProjectIdCountAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
         /// <summary>
@@ -344,7 +343,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="roleIds"></param>
         /// <param name="localeIds"></param>
         /// <returns></returns>
-        private Query GetByProjectIdQuery(int projectId, string search, int[] roleIds, int[] localeIds, string[] roleShort = null)
+        private Query GetByProjectIdQuery(Guid projectId, string search, Guid[] roleIds, Guid[] localeIds, string[] roleShort = null)
         {
             var query = new Query("participants")
                 .Where("participants.id_localization_project", projectId)

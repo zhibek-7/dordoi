@@ -10,20 +10,21 @@ using Models.DatabaseEntities.DTO;
 using Npgsql;
 using System;
 using Utilities.Data;
+using System.Data;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
     public class TranslationMemoryRepository : BaseRepository, ITranslationMemoryRepository
     {
         private FilesRepository fr;
-        private IProjectTranslationMemoryRepository _translationMemoryRepository;
+        private ProjectTranslationMemoryRepository _translationMemoryRepository;
         public TranslationMemoryRepository(string connectionStr) : base(connectionStr)
         {
             fr = new FilesRepository(connectionStr);
             _translationMemoryRepository = new ProjectTranslationMemoryRepository(connectionStr);
         }
 
-        
+
         public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
         {
             { "id", "translation_memories.id" },
@@ -46,10 +47,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllByUserIdAsync(
-            int? userId,
+            Guid? userId,
             int offset,
             int limit,
-            int? projectId = null,
+            Guid? projectId = null,
             string searchString = null,
             string[] sortBy = null,
             bool sortAscending = true)
@@ -109,9 +110,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="projectId">Идентификатор проекта.</param>
         /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
         /// <returns></returns>
-        public async Task<int> GetAllByUserIdCountAsync(
-            int? userId,
-            int? projectId = null,
+        public async Task<int?> GetAllByUserIdCountAsync(
+            Guid? userId,
+            Guid? projectId = null,
             string searchString = null)
         {
             try
@@ -138,12 +139,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdCountAsync)} {nameof(NpgsqlException)} ", exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.GetAllByUserIdCountAsync)} {nameof(Exception)} ", exception);
-                return 0;
+                return null;
             }
 
         }
@@ -156,8 +157,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
         /// <returns></returns>
         private Query GetAllByUserIdQuery(
-            int? userId,
-            int? projectId = null,
+            Guid? userId,
+            Guid? projectId = null,
             string searchString = null)
         {
             try
@@ -174,11 +175,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .LeftJoin("localization_projects", "localization_projects.id", "localization_projects_translation_memories.id_localization_project")
                     .Join("participants", "participants.id_localization_project", "localization_projects.id")
                     .WhereTrue("participants.active")
-                    .Where("participants.id_user", (int)userId)
+                    .Where("participants.id_user", (Guid)userId)
                     .Select("translation_memories.id as tm_id")
                     .GroupBy("translation_memories.id")
                     .SelectRaw("string_agg(localization_projects.name_text, ', ' order by localization_projects.name_text) as localization_projects_name");
-                
+
 
                 var query = new Query("translation_memories")
                     .With("locales_tm", queryLocalesTranslationMemories)
@@ -197,7 +198,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "translation_memories.name_text",
                         "locales_tm.locales_name",
                         "localization_projects_tm.localization_projects_name");
-                
+
                 if (projectId != null)
                 {
                     query = query
@@ -227,8 +228,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
-        
-        public async Task<IEnumerable<TranslationMemory>> GetAllAsync(int? userId, int? projectId)
+
+        public async Task<IEnumerable<TranslationMemory>> GetAllAsync(Guid? userId, Guid? projectId)
         {
             return null;
         }
@@ -238,7 +239,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns>TranslationMemoryForSelectDTO</returns>
-        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(int projectId)
+        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(Guid projectId)
         {
             try
             {
@@ -274,7 +275,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<TranslationMemory>> GetForEditAsync(int translationMemoryId)
+        public async Task<IEnumerable<TranslationMemory>> GetForEditAsync(Guid translationMemoryId)
         {
             try
             {
@@ -295,8 +296,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
                     var translationMemories = await dbConnection.QueryAsync<TranslationMemory>(
-                        sql: compiledQuery.Sql,
-                        param: compiledQuery.NamedBindings);
+                                sql: compiledQuery.Sql,
+                                param: compiledQuery.NamedBindings);
 
                     return translationMemories;
                 }
@@ -319,34 +320,63 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Новая память переводов.</param>
         /// <returns></returns>
-        public async Task AddAsync(int userId, TranslationMemoryForEditingDTO translationMemory)
+        public async Task AddAsync(Guid userId, TranslationMemoryForEditingDTO translationMemory)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    //Добавление новой памяти переводов
-                    var newTranslationMemory = new
+                    dbConnection.Open();
+                    using (IDbTransaction transaction = dbConnection.BeginTransaction(IsolationLevel.ReadCommitted))
                     {
-                        translationMemory.name_text,
-                        translationMemory.id_file
-                    };
-                    var query = new Query("translation_memories")
-                        .AsInsert(newTranslationMemory, true); //true - вернуть сгенерированный id нового объекта
-                    var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
+                        //Добавление памяти
+                        var newGlossaryFileId = await this.fr.AddAsync(new File()
+                        {
+                            id_localization_project = null,
+                            name_text = translationMemory.name_text,
+                            date_of_change = DateTime.Now,
+                            is_folder = false,
+                            is_last_version = true,
+                            visibility = true
+                        }, dbConnection, transaction);
+                        translationMemory.id_file = newGlossaryFileId;
 
-                    //После выполнение запроса получаем сгенерированный id нового объекта
-                    var idOfNewTranslationMemory = await dbConnection
-                        .ExecuteScalarAsync<int>(
+
+                        //Добавление новой памяти переводов
+                        var newTranslationMemory = new
+                        {
+                            translationMemory.name_text,
+                            translationMemory.id_file
+                        };
+                        /*
+                        var query = new Query("translation_memories")
+                            .AsInsert(newTranslationMemory, true); //true - вернуть сгенерированный id нового объекта
+                        var compiledQuery = _compiler.Compile(query);
+                        LogQuery(compiledQuery);
+    
+                        //После выполнение запроса получаем сгенерированный id нового объекта
+                        var idOfNewTranslationMemory = await dbConnection
+                            .ExecuteScalarAsync<Guid>(
                             sql: compiledQuery.Sql,
                             param: compiledQuery.NamedBindings);
+                        */
 
-                    //Добавление в таблицу "translation_memories_locales" записей связи памяти переводов с языками перевода (translation_memories с locales)
-                    await UpdateTranslationMemoriesLocalesAsync(idOfNewTranslationMemory, ConvertData.ConverLocale(translationMemory.locales_ids), false);
+                        var sql = "INSERT INTO translation_memories(name_text, id_file) VALUES('" +
+                                  translationMemory.name_text + "', '" + translationMemory.id_file +
+                                  "') RETURNING  translation_memories.id";
+                        LogQuery(sql);
+                        var idOfNewTranslationMemory = await dbConnection.ExecuteScalarAsync<Guid>(sql, transaction);
 
-                    //Добавление в таблицу "localization_projects_translation_memories" записей связи памяти переводов с проектами локализации (translation_memories с localization_projects)
-                    await _translationMemoryRepository.UpdateTranslationMemoriesLocalizationProjectsAsync(userId, idOfNewTranslationMemory, translationMemory.localization_projects_ids, false);
+
+                        //Добавление в таблицу "translation_memories_locales" записей связи памяти переводов с языками перевода (translation_memories с locales)
+                        await UpdateTranslationMemoriesLocalesAsync(idOfNewTranslationMemory,
+                            ConvertData.ConverLocale(translationMemory.locales_ids), dbConnection, transaction, false);
+
+                        //Добавление в таблицу "localization_projects_translation_memories" записей связи памяти переводов с проектами локализации (translation_memories с localization_projects)
+                        await _translationMemoryRepository.UpdateTranslationMemoriesLocalizationProjectsAsync(userId,
+                            idOfNewTranslationMemory, translationMemory.localization_projects_ids, dbConnection, transaction, false);
+                        transaction.Commit();
+                    }
                 }
             }
             catch (NpgsqlException exception)
@@ -365,7 +395,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Отредактированная память переводов.</param>
         /// <returns></returns>
-        public async Task UpdateAsync(int userId, TranslationMemoryForEditingDTO translationMemory)
+        public async Task UpdateAsync(Guid userId, TranslationMemoryForEditingDTO translationMemory)
         {
             try
             {
@@ -377,6 +407,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         translationMemory.name_text,
                         translationMemory.id_file
                     };
+
                     var query = new Query("translation_memories")
                         .Where("id", translationMemory.id)
                         .AsUpdate(editedTranslationMemory);
@@ -386,10 +417,12 @@ namespace DAL.Reposity.PostgreSqlRepository
                             sql: compiledQuery.Sql,
                             param: compiledQuery.NamedBindings);
 
+                    //TODO транзакции
 
+                    //TODO транзакции
                     //Пересоздание в таблице "translation_memories_locales" записей связи памяти переводов с языками перевода (translation_memories с locales)
-                    await UpdateTranslationMemoriesLocalesAsync(translationMemory.id, ConvertData.ConverLocale(translationMemory.locales_ids));
-
+                    await UpdateTranslationMemoriesLocalesAsync(translationMemory.id, ConvertData.ConverLocale(translationMemory.locales_ids), dbConnection, null, true);
+                    //TODO транзакции
                     //Пересоздание в таблице "localization_projects_translation_memories" записей связи памяти переводов с проектами локализации (translation_memories с localization_projects)
                     await _translationMemoryRepository.UpdateTranslationMemoriesLocalizationProjectsAsync(userId, translationMemory.id, translationMemory.localization_projects_ids);
 
@@ -412,47 +445,53 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="localesIds">Выбранные языки перевода.</param>
         /// <param name="isDeleteOldRecords">Удалить старые записи.</param>
         /// <returns></returns>
-        public async Task UpdateTranslationMemoriesLocalesAsync(int translationMemoryId, IEnumerable<int> localesIds, bool isDeleteOldRecords = true)
+        public async Task UpdateTranslationMemoriesLocalesAsync(Guid translationMemoryId, IEnumerable<Guid> localesIds, NpgsqlConnection connection, IDbTransaction transaction, bool isDeleteOldRecords = true)
         {
             try
             {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
+                // using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    if (isDeleteOldRecords)
+                    //connection.Open();
+                    //using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
                     {
-                        var queryDelete = new Query("translation_memories_locales")
-                            .Where("id_translation_memory", translationMemoryId)
-                            .AsDelete();
-                        var compiledQueryDelete = _compiler.Compile(queryDelete);
-                        LogQuery(compiledQueryDelete);
-                        await dbConnection.ExecuteAsync(
-                            sql: compiledQueryDelete.Sql,
-                            param: compiledQueryDelete.NamedBindings);
-                    }
+                        if (isDeleteOldRecords)
+                        {
+                            var queryDelete = new Query("translation_memories_locales")
+                                .Where("id_translation_memory", translationMemoryId)
+                                .AsDelete();
+                            var compiledQueryDelete = _compiler.Compile(queryDelete);
+                            LogQuery(compiledQueryDelete);
+                            await connection.ExecuteAsync(
+                                sql: compiledQueryDelete.Sql,
+                                param: compiledQueryDelete.NamedBindings);
+                        }
 
-                    var translationMemoriesLocales = localesIds.Select(t => new
-                    {
-                        id_translation_memory = translationMemoryId,
-                        id_locale = t
-                    }).ToList();
+                        var translationMemoriesLocales = localesIds.Select(t => new
+                        {
+                            id_translation_memory = translationMemoryId,
+                            id_locale = t
+                        }).ToList();
 
-                    foreach (var element in translationMemoriesLocales)
-                    {
-                        var queryInsert = new Query("translation_memories_locales")
-                            .AsInsert(element);
-                        var compiledQueryInsert = _compiler.Compile(queryInsert);
-                        LogQuery(compiledQueryInsert);
-                        await dbConnection.ExecuteAsync(
+                        foreach (var element in translationMemoriesLocales)
+                        {
+                            var queryInsert = new Query("translation_memories_locales")
+                                .AsInsert(element);
+                            var compiledQueryInsert = _compiler.Compile(queryInsert);
+                            LogQuery(compiledQueryInsert);
+                            await connection.ExecuteAsync(
                                 sql: compiledQueryInsert.Sql,
                                 param: compiledQueryInsert.NamedBindings);
+                        }
+
+
+                        ///обновляем у  файла локали
+                        Guid? fileId = GetIdFile(translationMemoryId, connection).Result;
+                        await this.fr.DeleteTranslationLocalesAsync(fileId: (Guid)fileId);
+                        await this.fr.AddTranslationLocalesAsync(fileId: (Guid)fileId, localesIds: localesIds,
+                            dbConnection: connection, transaction: transaction);
+
+                        //transaction.Commit();
                     }
-
-
-                    ///обновляем у  файла локали
-                    int? fileId = GetIdFile(translationMemoryId, dbConnection).Result;
-                    await this.fr.DeleteTranslationLocalesAsync(fileId: (int)fileId);
-                    await this.fr.AddTranslationLocalesAsync(fileId: (int)fileId, localesIds: localesIds);
-
                 }
             }
             catch (NpgsqlException exception)
@@ -471,7 +510,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="id"></param>
         /// <param name="dbConnection"></param>
         /// <returns></returns>
-        private async Task<int?> GetIdFile(int id, NpgsqlConnection dbConnection)
+        private async Task<Guid?> GetIdFile(Guid id, NpgsqlConnection dbConnection)
         {
             //Удаление зависимостей
 
@@ -479,7 +518,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             var queryGetGlossariesID_File = new Query("translation_memories").Where("id", id).Select("translation_memories.id_file");
             var compiledQueryGetGlossariesID_File = _compiler.Compile(queryGetGlossariesID_File);
             LogQuery(compiledQueryGetGlossariesID_File);
-            var idFile = await dbConnection.QueryFirstOrDefaultAsync<int?>(
+            var idFile = await dbConnection.QueryFirstOrDefaultAsync<Guid?>(
                 sql: compiledQueryGetGlossariesID_File.Sql,
                 param: compiledQueryGetGlossariesID_File.NamedBindings);
             return idFile;
@@ -490,7 +529,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             try
             {
@@ -504,7 +543,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Select("translation_memories_strings.id_string");
                     var compiledQueryGetTranslationSubstringsId = _compiler.Compile(queryGetTranslationSubstringsId);
                     LogQuery(compiledQueryGetTranslationSubstringsId);
-                    var idsTranslationSubstrings = await dbConnection.QueryAsync<int>(
+                    var idsTranslationSubstrings = await dbConnection.QueryAsync<Guid>(
                         sql: compiledQueryGetTranslationSubstringsId.Sql,
                         param: compiledQueryGetTranslationSubstringsId.NamedBindings);
 
@@ -539,7 +578,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         .Select("translation_memories.id_file");
                     var compiledQueryGetID_File = _compiler.Compile(queryGetID_File);
                     LogQuery(compiledQueryGetID_File);
-                    var idFile = await dbConnection.QueryFirstOrDefaultAsync<int?>(
+                    var idFile = await dbConnection.QueryFirstOrDefaultAsync<Guid?>(
                         sql: compiledQueryGetID_File.Sql,
                         param: compiledQueryGetID_File.NamedBindings);
 

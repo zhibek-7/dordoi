@@ -28,11 +28,11 @@ const routes: Routes = [
   //  loadChildren: "../strings-project/module/strings-project.module#StringsProjectModule",
   //  canActivate: [AuthenticationGuard]
   //},
-//  {
-//    path: "create-project",
-//    loadChildren: "../create-project/create-project.module#CreateProjectModule",
-//    canActivate: [AuthenticationGuard]
-//  },
+  {
+    path: "create-project",
+    loadChildren: "../create-project/create-project.module#CreateProjectModule",
+    canActivate: [AuthenticationGuard]
+  },
   {
     path: "Projects/:projectId",
     //component: CurrentProjectSettingsComponent,
@@ -81,7 +81,7 @@ const routes: Routes = [
 //    canActivate: [AuthenticationGuard]
 //  },
   {
-    path: "Translation_project/:id",
+    path: "Translation_project/:projectId",
     loadChildren: "../project-page/project-page.module#ProjectPageModule",
     canActivate: [AuthenticationGuard]
   },

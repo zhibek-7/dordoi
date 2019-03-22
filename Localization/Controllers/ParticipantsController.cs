@@ -30,8 +30,8 @@ namespace Localization.Controllers
         public class GetParticipantsByProjectIdParam
         {
             public string search { get; set; }
-            public int[] roleIds { get; set; }
-            public int[] localeIds { get; set; }
+            public Guid[] roleIds { get; set; }
+            public Guid[] localeIds { get; set; }
             public int? offset { get; set; }
             public int? limit { get; set; }
             public string[] sortBy { get; set; }
@@ -42,7 +42,7 @@ namespace Localization.Controllers
         [Authorize]
         [HttpPost("byProjectId/{projectId}/list")]
         public async Task<IEnumerable<ParticipantDTO>> GetParticipantsByProjectIdAsync(
-            int projectId,
+            Guid projectId,
             [FromBody] GetParticipantsByProjectIdParam param
             )
         {
@@ -69,21 +69,21 @@ namespace Localization.Controllers
         }
         [Authorize]
         [HttpDelete("byProjectId/{projectId}/{userId}")]
-        public async Task DeleteParticipant(int projectId, int userId)
+        public async Task DeleteParticipant(Guid projectId, Guid userId)
         {
             var name_text = User.Identity.Name;
-            int? user_Id = (int)ur.GetID(name_text);
-            await _userActionRepository.DeleteParticipantAsync((int)user_Id, name_text, projectId, userId);
+            Guid user_Id = (Guid)ur.GetID(name_text);
+            await _userActionRepository.DeleteParticipantAsync(user_Id, name_text, projectId, userId);
             await this._participantsRepository.SetInactiveAsync(projectId: projectId, userId: userId);
         }
 
         [Authorize]
         [HttpPost("{projectId}/{userId}/{roleId}")]
-        public async Task AddOrActivateParticipant(int projectId, int userId, int roleId)
+        public async Task AddOrActivateParticipant(Guid projectId, Guid userId, Guid roleId)
         {
             var name_text = User.Identity.Name;
-            int? user_Id = (int)ur.GetID(name_text);
-            await _userActionRepository.AddOrActivateParticipantAsync((int)user_Id, name_text, projectId, userId, roleId);
+            Guid user_Id = (Guid)ur.GetID(name_text);
+            await _userActionRepository.AddOrActivateParticipantAsync(user_Id, name_text, projectId, userId, roleId);
 
             await this._participantsRepository.AddOrActivateParticipant(projectId: projectId, userId: userId, roleId: roleId);
         }

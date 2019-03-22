@@ -10,12 +10,12 @@ namespace Models.DatabaseEntities
     public class TranslationTrouble : BaseEntity
     {
         [Required]
-        public int ID_Trouble;
+        public Guid ID_Trouble;
 
         [Required]
         public string Trouble;
 
         [Required]
-        public int ID_Translation;
+        public Guid ID_Translation;
     }
 }

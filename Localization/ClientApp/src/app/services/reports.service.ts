@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient,  HttpHeaders } from "@angular/common/http";
 import { TranslatedWordsReportRow } from "../models/Reports/TranslatedWordsReportRow";
 import { Observable } from "rxjs";
-
+import { Guid } from 'guid-typescript';
 @Injectable()
 export class ReportService {
   private url: string = "api/Report/";
@@ -15,15 +15,15 @@ export class ReportService {
   //}
 
   getTranslatedWordsReport(
-    projectId: number,
+    projectId: Guid,
     start: string,
     end: string,
     volumeCalcType: string,
     calcBasisType: string,
-    userId: number,
-    localeId: number,
+    userId: Guid,
+    localeId: Guid,
     workType: string,
-    initialFolderId: number
+    initialFolderId: Guid
   ): Observable<TranslatedWordsReportRow[]> {
     const body = {
       projectId: projectId,
@@ -49,15 +49,15 @@ export class ReportService {
   }
 
   async getTranslatedWordsReportExcel(
-    projectId: number,
+    projectId: Guid,
     start: string,
     end: string,
     volumeCalcType: string,
     calcBasisType: string,
-    userId: number,
-    localeId: number,
+    userId: Guid,
+    localeId: Guid,
     workType: string,
-    initialFolderId: number
+    initialFolderId: Guid
   ) {
     //TODO убрать дубляж кода в заполнении параметров
     let paramsObject = "projectId=" + projectId;

@@ -21,7 +21,7 @@ namespace Models.Services
             this._stringsRepository = translationSubstringRepository;
         }
 
-        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(int termId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForTermAsync(Guid termId)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<Glossary> GetByIDAsync(int glossaryId)
+        public async Task<Glossary> GetByIDAsync(Guid glossaryId)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<Locale> GetLocaleByIdAsync(int glossaryId)
+        public async Task<Locale> GetLocaleByIdAsync(Guid glossaryId)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<Locale> GetLocaleByTermByIdAsync(int termId)
+        public async Task<Locale> GetLocaleByTermByIdAsync(Guid termId)
         {
             try
             {
@@ -93,10 +93,10 @@ namespace Models.Services
             }
         }
 
-        public async Task UpdateTranslationLocalesForTermAsync(int glossaryId, int termId, IEnumerable<int> localesIds)
+        public async Task UpdateTranslationLocalesForTermAsync(Guid glossaryId, Guid termId, IEnumerable<Guid> localesIds)
         {
             try
-            {
+            {//TODO переделать под одну транзакуцию
                 await this._stringsRepository.DeleteTranslationLocalesAsync(translationSubstringId: termId);
                 await this._stringsRepository.AddTranslationLocalesAsync(translationSubstringId: termId, localesIds: localesIds);
 
@@ -109,7 +109,7 @@ namespace Models.Services
         }
 
         public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
-            int glossaryId,
+            Guid glossaryId,
             int? limit,
             int? offset,
             string termPart = null,
@@ -133,7 +133,7 @@ namespace Models.Services
             }
         }
 
-        public async Task AddNewTermAsync(int glossaryId, TranslationSubstring newTerm, int? partOfSpeechId)
+        public async Task AddNewTermAsync(Guid glossaryId, TranslationSubstring newTerm, Guid? partOfSpeechId)
         {
             var newTermId = await this._glossaryRepository.AddNewTermAsync(
                 glossaryId: glossaryId,
@@ -143,8 +143,9 @@ namespace Models.Services
 
             try
             {
+                //TODO переделать под одну транзакуцию
                 await this._stringsRepository.AddTranslationLocalesAsync(
-                    translationSubstringId: newTermId,
+                    translationSubstringId: (Guid)newTermId,
                     localesIds: glossaryLocales.Select(locale => locale.id));
             }
             catch (Exception exception)
@@ -153,7 +154,7 @@ namespace Models.Services
             }
         }
 
-        public async Task DeleteTermAsync(int glossaryId, int termId)
+        public async Task DeleteTermAsync(Guid glossaryId, Guid termId)
         {
             try
             {
@@ -165,11 +166,11 @@ namespace Models.Services
             }
         }
 
-        public async Task<int> GetAssotiatedTermsCountAsync(int glossaryId, string termPart)
+        public async Task<int> GetAssotiatedTermsCountAsync(Guid glossaryId, string termPart)
         {
             try
             {
-                return await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
+                return (int)await this._glossaryRepository.GetAssotiatedTermsCountAsync(glossaryId: glossaryId, termPart: termPart);
 
             }
             catch (Exception exception)
@@ -178,7 +179,7 @@ namespace Models.Services
             }
         }
 
-        public async Task UpdateTermAsync(int glossaryId, TranslationSubstring updatedTerm, int? partOfSpeechId)
+        public async Task UpdateTermAsync(Guid glossaryId, TranslationSubstring updatedTerm, Guid? partOfSpeechId)
         {
             try
             {
@@ -194,7 +195,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(int projectId)
+        public async Task<IEnumerable<TermWithGlossary>> GetAllTermsFromAllGlossarisInProjectByIdAsync(Guid projectId)
         {
             try
             {
@@ -211,7 +212,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="glossaryId">Идентификатор глоссария</param>
         /// <returns></returns>
-        public async Task DeleteTermsByGlossaryAsync(int glossaryId)
+        public async Task DeleteTermsByGlossaryAsync(Guid glossaryId)
         {
             try
             {

@@ -1,5 +1,4 @@
-﻿using DAL.Context;
-using Dapper;
+﻿using Dapper;
 using Models.DatabaseEntities;
 using System;
 using System.Collections.Generic;
@@ -42,7 +41,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         //    throw new NotImplementedException();
         //}
 
-        public IEnumerable<PartOfSpeech> GetByGlossaryId(int glossaryId)
+        public IEnumerable<PartOfSpeech> GetByGlossaryId(Guid glossaryId)
         {
             try
             {

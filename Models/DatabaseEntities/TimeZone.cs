@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Models.DatabaseEntities
@@ -9,6 +10,9 @@ namespace Models.DatabaseEntities
     /// </summary>
     public class TimeZone : BaseEntity
     {
+
+        [Key]
+        public int id { get; set; }
         /// <summary>
         /// Имя часового пояса
         /// </summary>

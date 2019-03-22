@@ -1,20 +1,22 @@
-export class Translation {
-    public id?: number;
-    public iD_String?: number;
-    public translated?: string;
-    public confirmed?: boolean;
-    public iD_User?: number;
-    public user_Name?: string;
-    public dateTime?: Date;
-    public iD_Locale?: number;
-    public selected?: boolean;
+import { Guid } from "guid-typescript";
 
-    constructor(translated: string, id_string: number, id_locale: number,  id?: number){
-        this.id = id;
-        this.iD_String = id_string;
-        this.translated = translated;
-        this.confirmed = false;
-        this.dateTime = new Date(Date.now());
-        this.iD_Locale = id_locale;
-    }
+export class Translation {
+  public id?: Guid;
+  public ID_String?: Guid;
+  public translated?: string;
+  public Confirmed?: boolean = false;
+  public ID_User?: Guid;
+  public user_Name?: string;
+  public dateTime?: Date;
+  public ID_Locale?: Guid;
+  public Selected?: boolean = false;
+
+  constructor(translated: string, id_string: any, id_locale: any, id?: any) {
+    this.id = id;
+    this.ID_String = id_string;
+    this.translated = translated;
+    this.Confirmed = false;
+    this.dateTime = new Date(Date.now());
+    this.ID_Locale = id_locale;
+  }
 }

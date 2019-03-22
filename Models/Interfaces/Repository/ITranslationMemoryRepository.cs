@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
@@ -19,10 +20,10 @@ namespace Models.Interfaces.Repository
         /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllByUserIdAsync(
-            int? userId,
+            Guid? userId,
             int offset,
             int limit,
-            int? projectId = null,
+            Guid? projectId = null,
             string searchString = null,
             string[] sortBy = null,
             bool sortAscending = true);
@@ -34,9 +35,9 @@ namespace Models.Interfaces.Repository
         /// <param name="projectId">Идентификатор проекта.</param>
         /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
         /// <returns></returns>
-        Task<int> GetAllByUserIdCountAsync(
-            int? userId,
-            int? projectId = null,
+        Task<int?> GetAllByUserIdCountAsync(
+            Guid? userId,
+            Guid? projectId = null,
             string searchString = null);
 
         /// <summary>
@@ -44,14 +45,14 @@ namespace Models.Interfaces.Repository
         /// </summary>
         /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        Task<IEnumerable<TranslationMemory>> GetForEditAsync(int translationMemoryId);
+        Task<IEnumerable<TranslationMemory>> GetForEditAsync(Guid translationMemoryId);
 
         /// <summary>
         /// Возвращает список памятей переводов назначенных на проект локализации.
         /// </summary>
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns>TranslationMemoryForSelectDTO</returns>
-        Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(int projectId);
+        Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(Guid projectId);
 
         /// <summary>
         /// Добавление новой памяти переводов.
@@ -59,7 +60,7 @@ namespace Models.Interfaces.Repository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Новая память переводов.</param>
         /// <returns></returns>
-        Task AddAsync(int userId, TranslationMemoryForEditingDTO translationMemory);
+        Task AddAsync(Guid userId, TranslationMemoryForEditingDTO translationMemory);
 
         /// <summary>
         /// Сохранение изменений в памяти переводов.
@@ -67,13 +68,13 @@ namespace Models.Interfaces.Repository
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Отредактированная память переводов.</param>
         /// <returns></returns>
-        Task UpdateAsync(int userId, TranslationMemoryForEditingDTO translationMemory);
+        Task UpdateAsync(Guid userId, TranslationMemoryForEditingDTO translationMemory);
 
         /// <summary>
         /// Удаление памяти переводов.
         /// </summary>
         /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

@@ -56,9 +56,9 @@ export class NewProjectComponent implements OnInit {
   addProject() {
     console.log('addProject ---!!!!!!!!!');
 
-    this.newProject.name_text = this.myForm.get('name_text').value;
-    this.newProject.id = Math.floor(Math.random() * 10000) + 1;
-    this.newProject.url = this.myForm.get('url').value;
+    this.newProject.name_text = this.myForm.get("name_text").value;
+    this.newProject.id = null; //TODO???? Math.floor(Math.random() * 10000) + 1;
+    this.newProject.url = this.myForm.get("url").value;
 
     this.projectsService.addProject(this.newProject);
   }

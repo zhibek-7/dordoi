@@ -6,13 +6,9 @@ namespace Models.DatabaseEntities
     [Serializable]
     public class Comments : BaseEntity
     {
-        public DateTime DateTime { get; set; }
-
-        public int ID_Translation_Substrings { get; set; }
-
-        public int ID_User { get; set; }
-
-        [Required]
+        public Guid? ID_User { get; set; }
+        public Guid ID_Translation_Substrings { get; set; }
         public string Comment_text { get; set; }
+        public DateTime? DateTime { get; set; }
     }
 }

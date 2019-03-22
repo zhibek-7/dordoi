@@ -1,8 +1,10 @@
 ﻿using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Models.Services;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities;
@@ -39,13 +41,13 @@ namespace Localization.Controllers
         public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(
             int? offset,
             int? limit,
-            int? projectId,
+            Guid? projectId,
             string searchString,
             string[] sortBy,
             bool? sortAscending)
         {
             var identityName = User.Identity.Name;
-            int? userId = (int)ur.GetID(identityName);
+            Guid? userId = (Guid)ur.GetID(identityName);
 
             Response.Headers.Add(
                 key: "totalCount",
@@ -80,11 +82,12 @@ namespace Localization.Controllers
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns>TranslationMemoryForSelectDTO</returns>
         [Authorize]
-        [HttpPost("forSelectByProject")]
-        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync([FromBody] int projectId)
+        [HttpPost("forSelectByProject/{projectId}")]
+        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(Guid projectId)
         {
             return await _translationMemoryService.GetForSelectByProjectAsync(projectId);
         }
+
 
         /// <summary>
         /// Добавление новой памяти переводов.
@@ -95,7 +98,7 @@ namespace Localization.Controllers
         [HttpPost("create")]
         public async Task AddAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            var userId = (int)ur.GetID(User.Identity.Name);
+            var userId = (Guid)ur.GetID(User.Identity.Name);
             await _translationMemoryService.AddAsync(userId, translationMemory);
         }
 
@@ -105,8 +108,8 @@ namespace Localization.Controllers
         /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("edit")]
-        public async Task<TranslationMemoryForEditingDTO> GetForEditAsync([FromBody] int id)
+        [HttpPost("edit/{id}")]
+        public async Task<TranslationMemoryForEditingDTO> GetForEditAsync(Guid id)
         {
             return await _translationMemoryService.GetForEditAsync(id);
         }
@@ -120,7 +123,7 @@ namespace Localization.Controllers
         [HttpPost("editSave")]
         public async Task UpdateAsync(TranslationMemoryForEditingDTO translationMemory)
         {
-            var userId = (int)ur.GetID(User.Identity.Name);
+            var userId = (Guid)ur.GetID(User.Identity.Name);
             await _translationMemoryService.UpdateAsync(userId, translationMemory);
         }
 
@@ -131,7 +134,7 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpDelete("delete/{id}")]
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             return await _translationMemoryService.DeleteAsync(id);
         }
@@ -143,7 +146,7 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpDelete("clear/{id}")]
-        public async Task<bool> ClearAsync(int id)
+        public async Task<bool> ClearAsync(Guid id)
         {
             return await _translationMemoryService.ClearAsync(id);
         }

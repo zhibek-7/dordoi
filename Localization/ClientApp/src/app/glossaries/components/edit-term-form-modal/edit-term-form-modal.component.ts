@@ -14,12 +14,13 @@ import { TranslationWithLocale } from "src/app/glossaries/models/translationWith
 import { RequestDataReloadService } from "src/app/glossaries/services/requestDataReload.service";
 import { forkJoin, Observable } from "rxjs";
 import { UserService } from "../../../services/user.service";
+import { Guid } from "guid-typescript";
 
 @Component({
   selector: "app-edit-term-form-modal",
   templateUrl: "./edit-term-form-modal.component.html",
   styleUrls: ["./edit-term-form-modal.component.css"],
-  providers: [ UserService]
+  providers: [UserService]
 })
 export class EditTermFormComponent extends ModalComponent implements OnInit {
   @Input() glossary: Glossary;
@@ -29,7 +30,6 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
   _term: Term = new Term();
 
   translations: TranslationWithLocale[] = [];
-  tempUserId: number =  this.userService.currentUserId;//301
 
   @Input()
   set term(value: Term) {
@@ -43,7 +43,6 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
     private userService: UserService
   ) {
     super();
-    this.tempUserId=  this.userService.currentUserId;//301
   }
 
   ngOnInit() {}
@@ -53,7 +52,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
     if (!this.glossary) return;
 
-    this._term.substring_to_translate = this._term.value;
+    //this._term.substring_to_translate = this._term.value;
     let updateTermObservable = this.glossariesService.updateTerm(
       this.glossary.id,
       this._term,
@@ -106,13 +105,13 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
             translationLocales =>
               (this.translations = translationLocales.map(locale => {
                 let translation = translations.find(
-                  translation => locale.id == translation.iD_Locale
+                  translation => locale.id == translation.ID_Locale
                 );
                 if (!translation) {
                   translation = new Translation(
                     "",
                     this._term.id,
-                    this.tempUserId,
+                    null,
                     locale.id
                   );
                 }

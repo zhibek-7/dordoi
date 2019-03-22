@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ProjectsService } from './projects.service';
-
+import { Guid } from 'guid-typescript';
 import { ProjectTranslationMemory } from '../models/database-entities/projectTranslationMemory.type';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class ProjectTranslationMemoryService {
   /** Возвращает список связок проект - ((не)назначенных) памяти переводов. */
   getAllByProject(): Observable<ProjectTranslationMemory[]> {
     let projectId = this.projectsService.currentProjectId;
-    return this.http.post<ProjectTranslationMemory[]>(this.url + "ByProject", projectId);
+    return this.http.post<ProjectTranslationMemory[]>(this.url + "ByProject/"+projectId, projectId);
   }
 
   /**
@@ -24,7 +24,7 @@ export class ProjectTranslationMemoryService {
    * Пересоздание в таблице "localization_projects_translation_memories" связей.
    * @param idTranslationMemories идентификаторы памятей переводов.
    */
-  saveProjectTranslationMemories(idTranslationMemories: number[]): Observable<Object> {
+  saveProjectTranslationMemories(idTranslationMemories: Guid[]): Observable<Object> {
     let projectId = this.projectsService.currentProjectId;
     let params = new HttpParams();
     idTranslationMemories.forEach(id => params = params.append('idTranslationMemories', id.toString()));

@@ -1,5 +1,7 @@
+import { Guid } from 'guid-typescript';
+
 export class UserProfile {
-  id: number;
+  id: Guid;
   /**
    * Имя пользователя (логин/ник)
    */
@@ -25,5 +27,5 @@ export class UserProfile {
   /**
    * Выбранные языки перевода (item1: идентификатор языка перевода, item2: язык перевода является родным)
    */
-  locales_id_is_native: Array<{ item1: number; item2: boolean }>;
+  locales_id_is_native: Array<{ item1: Guid; item2: boolean }>;
 }

@@ -10,7 +10,7 @@ namespace Models.Interfaces.Repository
     public interface ILocaleRepository
     {
         //Task<IEnumerable<Locale>> GetAllAsync();
-        Task<IEnumerable<Locale>> GetAllForProject(int projectId);
+        Task<IEnumerable<Locale>> GetAllForProject(Guid projectId);
         //Task<IEnumerable<Locale>> GetByUserIdAsync(int userId);
 
         ///// <summary>

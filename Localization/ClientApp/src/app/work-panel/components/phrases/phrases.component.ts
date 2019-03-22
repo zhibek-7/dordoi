@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from "@angular/core";
 import { TranslationSubstring } from "../../../models/database-entities/translationSubstring.type";
 import { SharePhraseService } from "../../localServices/share-phrase.service";
 import { TranslationSubstringService } from "../../../services/translationSubstring.service";
-
+import { Guid } from 'guid-typescript';
 @Component({
   selector: "phrases-component",
   templateUrl: "./phrases.component.html",
@@ -21,8 +21,8 @@ export class PhrasesComponent implements OnInit {
   currentPageNumber: number = 1;
   maxNumberOfPages: number;
 
-  @Input() fileId: number;
-  @Input() localeId: number;
+  @Input() fileId: Guid;
+  @Input() localeId: Guid;
 
   constructor(
     private sharePhraseService: SharePhraseService,

@@ -2,6 +2,7 @@
 using MimeKit;
 using MailKit.Net.Smtp;
 using System.Threading.Tasks;
+using Utilities.Logs;
 
 namespace Utilities.Mail
 {
@@ -10,6 +11,8 @@ namespace Utilities.Mail
     /// </summary>
     public class EMail : IMail
     {
+        private LogTools lgError = new ExceptionLog();
+        private LogTools lg = new LogTools();
         /// <summary>
         /// Отправка сообщения
         /// </summary>
@@ -69,9 +72,11 @@ namespace Utilities.Mail
                         await client.SendAsync(emailMessage);
                         await client.DisconnectAsync(true);
                     }
+                    lg.WriteLn(" отрпавкf сообщения:" + msg);
                 }
                 catch (Exception ex)
                 {
+                    lgError.WriteLn("Ошибка отрпавки сообщения:" + msg, ex);
                     throw ex;
                 }
                 finally

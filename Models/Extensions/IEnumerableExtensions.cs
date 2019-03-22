@@ -13,7 +13,7 @@ namespace Models.Extensions
             this IEnumerable<TFile> files,
             Func<TFile, string, TNode> createNodeFromFile,
             Func<TFile, string> getIconForFile,
-            int? parentId = null
+            Guid? parentId = null
         )
             where TFile : File
             where TNode : Node<TFile>

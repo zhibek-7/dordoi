@@ -43,7 +43,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<FilePackage> GetByFileIdAsync(int fileId)
+        public async Task<FilePackage> GetByFileIdAsync(Guid fileId)
         {
             try
             {

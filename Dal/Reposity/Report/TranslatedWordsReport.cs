@@ -34,11 +34,11 @@ namespace DAL.Reposity.Report
         /// <param name="countTranslations">Считать по переводам? Если false то по исходным строкам</param>
         /// <returns>Список строк отчета</returns>
         public IEnumerable<TranslatedWordsReportRow> GetRows
-            (int projectID,
+            (Guid projectID,
             DateTime dateFrom,
             DateTime dateTo,
-            int userId = -1,
-            int localeId = -1,
+            Guid userId,
+            Guid localeId,
             bool countByChar = true,
             bool countTranslations = true)
         {

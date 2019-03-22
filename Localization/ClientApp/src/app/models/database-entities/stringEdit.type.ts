@@ -1,5 +1,7 @@
+import { Guid } from 'guid-typescript';
+
 export class StringEdit {
-  id: number;
+  id: Guid;
   value: string;
   description: string;
   part_Of_Sentence: string;

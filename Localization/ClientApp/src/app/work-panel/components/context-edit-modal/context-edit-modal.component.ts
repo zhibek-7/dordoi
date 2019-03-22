@@ -5,9 +5,9 @@ import { ModalComponent } from "src/app/shared/components/modal/modal.component"
 import { ShowImageModalComponent } from "../show-image-modal/show-image-modal";
 
 import { TranslationSubstringService } from "src/app/services/translationSubstring.service";
-
 import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
 import { Image } from "src/app/models/database-entities/image.type";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: "context-edit-modal-component",
@@ -82,7 +82,7 @@ export class ContextEditModalComponent extends ModalComponent
     }
   }
 
-  loadImages(translationSubstringId: number) {
+  loadImages(translationSubstringId: Guid) {
     this.translationSubstringService
       .getImagesByTranslationSubstringId(translationSubstringId)
       .subscribe(images => {

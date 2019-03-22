@@ -9,6 +9,7 @@ import { LanguageService } from "src/app/services/languages.service";
 
 import { TranslationSubstringForEditingDTO } from "src/app/models/DTO/TranslationSubstringDTO.type";
 import { ProjectsService } from "src/app/services/projects.service";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-load-string-project-form-modal',

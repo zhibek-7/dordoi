@@ -48,7 +48,7 @@ namespace Localization.WebApi
             }
 
             return Ok(strings);
-        }        
+        }
 
         /// <summary> 
         /// Получить все фразы для перевода из файла 
@@ -63,7 +63,7 @@ namespace Localization.WebApi
             var fileId = Request.Form["fileId"].ToString();
             var localeId = Request.Form["localeId"].ToString();
 
-            var strings = await stringRepository.GetStringsByFileIdAsync(Convert.ToInt32(fileId), Convert.ToInt32(localeId));
+            var strings = await stringRepository.GetStringsByFileIdAsync(Guid.Parse(fileId), Guid.Parse(localeId));
 
             if (strings == null)
             {
@@ -81,7 +81,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost]
         [Route("{id}")]
-        public async Task<ActionResult<TranslationSubstring>> GetStringById(int id)
+        public async Task<ActionResult<TranslationSubstring>> GetStringById(Guid id)
         {
             TranslationSubstring foundedString = await stringRepository.GetByIDAsync(id);
 
@@ -100,16 +100,20 @@ namespace Localization.WebApi
         /// <returns>Список изображений</returns> 
         [Authorize]
         [HttpPost("GetImagesByStringId/{translationSubstringId}")]
-        public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(int translationSubstringId)
+        public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(Guid translationSubstringId)
         {
-            var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
-
-            if (foundedString == null)
-            {
-                return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
-            }
+            //var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
+            //if (foundedString == null)
+            //{
+            //    return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            //}
 
             IEnumerable<Image> images = await stringRepository.GetImagesOfTranslationSubstringAsync(translationSubstringId);
+
+            if (images == null || images != null && images.Count() == 0)
+            {
+                //return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            }
 
             return Ok(images);
         }
@@ -121,7 +125,7 @@ namespace Localization.WebApi
         /// <returns>Статус перевода</returns> 
         [Authorize]
         [HttpPost("Status/{translationSubstringId}")]
-        public async Task<ActionResult<string>> GetStatusOfTranslationSubstring(int translationSubstringId)
+        public async Task<ActionResult<string>> GetStatusOfTranslationSubstring(Guid translationSubstringId)
         {
             var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
 
@@ -139,7 +143,7 @@ namespace Localization.WebApi
         [HttpPost("SetStatus")]
         public async Task<ActionResult> SetStatusOfTranslationSubstring()
         {
-            var translationSubstringId = Convert.ToInt32(Request.Form["translationSubstringId"].ToString());
+            var translationSubstringId = Guid.Parse(Request.Form["translationSubstringId"].ToString());
             var status = Request.Form["status"].ToString();
 
             var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
@@ -165,6 +169,11 @@ namespace Localization.WebApi
         {
             var content = Request.Form.Files["Image"];
             var translationSubstringId = Request.Form["TranslationSubstringId"];
+
+            if (content == null)
+            {
+                return Ok();
+            }
             string fileName = content.FileName;
             long fileLength = content.Length;
             //Stream file = content.OpenReadStream; 
@@ -180,12 +189,12 @@ namespace Localization.WebApi
                         imageData = binaryReader.ReadBytes((int)fileLength);
 
                         Image img = new Image();
-                        img.ID_User = (int)ur.GetID(User.Identity.Name);
+                        img.ID_User = (Guid)ur.GetID(User.Identity.Name);
                         img.Name_text = fileName;
                         img.Date_Time_Added = DateTime.Now;
                         img.body = imageData;
 
-                        int insertedCommentId = await stringRepository.UploadImageAsync(img, Convert.ToInt32(translationSubstringId));
+                        Guid? insertedCommentId = await stringRepository.UploadImageAsync(img, Guid.Parse(translationSubstringId));
                     }
                 }
 
@@ -198,10 +207,10 @@ namespace Localization.WebApi
         [HttpPost]
         [Route("ByProjectId/{projectId}")]
         public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetByProjectId(
-            int projectId,
+            Guid projectId,
             int? offset,
             int? limit,
-            int? fileId,
+            Guid? fileId,
             string searchString,
             string[] sortBy,
             bool? sortAscending)
@@ -234,14 +243,14 @@ namespace Localization.WebApi
 
         [Authorize]
         [HttpDelete("{translationSubstringId}")]
-        public async Task DeleteTranslationSubstring(int translationSubstringId)
+        public async Task DeleteTranslationSubstring(Guid translationSubstringId)
         {
             await this.stringRepository.RemoveAsync(id: translationSubstringId);
         }
 
         [Authorize]
         [HttpPut("{translationSubstringId}")]
-        public async Task UpdateTranslationSubstring(int translationSubstringId, [FromBody] TranslationSubstring updatedTranslationSubstring)
+        public async Task UpdateTranslationSubstring(Guid translationSubstringId, [FromBody] TranslationSubstring updatedTranslationSubstring)
         {
             updatedTranslationSubstring.id = translationSubstringId;
             await this.stringRepository.UpdateAsync(item: updatedTranslationSubstring);
@@ -250,14 +259,14 @@ namespace Localization.WebApi
         [Authorize]
         [Route("{translationSubstringId}/locales")]
         [HttpPost]
-        public async Task<IEnumerable<Locale>> GetLocalesIdsForStringAsync(int translationSubstringId)
+        public async Task<IEnumerable<Locale>> GetLocalesIdsForStringAsync(Guid translationSubstringId)
         {
             return await this.stringRepository.GetLocalesForStringAsync(translationSubstringId: translationSubstringId);
         }
 
         [Authorize]
         [HttpPut("{translationSubstringId}/locales")]
-        public async Task UpdateLocalesForStringAsync(int translationSubstringId, [FromBody] IEnumerable<int> localesIds)
+        public async Task UpdateLocalesForStringAsync(Guid translationSubstringId, [FromBody] IEnumerable<Guid> localesIds)
         {
             await this.stringRepository.DeleteTranslationLocalesAsync(translationSubstringId: translationSubstringId);
             await this.stringRepository.AddTranslationLocalesAsync(translationSubstringId: translationSubstringId, localesIds: localesIds);
@@ -278,39 +287,39 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost("getAllWithTranslationMemoryByProject")]
         public async Task<ActionResult<IEnumerable<TranslationSubstringTableViewDTO>>> GetAllWithTranslationMemoryByProjectAsync(
-            int projectId,
+            Guid projectId,
             int? offset,
             int? limit,
-            int? translationMemoryId,
+            Guid? translationMemoryId,
             string searchString,
             string[] sortBy,
             bool? sortAscending)
-            {
-                Response.Headers.Add(
-                    key: "totalCount",
-                    value: (await stringRepository.GetAllWithTranslationMemoryByProjectCountAsync(
-                        projectId: projectId,
-                        translationMemoryId: translationMemoryId,
-                        searchString: searchString
-                    )).ToString());
-
-                var strings = await stringRepository.GetAllWithTranslationMemoryByProjectAsync(
+        {
+            Response.Headers.Add(
+                key: "totalCount",
+                value: (await stringRepository.GetAllWithTranslationMemoryByProjectCountAsync(
                     projectId: projectId,
-                    offset: offset ?? 0,
-                    limit: limit ?? 25,
                     translationMemoryId: translationMemoryId,
-                    searchString: searchString,
-                    sortBy: sortBy,
-                    sortAscending: sortAscending ?? true
-                );
+                    searchString: searchString
+                )).ToString());
 
-                if (strings == null)
-                {
-                    return BadRequest("Strings not found");
-                }
+            var strings = await stringRepository.GetAllWithTranslationMemoryByProjectAsync(
+                projectId: projectId,
+                offset: offset ?? 0,
+                limit: limit ?? 25,
+                translationMemoryId: translationMemoryId,
+                searchString: searchString,
+                sortBy: sortBy,
+                sortAscending: sortAscending ?? true
+            );
 
-                return Ok(strings);
+            if (strings == null)
+            {
+                return BadRequest("Strings not found");
             }
+
+            return Ok(strings);
+        }
 
         /// <summary>
         /// Обновление поля substring_to_translate
@@ -331,7 +340,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [Authorize]
         [HttpPost("deleteRange")]
-        public async Task<bool> DeleteRangeAsync(int[] ids) //IEnumerable<int> ids)
+        public async Task<bool> DeleteRangeAsync(Guid[] ids) //IEnumerable<int> ids)
         {
             return await stringRepository.DeleteRangeAsync(ids);
         }

@@ -1,5 +1,7 @@
+import { Guid } from 'guid-typescript';
+
 export class User {
-  id: number;
+  id: Guid;
   name_text: string;
   password_text: string;
   photo: Blob;

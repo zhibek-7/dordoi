@@ -10,3 +10,7 @@
 /deep/.cdk-overlay-container {
   z-index: 105200 !important;
 }
+
+#modal-body {
+  position: relative;
+}

@@ -41,13 +41,13 @@ namespace Models.Services
             this._filesPackagesRepository = filesPackagesRepository;
         }
 
-        public async Task<IEnumerable<Node<File>>> GetAllAsync(int? userId, int? projectId)
+        public async Task<IEnumerable<Node<File>>> GetAllAsync(Guid? userId, Guid? projectId)
         {
             var files = await this._filesRepository.GetAllAsync(userId, projectId);
             return files?.ToTree((file, icon) => new Node<File>(file, icon), (file) => GetIconByFile(file));
         }
 
-        public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(int projectId, string fileNamesSearch)
+        public async Task<IEnumerable<Node<File>>> GetByProjectIdAsync(Guid projectId, string fileNamesSearch)
         {
             var files = await this._filesRepository.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: fileNamesSearch);
             if (string.IsNullOrEmpty(fileNamesSearch))
@@ -59,11 +59,11 @@ namespace Models.Services
                 var idsToFiles = files.ToDictionary(keySelector: value => value.id);
                 var parentsIds = idsToFiles.Where(x => x.Value.id_folder_owner != null
                                                     && !idsToFiles.ContainsKey(x.Value.id_folder_owner.Value))
-                                           .Select(x => (int)x.Value.id_folder_owner)
+                                           .Select(x => x.Value.id_folder_owner)
                                            .ToList();
                 do
                 {
-                    var newParentsIds = new List<int>();
+                    var newParentsIds = new List<Guid?>();
                     foreach (var parentId in parentsIds)
                     {
                         var parentFile = await this._filesRepository.GetByIDAsync(parentId);
@@ -71,7 +71,7 @@ namespace Models.Services
                         if (parentFile.id_folder_owner != null
                             && !idsToFiles.ContainsKey(parentFile.id_folder_owner.Value))
                         {
-                            newParentsIds.Add(parentFile.id_folder_owner.Value);
+                            newParentsIds.Add(parentFile.id_folder_owner);
                         }
                     }
                     parentsIds = newParentsIds;
@@ -80,17 +80,17 @@ namespace Models.Services
             }
         }
 
-        public async Task<File> GetByIdAsync(int id)
+        public async Task<File> GetByIdAsync(Guid id)
         {
             return await this._filesRepository.GetByIDAsync(id);
         }
 
-        public IEnumerable<File> GetInitialFolders(int projectId)
+        public IEnumerable<File> GetInitialFolders(Guid projectId)
         {
             return this._filesRepository.GetInitialFolders(projectId);
         }
 
-        public async Task<Node<File>> AddFileAsync(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
+        public async Task<Node<File>> AddFileAsync(string fileName, System.IO.Stream fileContentStream, Guid? parentId, Guid projectId)
         {
             var foundedFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(fileName, parentId);
             if (foundedFile != null)
@@ -107,7 +107,7 @@ namespace Models.Services
             return await this.AddNodeAsync(newFile, insertToDbAction: file => this.InsertFileToDbAsync(file, filePackage));
         }
 
-        public async Task<Node<File>> UpdateFileVersionAsync(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
+        public async Task<Node<File>> UpdateFileVersionAsync(string fileName, System.IO.Stream fileContentStream, Guid? parentId, Guid projectId)
         {
             var version = this._initialFileVersion;
             var lastVersionDbFile = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(fileName, parentId);
@@ -155,7 +155,7 @@ namespace Models.Services
             return newNode;
         }
 
-        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(int fileId)
+        public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(Guid fileId)
         {
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
             if (file.is_folder)
@@ -290,7 +290,7 @@ namespace Models.Services
             };
         }
 
-        private File GetNewFolderModel(string folderName, int? folderOwnerId, int localizationProjectId)
+        private File GetNewFolderModel(string folderName, Guid? folderOwnerId, Guid localizationProjectId)
         {
             var newFolder = this.GetNewFolderModel();
             newFolder.name_text = folderName;
@@ -301,21 +301,21 @@ namespace Models.Services
 
         public async Task<Node<File>> AddFolderAsync(FolderModel newFolderModel)
         {
-            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(newFolderModel.Name_text, newFolderModel.Parent_Id);
+            var foundedFolder = await this._filesRepository.GetLastVersionByNameAndParentIdAsync(newFolderModel.name, newFolderModel.parentId);
             if (foundedFolder != null)
             {
-                throw new Exception(WriteLn($"Папка \"{newFolderModel.Name_text}\" уже есть."));
+                throw new Exception(WriteLn($"Папка \"{newFolderModel.name}\" уже есть."));
             }
 
             var newFolder = this.GetNewFolderModel(
-                folderName: newFolderModel.Name_text,
-                folderOwnerId: newFolderModel.Parent_Id,
-                localizationProjectId: newFolderModel.Project_Id
+                folderName: newFolderModel.name,
+                folderOwnerId: newFolderModel.parentId,
+                localizationProjectId: newFolderModel.projectId
                 );
             return await AddNodeAsync(newFolder, insertToDbAction: this.InsertFolderToDbAsync);
         }
 
-        public async Task AddFolderWithContentsAsync(IFormFileCollection files, int? parentId, int projectId, string signalrClientId)
+        public async Task AddFolderWithContentsAsync(IFormFileCollection files, Guid? parentId, Guid projectId, string signalrClientId)
         {
             foreach (var file in files)
             {
@@ -369,7 +369,7 @@ namespace Models.Services
             }
         }
 
-        public async Task UpdateNodeAsync(int id, File file)
+        public async Task UpdateNodeAsync(Guid id, File file)
         {
             // Check if file by id exists in database
             var foundedFile = await this._filesRepository.GetByIDAsync(id);
@@ -451,7 +451,7 @@ namespace Models.Services
 
         private async Task InsertFileToDbAsync(File file, FilePackage filePackage)
         {
-            var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.id_localization_project);
+            var projectLocales = await this._localeRepository.GetAllForProject(projectId: (Guid)file.id_localization_project);
 
             var fileUploaded = await this._filesRepository.UploadAsync(file, projectLocales);
             if (!fileUploaded)
@@ -497,7 +497,7 @@ namespace Models.Services
             return $"{pathPrefix}022-write.svg";
         }
 
-        public async Task ChangeParentFolderAsync(int fileId, int? newParentId)
+        public async Task ChangeParentFolderAsync(Guid fileId, Guid? newParentId)
         {
             var foundedFile = await this._filesRepository.GetByIDAsync(fileId);
             if (foundedFile == null)
@@ -530,18 +530,19 @@ namespace Models.Services
                 );
         }
 
-        public async Task<IEnumerable<Locale>> GetTranslationLocalesForFileAsync(int fileId)
+        public async Task<IEnumerable<Locale>> GetTranslationLocalesForFileAsync(Guid fileId)
         {
             return await this._filesRepository.GetLocalesForFileAsync(fileId: fileId);
         }
 
-        public async Task UpdateTranslationLocalesForFileAsync(int fileId, IEnumerable<int> localesIds)
+        public async Task UpdateTranslationLocalesForFileAsync(Guid fileId, IEnumerable<Guid> localesIds)
         {
+            //TODO переделать под одну транзакуцию
             await this._filesRepository.DeleteTranslationLocalesAsync(fileId: fileId);
             await this._filesRepository.AddTranslationLocalesAsync(fileId: fileId, localesIds: localesIds);
         }
 
-        public async Task<System.IO.FileStream> GetFileAsync(int fileId, int? localeId)
+        public async Task<System.IO.FileStream> GetFileAsync(Guid fileId, Guid? localeId)
         {
             var file = await this._filesRepository.GetByIDAsync(id: fileId);
             if (file == null)
@@ -605,7 +606,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<System.IO.FileStream> WriteFileAsync(File file, string filePath, int? localeId)
+        public async Task<System.IO.FileStream> WriteFileAsync(File file, string filePath, Guid? localeId)
         {
             var filePackage = await this._filesPackagesRepository.GetByFileIdAsync(fileId: file.id);
             if (filePackage != null)
@@ -670,7 +671,7 @@ namespace Models.Services
                 var fileContent = await this._filesRepository
                     .GetFileContentAsync(
                         id: file.id,
-                        id_locale: localeId.HasValue ? localeId.Value : -1);
+                        id_locale: localeId);
 
                 var fileStream = System.IO.File.Create(filePath);
                 try

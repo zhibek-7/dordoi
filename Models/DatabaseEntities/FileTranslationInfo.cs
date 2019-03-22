@@ -6,7 +6,7 @@ namespace Models.DatabaseEntities
     public class FileTranslationInfo
     {
 
-        public int LocaleId { get; set; }
+        public Guid LocaleId { get; set; }
 
         public double PercentOfTranslation { get; set; }
 

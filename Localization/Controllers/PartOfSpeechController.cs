@@ -25,8 +25,8 @@ namespace Localization.WebApi
 
         [Authorize]
         [HttpPost]
-        [Route("List")]
-        public IEnumerable<PartOfSpeech> GetAll([FromQuery] int? glossaryId)
+        [Route("List/{glossaryId}")]
+        public IEnumerable<PartOfSpeech> GetAll(Guid? glossaryId)
         {
             if (glossaryId != null)
                 return this._partOfSpeechRepository.GetByGlossaryId(glossaryId: glossaryId.Value);

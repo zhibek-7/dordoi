@@ -25,10 +25,22 @@ namespace Localization.Controllers
 
         [Authorize]
         [HttpPost("list")]
+        public async Task<IEnumerable<Role>> GetRoles()
+        {
+            var identityName = User.Identity.Name;
+            Guid? userId = (Guid)userRepository.GetID(identityName);
+
+            return await this._roleRepository.GetAsync(userId, "owner");
+
+
+        }
+
+        [Authorize]
+        [HttpPost("list_all")]
         public async Task<IEnumerable<Role>> GetAllRoles()
         {
             var identityName = User.Identity.Name;
-            int? userId = (int)userRepository.GetID(identityName);
+            Guid? userId = (Guid)userRepository.GetID(identityName);
 
             return await this._roleRepository.GetAllAsync(userId, null);
         }

@@ -1,25 +1,13 @@
 .mainBlock {
-    height: 95vh;
-    width: 100%;
-	
 }
 
 .noPadding {
-    /* padding-left: 0% !important; */
-    padding-right: 0% !important;
 }
 
 .middleBlock {
-    /* overflow-y: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch; */
 }
-
 .middleBlockAndRight {
-    padding-left: 15px !important;
 }
 
 .translationBlock {
-  width: 100%;
-  /* text-align: center; */
 }

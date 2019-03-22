@@ -36,6 +36,17 @@ namespace Localization.WebApi
             ur = new UserRepository(connectionString);
         }
 
+
+        //TODO  рабочий вариант передачи данны
+        //[Serializable]
+        //public class Comments2 : BaseEntity
+        //{
+        //   public Guid? ID_User { get; set; }
+        //   public Guid ID_Translation_Substrings { get; set; }
+        //    public string Comment_text { get; set; }
+        //    public DateTime? DateTime { get; set; }
+        //}
+
         /// <summary>
         /// Добавить комментарий
         /// </summary>
@@ -44,8 +55,9 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost]
         [Route("AddComment")]
-        public async Task<IActionResult> CreateComment([FromBody] Comments comment)
+        public async Task<IActionResult> CreateComment([FromBody] Comments comment)//Comments
         {
+            //Comments comment2 = null;//comment;
             if (comment == null)
             {
                 return BadRequest("Запрос с пустыми параметрами");
@@ -55,10 +67,11 @@ namespace Localization.WebApi
                 return BadRequest("Модель не соответсвует");
             }
 
-            comment.ID_User = (int)ur.GetID(User.Identity.Name);
+            comment.ID_User = (Guid)ur.GetID(User.Identity.Name);
+
 
             comment.DateTime = DateTime.Now;
-            int insertedCommentId = await commentRepository.AddAsync(comment);
+            Guid insertedCommentId = (Guid)await commentRepository.AddAsync(comment);
             CommentWithUserInfo commentWithUserInfo = await commentRepository.GetByIDWithUserInfoAsync(insertedCommentId);
             return Ok(commentWithUserInfo);
         }
@@ -71,7 +84,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost]
         [Route("InString/{idString}")]
-        public async Task<ActionResult<IEnumerable<CommentWithUserInfo>>> GetCommentsInString(int idString)
+        public async Task<ActionResult<IEnumerable<CommentWithUserInfo>>> GetCommentsInString(Guid idString)
         {
             // Check if string by id exists in database
             var foundedString = await stringRepository.GetByIDAsync(idString);
@@ -106,7 +119,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpDelete]
         [Route("DeleteComment/{commentId}")]
-        public async Task<IActionResult> DeleteComment(int commentId)
+        public async Task<IActionResult> DeleteComment(Guid commentId)
         {
             // Check if string by id exists in database
             var foundedComment = await commentRepository.GetByIDAsync(commentId);
@@ -134,7 +147,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [Authorize]
         [HttpPut("UpdateComment/{idComment}")]
-        public async Task<IActionResult> UpdateComment(int idComment, Comments comment)
+        public async Task<IActionResult> UpdateComment(Guid idComment, [FromBody]  Comments comment)
         {
             // Check if comment by id exists in database
             var foundedComment = await commentRepository.GetByIDAsync(idComment);
@@ -144,7 +157,7 @@ namespace Localization.WebApi
                 return NotFound($"Comment by id \"{ idComment }\" not found");
             }
 
-            comment.ID_User = (int)ur.GetID(User.Identity.Name);
+            comment.ID_User = (Guid)ur.GetID(User.Identity.Name);
 
             // Update file in database
             var updateResult = await commentRepository.UpdateAsync(comment);
@@ -170,6 +183,11 @@ namespace Localization.WebApi
         {
             var content = Request.Form.Files["Image"];
             var commentId = Request.Form["CommentId"];
+            if (content == null)
+            {
+                return Ok();
+            }
+
             string fileName = content.FileName;
             long fileLength = content.Length;
             //Stream file = content.OpenReadStream;
@@ -185,12 +203,12 @@ namespace Localization.WebApi
                         imageData = binaryReader.ReadBytes((int)fileLength);
 
                         Image img = new Image();
-                        img.ID_User = (int)ur.GetID(User.Identity.Name);
+                        img.ID_User = (Guid)ur.GetID(User.Identity.Name);
                         img.Name_text = fileName;
                         img.Date_Time_Added = DateTime.Now;
                         img.body = imageData;
 
-                        int insertedCommentId = await commentRepository.UploadImageAsync(img, Convert.ToInt32(commentId));
+                        Guid? insertedCommentId = await commentRepository.UploadImageAsync(img, Guid.Parse(commentId));
                     }
                 }
 

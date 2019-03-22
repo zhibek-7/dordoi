@@ -1,9 +1,9 @@
-import { Component, ViewEncapsulation, Inject, OnInit } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material";
+import { Component, ViewEncapsulation, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
-import { Image as ImageModel } from "src/app/models/database-entities/image.type";
+import { Image as ImageModel } from 'src/app/models/database-entities/image.type';
 
-import { ImagesService } from "src/app/services/images.service";
+import { ImagesService } from 'src/app/services/images.service';
 
 declare var $: any;
 
@@ -13,14 +13,12 @@ export interface ImageEditingModalComponentInputData {
 }
 
 @Component({
-  selector: "app-image-editing-modal",
-  templateUrl: "./image-editing-modal.component.html",
-  styleUrls: ["./image-editing-modal.component.css"],
+  selector: 'app-image-editing-modal',
+  templateUrl: './image-editing-modal.component.html',
+  styleUrls: ['./image-editing-modal.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class ImageEditingModalComponent implements OnInit {
-
-
   currentImg: ImageModel;
 
   mouse = {
@@ -40,7 +38,7 @@ export class ImageEditingModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ImageEditingModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ImageEditingModalComponentInputData,
-    private imagesService: ImagesService,
+    private imagesService: ImagesService
   ) {
     this.currentImg = this.data.image;
   }
@@ -52,7 +50,7 @@ export class ImageEditingModalComponent implements OnInit {
     const canvasCopy = document.createElement('canvas');
     const copyctx = canvasCopy.getContext('2d');
     img.src = this.data.clickEventArgs.target.src;
-    img.onload = function () {
+    img.onload = function() {
       let ratio = 1;
       const maxWidth = 900;
       const maxHeight = 600;
@@ -123,9 +121,6 @@ export class ImageEditingModalComponent implements OnInit {
       startY: 0
     };
 
-
-
-
     function makeResizableDiv(element) {
       const resizers = document.querySelectorAll('.resizer');
       const minimum_size = 20;
@@ -138,7 +133,7 @@ export class ImageEditingModalComponent implements OnInit {
 
       for (let i = 0; i < resizers.length; i++) {
         const currentResizer = resizers[i];
-        currentResizer.addEventListener('mousedown', function (e: MouseEvent) {
+        currentResizer.addEventListener('mousedown', function(e: MouseEvent) {
           e.preventDefault();
           original_width = parseFloat(
             getComputedStyle(element, null)
@@ -160,7 +155,7 @@ export class ImageEditingModalComponent implements OnInit {
               // mouse.x = e.pageX;
               // mouse.y = e.pageY;
               // element.style.width = mouse.x - element.getBoundingClientRect().left + 'px';
-		//TODO Координаты
+              // TODO пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
               const width = original_width + (e.pageX - original_mouse_x);
               const height = original_height + (e.pageY - original_mouse_y);
               if (width > minimum_size) {
@@ -224,15 +219,19 @@ export class ImageEditingModalComponent implements OnInit {
       }
     }
 
-    canvas.onmousemove = function (e) {
+    canvas.onmousemove = function(e) {
       setMousePosition(e);
       if (element !== null) {
         element.style.width = Math.abs(mouseSqr.x - mouseSqr.startX) + 'px';
         element.style.height = Math.abs(mouseSqr.y - mouseSqr.startY) + 'px';
         element.style.left =
-          mouseSqr.x - mouseSqr.startX < 0 ? mouseSqr.x + 'px' : mouseSqr.startX + 'px';
+          mouseSqr.x - mouseSqr.startX < 0
+            ? mouseSqr.x + 'px'
+            : mouseSqr.startX + 'px';
         element.style.top =
-          mouseSqr.y - mouseSqr.startY < 0 ? mouseSqr.y + 'px' : mouseSqr.startY + 'px';
+          mouseSqr.y - mouseSqr.startY < 0
+            ? mouseSqr.y + 'px'
+            : mouseSqr.startY + 'px';
       }
     };
 
@@ -298,12 +297,12 @@ export class ImageEditingModalComponent implements OnInit {
       resizers.appendChild(resizer);
     }
 
-    canvas.onclick = function (e) {
+    canvas.onclick = function(e) {
       if (element !== null) {
         resizers = null;
         resizer = null;
         canvas.style.cursor = 'default';
-        canvas.onmousemove = function () { };
+        canvas.onmousemove = function() {};
         that.mouse = mouseSqr;
         console.log('finsihed.', mouseSqr);
 
@@ -333,7 +332,12 @@ export class ImageEditingModalComponent implements OnInit {
     const ctx = canvas.getContext('2d');
     for (let i = 0; i < squares.length; i++) {
       ctx.strokeStyle = 'red';
-      ctx.strokeRect(squares[i].offsetLeft, squares[i].offsetTop, squares[i].clientWidth, squares[i].clientHeight);
+      ctx.strokeRect(
+        squares[i].offsetLeft,
+        squares[i].offsetTop,
+        squares[i].clientWidth,
+        squares[i].clientHeight
+      );
       squares[i].remove();
     }
   }
@@ -356,7 +360,9 @@ export class ImageEditingModalComponent implements OnInit {
     canvas.onclick = null;
   }
 
-  initDraw(canvas) {
+  initDraw() {
+    let canvas = $('#imgCanvas')[0];
+    console.log($(canvas).data("events"))
     $('.resizable').remove();
     const that = this;
     const modalBody = $('#modal-body')[0];
@@ -389,7 +395,7 @@ export class ImageEditingModalComponent implements OnInit {
 
       for (let i = 0; i < resizers.length; i++) {
         const currentResizer = resizers[i];
-        currentResizer.addEventListener('mousedown', function (e: MouseEvent) {
+        currentResizer.addEventListener('mousedown', function(e: MouseEvent) {
           e.preventDefault();
           original_width = parseFloat(
             getComputedStyle(element, null)
@@ -474,7 +480,7 @@ export class ImageEditingModalComponent implements OnInit {
       }
     }
 
-    canvas.onmousemove = function (e) {
+    canvas.onmousemove = function(e) {
       setMousePosition(e);
       if (element !== null) {
         element.style.width = Math.abs(mouse.x - mouse.startX) + 'px';
@@ -548,12 +554,16 @@ export class ImageEditingModalComponent implements OnInit {
       resizers.appendChild(resizer);
     }
 
-    canvas.onclick = function (e) {
+    // canvas.addEventListener('click', onClickCanvas)
+
+    // function onClickCanvas()
+    canvas.onclick = function() {
+      console.log('element', element);
       if (element !== null) {
         resizers = null;
         resizer = null;
         canvas.style.cursor = 'default';
-        canvas.onmousemove = function () { };
+        canvas.onmousemove = function() {};
         that.mouse = mouse;
         console.log('finsihed.', mouse);
 
@@ -561,9 +571,10 @@ export class ImageEditingModalComponent implements OnInit {
         makeResizableDiv(element);
         element = null;
       } else {
-        console.log('begun.');
+        // console.log('begun.');
         mouse.startX = mouse.x;
         mouse.startY = mouse.y;
+        console.log('begun.', mouse);
         element = document.createElement('div');
         element.className = 'resizable';
         element.style.border = '2px dashed #FF0000';
@@ -573,8 +584,12 @@ export class ImageEditingModalComponent implements OnInit {
 
         modalBody.appendChild(element);
         canvas.style.cursor = 'crosshair';
+        // console.log('element',element)
       }
-    };
+      // console.log('element1', element);
+    }
+
+    // canvas.onclick =
   }
 
   getTxtInput(ev) {
@@ -582,8 +597,8 @@ export class ImageEditingModalComponent implements OnInit {
     $('.txt-input').remove();
     const modalBody = $('#modal-body')[0];
     let cellText = null;
-    modalBody.onclick = function (ev) {
-      // console.log(cellText);
+    modalBody.onclick = function(ev) {
+      console.log(ev);
       if (cellText == null) {
         cellText = $('<textarea/>');
         cellText[0].className = 'txt-input';
@@ -606,12 +621,12 @@ export class ImageEditingModalComponent implements OnInit {
       const element = inputsArr[i];
       if (element.value !== '') {
         ctx.lineWidth = 1;
-        ctx.fillStyle = 'red'; //TODO цвет текста
+        ctx.fillStyle = 'red'; // TODO пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         ctx.lineStyle = '#ffff00';
         ctx.font = '18px sans-serif';
         const pos = $('.txt-input').position();
 
-        const wrapText = function (
+        const wrapText = function(
           context,
           text,
           marginLeft,
@@ -638,7 +653,6 @@ export class ImageEditingModalComponent implements OnInit {
             context.fillText(line, marginLeft, marginTop);
             marginTop += lineHeight;
           });
-
         };
         wrapText(ctx, element.value, pos.left, pos.top + 18, 250, 15);
       }
@@ -649,9 +663,9 @@ export class ImageEditingModalComponent implements OnInit {
 
   saveImg() {
     const canvas = $('#imgCanvas')[0];
-    this.currentImg.body = canvas.toDataURL().split(",")[1];
-    this.imagesService.updateImage(this.currentImg)
+    this.currentImg.body = canvas.toDataURL().split(',')[1];
+    this.imagesService
+      .updateImage(this.currentImg)
       .subscribe(() => this.close());
   }
-
 }

@@ -46,7 +46,7 @@ namespace Models.DatabaseEntities
             this.data_create = data_create;
             this.url = url;
         }
-        public Locale(int id, string name, string description, bool flag, string code, DateTime data_create, string url)
+        public Locale(Guid id, string name, string description, bool flag, string code, DateTime data_create, string url)
         {
             base.id = id;
             this.name_text = name;

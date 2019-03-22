@@ -16,6 +16,7 @@ import { MatTableDataSource } from "@angular/material";
 
 import { Moment } from "moment";
 import * as moment from "moment";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: "translated-words-report",
@@ -23,7 +24,7 @@ import * as moment from "moment";
   styleUrls: ["./TranslatedWords.component.css"]
 })
 export class TranslatedWordsComponent implements OnInit {
-  @Input() projectId: number;
+  @Input() projectId: Guid;
 
   constructor(
     private reportService: ReportService,
@@ -90,12 +91,12 @@ export class TranslatedWordsComponent implements OnInit {
   userLang: string;
 
   //Переменные для выборки
-  userId: number = -1;
-  localeId: number = -1;
+  userId: Guid;
+  localeId: Guid;
   work_Type: string = "Все";
   volumeCalcType: string = "false"; //переделать название переменной
   calcBasisType: string = "true"; //переделать название переменной
-  initialFolderId: number = 0;
+  initialFolderId: Guid;
 
   //Переменные для фильтьрации
   selected: { from: Moment; to: Moment };
