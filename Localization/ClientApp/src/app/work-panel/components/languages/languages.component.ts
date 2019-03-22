@@ -117,7 +117,7 @@ export class LanguagesComponent implements OnInit {
 
   // Предоставляет доступ к финальному подтверждению перевода только пользователю с ролью "Менеджер" и "Владелец проекта"
   checkAccessToSelectTranslation(): boolean {
-    let roles: string[] = ["Менеджер", "Владелец проекта"];
+    let roles: string[] = ["manager", "owner"];
 
     if (this.authenticationService.provideAccessOnlyFor(roles)) {
       return true;
