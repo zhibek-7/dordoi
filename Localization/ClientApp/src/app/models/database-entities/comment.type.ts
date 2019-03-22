@@ -1,6 +1,6 @@
 import { Guid } from "guid-typescript";
 export class Comment {
-  public id: string;
+  public id: Guid;
   public ID_User: string;
   public ID_Translation_Substrings: string;
   public Comment_text: string;
