@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using DAL.Context;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
 using Npgsql;

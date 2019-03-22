@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using Dapper;
 using Models.DatabaseEntities;
-using DAL.Context;
-using System.Data;
 using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Npgsql;

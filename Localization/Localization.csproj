@@ -29,17 +29,21 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="%2a%2a\**" />
     <Compile Remove="ClientApp\src\app\string-translation-memory\**" />
     <Compile Remove="WebApi\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="%2a%2a\**" />
     <Content Remove="ClientApp\src\app\string-translation-memory\**" />
     <Content Remove="WebApi\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="%2a%2a\**" />
     <EmbeddedResource Remove="ClientApp\src\app\string-translation-memory\**" />
     <EmbeddedResource Remove="WebApi\**" />
+    <None Remove="%2a%2a\**" />
     <None Remove="ClientApp\src\app\string-translation-memory\**" />
     <None Remove="WebApi\**" />
   </ItemGroup>
@@ -96,11 +100,6 @@
     <TypeScriptCompile Include="ClientApp\src\app\strings-project\models\settingFileLoad.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\translation-memories\models\settingFileLoad.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\user-account\user.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\src\app\current-project-settings\components\current-project-settings\" />
-    <Folder Include="ClientApp\src\app\current-project-settings\components\current-project-translations\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

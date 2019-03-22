@@ -3,7 +3,7 @@
     <div class="noPadding" [ngClass]="{'col-md-3':left3, 'col-md-0':left0}" *ngIf="showLeftBlock">
       <phrases-component [fileId]="fileIdForTranslation" [localeId]="localeForTranslation"></phrases-component>
     </div>
-    <div class="bd-content noPadding " [ngClass]="{'col-md-6':middleCol6, 'col-md-9':middleCol9, 'col-md-12':middleCol12, 'middleBlock': true, 'middleBlockAndRight': middleAndRight}">
+    <div class="bd-content noPadding " [ngClass]="{'col-6':middleCol6, 'col-9':middleCol9, 'col-2':middleCol12, 'middleBlock': true, 'middleBlockAndRight': middleAndRight}">
       <div class="row">
         <translation-component class="translationBlock" (onChangedLeftBlock)="hideLeftBlockFunction($event)"
           (onChangedRightBlock)="hideRightBlockFunction($event)" [localeId]="localeForTranslation"></translation-component>

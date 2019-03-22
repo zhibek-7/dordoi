@@ -62,7 +62,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
 
     let updateRequests = [updateTermObservable];
     for (let translation of this.translations) {
-      if (translation.Translated) {
+      if (translation.translated) {
         if (translation.id) {
           let updateTermTranslationObservable = this.translationService.updateTranslation(
             translation
@@ -105,7 +105,7 @@ export class EditTermFormComponent extends ModalComponent implements OnInit {
             translationLocales =>
               (this.translations = translationLocales.map(locale => {
                 let translation = translations.find(
-                  translation => locale.id == translation.ID_Locale
+                  translation => locale.id == translation.iD_Locale
                 );
                 if (!translation) {
                   translation = new Translation(

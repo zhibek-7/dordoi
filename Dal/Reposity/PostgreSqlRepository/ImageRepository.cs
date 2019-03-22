@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using Dapper;
 using Models.DatabaseEntities;
-using DAL.Context;
 using Models.Interfaces.Repository;
 using Npgsql;
 using System.Threading.Tasks;

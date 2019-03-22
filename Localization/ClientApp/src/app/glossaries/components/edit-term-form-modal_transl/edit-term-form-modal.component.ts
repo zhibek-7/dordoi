@@ -54,6 +54,7 @@ export class EditTermFormTranslComponent extends ModalComponent
     if (!this.glossary) return;
 
     // this._term.substring_to_translate = this._term.value;
+console.log("updateTerm()="+this.glossary.id )
     let updateTermObservable = this.glossariesService.updateTerm(
       this.glossary.id,
       this._term,
@@ -63,7 +64,7 @@ export class EditTermFormTranslComponent extends ModalComponent
 
     let updateRequests = [updateTermObservable];
     for (let translation of this.translations) {
-      if (translation.Translated) {
+      if (translation.translated) {
         if (translation.id) {
           let updateTermTranslationObservable = this.translationService.updateTranslation(
             translation
@@ -106,7 +107,7 @@ export class EditTermFormTranslComponent extends ModalComponent
             translationLocales =>
               (this.translations = translationLocales.map(locale => {
                 let translation = translations.find(
-                  translation => locale.id == translation.ID_Locale
+                  translation => locale.id == translation.iD_Locale
                 );
                 if (!translation) {
                   translation = new Translation(

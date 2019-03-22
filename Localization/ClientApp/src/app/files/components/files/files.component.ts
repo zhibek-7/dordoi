@@ -371,6 +371,7 @@ export class FilesComponent implements OnInit {
   }
 
   requestFileDownload(node: TreeNode) {
+    console.log(node);
     this.ngxSpinnerService.show();
     this.fileService.downloadFile(node.data).subscribe(
       data => {

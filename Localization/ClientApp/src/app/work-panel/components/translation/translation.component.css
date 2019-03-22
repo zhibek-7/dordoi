@@ -1,89 +1,79 @@
 .controlBlock {
-  font-size: 1em;
-  color: gray;
-  height: 3vh;
 }
 
 .hideBlocksIcons {
-  width: 10px;
-  height: 10px;
-  cursor: pointer;
 }
 
 .rightHideIcon {
-  margin-top: 1.5em;
-  margin-right: 1.5em;
 }
 
 .contextBlock {
-  padding-left: 1.5em;
-  padding-right: 1.5em;
-  padding-top: 1em;
-  height: 20vh;
 }
 
 .textForTranslate {
-  font-size: 1.2em;
 }
-
-
 
 .context {
   margin-top: 1%;
   color: #646567;
-  font-size: 1em;
+  font-size: 0.8em;
+
 }
 
 .verticalLine {
-  color: gray;
 }
 
 .contextPicker {
-  margin-right: 3%;
-  cursor: pointer;
-  padding-right: 3rem;
 
 }
 
 .contextEdit {
-  /* margin-left: -3%; */
-  cursor: pointer;
-  font-size: 0.8em;
 }
 
 .objectInCode {
-  color: gray;
-  margin-top: 0.5%;
-  font-size: 1em;
 }
 
 .workWithTranslation {
-  margin-top: 2vh;
 }
 
 .translateTextArea {
   padding-left: 1rem;
   padding-right: 1rem;
+width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+//height:5rem;
+ min-width: 7rem;
+  font-size: 1em;
+    min-width: 30em;
 }
 
+.translateTreanslArea {
+  padding-left: 1rem;
+  padding-right: 1rem;
+width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+height:2rem;
+  font-size: 0.8em;
+    min-width: 40em;
+}
+
+
 .translateTextArea textarea {
-  /* min-height: 29.3vh; */
-  height: 5rem;
-  resize: none;
 }
 
 .arrowIcon {
-  cursor: pointer;
 }
 
 .mat-icon {
-  width: 10px;
-  height: 10px;
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 .importIcon {
-  height: 10px;
-  width: 10px;
+  height: 0.8rem;
+  width: 0.8rem;
   cursor: pointer;
 }
 
@@ -94,41 +84,39 @@
 .imageBlock {
   cursor: pointer;
   margin-right: 5%;
-  margin-bottom: 2%;
   padding: 2%;
   border-radius: 15%;
   border-color: #4430ffea;
   border-width: 2px;
   border-style: dashed;
+  height: 3rem;
+  width: 3rem;
 }
 
 .arrowsIcons {
-  padding-left: 2%;
 }
 
 .translationBlockWithoutPhrase {
-  margin-top: 35%;
 }
 
 .phraseUndifinedBlock {
-  font-size: 1em;
-  color: gray;
 }
 
 .selectionDialog {
-  padding: 0;
 }
 
 .col-sm-2 {
-  font-style: 0.8em
 }
 
 .col-2 {
-  font-style: 0.8em;
-  padding: 2px;
 }
 
-.headline-text {
-  text-align: left;
-  font-style: 0.8em;
+
+.col-11{
+  font-size: 0.9em;
+  padding: 0em
 }
+.headline-text {
+}
+
+
