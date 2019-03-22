@@ -1,7 +1,7 @@
 export class TranslationWithFile {
   public constructor(
-    public file_Owner_Name: string,
-    public translation_Text: string,
-    public translation_Variant: string
+    public file_owner_name: string,
+    public translation_text: string,
+    public translation_variant: string
   ) {}
 }

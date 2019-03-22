@@ -129,7 +129,7 @@ export class LanguagesComponent implements OnInit {
   // Проверяет наличие галочки в checkbox'е selected
   checkFinalTranslationSelected() {
     this.listOfTranslations.forEach(element => {
-      if (element.Selected) {
+      if (element.selected) {
         this.finalTranslationSelected = true;
       }
     });
@@ -184,13 +184,13 @@ export class LanguagesComponent implements OnInit {
     let status = "Empty";
 
     this.listOfTranslations.some(function(item) {
-      if (item.Confirmed == true) {
+      if (item.confirmed == true) {
         status = "Confirmed";
       }
-      if (item.Selected == true) {
+      if (item.selected == true) {
         status = "Selected";
       }
-      return item.Selected == true;
+      return item.selected == true;
     });
 
     this.sharePhraseService.setStatusOfTranslationSubstring(status);
@@ -198,7 +198,7 @@ export class LanguagesComponent implements OnInit {
 
   // Изменение подтвержедние перевода
   async changeTranslation(translation: Translation) {
-    if (translation.Confirmed == false) {
+    if (translation.confirmed == false) {
       this.translationService.rejectTranslate(translation.id);
     } else {
       this.translationService.acceptTranslate(translation.id);
@@ -208,13 +208,13 @@ export class LanguagesComponent implements OnInit {
 
   // Изменение выбранного финального перевода
   async changeSelectedTranslation(translation: Translation) {
-    if (translation.Selected == false) {
+    if (translation.selected == false) {
       this.finalTranslationSelected = false;
-      translation.Confirmed = false;
+      translation.confirmed = false;
       this.translationService.rejectFinalTranslattion(translation.id);
     } else {
       this.finalTranslationSelected = true;
-      translation.Confirmed = true;
+      translation.confirmed = true;
       this.translationService.acceptFinalTranslation(translation.id);
     }
     this.changeStatusOfTranslationSubstring();
