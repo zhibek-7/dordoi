@@ -287,6 +287,7 @@ namespace Models.Services
                 date_of_change = DateTime.Now,
                 is_folder = true,
                 is_last_version = true,
+                visibility = true
             };
         }
 
