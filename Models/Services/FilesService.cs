@@ -16,21 +16,29 @@ namespace Models.Services
     {
         private readonly int _initialFileVersion = 1;
         private readonly int _defaultFileStreamBufferSize = 4096;
+        private readonly IDictionary<string, string> FileExtensionToContentFileName = new Dictionary<string, string>()
+        {
+            { "docx", "word/document.xml" },
+            { "odt", "content.xml" },
+        };
         private readonly IFilesRepository _filesRepository;
         private readonly IGlossaryRepository _glossaryRepository;
         private readonly ILocaleRepository _localeRepository;
+        private readonly IFilesPackagesRepository _filesPackagesRepository;
 
         public event Func<string, FailedFileParsingModel, Task> FileParsingFailed;
 
         public FilesService(
             IFilesRepository filesRepository,
             IGlossaryRepository glossaryRepository,
-            ILocaleRepository localeRepository
+            ILocaleRepository localeRepository,
+            IFilesPackagesRepository filesPackagesRepository
             )
         {
             this._filesRepository = filesRepository;
             this._glossaryRepository = glossaryRepository;
             this._localeRepository = localeRepository;
+            this._filesPackagesRepository = filesPackagesRepository;
         }
 
         public async Task<IEnumerable<Node<File>>> GetAllAsync(int? userId, int? projectId)
@@ -90,13 +98,13 @@ namespace Models.Services
                 throw new Exception(WriteLn($"Файл \"{fileName}\" уже есть."));
             }
 
-            var newFile = this.GetNewFileModel(fileContentStream);
-            newFile.name_text = fileName;
+            var (newFile, filePackage) = await this.GetNewFileModelAsync(
+                fileName: fileName,
+                fileContentStream: fileContentStream);
             newFile.id_folder_owner = parentId;
             newFile.id_localization_project = projectId;
-            newFile.visibility = true;
 
-            return await this.AddNodeAsync(newFile, insertToDbAction: this.InsertFileToDbAsync);
+            return await this.AddNodeAsync(newFile, insertToDbAction: file => this.InsertFileToDbAsync(file, filePackage));
         }
 
         public async Task<Node<File>> UpdateFileVersionAsync(string fileName, System.IO.Stream fileContentStream, int? parentId, int projectId)
@@ -126,8 +134,9 @@ namespace Models.Services
                 }
             }
 
-            var newVersionFile = this.GetNewFileModel(fileContentStream);
-            newVersionFile.name_text = fileName;
+            var (newVersionFile, filePackage) = await this.GetNewFileModelAsync(
+                fileName: fileName,
+                fileContentStream: fileContentStream);
             newVersionFile.id_folder_owner = parentId;
             newVersionFile.id_localization_project = projectId;
             newVersionFile.version = version;
@@ -135,7 +144,7 @@ namespace Models.Services
             newVersionFile.download_name = lastVersionDbFile?.download_name;
             newVersionFile.translator_name = lastVersionDbFile?.translator_name;
 
-            var newNode = await this.AddNodeAsync(newVersionFile, insertToDbAction: this.InsertFileToDbAsync);
+            var newNode = await this.AddNodeAsync(newVersionFile, insertToDbAction: file => this.InsertFileToDbAsync(file, filePackage));
 
             if (lastVersionDbFile != null)
             {
@@ -201,30 +210,74 @@ namespace Models.Services
         /// </summary>
         /// <param name="fileContentStream"></param>
         /// <returns></returns>
-        private File GetNewFileModel(System.IO.Stream fileContentStream)
+        private async Task<Tuple<File, FilePackage>> GetNewFileModelAsync(string fileName, System.IO.Stream fileContentStream)
         {
             var newFile = new File()
             {
+                name_text = fileName,
                 date_of_change = DateTime.Now,
                 strings_count = 0,
                 version = this._initialFileVersion,
                 priority = 0,
                 is_folder = false,
                 is_last_version = true,
+                visibility = true,
             };
 
+            var fileExtension = fileName.Split(".", StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
             string fileContent = string.Empty;
             string fileEncoding = string.Empty;
-            using (fileContentStream)
-            using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
+            FilePackage filePackage = null;
+            if (this.FileExtensionToContentFileName.ContainsKey(fileExtension))
             {
-                fileContent = fileContentStreamReader.ReadToEnd();
-                fileEncoding = fileContentStreamReader.CurrentEncoding.WebName;
+                var filePackageName = System.IO.Path.Combine(this.GetUniqueFileSystemName(), newFile.name_text);
+                using (fileContentStream)
+                using (var filePackageStream = System.IO.File.Create(filePackageName))
+                {
+                    var fileContentStreamLength = (int)fileContentStream.Length;
+                    var temp = new byte[fileContentStreamLength];
+                    await fileContentStream.ReadAsync(
+                        buffer: temp,
+                        offset: 0,
+                        count: fileContentStreamLength);
+                    filePackage = new FilePackage()
+                    {
+                        data = temp,
+                        content_file_name = this.FileExtensionToContentFileName[fileExtension]
+                    };
+                    await filePackageStream.WriteAsync(temp);
+                }
+                var filePackageUnpackedFolderName = this.GetUniqueFileSystemName();
+                ZipFile.ExtractToDirectory(
+                    sourceArchiveFileName: filePackageName,
+                    destinationDirectoryName: filePackageUnpackedFolderName);
+
+                var contentFileName = System.IO.Path.Combine(filePackageUnpackedFolderName, filePackage.content_file_name);
+
+                using (var fileStream = System.IO.File.Create(contentFileName))
+                using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
+                {
+                    fileContent = fileContentStreamReader.ReadToEnd();
+                    fileEncoding = fileContentStreamReader.CurrentEncoding.WebName;
+                }
+                ZipFile.CreateFromDirectory(
+                    sourceDirectoryName: filePackageUnpackedFolderName,
+                    destinationArchiveFileName: filePackageName);
+                System.IO.Directory.Delete(filePackageUnpackedFolderName, recursive: true);
+            }
+            else
+            {
+                using (fileContentStream)
+                using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
+                {
+                    fileContent = fileContentStreamReader.ReadToEnd();
+                    fileEncoding = fileContentStreamReader.CurrentEncoding.WebName;
+                }
             }
             newFile.original_full_text = fileContent;
             newFile.encod = fileEncoding;
 
-            return newFile;
+            return Tuple.Create(newFile, filePackage);
         }
 
         private File GetNewFolderModel()
@@ -290,29 +343,28 @@ namespace Models.Services
                 }
 
                 var fileName = System.IO.Path.GetFileName(relativePathToFile);
-
-                File newFile = null;
                 using (var fileContentStream = file.OpenReadStream())
                 {
-                    newFile = this.GetNewFileModel(fileContentStream);
-                }
-                newFile.name_text = fileName;
-                newFile.id_folder_owner = lastParentId;
-                newFile.id_localization_project = projectId;
+                    var (newFile, filePackage) = await this.GetNewFileModelAsync(
+                        fileName: fileName,
+                        fileContentStream: fileContentStream);
+                    newFile.id_folder_owner = lastParentId;
+                    newFile.id_localization_project = projectId;
 
-                try
-                {
-                    await this.InsertFileToDbAsync(newFile);
-                }
-                catch (Parser.ParserException parserException)
-                {
-                    await this.FileParsingFailed?.Invoke(
-                        signalrClientId,
-                        new FailedFileParsingModel()
-                        {
-                            FileName = relativePathToFile,
-                            ParserMessage = parserException.Message,
-                        });
+                    try
+                    {
+                        await this.InsertFileToDbAsync(newFile, filePackage);
+                    }
+                    catch (Parser.ParserException parserException)
+                    {
+                        await this.FileParsingFailed?.Invoke(
+                            signalrClientId,
+                            new FailedFileParsingModel()
+                            {
+                                FileName = relativePathToFile,
+                                ParserMessage = parserException.Message,
+                            });
+                    }
                 }
             }
         }
@@ -330,6 +382,18 @@ namespace Models.Services
             file.version = foundedFile.version;
             file.is_last_version = foundedFile.is_last_version;
             file.date_of_change = DateTime.Now;
+
+            var filePackage = await this._filesPackagesRepository.GetByFileIdAsync(fileId: foundedFile.id);
+            if (filePackage != null)
+            {
+                filePackage.file_id = file.id;
+                var filePackageCopied = await this._filesPackagesRepository.AddAsync(filePackage);
+                if (!filePackageCopied)
+                {
+                    throw new Exception(WriteLn($"Не удалось обновить файл \"{foundedFile.name_text}\"."));
+                }
+            }
+
             var updatedSuccessfully = await this._filesRepository.UpdateAsync(file);
             if (!updatedSuccessfully)
             {
@@ -385,7 +449,7 @@ namespace Models.Services
             return new Node<File>(addedFile, icon);
         }
 
-        private async Task InsertFileToDbAsync(File file)
+        private async Task InsertFileToDbAsync(File file, FilePackage filePackage)
         {
             var projectLocales = await this._localeRepository.GetAllForProject(projectId: file.id_localization_project);
 
@@ -395,6 +459,11 @@ namespace Models.Services
                 Exception e = new Exception(($"Не удалось добавить файл \"{file.name_text}\" в базу данных."));
                 WriteLn($"Не удалось добавить файл \"{file.name_text}\" в базу данных.", e);
                 throw e;
+            }
+
+            if (filePackage != null)
+            {
+                var filePackageUploaded = await this._filesPackagesRepository.AddAsync(filePackage);
             }
 
             var addedFileId = (await this._filesRepository.GetLastVersionByNameAndParentIdAsync(file.name_text, file.id_folder_owner)).id;
@@ -482,7 +551,7 @@ namespace Models.Services
 
             if (file.is_folder)
             {
-                var uniqueTempFolderPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
+                var uniqueTempFolderPath = this.GetUniqueFileSystemName();
                 var currentLevelFiles = new Dictionary<File, string>() { { file, uniqueTempFolderPath } };
                 while (currentLevelFiles.Any())
                 {
@@ -519,7 +588,7 @@ namespace Models.Services
                     currentLevelFiles = newLevelFiles;
                 }
 
-                var compressedFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
+                var compressedFileName = this.GetUniqueFileSystemName();
                 ZipFile.CreateFromDirectory(
                     sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.name_text),
                     destinationArchiveFileName: compressedFileName);
@@ -538,30 +607,96 @@ namespace Models.Services
 
         public async Task<System.IO.FileStream> WriteFileAsync(File file, string filePath, int? localeId)
         {
-            var fileContent = await this._filesRepository
-                .GetFileContentAsync(
-                    id: file.id,
-                    id_locale: localeId.HasValue ? localeId.Value : -1);
-
-            var fileStream = System.IO.File.Create(filePath);
-            try
+            var filePackage = await this._filesPackagesRepository.GetByFileIdAsync(fileId: file.id);
+            if (filePackage != null)
             {
-                using (var streamWriter = new System.IO.StreamWriter(
-                    stream: fileStream,
-                    encoding: Encoding.GetEncoding(file.encod),
-                    bufferSize: this._defaultFileStreamBufferSize,
-                    leaveOpen: true))
+                var filePackageName = System.IO.Path.Combine(this.GetUniqueFileSystemName(), file.name_text);
+                var filePackageStream = System.IO.File.Create(filePackageName);
+                try
                 {
-                    await streamWriter.WriteAsync(fileContent);
+                    await filePackageStream.WriteAsync(filePackage.data);
                 }
-                fileStream.Seek(0, System.IO.SeekOrigin.Begin);
+                catch (Exception)
+                {
+                    filePackageStream.Dispose();
+                    throw;
+                }
+
+                if (localeId.HasValue)
+                {
+                    filePackageStream.Dispose();
+                    var filePackageUnpackedFolderName = this.GetUniqueFileSystemName();
+                    ZipFile.ExtractToDirectory(
+                        sourceArchiveFileName: filePackageName,
+                        destinationDirectoryName: filePackageUnpackedFolderName);
+
+                    var contentFileName = System.IO.Path.Combine(filePackageUnpackedFolderName, filePackage.content_file_name);
+                    var fileContent = await this._filesRepository
+                        .GetFileContentAsync(
+                            id: file.id,
+                            id_locale: localeId.Value);
+
+                    using (var fileStream = System.IO.File.Create(contentFileName))
+                    using (var streamWriter = new System.IO.StreamWriter(
+                        stream: fileStream,
+                        encoding: Encoding.GetEncoding(file.encod),
+                        bufferSize: this._defaultFileStreamBufferSize,
+                        leaveOpen: false))
+                    {
+                        await streamWriter.WriteAsync(fileContent);
+                    }
+                    ZipFile.CreateFromDirectory(
+                        sourceDirectoryName: filePackageUnpackedFolderName,
+                        destinationArchiveFileName: filePackageName);
+                    System.IO.Directory.Delete(filePackageUnpackedFolderName, recursive: true);
+                    return System.IO.File.OpenRead(filePackageName);
+                }
+                else
+                {
+                    try
+                    {
+                        filePackageStream.Seek(0, System.IO.SeekOrigin.Begin);
+                    }
+                    catch (Exception)
+                    {
+                        filePackageStream.Dispose();
+                        throw;
+                    }
+                    return filePackageStream;
+                }
             }
-            catch (Exception)
+            else
             {
-                fileStream.Dispose();
-                throw;
+                var fileContent = await this._filesRepository
+                    .GetFileContentAsync(
+                        id: file.id,
+                        id_locale: localeId.HasValue ? localeId.Value : -1);
+
+                var fileStream = System.IO.File.Create(filePath);
+                try
+                {
+                    using (var streamWriter = new System.IO.StreamWriter(
+                        stream: fileStream,
+                        encoding: Encoding.GetEncoding(file.encod),
+                        bufferSize: this._defaultFileStreamBufferSize,
+                        leaveOpen: true))
+                    {
+                        await streamWriter.WriteAsync(fileContent);
+                    }
+                    fileStream.Seek(0, System.IO.SeekOrigin.Begin);
+                }
+                catch (Exception)
+                {
+                    fileStream.Dispose();
+                    throw;
+                }
+                return fileStream;
             }
-            return fileStream;
+        }
+
+        private string GetUniqueFileSystemName()
+        {
+            return System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName());
         }
 
     }
