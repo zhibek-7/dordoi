@@ -13,17 +13,24 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         public FilesPackagesRepository(string connectionStr) : base(connectionStr) { }
 
-        public async Task<bool> AddAsync(FilePackage FilePackage)
+        public async Task<bool> AddAsync(FilePackage filePackage)
         {
+            var sql = "insert into files_packages (" +
+                "file_id," +
+                "data," +
+                "content_file_name" +
+                ") values (" +
+                "@file_id," +
+                "@data," +
+                "@content_file_name" +
+                ")"
+                ;
             try
             {
                 using (var connection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("files_packages")
-                        .AsInsert(FilePackage);
-                    var compiledQuery = this._compiler.Compile(query);
-                    this.LogQuery(compiledQuery);
-                    var affectedRowsNumber = await connection.ExecuteAsync(compiledQuery.Sql, compiledQuery.NamedBindings);
+                    this.LogQuery(sql, filePackage);
+                    var affectedRowsNumber = await connection.ExecuteAsync(sql, filePackage);
                     return affectedRowsNumber > 0;
                 }
             }

@@ -18,7 +18,7 @@ namespace Models.Services
         private readonly int _defaultFileStreamBufferSize = 4096;
         private readonly IDictionary<string, string> FileExtensionToContentFileName = new Dictionary<string, string>()
         {
-            { "docx", "word/document.xml" },
+            { "docx", System.IO.Path.Combine("word", "document.xml") },
             { "odt", "content.xml" },
         };
         private readonly IFilesRepository _filesRepository;
@@ -214,6 +214,7 @@ namespace Models.Services
         {
             var newFile = new File()
             {
+                id = Guid.NewGuid(),
                 name_text = fileName,
                 date_of_change = DateTime.Now,
                 strings_count = 0,
@@ -230,7 +231,9 @@ namespace Models.Services
             FilePackage filePackage = null;
             if (this.FileExtensionToContentFileName.ContainsKey(fileExtension))
             {
-                var filePackageName = System.IO.Path.Combine(this.GetUniqueFileSystemName(), newFile.name_text);
+                var filePackageFolderName = this.GetUniqueFileSystemName();
+                System.IO.Directory.CreateDirectory(filePackageFolderName);
+                var filePackageName = System.IO.Path.Combine(filePackageFolderName, newFile.name_text);
                 using (fileContentStream)
                 using (var filePackageStream = System.IO.File.Create(filePackageName))
                 {
@@ -242,6 +245,7 @@ namespace Models.Services
                         count: fileContentStreamLength);
                     filePackage = new FilePackage()
                     {
+                        file_id = newFile.id,
                         data = temp,
                         content_file_name = this.FileExtensionToContentFileName[fileExtension]
                     };
@@ -254,15 +258,12 @@ namespace Models.Services
 
                 var contentFileName = System.IO.Path.Combine(filePackageUnpackedFolderName, filePackage.content_file_name);
 
-                using (var fileStream = System.IO.File.Create(contentFileName))
-                using (var fileContentStreamReader = new System.IO.StreamReader(fileContentStream))
+                using (var fileStream = System.IO.File.OpenRead(contentFileName))
+                using (var fileContentStreamReader = new System.IO.StreamReader(fileStream))
                 {
                     fileContent = fileContentStreamReader.ReadToEnd();
                     fileEncoding = fileContentStreamReader.CurrentEncoding.WebName;
                 }
-                ZipFile.CreateFromDirectory(
-                    sourceDirectoryName: filePackageUnpackedFolderName,
-                    destinationArchiveFileName: filePackageName);
                 System.IO.Directory.Delete(filePackageUnpackedFolderName, recursive: true);
             }
             else
