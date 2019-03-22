@@ -44,7 +44,7 @@
         </div>
         <div class="col-sm">
           <ul class="row">
-            <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of images">
+            <li class="list-group-item imageBlock" (click)="showImage(image)" *ngFor="let image of images">
               <div>
                 <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
               </div>

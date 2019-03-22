@@ -84,6 +84,8 @@
   border-color: #4430ffea;
   border-width: 2px;
   border-style: dashed;
+  height: 3rem;
+  width: 3rem;
 }
 
 .addCommentBlock {
