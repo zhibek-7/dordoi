@@ -554,9 +554,10 @@ export class ImageEditingModalComponent implements OnInit {
       resizers.appendChild(resizer);
     }
 
-    canvas.addEventListener('click', onClickCanvas)
+    // canvas.addEventListener('click', onClickCanvas)
 
-    function onClickCanvas(){
+    // function onClickCanvas()
+    canvas.onclick = function() {
       console.log('element', element);
       if (element !== null) {
         resizers = null;

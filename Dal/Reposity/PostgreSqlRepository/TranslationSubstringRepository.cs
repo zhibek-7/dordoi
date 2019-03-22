@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Models.DatabaseEntities;
-using DAL.Context;
 using System.Data;
 using Dapper;
 using System.Linq;
@@ -46,14 +45,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             var sqlString = "INSERT INTO translation_substrings " +
                             "(" +
                             "substring_to_translate, " +
-                            "context, " +
+                            "context_file, " +
                             "id_file_owner, " +
                             "value, " +
                             "position_in_text" +
                             ") " +
                             "VALUES (" +
                             "@substring_to_translate, " +
-                            "@context, " +
+                            "@context_file, " +
                             "@id_file_owner, " +
                             "@value, " +
                             "@position_in_text" +
@@ -136,7 +135,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param = new { Id = id };
                     this.LogQuery(query, param);
-                    var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.TranslationSubstring>(query, param);
+                    var foundedString = await dbConnection.QuerySingleAsync<TranslationSubstring>(query, param);
                     return foundedString;
                 }
             }
@@ -243,6 +242,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             var queryForSubstingsInFileWithLocale = "SELECT TS.substring_to_translate AS substring_to_translate, " +
                         "TS.description AS description, " +
                         "TS.context AS context, " +
+                        "TS.context_file AS context_file, " +
                         "TS.translation_max_length AS translation_max_length, " +
                         "TS.id_file_owner AS id_file_owner, " +
                         "TS.value AS value, " +
@@ -254,7 +254,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "WHERE F.id = @FileId AND TSL.id_locale = @LocaleId ";
 
             var queryForSubstingsInFile = "SELECT TS.substring_to_translate AS substring_to_translate, TS.description AS description, " +
-                        "TS.context AS context, TS.translation_max_length AS translation_max_length," +
+                        "TS.context AS context, TS.context AS context_file,  TS.translation_max_length AS translation_max_length," +
                         "TS.id_file_owner AS id_file_owner, TS.value AS value," +
                         "TS.position_in_text AS position_in_text, TS.id AS id " +
                         "FROM translation_substrings AS TS " +

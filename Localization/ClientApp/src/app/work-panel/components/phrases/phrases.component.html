@@ -2,16 +2,16 @@
 
   <div class="searchBlock">
     <div class="container align-center">
-      <div class="row" style="width: 100%;">
+      <div class="row">
+        <div class="col-2 align-center arrowIcon" (click)="getStrings()" style="padding:0px;">
+          <mat-icon>search</mat-icon>
+        </div>
         <form class="col-8">
           <div class=" inputSearch">
             <input type="text" [(ngModel)]="searchText" name="first" class="form-control input-lg" placeholder="Поиск в файле"
               class="col-9">
           </div>
         </form>
-        <div class="col-2 align-center arrowIcon" (click)="getStrings()" style="padding:0px;">
-          <mat-icon>search</mat-icon>
-        </div>
       </div>
     </div>
   </div>
@@ -29,15 +29,15 @@
               <div class="row">
                 <div>
                   <div *ngIf="phrase.status == 'Empty' ">
-                      <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/redIcon.png"></div>
+                    <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/redIcon.png"></div>
                   </div>
                   <div *ngIf="phrase.status == 'Confirmed' ">
-                      <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/yellowIcon.png"></div>
+                    <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/yellowIcon.png"></div>
                   </div>
                   <div *ngIf="phrase.status == 'Selected' ">
-                      <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/greenIcon.jpg"></div>
+                    <div class="col-1"><img class="colorIcon" src="../../../../assets/icons/main/greenIcon.jpg"></div>
                   </div>
-                </div>                
+                </div>
                 <div class="col-11"> {{phrase.substring_to_translate}} </div>
               </div>
             </li>
@@ -58,14 +58,12 @@
   </div>
 
   <div class="pagesBlock align-center">
-    <p class="numberOfPages col-8">Page {{currentPageNumber}} of {{maxNumberOfPages}} </p>
-    <div class="arrowsIcons col-4 row align-center">
-      <div class="arrowIcon">
-        <mat-icon (click)="previuosPage()">keyboard_arrow_left</mat-icon>
-      </div>
-      <div class="arrowIcon">
-        <mat-icon (click)="nextPage()">keyboard_arrow_right</mat-icon>
-      </div>
+    <p class="numberOfPages col-8">Страница {{currentPageNumber}} из {{maxNumberOfPages}} </p>
+    <!--<div class="arrowsIcons col-4 row align-center">-->
+    <div class="arrowIcon">
+      <mat-icon (click)="previuosPage()">keyboard_arrow_left</mat-icon>
+      <mat-icon (click)="nextPage()">keyboard_arrow_right</mat-icon>
     </div>
+    <!--</div>-->
   </div>
 </div>

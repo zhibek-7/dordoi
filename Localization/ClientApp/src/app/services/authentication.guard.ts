@@ -21,7 +21,7 @@ export class AuthenticationGuard implements CanActivate{
               },
               error => {
                 console.log("Ошибка: " + error);
-                alert("Необходимо авторизироваться");
+//                alert("Необходимо авторизироваться");
                 this.router.navigate(['account']);
               })        
         return true;

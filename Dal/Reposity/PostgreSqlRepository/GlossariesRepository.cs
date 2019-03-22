@@ -1,5 +1,4 @@
-﻿using DAL.Context;
-using Dapper;
+﻿using Dapper;
 using Models.Interfaces.Repository;
 using SqlKata;
 using System.Collections.Generic;

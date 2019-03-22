@@ -1,5 +1,4 @@
-﻿using DAL.Context;
-using Dapper;
+﻿using Dapper;
 using Models.DatabaseEntities;
 using Models.Interfaces.Repository;
 using Models.DatabaseEntities.PartialEntities.Glossaries;
@@ -211,7 +210,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "(" +
                         "substring_to_translate, " +
                         "description, " +
-                        "context, " +
+                        "context_file, " +
                         "translation_max_length, " +
                         "id_file_owner, " +
                         "value, " +
@@ -220,7 +219,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "(" +
                         "@substring_to_translate, " +
                         "@description, " +
-                        "@context, " +
+                        "@context_file, " +
                         "@translation_max_length, " +
                         "@id_file_owner, " +
                         "@value, " +

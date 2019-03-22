@@ -102,14 +102,18 @@ namespace Localization.WebApi
         [HttpPost("GetImagesByStringId/{translationSubstringId}")]
         public async Task<ActionResult<IEnumerable<Image>>> GetImagesOfTranslationSubstring(Guid translationSubstringId)
         {
-            var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
-
-            if (foundedString == null)
-            {
-                return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
-            }
+            //var foundedString = await stringRepository.GetByIDAsync(translationSubstringId);
+            //if (foundedString == null)
+            //{
+            //    return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            //}
 
             IEnumerable<Image> images = await stringRepository.GetImagesOfTranslationSubstringAsync(translationSubstringId);
+
+            if (images == null || images != null && images.Count() == 0)
+            {
+                //return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
+            }
 
             return Ok(images);
         }

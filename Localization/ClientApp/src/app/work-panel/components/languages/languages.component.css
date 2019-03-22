@@ -1,47 +1,33 @@
-.languagesBlock {
-    height: 33vh;
-}
+.languagesBlock {}
 
-.languagesOptionsBlock {
-    background-color: #F6F5F1;
-    padding-top: 1vh;
-    padding-left: 1%;
-}
-.languagesOptionsBlock a {
-    color: gray;
-}
+.languagesOptionsBlock {}
 
-.offersBlock {
-    padding: 2px 2px 2px 2px;
-}
+.languagesOptionsBlock a {}
+
+.offersBlock {}
 
 
-.list-group-item{
-  padding: 2px 2px 2px 2px;
-}
+.list-group-item {}
 
 .userIcon {
-    width: 20px;
-    height: 20px;
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .userLogin {
-    color: #A4BF82;
+  color: #A4BF82;
 }
 
 .translatedText {
-    font-size: 1em;
-    line-height: 1;
+  font-size: 1em;
 }
 
-.translationInfo {
-    padding-top: 10px;
-}
+.translationInfo {}
 
 .utilitiesIcon {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
 }
 
 .translationsEmpty {
@@ -66,43 +52,47 @@
 }
 
 .form-check-input {
-    width: 0.8rem;
-    height: 0.8rem;
-    bottom: 0.6em;
+  width: 0.8rem;
+  height: 0.8rem;
+  bottom: 0.6em;
 }
 
-.fileDescription{
-    color: gray;
-    font-size: 0.8em;
+.fileDescription {
+  color: gray;
+  font-size: 0.8em;
 }
 
-.labelSimilarTranlsations{
-    color: gray;
-    font-size: 0.8em;
-    margin-left: 2rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+.labelSimilarTranlsations {
+  color: gray;
+  font-size: 0.8em;
+  margin-left: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 
-.col-lg-6{
+.col-6{
   font-size: 0.8rem;
 }
 .userLogin
 {
   font-size: 0.8rem;
+
 }
 
 
-.arrowIcon {    
-    cursor: pointer;
-}
+.arrowIcon {}
 
-.align-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+.align-center {}
+
 .mat-icon {
-    color: grey;
+  color: grey;
+}
+
+.col-4 {
+  font-size: 0.8rem;
+}
+
+.col-6 {
+  font-size: 0.8rem;
 }
