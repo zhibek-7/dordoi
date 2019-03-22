@@ -613,7 +613,9 @@ namespace Models.Services
             var filePackage = await this._filesPackagesRepository.GetByFileIdAsync(fileId: file.id);
             if (filePackage != null)
             {
-                var filePackageName = System.IO.Path.Combine(this.GetUniqueFileSystemName(), file.name_text);
+                var folderPackageName = this.GetUniqueFileSystemName();
+                System.IO.Directory.CreateDirectory(folderPackageName);
+                var filePackageName = System.IO.Path.Combine(folderPackageName, file.name_text);
                 var filePackageStream = System.IO.File.Create(filePackageName);
                 try
                 {
