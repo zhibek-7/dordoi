@@ -52,7 +52,10 @@ export class FilesComponent implements OnInit {
     //    console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
     //    console.log("Projec=" + sessionStorage.getItem("Projec"));
 
-    if (this.router.url.indexOf("LanguageFiles") != null) {
+    // данное условие проверяет на какой вкладке была открыта данная форма.
+    // если длинна параметра -1, то это маршрут настроек данного проекта
+    // иначе данная форма открыта при выборе языка перевода
+    if (this.router.url.indexOf("LanguageFiles") != -1) {
       this.isSelectionFileForTranslation = true;
       this.selectedProjectId = this.activatedRoute.snapshot.params["projectId"];
       this.selectedLanguageId = this.activatedRoute.snapshot.params["localeId"];

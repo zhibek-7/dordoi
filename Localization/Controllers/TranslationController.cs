@@ -197,7 +197,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPut]
         [Route("AcceptFinalTranslation/{idTranslation}")]
-        [Authorize(Roles = "Менеджер")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> AcceptFinalTranslation(Guid idTranslation)
         {
             //Check if file by id exists in database
@@ -257,7 +257,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPut]
         [Route("RejectFinalTranslation/{idTranslation}")]
-        [Authorize(Roles = "Менеджер")]
+        [Authorize(Roles = "owner")]
         public async Task<IActionResult> RejectFinalTranslation(Guid idTranslation)
         {
             //Check if file by id exists in database

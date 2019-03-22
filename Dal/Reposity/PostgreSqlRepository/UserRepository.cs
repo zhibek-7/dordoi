@@ -517,7 +517,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     if (projectId == null)
                     {
-                        string SQLQuery = @"SELECT roles.name_text 
+                        string SQLQuery = @"SELECT roles.short 
                                       FROM users 
                                       INNER JOIN participants as p ON p.id_user = users.id 
                                       INNER JOIN roles ON roles.id = p.id_role 
@@ -530,7 +530,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     }
                     else
                     {
-                        string SQLQuery = @"SELECT roles.name_text 
+                        string SQLQuery = @"SELECT roles.short 
                                       FROM users 
                                       INNER JOIN participants as p ON p.id_user = users.id 
                                       INNER JOIN roles ON roles.id = p.id_role 
