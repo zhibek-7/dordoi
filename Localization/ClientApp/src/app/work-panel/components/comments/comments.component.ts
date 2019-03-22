@@ -143,10 +143,10 @@ export class CommentsComponent implements OnInit {
   // Сохранение измененного комментария
   async saveChangedComment(comment: CommentWithUser) {
     // console.log("comment=" + comment);
-     console.log("comment.comment_Id=" + comment.comment_id);
-     console.log("comment_text =" + comment.comment_text);
-     console.log("changedComment_text=" + this.changedComment.comment_text);
-     console.log("changedComment id=" + this.changedComment.comment_id);
+    console.log("comment.comment_Id=" + comment.comment_id);
+    console.log("comment_text =" + comment.comment_text);
+    console.log("changedComment_text=" + this.changedComment.comment_text);
+    console.log("changedComment id=" + this.changedComment.comment_id);
 
     let updatedComment: Comment = new Comment(
       this.stringId + "",
@@ -241,6 +241,7 @@ export class CommentsComponent implements OnInit {
             element.translation_max_length,
             element.value,
             element.position_in_text,
+            element.context_file,
             element.part_of_speech_id,
             true
           );

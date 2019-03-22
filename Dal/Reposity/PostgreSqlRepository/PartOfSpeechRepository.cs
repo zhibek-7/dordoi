@@ -1,5 +1,4 @@
-﻿using DAL.Context;
-using Dapper;
+﻿using Dapper;
 using Models.DatabaseEntities;
 using System;
 using System.Collections.Generic;

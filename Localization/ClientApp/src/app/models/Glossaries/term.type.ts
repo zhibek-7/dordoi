@@ -1,5 +1,5 @@
 import { TranslationSubstring } from "src/app/models/database-entities/translationSubstring.type";
-import { Guid } from 'guid-typescript';
+import { Guid } from "guid-typescript";
 
 export class Term extends TranslationSubstring {
   constructor(
@@ -11,6 +11,7 @@ export class Term extends TranslationSubstring {
     translation_max_length?: number,
     value?: string,
     position_in_text?: number,
+    context_file?: string,
     public part_of_speech_id?: Guid,
     public is_editable?: boolean
   ) {
@@ -22,7 +23,9 @@ export class Term extends TranslationSubstring {
       id_file_owner,
       translation_max_length,
       value,
-      position_in_text
+      position_in_text,
+      context_file
     );
+    console.log("Term.context_file=" + context_file);
   }
 }

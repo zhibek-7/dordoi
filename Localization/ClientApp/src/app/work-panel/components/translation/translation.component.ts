@@ -140,6 +140,7 @@ export class TranslationComponent implements OnInit, OnDestroy {
   // Событие, срабатывающее при сохранении изменений в модальном окне
   enterContext(changedTranslationSubstring: TranslationSubstring) {
     this.phraseForTranslate.context = changedTranslationSubstring.context;
+    this.phraseForTranslate.context_file = changedTranslationSubstring.context_file;
     this.phraseForTranslate.translation_max_length =
       changedTranslationSubstring.translation_max_length;
 

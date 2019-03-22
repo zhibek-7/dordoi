@@ -4,7 +4,6 @@ using Models.DatabaseEntities;
 using Dapper;
 using System.Data;
 using System.Linq;
-using DAL.Context;
 using System.Threading.Tasks;
 using Models.DatabaseEntities.DTO;
 using SqlKata;
