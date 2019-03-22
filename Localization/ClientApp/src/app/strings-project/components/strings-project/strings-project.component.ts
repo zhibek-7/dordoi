@@ -15,6 +15,7 @@ import { RequestDataReloadService } from "src/app/glossaries/services/requestDat
 import { settingFileLoad, fileType } from "../../models/settingFileLoad";
 import { ProjectsService } from "src/app/services/projects.service";
 import { MainListPageComponent } from "src/app/shared/components/main-list-page/main-list-page.component";
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-strings-project',
@@ -62,7 +63,7 @@ export class StringsProjectComponent extends MainListPageComponent implements On
   /** Список строк на удаления, для окна подтверждения. */
   translationSubstringsSubstringToTranslate: string;
   
-  currentProjectId: number;
+  currentProjectId: Guid;
   
   //#region Init
   constructor(

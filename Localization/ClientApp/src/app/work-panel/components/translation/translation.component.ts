@@ -13,7 +13,7 @@ import { TranslationSubstring } from "../../../models/database-entities/translat
 import { Translation } from "../../../models/database-entities/translation.type";
 import { Image } from "src/app/models/database-entities/image.type";
 import { UserService } from "src/app/services/user.service";
-
+import { Guid } from 'guid-typescript';
 declare var $: any;
 
 @Component({
@@ -29,7 +29,7 @@ export class TranslationComponent implements OnInit, OnDestroy {
   @Output() onChangedLeftBlock = new EventEmitter<boolean>();
   @Output() onChangedRightBlock = new EventEmitter<boolean>();
 
-  @Input() localeId: number;
+  @Input() localeId: Guid;
 
   translatedText: string;
   phraseForTranslate: TranslationSubstring;
@@ -140,6 +140,7 @@ export class TranslationComponent implements OnInit, OnDestroy {
   // Событие, срабатывающее при сохранении изменений в модальном окне
   enterContext(changedTranslationSubstring: TranslationSubstring) {
     this.phraseForTranslate.context = changedTranslationSubstring.context;
+    this.phraseForTranslate.context_file = changedTranslationSubstring.context_file;
     this.phraseForTranslate.translation_max_length =
       changedTranslationSubstring.translation_max_length;
 
@@ -185,7 +186,7 @@ export class TranslationComponent implements OnInit, OnDestroy {
     }
   }  
 
-  loadImages(translationSubstringId: number) {
+  loadImages(translationSubstringId: Guid) {
     this.translationSubstringService
       .getImagesByTranslationSubstringId(translationSubstringId)
       .subscribe(images => {

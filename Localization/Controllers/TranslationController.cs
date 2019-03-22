@@ -43,7 +43,7 @@ namespace Localization.WebApi
         public async Task<IActionResult> Create([FromBody]Translation translation)
         {
             var identityName = User.Identity.Name;
-            int userId = (int)userRepository.GetID(identityName);
+            Guid userId = (Guid)userRepository.GetID(identityName);
 
             translation.ID_User = userId;
 
@@ -57,8 +57,8 @@ namespace Localization.WebApi
                 return BadRequest("Модель не соответсвует");
             }
 
-            int insertedTranslationId = await translationRepository.AddAsync(translation);
-            _userActionRepository.AddAddTraslationActionAsync(translation.ID_User, identityName, null, translation.id, translation.ID_String, translation.ID_Locale);
+            Guid? insertedTranslationId = await translationRepository.AddAsync(translation);
+            _userActionRepository.AddAddTraslationActionAsync((Guid)translation.ID_User, identityName, null, translation.id, translation.ID_String, translation.ID_Locale);
             //TODO поменять идентификатор проекта
             return Ok(insertedTranslationId);
         }
@@ -83,7 +83,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost]
         [Route("InString/{idString}")]
-        public async Task<ActionResult<IEnumerable<Translation>>> GetTranslationsInString(int idString)
+        public async Task<ActionResult<IEnumerable<Translation>>> GetTranslationsInString(Guid idString)
         {
             // Check if string by id exists in database
             //var foundedTranslation = await filesRepository.GetByID(id);
@@ -108,9 +108,9 @@ namespace Localization.WebApi
         public async Task<ActionResult<IEnumerable<Translation>>> GetTranslationsInString()
         {
             var stringId = Request.Form["stringId"].ToString();
-            var localeId = Request.Form["localeId"].ToString();            
+            var localeId = Request.Form["localeId"].ToString();
 
-            IEnumerable<Translation> translations = await translationRepository.GetAllTranslationsInStringByIDByLocale(Convert.ToInt32(stringId), Convert.ToInt32(localeId));
+            IEnumerable<Translation> translations = await translationRepository.GetAllTranslationsInStringByIDByLocale(Guid.Parse(stringId), Guid.Parse(localeId));
             return Ok(translations);
         }
 
@@ -123,8 +123,8 @@ namespace Localization.WebApi
             var translationSubstingId = Request.Form["translationSubstingId"].ToString();
             var localeId = Request.Form["localeId"].ToString();
 
-            IEnumerable<TranslationWithLocaleText> translationsInOtherLanguages = await translationRepository.GetTranslationsInOtherLanguages(Convert.ToInt32(currentProjectId),
-                Convert.ToInt32(translationSubstingId), Convert.ToInt32(localeId));
+            IEnumerable<TranslationWithLocaleText> translationsInOtherLanguages = await translationRepository.GetTranslationsInOtherLanguages(Guid.Parse(currentProjectId),
+                Guid.Parse(translationSubstingId), Guid.Parse(localeId));
             return Ok(translationsInOtherLanguages);
         }
 
@@ -136,7 +136,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpDelete]
         [Route("DeleteTranslation/{idTranslation}")]
-        public async Task<IActionResult> DeleteTranslate(int idTranslation)
+        public async Task<IActionResult> DeleteTranslate(Guid idTranslation)
         {
             //Check if file by id exists in database
             var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
@@ -168,7 +168,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPut]
         [Route("AcceptTranslation/{idTranslation}")]
-        public async Task<IActionResult> AcceptTranslate(int idTranslation)
+        public async Task<IActionResult> AcceptTranslate(Guid idTranslation)
         {
             //Check if file by id exists in database
             var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
@@ -184,7 +184,7 @@ namespace Localization.WebApi
             {
                 return BadRequest($"Failed to update translation with id \"{ idTranslation }\" from database");
             }
-            
+
             //_userActionRepository.AddConfirmTranslationActionAsync((int)ur.GetID(User.Identity.Name), User.Identity.Name, null, idTranslation);
 
             return Ok();
@@ -198,7 +198,7 @@ namespace Localization.WebApi
         [HttpPut]
         [Route("AcceptFinalTranslation/{idTranslation}")]
         [Authorize(Roles = "Менеджер")]
-        public async Task<IActionResult> AcceptFinalTranslation(int idTranslation)
+        public async Task<IActionResult> AcceptFinalTranslation(Guid idTranslation)
         {
             //Check if file by id exists in database
             var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
@@ -228,7 +228,7 @@ namespace Localization.WebApi
         [HttpPut]
         [Route("RejectTranslation/{idTranslation}")]
         [Authorize]
-        public async Task<IActionResult> RejectTranslate(int idTranslation)
+        public async Task<IActionResult> RejectTranslate(Guid idTranslation)
         {
             //Check if file by id exists in database
             var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
@@ -258,7 +258,7 @@ namespace Localization.WebApi
         [HttpPut]
         [Route("RejectFinalTranslation/{idTranslation}")]
         [Authorize(Roles = "Менеджер")]
-        public async Task<IActionResult> RejectFinalTranslation(int idTranslation)
+        public async Task<IActionResult> RejectFinalTranslation(Guid idTranslation)
         {
             //Check if file by id exists in database
             var foundedTranslation = await translationRepository.GetByIDAsync(idTranslation);
@@ -280,6 +280,13 @@ namespace Localization.WebApi
             return Ok();
         }
 
+
+
+        public class Translation2
+        {
+            public Guid id { get; set; }
+        }
+
         /// <summary>
         /// Обновить вариант перевода
         /// </summary>
@@ -288,15 +295,19 @@ namespace Localization.WebApi
         /// <returns></returns>
         [HttpPut("{translationId}")]
         [Authorize]
-        public async Task<IActionResult> UpdateTranslation(int translationId, [FromBody] Translation updatedTranslation)
+        public async Task<IActionResult> UpdateTranslation(Guid translationId, [FromBody] Translation2 updatedTranslation)
         {
-            updatedTranslation.ID_User = (int)userRepository.GetID(User.Identity.Name);
+            Translation updatedTranslation3 = null;
+            updatedTranslation3.ID_User = (Guid)userRepository.GetID(User.Identity.Name);
 
-            updatedTranslation.id = translationId;
-            var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation);
+            updatedTranslation3.id = translationId;
+            updatedTranslation3.ID_User = this.userRepository.GetID(this.User.Identity.Name).Value;
+            updatedTranslation3.User_Name = this.User.Identity.Name;
+
+            var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation3);
             if (!updatedSuccessfuly)
                 return this.BadRequest();
-            _userActionRepository.AddUpdateTranslationActionAsync((int)userRepository.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation.ID_String, updatedTranslation.ID_Locale);
+            _userActionRepository.AddUpdateTranslationActionAsync((Guid)userRepository.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation3.ID_String, updatedTranslation3.ID_Locale);
             return this.Ok();
         }
 
@@ -309,7 +320,7 @@ namespace Localization.WebApi
         [HttpPost]
         [Route("FindTranslationByMemory/{currentProjectId}/{translationText}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(int currentProjectId, string translationText)
+        public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(Guid currentProjectId, string translationText)
         {
             if (translationText == null || translationText == "")
             {
@@ -318,7 +329,7 @@ namespace Localization.WebApi
 
             var translations = await translationRepository.GetAllTranslationsByMemory(currentProjectId, translationText);
             return Ok(translations);
-        }       
+        }
 
         /// <summary>
         /// Поиск схожих вариантов перевода в данном проекте
@@ -329,7 +340,7 @@ namespace Localization.WebApi
         [HttpPost]
         [Route("FindSimilarTranslations/{currentProjectId}/{localeId}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(int currentProjectId, int localeId, [FromBody] TranslationSubstring translationSubstring)
+        public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(Guid currentProjectId, Guid localeId, [FromBody] TranslationSubstring translationSubstring)
         {
             var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, localeId, translationSubstring);
             return Ok(similarTranslations);
@@ -343,7 +354,7 @@ namespace Localization.WebApi
         /// <returns>Список вариантов перевода</returns>
         [Authorize]
         [HttpPost("InStringWithLocale/{idString}")]
-        public async Task<IEnumerable<TranslationDTO>> GetAllTranslationsInStringWithLocaleById(int idString)
+        public async Task<IEnumerable<TranslationDTO>> GetAllTranslationsInStringWithLocaleById(Guid idString)
         {
             return await translationRepository.GetAllTranslationsInStringWithLocaleByID(idString);
         }

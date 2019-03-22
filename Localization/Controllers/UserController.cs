@@ -41,14 +41,14 @@ namespace Localization.Controllers
 
         [Authorize]
         [HttpPost("List/projectId:{projectId}")]
-        public List<User> GetAll(int projectId)
+        public List<User> GetAll(Guid projectId)
         {
             return userRepository.GetByProjectID(projectId).ToList();
         }
 
         [Authorize]
         [HttpPost("{userId}/getPhoto")]
-        public async Task<byte[]> GetPhoto(int userId)
+        public async Task<byte[]> GetPhoto(Guid userId)
         {
 
             return await this.userRepository.GetPhotoByIdAsync(id: userId);
@@ -91,7 +91,7 @@ namespace Localization.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost("registration")]
-        public async Task<int?> CreateUser(User user)
+        public async Task<Guid?> CreateUser(User user)
         {
             return await userRepository.CreateUser(user);
         }
@@ -167,7 +167,7 @@ namespace Localization.Controllers
             var username = User.Identity.Name;
             var projectId = Request.Form["ProjectID"].ToString();
 
-            var roleAccordingToProject = await userRepository.GetRoleAsync(username, Convert.ToInt32(projectId));
+            var roleAccordingToProject = await userRepository.GetRoleAsync(username, Guid.Parse(projectId));
 
             var response = new
             {

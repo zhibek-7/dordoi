@@ -22,7 +22,7 @@ namespace Models.DatabaseEntities
         [Required]
         public DateTime Last_Activity { get; set; }
         [Required]
-        public int ID_Source_Locale { get; set; }
+        public Guid ID_Source_Locale { get; set; }
 
         /// <summary>
         /// Исходный язык

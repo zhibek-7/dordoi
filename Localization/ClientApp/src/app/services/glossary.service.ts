@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
 import { Observable, of } from "rxjs";
+import { Guid } from 'guid-typescript';
 
 import {
   GlossariesForEditing,
@@ -25,7 +26,7 @@ export class GlossaryService {
    * @param sortAscending Порядок сортировки.
    */
   getAllByUserId(
-    projectId?: number,
+    projectId?: Guid,
     searchString?: string,
     limit?: number,
     offset?: number,
@@ -62,11 +63,13 @@ export class GlossaryService {
    * @param glossaryId Идентификатор глоссария.
    */
   async getGlossaryForEditing(
-    glossaryId: number
+    glossaryId: Guid
   ): Promise<GlossariesForEditing> {
+	 console.log(" getGlossaryForEditing==" + glossaryId);
+
     let result = await this.httpClient
       .post<GlossariesForEditing>(
-        GlossaryService.connectionUrl + "edit",
+        GlossaryService.connectionUrl + "edit/"+glossaryId,
         glossaryId
       )
       .pipe(catchError(this.handleError("getGlossaryForEditing", null)))
@@ -100,7 +103,7 @@ export class GlossaryService {
    * Удаление глоссария.
    * @param glossaryId Идентификатор глоссария.
    */
-  deleteGlossary(glossaryId: number): Observable<Object> {
+  deleteGlossary(glossaryId: Guid): Observable<Object> {
     return this.httpClient.delete(
       GlossaryService.connectionUrl + "deleteGlossary/" + glossaryId
     );
@@ -111,7 +114,7 @@ export class GlossaryService {
    * Удаление всех терминов глоссария.
    * @param glossaryId Идентификатор глоссария.
    */
-  clearGlossary(glossaryId: number): Observable<Object> {
+  clearGlossary(glossaryId: Guid): Observable<Object> {
     return this.httpClient.delete(
       GlossaryService.connectionUrl + "clearGlossary/" + glossaryId
     );

@@ -4,6 +4,8 @@ import { ProjectsService } from "../services/projects.service";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
 import { LocalizationProjectsLocales } from "src/app/models/database-entities/localizationProjectLocales.type";
 import { Router } from "@angular/router";
+import { Guid } from "guid-typescript";
+
 
 @Component({
   selector: "app-create-project",
@@ -58,7 +60,7 @@ export class CreateProjectComponent implements OnInit {
     private projectsService: ProjectsService
   ) {}
   currentProjectName = "";
-  currentProjectId = 1;
+  currentProjectId = null;
   currentProjectDescription = "";
   currentProjectPublic = true;
   currentProjectFileTrue = false;
@@ -66,10 +68,10 @@ export class CreateProjectComponent implements OnInit {
   currentProjectExportTrue = false;
   currentProjectNotificationTrue = false;
   currentProjectdateOfCreation = Date.now();
-  currentProjectID_SourceLocale = 1;
+  currentProjectID_SourceLocale = null;
   currentProjectlastActivity = Date.now();
   currentProjectlogo = "";
-  currentProjectid = 1;
+  currentProjectid = null;
   currentProjecturl = "";
   isChecked = true;
 
@@ -82,7 +84,7 @@ export class CreateProjectComponent implements OnInit {
   pjSkipUntranslStrTrue = false;
   pjExportTrue = false;
   pjNotificationTrue = false;
-  selectedLang: number;
+  selectedLang: Guid;
   pjAllLeft = false;
   //public project: LocalizationProject;
 
@@ -102,6 +104,7 @@ export class CreateProjectComponent implements OnInit {
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
+
     let allLangsPr = [];
     this.projectsService.getLocales().subscribe(
       projects => {
@@ -208,7 +211,7 @@ export class CreateProjectComponent implements OnInit {
       let projectLocales: LocalizationProjectsLocales[] = [];
       this.selectedItems.forEach(lang => {
         projectLocales.push({
-          id_Localization_Project: Number(pr),
+          id_Localization_Project: pr.id,
           id_Locale: lang.id,
           percent_Of_Translation: 0,
           Percent_Of_Confirmed: 0
@@ -223,7 +226,7 @@ export class CreateProjectComponent implements OnInit {
     this.router.navigate(["/Projects/" + this.currentProjectId]);
   }
 
-  editTmx(Id: number): void {
+  editTmx(Id: Guid): void {
     let project: LocalizationProject = new LocalizationProject(
       this.currentProjectId, //id
       this.currentProjectName, //name

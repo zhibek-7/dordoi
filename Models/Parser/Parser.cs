@@ -53,8 +53,8 @@ namespace Models.Parser
                 {"yaml", ParseAsYml_Yaml },
                 {"docx", ParseAsDocx },
                 {"odt", ParseAsOdt },
-                {"xlsx", ParseAsXlsx }
-                {"xlsx", ParseAsOds }
+                {"xlsx", ParseAsXlsx },
+                {"ods", ParseAsOds }
             };
         }
 

@@ -8,6 +8,6 @@ namespace Models.Interfaces.Repository
 {
     public interface ITranslationTroubleRepository : IRepositoryAsync<TranslationTrouble>
     {
-        Task<IEnumerable<TranslationTrouble>> GetByTranslationIdAsync(int translationId);
+        Task<IEnumerable<TranslationTrouble>> GetByTranslationIdAsync(Guid translationId);
     }
 }

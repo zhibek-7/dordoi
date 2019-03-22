@@ -35,10 +35,10 @@ namespace Models.Services
         /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         public async Task<IEnumerable<TranslationMemoryTableViewDTO>> GetAllByUserIdAsync(
-            int? userId,
+            Guid? userId,
             int offset,
             int limit,
-            int? projectId = null,
+            Guid? projectId = null,
             string searchString = null,
             string[] sortBy = null,
             bool sortAscending = true)
@@ -60,9 +60,9 @@ namespace Models.Services
         /// <param name="projectId">Идентификатор проекта.</param>
         /// <param name="searchString">Шаблон названия памяти переводов (поиск по name_text).</param>
         /// <returns></returns>
-        public async Task<int> GetAllByUserIdCountAsync(
-            int? userId,
-            int? projectId = null,
+        public async Task<int?> GetAllByUserIdCountAsync(
+            Guid? userId,
+            Guid? projectId = null,
             string searchString = null)
         {
             try
@@ -80,7 +80,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns>TranslationMemoryForSelectDTO</returns>
-        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(int projectId)
+        public async Task<IEnumerable<TranslationMemoryForSelectDTO>> GetForSelectByProjectAsync(Guid projectId)
         {
             return await _translationMemoryRepository.GetForSelectByProjectAsync(projectId);
         }
@@ -91,20 +91,10 @@ namespace Models.Services
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Новая память переводов.</param>
         /// <returns></returns>
-        public async Task AddAsync(int userId, TranslationMemoryForEditingDTO translationMemory)
+        public async Task AddAsync(Guid userId, TranslationMemoryForEditingDTO translationMemory)
         {
             try
             {
-                var newTranslationMemoryFileId = await this._filesRepository.AddAsync(new File()
-                {
-                    id_localization_project = translationMemory.localization_projects_ids.First(x => x.HasValue).Value,
-                    name_text = translationMemory.name_text,
-                    date_of_change = DateTime.Now,
-                    is_folder = false,
-                    is_last_version = true,
-                    visibility = false
-                });
-                translationMemory.id_file = newTranslationMemoryFileId;
                 await _translationMemoryRepository.AddAsync(userId, translationMemory);
             }
             catch (Exception exception)
@@ -118,7 +108,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        public async Task<TranslationMemoryForEditingDTO> GetForEditAsync(int translationMemoryId)
+        public async Task<TranslationMemoryForEditingDTO> GetForEditAsync(Guid translationMemoryId)
         {
             try
             {
@@ -146,7 +136,7 @@ namespace Models.Services
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <param name="translationMemory">Отредактированная память переводов.</param>
         /// <returns></returns>
-        public async Task UpdateAsync(int userId, TranslationMemoryForEditingDTO translationMemory)
+        public async Task UpdateAsync(Guid userId, TranslationMemoryForEditingDTO translationMemory)
         {
             try
             {
@@ -163,7 +153,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             try
             {
@@ -180,7 +170,7 @@ namespace Models.Services
         /// </summary>
         /// <param name="id">Идентификатор памяти переводов.</param>
         /// <returns></returns>
-        public async Task<bool> ClearAsync(int id)
+        public async Task<bool> ClearAsync(Guid id)
         {
             try
             {

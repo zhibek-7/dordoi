@@ -8,13 +8,13 @@ namespace Models.Interfaces.Repository
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<int?> CreateUser(User user);
+        Task<Guid?> CreateUser(User user);
         IEnumerable<User> GetAll();
-        IEnumerable<User> GetByProjectID(int Id);
-        int? GetID(string name);
-        Task<byte[]> GetPhotoByIdAsync(int id);
+        IEnumerable<User> GetByProjectID(Guid Id);
+        Guid? GetID(string name);
+        Task<byte[]> GetPhotoByIdAsync(Guid id);
         Task<UserProfileForEditingDTO> GetProfileAsync(string name);
-        Task<string> GetRoleAsync(string userName, int? projectId);
+        Task<string> GetRoleAsync(string userName, Guid? projectId);
         Task<bool?> IsUniqueEmail(string email, string name_text = null);
         Task<bool?> IsUniqueLogin(string login);
         Task<User> LoginAsync(User user);
@@ -22,6 +22,6 @@ namespace Models.Interfaces.Repository
         Task<bool> RecoverPassword(string name);
         Task<bool?> RemoveAsync(string name);
         Task UpdateAsync(UserProfileForEditingDTO user);
-        Task UpdateUsersLocalesAsync(int userId, IEnumerable<Tuple<int, bool>> localesIdIsNative, bool isDeleteOldRecords = true);
+        Task UpdateUsersLocalesAsync(Guid userId, IEnumerable<Tuple<Guid, bool>> localesIdIsNative, bool isDeleteOldRecords = true);
     }
 }

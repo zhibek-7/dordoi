@@ -18,7 +18,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
-        public async Task<IEnumerable<LocalizationProjectsLocales>> GetAll(int Id)
+        public async Task<IEnumerable<LocalizationProjectsLocales>> GetAll(Guid Id)
         {
             // Sql string to select all rows
             var sqlString = "SELECT * FROM localization_projects_locales     " +
@@ -83,8 +83,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         ///// <summary>
         ///// Удалить языки в проекте
         ///// </summary>
-
-        public void DeleteProjectLocalesById(int Id)
+        public void DeleteProjectLocalesById(Guid Id)
         {
             var sqlQuery = "DELETE FROM localization_projects_locales " +
                            "WHERE id_localization_project=@Id";

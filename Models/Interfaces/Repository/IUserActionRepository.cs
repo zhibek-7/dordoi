@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Models.DatabaseEntities;
 
@@ -21,18 +22,19 @@ namespace Models.Interfaces.Repository
         //Task<int> AddUpdateStringActionAsync(int userId, string userName, int projectId, int stringId, string comment = "");
         //Task<int> AddUpdateTranslationActionAsync(int userId, string userName, int? projectId, int translationId, int stringId, int localeId, string comment = "");
         Task<IEnumerable<UserAction>> GetAllByProjectIdAsync(
-            int projectId,
+            Guid projectId,
             int offset,
             int limit,
             int workTypeId,
-            int userId,
-            int localeId,
+            Guid userId,
+            Guid localeId,
             string[] sortBy,
             bool sortAscending);
-        Task<int> GetAllByProjectIdCountAsync(
-            int projectId,
+
+        Task<int?> GetAllByProjectIdCountAsync(
+            Guid projectId,
             int workTypeId,
-            int userId,
-            int localeId);
+            Guid userId,
+            Guid localeId);
     }
 }

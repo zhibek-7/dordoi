@@ -1,12 +1,14 @@
+import { Guid } from 'guid-typescript';
+
 export class Locale {
-  id: number;
+  id: Guid;
   name_text: string;
   description: string;
   flag: string;
   isNative?: boolean;
   url: string;
   public constructor(
-    id: number,
+    id: Guid,
     name: string,
     description: string,
     flag: string,

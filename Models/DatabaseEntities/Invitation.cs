@@ -7,9 +7,9 @@ namespace Models.DatabaseEntities
 
         public Guid id { get; set; }
 
-        public int id_project { get; set; }
+        public Guid id_project { get; set; }
 
-        public int id_role { get; set; }
+        public Guid id_role { get; set; }
 
         public string email { get; set; }
 

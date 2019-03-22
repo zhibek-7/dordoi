@@ -1,4 +1,6 @@
+import { Guid } from 'guid-typescript';
+
 export class LocalizationProjectForSelectDTO {
-  id: number;
+  id: Guid;
   name_text: string;
 }

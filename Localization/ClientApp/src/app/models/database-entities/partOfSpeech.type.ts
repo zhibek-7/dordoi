@@ -1,7 +1,9 @@
+import { Guid } from 'guid-typescript';
+
 export class PartOfSpeech {
   public constructor(
-    public id: number,
-    public locale_Id: number,
+    public id: Guid,
+    public locale_Id: Guid,
     public name_text: string
   ) { }
 }

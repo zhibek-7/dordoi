@@ -13,7 +13,7 @@ import { AuthenticationService } from "src/app/services/authentication.service";
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { LocalizationProjectsLocalesDTO } from "src/app/models/DTO/localizationProjectsLocalesDTO";
 import { Participant } from "src/app/models/Participants/participant.type";
-
+import { Guid } from 'guid-typescript';
 ///---
 import * as moment from "moment";
 moment.locale("ru");
@@ -52,8 +52,8 @@ export class CurrentProjectTranslationsComponent implements OnInit {
   //#endregion
 
   currentUserName = "";
-  projectId: number;
-  langList: Array<Locale>;
+  projectId: Guid;
+  //langList: Array<Locale>;
 
   constructor(
     private route: ActivatedRoute,
@@ -70,19 +70,33 @@ export class CurrentProjectTranslationsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getProject();
+   console.log(
+      ".CurrentProjectTranslationsComponent.snapshot=" +
+        this.route.snapshot.params["projectId"]
+    );
+    if (this.route.snapshot.params["projectId"] != null) {
+      this.projectId = this.route.snapshot.params["projectId"];
+      sessionStorage.setItem("ProjectID", this.route.snapshot.params["projectId"]);
+    }
+
 
 
     this.currentUserName = this.userService.currentUserName;
 
     this.projectId = this.projectService.currentProjectId;
+    //var projectId = Number(sessionStorage.getItem("ProjectID"));
+    console.log(
+      "..CurrentProjectTranslationsComponent.projectId=" + this.projectId
+    );
+     this.getProject();
 
-    this.languagesService.getByProjectId(this.projectId).subscribe(
+    /*this.languagesService.getByProjectId(this.projectId).subscribe(
       Languages => {
         this.langList = Languages;
       },
       error => console.error(error)
     );
+    */
 
     this.languagesService
       .getLocalesWithPercentByProjectId(this.projectId)

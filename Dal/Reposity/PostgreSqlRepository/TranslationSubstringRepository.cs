@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using Models.DatabaseEntities;
-using DAL.Context;
 using System.Data;
 using Dapper;
 using System.Linq;
@@ -28,32 +27,32 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary> 
         /// <param name="item">Новая фраза</param> 
         /// <returns>Кол-во добавленных фраз</returns> 
-        public Task<int> AddAsync(TranslationSubstring item)
+        public Task<Guid?> AddAsync(TranslationSubstring item)
         {
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
                 {
-                    int t = AddAsync(item, connection, transaction);
+                    Guid? t = AddAsync(item, connection, transaction);
                     return Task.FromResult(t);
                 }
             }
         }
 
-        public int AddAsync(TranslationSubstring translationSubstring, NpgsqlConnection connection, IDbTransaction transaction)
+        public Guid? AddAsync(TranslationSubstring translationSubstring, NpgsqlConnection connection, IDbTransaction transaction)
         {
             var sqlString = "INSERT INTO translation_substrings " +
                             "(" +
                             "substring_to_translate, " +
-                            "context, " +
+                            "context_file, " +
                             "id_file_owner, " +
                             "value, " +
                             "position_in_text" +
                             ") " +
                             "VALUES (" +
                             "@substring_to_translate, " +
-                            "@context, " +
+                            "@context_file, " +
                             "@id_file_owner, " +
                             "@value, " +
                             "@position_in_text" +
@@ -62,7 +61,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 this.LogQuery(sqlString, translationSubstring.GetType(), translationSubstring);
                 var id = connection.ExecuteScalar(sqlString, translationSubstring, transaction);
-                return Int32.Parse(id + "");
+
+                return Guid.Parse(id + "");
             }
             catch (NpgsqlException exception)
             {
@@ -70,7 +70,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.AddAsync)} {nameof(NpgsqlException)} ",
                     exception);
                 transaction.Rollback();
-                return -1;
+                return null;
             }
             catch (Exception exception)
             {
@@ -78,7 +78,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.AddAsync)} {nameof(Exception)} ",
                     exception);
                 transaction.Rollback();
-                return -1;
+                return null;
             }
         }
 
@@ -123,7 +123,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="id">id необходимой фразы</param>
         /// <returns>Запись с необходимым id</returns>
-        public async Task<TranslationSubstring> GetByIDAsync(int id)
+        public async Task<TranslationSubstring> GetByIDAsync(Guid id)
         {
             var query = "SELECT * " +
                         "FROM translation_substrings " +
@@ -135,7 +135,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param = new { Id = id };
                     this.LogQuery(query, param);
-                    var foundedString = await dbConnection.QuerySingleAsync<Models.DatabaseEntities.TranslationSubstring>(query, param);
+                    var foundedString = await dbConnection.QuerySingleAsync<TranslationSubstring>(query, param);
                     return foundedString;
                 }
             }
@@ -196,7 +196,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="fileId">id определенного проекта</param>
         /// <returns></returns>
-        public async Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(int projectId)
+        public async Task<IEnumerable<TranslationSubstring>> GetStringsInVisibleAndCurrentProjectdAsync(Guid projectId)
         {
             var query = "SELECT * " +
                         "FROM translation_substrings AS TS " +
@@ -237,11 +237,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="fileId">id файла</param>
         /// <returns></returns>
-        public async Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(int fileId, int? localeId)
+        public async Task<IEnumerable<TranslationSubstring>> GetStringsByFileIdAsync(Guid fileId, Guid? localeId)
         {
             var queryForSubstingsInFileWithLocale = "SELECT TS.substring_to_translate AS substring_to_translate, " +
                         "TS.description AS description, " +
                         "TS.context AS context, " +
+                        "TS.context_file AS context_file, " +
                         "TS.translation_max_length AS translation_max_length, " +
                         "TS.id_file_owner AS id_file_owner, " +
                         "TS.value AS value, " +
@@ -253,7 +254,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "WHERE F.id = @FileId AND TSL.id_locale = @LocaleId ";
 
             var queryForSubstingsInFile = "SELECT TS.substring_to_translate AS substring_to_translate, TS.description AS description, " +
-                        "TS.context AS context, TS.translation_max_length AS translation_max_length," +
+                        "TS.context AS context, TS.context AS context_file,  TS.translation_max_length AS translation_max_length," +
                         "TS.id_file_owner AS id_file_owner, TS.value AS value," +
                         "TS.position_in_text AS position_in_text, TS.id AS id " +
                         "FROM translation_substrings AS TS " +
@@ -279,7 +280,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(queryForSubstingsInFile, param);
                     }
 
-                    if(localeId != null)
+                    if (localeId != null)
                     {
                         foreach (var translationSubstring in stringsInFile)
                         {
@@ -292,7 +293,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         {
                             translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id, null);
                         }
-                    }                    
+                    }
 
                     return stringsInFile;
                 }
@@ -318,7 +319,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="translationSubstringId">id Строки для перевода</param>
         /// <returns>Список изображений</returns>
-        public async Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(int translationSubstringId)
+        public async Task<IEnumerable<Image>> GetImagesOfTranslationSubstringAsync(Guid translationSubstringId)
         {
             var query = "SELECT " +
                         "Im.id," +
@@ -364,7 +365,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="img">Изображение</param>
         /// <param name="translationSubstringId">Id строки для перевода</param>
         /// <returns></returns>
-        public async Task<int> UploadImageAsync(Image img, int translationSubstringId)
+        public async Task<Guid?> UploadImageAsync(Image img, Guid translationSubstringId)
         {
             var query1 = "INSERT INTO images (name_text, id_user, body, date_time_added)" +
                         "VALUES (@Name_text,  @ID_User, @body, @Date_Time_Added) " +
@@ -378,7 +379,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(query1, img.GetType(), img);
-                    var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
+                    var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<Guid>(query1, img);
 
                     var t = new { TranslationSubstringId = translationSubstringId, ImageId = idOfInsertedImage };
 
@@ -392,18 +393,18 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
-        public async Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
             try
             {
@@ -489,14 +490,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             { "value", "value" },
             { "positionin_text", "positionin_text" },
             { "outdated", "outdated" },
-            { "translation_memories.name_text", "translation_memories_str.translation_memories_name"}
+            { "translation_memories.name_text", "translation_memories.name_text"}
         };
 
         public async Task<IEnumerable<TranslationSubstring>> GetByProjectIdAsync(
-            int projectId,
+            Guid projectId,
             int offset,
             int limit,
-            int? fileId = null,
+            Guid? fileId = null,
             string searchString = null,
             string[] sortBy = null,
             bool sortAscending = true)
@@ -553,9 +554,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<int> GetByProjectIdCountAsync(
-            int projectId,
-            int? fileId = null,
+        public async Task<int?> GetByProjectIdCountAsync(
+            Guid projectId,
+            Guid? fileId = null,
             string searchString = null)
         {
             try
@@ -584,14 +585,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdCountAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByProjectIdCountAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
 
         }
@@ -604,8 +605,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="searchString"></param>
         /// <returns></returns>
         private Query GetByProjectIdQuery(
-            int projectId,
-            int? fileId = null,
+            Guid projectId,
+            Guid? fileId = null,
             string searchString = null)
         {
             try
@@ -664,7 +665,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<Locale>> GetLocalesForStringAsync(int translationSubstringId)
+        public async Task<IEnumerable<Locale>> GetLocalesForStringAsync(Guid? translationSubstringId)
         {
             try
             {
@@ -704,7 +705,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task DeleteTranslationLocalesAsync(int translationSubstringId)
+        public async Task DeleteTranslationLocalesAsync(Guid translationSubstringId)
         {
             try
             {
@@ -739,7 +740,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
-        public async Task AddTranslationLocalesAsync(int translationSubstringId, IEnumerable<int> localesIds)
+        public async Task AddTranslationLocalesAsync(Guid translationSubstringId, IEnumerable<Guid> localesIds)
         {
             try
             {
@@ -763,14 +764,14 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task AddTranslationLocalesTransactAsync(int translationSubstringId, IEnumerable<int> localesIds,
+        public async Task AddTranslationLocalesTransactAsync(Guid? translationSubstringId, IEnumerable<Guid> localesIds,
             NpgsqlConnection dbConnection, IDbTransaction transaction = null)
         {
             //TODO нужно удаление локалей сделать.
             Task<IEnumerable<Locale>> assignedLoc = GetLocalesForStringAsync(translationSubstringId);
 
-            List<int> idAssignetLoc = new List<int>();
-            List<int> idAssignetLocCopy = new List<int>();
+            List<Guid> idAssignetLoc = new List<Guid>();
+            List<Guid> idAssignetLocCopy = new List<Guid>();
             foreach (var localeId in assignedLoc.Result)
             {
                 idAssignetLoc.Add(localeId.id);
@@ -781,7 +782,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             foreach (var localeId in localesIds)
             {
                 //Назначаем только назначенные локали
-                if (idAssignetLoc.Contains((int)localeId) == false)
+                if (idAssignetLoc.Contains((Guid)localeId) == false)
                 {
                     var sql =
                         "INSERT INTO translation_substrings_locales " +
@@ -811,7 +812,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     if (localeId != null)
                     {
-                        idAssignetLocCopy.Remove((int)localeId);
+                        idAssignetLocCopy.Remove((Guid)localeId);
                     }
                 }
             }
@@ -821,8 +822,8 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
-        private async Task DellTranslationLocalesTransact(int translationSubstringId, NpgsqlConnection dbConnection,
-            IDbTransaction transaction, List<int> idAssignetLocCopy)
+        private async Task DellTranslationLocalesTransact(Guid? translationSubstringId, NpgsqlConnection dbConnection,
+            IDbTransaction transaction, List<Guid> idAssignetLocCopy)
         {
             foreach (var localeId in idAssignetLocCopy)
             {
@@ -844,11 +845,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<string> GetStatusOfTranslationSubstringAsync(int translationSubstringId, int? localeId)
+        public async Task<string> GetStatusOfTranslationSubstringAsync(Guid translationSubstringId, Guid? localeId)
         {
             var query = "";
 
-            if(localeId != null)
+            if (localeId != null)
             {
                 query = "SELECT * " +
                         "FROM translations AS T " +
@@ -860,7 +861,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "FROM translations AS T " +
                         "WHERE T.id_string = @translationSubstringId;";
             }
-            
+
 
             try
             {
@@ -905,7 +906,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        public async Task SetStatusOfTranslationSubstringAsync(int translationSubstringId, string status)
+        public async Task SetStatusOfTranslationSubstringAsync(Guid translationSubstringId, string status)
         {
             var setStatusOfStringQuery =
                 "UPDATE translation_substrings SET " +
@@ -941,7 +942,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="translationMemoryId"></param>
         /// <returns></returns>
-        public async Task<bool> RemoveByTranslationMemoryAsync(int translationMemoryId)
+        public async Task<bool> RemoveByTranslationMemoryAsync(Guid translationMemoryId)
         {
             try
             {
@@ -990,10 +991,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="sortAscending">Порядок сортировки.</param>
         /// <returns></returns>
         public async Task<IEnumerable<TranslationSubstringTableViewDTO>> GetAllWithTranslationMemoryByProjectAsync(
-            int projectId,
+            Guid projectId,
             int offset,
             int limit,
-            int? translationMemoryId = null,
+            Guid? translationMemoryId = null,
             string searchString = null,
             string[] sortBy = null,
             bool sortAscending = true)
@@ -1026,10 +1027,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var compiledQuery = _compiler.Compile(query);
                     LogQuery(compiledQuery);
 
-                    var translationSubstrings = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
+                    var temp = await dbConnection.QueryAsync<TranslationSubstringTableViewDTO>(
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
                     );
+
+                    var translationSubstrings = temp.GroupBy(t => t.id).Select(t => new TranslationSubstringTableViewDTO
+                    {
+                        id = t.Key,
+                        substring_to_translate = t.FirstOrDefault().substring_to_translate,
+                        translation_memories_name = string.Join(", ", t.Select(x => x.translation_memories_name).Distinct().OrderBy(n => n))
+                    });
 
                     return translationSubstrings;
                 }
@@ -1053,9 +1061,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="translationMemoryId">Идентификатор памяти переводов.</param>
         /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
         /// <returns></returns>
-        public async Task<int> GetAllWithTranslationMemoryByProjectCountAsync(
-            int projectId,
-            int? translationMemoryId = null,
+        public async Task<int?> GetAllWithTranslationMemoryByProjectCountAsync(
+            Guid projectId,
+            Guid? translationMemoryId = null,
             string searchString = null)
         {
             try
@@ -1082,12 +1090,12 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectCountAsync)} {nameof(NpgsqlException)} ", exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 _loggerError.WriteLn($"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllWithTranslationMemoryByProjectCountAsync)} {nameof(Exception)} ", exception);
-                return 0;
+                return null;
             }
 
         }
@@ -1100,41 +1108,28 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="searchString">Шаблон строки (поиск по substring_to_translate).</param>
         /// <returns></returns>
         private Query GetAllWithTranslationMemoryByProjectQuery(
-            int projectId,
-            int? translationMemoryId = null,
+            Guid projectId,
+            Guid? translationMemoryId = null,
             string searchString = null)
         {
             try
             {
-                var queryTranslationMemoriesStrings = new Query("translation_substrings")
-                    .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
-                    .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_strings.id_translation_memory")
-                    .Join("translation_memories", "translation_memories.id", "localization_projects_translation_memories.id_translation_memory")
-                    .Where("localization_projects_translation_memories.id_localization_project", projectId)
-                    .Select("translation_substrings.id as ts_id")
-                    .GroupBy("translation_substrings.id")
-                    .SelectRaw("string_agg(translation_memories.name_text, ', ' order by translation_memories.name_text) as translation_memories_name");
 
-                
                 var query = new Query("translation_substrings")
-                    .With("translation_memories_str", queryTranslationMemoriesStrings)
-                    .Join("translation_memories_str", "translation_memories_str.ts_id", "translation_substrings.id")
-                    .Select(
-                        "translation_substrings.id", 
-                        "translation_substrings.substring_to_translate",
-                        "translation_memories_str.translation_memories_name"
-                    ).Distinct();
-                
+                    .Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                    .Join("translation_memories", "translation_memories.id", "translation_memories_strings.id_translation_memory")
+                    .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories.id")
+                    .Select("translation_substrings.id", "translation_substrings.substring_to_translate", "translation_memories.name_text as translation_memories_name");
+
+                var compiledQuery = _compiler.Compile(query);
+                LogQuery(compiledQuery);
                 if (translationMemoryId != null)
                 {
-                    query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
-                                 .Where("translation_memories_strings.id_translation_memory", translationMemoryId);
+                    query = query.Where("translation_memories.id", translationMemoryId);
                 }
                 else
                 {
-                    query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
-                                 .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_strings.id_translation_memory")
-                                 .Where("localization_projects_translation_memories.id_localization_project", projectId);
+                    query = query.Where("localization_projects_translation_memories.id_localization_project", projectId);
                 }
 
                 if (!string.IsNullOrEmpty(searchString))
@@ -1142,9 +1137,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var searchPattern = $"%{searchString}%";
                     query = query.WhereLike("substring_to_translate", searchPattern);
                 }
-
-                var compiledQuery = _compiler.Compile(query);
-                LogQuery(compiledQuery);
 
                 return query;
             }
@@ -1205,7 +1197,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="ids">Идентификаторы строк.</param>
         /// <returns></returns>
-        public async Task<bool> DeleteRangeAsync(IEnumerable<int> ids)
+        public async Task<bool> DeleteRangeAsync(IEnumerable<Guid> ids)
         {
             try
             {
@@ -1244,7 +1236,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name="projectId">id определенного проекта</param>
         /// <returns></returns>
-        public IEnumerable<TranslationSubstring> GetStringsInVisibleAndCurrentProjectd(int projectId)
+        public IEnumerable<TranslationSubstring> GetStringsInVisibleAndCurrentProjectd(Guid projectId)
         {
 
             var query = "SELECT TS.id, " +

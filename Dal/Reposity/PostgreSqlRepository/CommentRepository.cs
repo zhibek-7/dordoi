@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using Dapper;
 using Models.DatabaseEntities;
-using DAL.Context;
-using System.Data;
 using System.Threading.Tasks;
 using Models.Interfaces.Repository;
 using Npgsql;
@@ -23,7 +21,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name = "comment" > комментарий </ param >
         /// < returns ></ returns >
-        public async Task<int> AddAsync(Comments comment)
+        public async Task<Guid?> AddAsync(Comments comment)
         {
             var query = @"INSERT INTO comments_text (id_translation_substrings, datetime, id_user, comment_text)
                         VALUES (@Id_Translation_Substrings, @DateTime, @Id_User, @Comment_text) 
@@ -34,7 +32,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(query, comment.GetType(), comment);
-                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<int>(query, comment);
+                    var idOfInsertedRow = await dbConnection.ExecuteScalarAsync<Guid>(query, comment);
                     return idOfInsertedRow;
                 }
             }
@@ -44,14 +42,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.AddAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
@@ -134,7 +132,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name = "idString" > id фразы, комментарии которой необходимы</param>
         /// <returns>Список комментариев</returns>        
-        public async Task<IEnumerable<CommentWithUserInfo>> GetAllCommentsInStringByID(int idString)
+        public async Task<IEnumerable<CommentWithUserInfo>> GetAllCommentsInStringByID(Guid idString)
         {
             var query = @"SELECT users.id AS user_id, users.name_text AS user_name, 
                          ct.id AS comment_id, ct.datetime AS datetime,
@@ -179,7 +177,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name = "id" > id комментария который нужно получить</param>
         /// <returns></returns>
-        public async Task<Comments> GetByIDAsync(int id)
+        public async Task<Comments> GetByIDAsync(Guid id)
         {
             var query = "SELECT * FROM comments_text WHERE id = @id";
 
@@ -215,7 +213,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         // </summary>
         // <param name = "id" > id комментария который нужно получить</param>
         // <returns></returns>
-        public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(int id)
+        public async Task<CommentWithUserInfo> GetByIDWithUserInfoAsync(Guid id)
         {
             var query = @"SELECT users.id AS user_id, users.name_text AS user_name,
                          ct.id AS comment_id, ct.datetime AS datetime,
@@ -255,7 +253,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// </summary>
         /// <param name = "id" > id комментарий который нужно удалить</param>
         /// <returns></returns>
-        public async Task<bool> RemoveAsync(int commentId)
+        public async Task<bool> RemoveAsync(Guid commentId)
         {
 
             //"" +
@@ -286,7 +284,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var param1 = new { CommentId = commentId };
                     this.LogQuery(query1, param1);
-                    var deletedImageId = await dbConnection.QueryAsync<int>(query1, param1);
+                    var deletedImageId = await dbConnection.QueryAsync<Guid>(query1, param1);
 
                     if (deletedImageId.Count() != 0)
                     {
@@ -367,7 +365,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         // <param name = "img" > Изображение </ param >
         // < param name="commentId">Id комментария</param>
         // <returns></returns>
-        public async Task<int> UploadImageAsync(Image img, int commentId)
+        public async Task<Guid?> UploadImageAsync(Image img, Guid commentId)
         {
             var query1 = "INSERT INTO images (name_text, id_user, body, date_time_added)" +
                         " VALUES (@Name_text,  @ID_User, @body, @Date_Time_Added) " +
@@ -381,7 +379,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
                     this.LogQuery(query1, img.GetType(), img);
-                    var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<int>(query1, img);
+                    var idOfInsertedImage = await dbConnection.ExecuteScalarAsync<Guid>(query1, img);
 
                     var t = new { CommentId = commentId, ImageId = idOfInsertedImage };
                     this.LogQuery(query2, t);
@@ -394,14 +392,14 @@ namespace DAL.Reposity.PostgreSqlRepository
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(NpgsqlException)} ",
                     exception);
-                return 0;
+                return null;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
                     $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.UploadImageAsync)} {nameof(Exception)} ",
                     exception);
-                return 0;
+                return null;
             }
         }
 
@@ -410,7 +408,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         // </summary>
         // <param name = "commentId" > id комментария</param>
         // <returns>Список изображений</returns>
-        public async Task<IEnumerable<Image>> GetImagesOfCommentAsync(int commentId)
+        public async Task<IEnumerable<Image>> GetImagesOfCommentAsync(Guid commentId)
         {
             var query = @"SELECT Im.id, Im.url, Im.name_text, Im.date_time_added, Im.body, Im.id_user 
                         FROM images AS Im 

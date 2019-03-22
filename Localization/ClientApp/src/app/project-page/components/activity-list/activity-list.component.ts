@@ -32,8 +32,8 @@ export class ActivityListComponent implements OnInit {
   userActionsDataSource = new MatTableDataSource(this.userActionsList);
 
   selectedWorkTypeId = -1;
-  selectedLocaleId = -1;
-  selectedUserId = -1;
+  selectedLocaleId =  null;
+  selectedUserId = null;
 
   userActionsTotalLength = 0;
   userActionsPageSize = 10;

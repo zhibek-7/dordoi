@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { TranslationService } from '../../services/translationService.service';
-
+import { Guid } from 'guid-typescript';
 import { TranslationSubstring } from '../../models/database-entities/translationSubstring.type';
 import { Translation } from '../../models/database-entities/translation.type';
 
@@ -38,7 +38,7 @@ export class SharePhraseService {
         this.sharedPhrase = undefined;
     }
 
-    async getTranslationsOfPickedPhrase(localeId: number){
+    async getTranslationsOfPickedPhrase(localeId: Guid){
         this.translationsOfTheString = await this.translateService.getAllTranslationsInStringByIdAndLocale(this.sharedPhrase.id, localeId);
         this.onClick2.emit(this.translationsOfTheString);
     }

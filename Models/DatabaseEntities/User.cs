@@ -19,5 +19,6 @@ namespace Models.DatabaseEntities
         public bool Joined { get; set; }
 
         public string Role { get; set; }
+        public Guid text { get; set; }
     }
 }

@@ -32,6 +32,8 @@ import { GlossariesService } from '../services/glossaries.service';
 import { RequestDataReloadService } from '../glossaries/services/requestDataReload.service';
 import { PartsOfSpeechService } from '../services/partsOfSpeech.service';
 import { RequestInterceptorService } from '../services/requestInterceptor.service';
+import { EditTermFormTranslComponent } from 'src/app/glossaries/components/edit-term-form-modal_transl/edit-term-form-modal.component';
+
 
 import {
   MatIconModule,
@@ -48,12 +50,12 @@ import {
         ContextEditModalComponent,
         SelectedWordModalComponent,
         ShowImageModalComponent,
-        EditTermFormComponent,
         TermDetailsEditableComponent,
         FilterPhrasesPipe,
         FilterTermsPipe,
         SortArrayPipe, 
-        SafeHtmlPipe       
+        SafeHtmlPipe,
+       EditTermFormTranslComponent
     ],
     imports: [
         CommonModule,

@@ -10,7 +10,7 @@ namespace Models.DatabaseEntities
 
         public string Description { get; set; }
 
-        public int ID_File { get; set; }
+        public Guid ID_File { get; set; }
 
     }
 }

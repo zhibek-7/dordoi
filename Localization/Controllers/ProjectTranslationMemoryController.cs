@@ -31,8 +31,8 @@ namespace Localization.Controllers
         /// <param name="idProject">Идентификатор проекта локализации.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("ByProject")]
-        public async Task<IEnumerable<ProjectTranslationMemory>> GetByProject([FromBody] int idProject)
+        [HttpPost("ByProject/{projectId}")]
+        public async Task<IEnumerable<ProjectTranslationMemory>> GetByProject(Guid idProject)
         {
             return await _projectTranslationMemoryRepository.GetByProject(idProject);
         }
@@ -45,7 +45,7 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("saveProjectTranslationMemories")]
-        public async Task<bool> UpdateProjectTranslationMemories(int idProject, int[] idTranslationMemories)
+        public async Task<bool> UpdateProjectTranslationMemories(Guid idProject, Guid[] idTranslationMemories)
         {
             return await _projectTranslationMemoryRepository.UpdateProjectTranslationMemories(idProject, idTranslationMemories);
         }

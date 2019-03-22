@@ -7,7 +7,7 @@ import { FileService } from "src/app/services/file.service";
 import { FileViewModel } from "src/app/strings/models/file.viewmodel";
 import { SortingArgs } from "src/app/shared/models/sorting.args";
 import { ProjectsService } from "src/app/services/projects.service";
-
+import { Guid } from "guid-typescript";
 @Component({
   selector: "app-strings-main",
   templateUrl: "./strings-main.component.html",
@@ -28,9 +28,9 @@ export class StringsMainComponent implements OnInit {
 
   filesViewModels: FileViewModel[] = [];
 
-  selectedFileId: number | null = null;
+  selectedFileId: Guid | null = null;
 
-  private get projectId(): number {
+  private get projectId(): Guid {
     return this.projectsService.currentProjectId;
   }
 
@@ -55,11 +55,13 @@ export class StringsMainComponent implements OnInit {
           paramMap => {
             const fileIdParamName = "fileId";
             if (paramMap.has(fileIdParamName)) {
-              const fileIdParam = +paramMap.get(fileIdParamName);
+              const fileIdParam = paramMap.get(fileIdParamName);
               if (
-                this.filesViewModels.some(value => value.id === fileIdParam)
+                this.filesViewModels.some(
+                  value => value.id === Guid.parse(fileIdParam)
+                )
               ) {
-                this.selectedFileId = fileIdParam;
+                this.selectedFileId = Guid.parse(fileIdParam);
               }
             }
             this.loadStrings();

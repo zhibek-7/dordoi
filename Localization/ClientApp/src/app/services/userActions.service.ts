@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpResponse, HttpHeaders } from "@angular/common/http";
 import { UserAction } from "../models/database-entities/userAction.type";
 import { Observable } from "rxjs";
+import { Guid } from 'guid-typescript';
 
 @Injectable()
 export class UserActionsService {
@@ -17,10 +18,10 @@ export class UserActionsService {
   }
 
   getUserActionsByProjectId(
-    projectId: number,
+    projectId: Guid,
     workTypeId: number,
-    userId: number,
-    localeId: number,
+    userId: Guid,
+    localeId: Guid,
     limit: number,
     offset: number,
     sortBy?: string[],

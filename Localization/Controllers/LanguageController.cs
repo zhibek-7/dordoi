@@ -8,6 +8,7 @@ using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Utilities;
 using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace Localization.WebApi
 {
@@ -34,7 +35,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost]
         [Route("byProjectId/{projectId}")]
-        public async Task<IEnumerable<Locale>> GetProjectLocales(int projectId)
+        public async Task<IEnumerable<Locale>> GetProjectLocales(Guid projectId)
         {
             return await _localeRepository.GetAllForProject(projectId);
         }
@@ -42,7 +43,7 @@ namespace Localization.WebApi
         [Authorize]
         [HttpPost]
         [Route("byUserId/{userId}")]
-        public async Task<IEnumerable<Locale>> GetUserLocales(int userId)
+        public async Task<IEnumerable<Locale>> GetUserLocales(Guid userId)
         {
             return await _localeRepository.GetByUserIdAsync(userId);
         }
@@ -53,8 +54,8 @@ namespace Localization.WebApi
         /// <param name="projectId">Идентификатор проекта локализации.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("localesWithPercentByProjectId")]
-        public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent([FromBody] int projectId)
+        [HttpPost("localesWithPercentByProjectId/{projectId}")]
+        public async Task<IEnumerable<LocalizationProjectsLocalesDTO>> GetAllForProjectWithPercent(Guid projectId)
         {
             return await _localeRepository.GetAllForProjectWithPercent(projectId);
         }
@@ -77,8 +78,8 @@ namespace Localization.WebApi
         /// <param name="idTranslationMemory">Идентификатор памяти переводов.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("localesByTranslationMemory")]
-        public async Task<IEnumerable<Locale>> GetByTranslationMemory([FromBody] int idTranslationMemory)
+        [HttpPost("localesByTranslationMemory/{idTranslationMemory}")]
+        public async Task<IEnumerable<Locale>> GetByTranslationMemory(Guid idTranslationMemory)
         {
             return await _localeRepository.GetByTranslationMemory(idTranslationMemory);
         }
@@ -91,7 +92,7 @@ namespace Localization.WebApi
         /// <returns></returns>
         [Authorize]
         [HttpPost("localesByIdsTranslationSubstring")]
-        public async Task<IEnumerable<Locale>> GetByIdsTranslationSubstring(int projectId, int[] idsTranslationSubstring)
+        public async Task<IEnumerable<Locale>> GetByIdsTranslationSubstring(Guid projectId, Guid[] idsTranslationSubstring)
         {
             return await _localeRepository.GetByIdsTranslationSubstring(projectId, idsTranslationSubstring);
         }
@@ -102,10 +103,10 @@ namespace Localization.WebApi
         /// <param name="id">Идентификатор проекта локализации.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("getSourceLocaleLocalizationProject")]
-        public async Task<Locale> GetSourceLocaleLocalizationProject([FromBody] int id)
+        [HttpPost("getSourceLocaleLocalizationProject/{projectId}")]
+        public async Task<Locale> GetSourceLocaleLocalizationProject(Guid projectId)
         {
-            return await _localeRepository.GetSourceLocaleLocalizationProject(id);
+            return await _localeRepository.GetSourceLocaleLocalizationProject(projectId);
         }
     }
 }

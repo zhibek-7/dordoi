@@ -18,6 +18,7 @@ import { Glossary } from "src/app/models/database-entities/glossary.type";
 import { Image } from "src/app/models/database-entities/image.type";
 
 import * as $ from "jquery";
+import { Guid } from "guid-typescript";
 
 @Component({
   selector: "comments-component",
@@ -28,7 +29,7 @@ export class CommentsComponent implements OnInit {
   //Переменные для блока с комментариями
   commentsList: CommentWithUser[];
 
-  stringId: number;
+  stringId: Guid;
   commentEdited = false;
   changedComment: CommentWithUser;
 
@@ -99,7 +100,7 @@ export class CommentsComponent implements OnInit {
   ngOnInit(): void {}
 
   // Функция получения всех комментариев для данной фразы
-  getComments(idString: number) {
+  getComments(idString: Guid) {
     this.commentService
       .getAllCommentsInStringById(idString)
       .subscribe(comments => {
@@ -110,18 +111,18 @@ export class CommentsComponent implements OnInit {
   // Добавление комментария
   public async addComment() {
     let comment_loc: Comment = new Comment(
-      -1,
-      this.stringId,
+      this.stringId + "",
       this.addCommentText
     );
-    if(comment_loc.comment_text != ""){
+
+    if (comment_loc.Comment_text != "") {
       let insertedComment: CommentWithUser = await this.commentService.createComment(
         comment_loc
       );
       this.commentsList.push(insertedComment);
-  
+
       this.addCommentText = "";
-    }    
+    }
   }
 
   // Изменение комментария
@@ -142,18 +143,18 @@ export class CommentsComponent implements OnInit {
   // Сохранение измененного комментария
   async saveChangedComment(comment: CommentWithUser) {
     // console.log("comment=" + comment);
-    // console.log("comment.comment_Id=" + comment.comment_id);
-    // console.log("comment_text =" + comment.comment_text);
-    // console.log("changedComment_text=" + this.changedComment.comment_text);
-    // console.log("changedComment id=" + this.changedComment.comment_id);
+    console.log("comment.comment_Id=" + comment.comment_id);
+    console.log("comment_text =" + comment.comment_text);
+    console.log("changedComment_text=" + this.changedComment.comment_text);
+    console.log("changedComment id=" + this.changedComment.comment_id);
 
     let updatedComment: Comment = new Comment(
-      -1,
-      this.stringId,
-      this.changedComment.comment_text,
-      new Date(Date.now()),
-      comment.comment_id
+      this.stringId + "",
+      this.changedComment.comment_text
     );
+
+    updatedComment.DateTime = new Date(Date.now());
+    updatedComment.id = this.changedComment.comment_id;
 
     await this.commentService.updateComment(updatedComment);
     if (this.filesToUpload != null) {
@@ -173,13 +174,11 @@ export class CommentsComponent implements OnInit {
 
   // Функция загрузки скриншота
   loadScrinshot() {
-    this.commentService.uploadImageToComment(
-      this.filesToUpload,
-      this.changedComment.comment_id
-    ).subscribe(success =>
-      {
-      this.endEditingMode();
-    });
+    this.commentService
+      .uploadImageToComment(this.filesToUpload, this.changedComment.comment_id)
+      .subscribe(success => {
+        this.endEditingMode();
+      });
   }
 
   // Функция отображения скриншота в модальном окне в увеличенном размере
@@ -190,11 +189,8 @@ export class CommentsComponent implements OnInit {
       selectedImage: image
     };
 
-    //TODO не используется let dialogRef = 
-    this.showImageDialog.open(
-      ShowImageModalComponent,
-      dialogConfig
-    );
+    //TODO не используется let dialogRef =
+    this.showImageDialog.open(ShowImageModalComponent, dialogConfig);
   }
 
   // Функция, срабатываемая при загрузке скриншота
@@ -245,6 +241,7 @@ export class CommentsComponent implements OnInit {
             element.translation_max_length,
             element.value,
             element.position_in_text,
+            element.context_file,
             element.part_of_speech_id,
             true
           );
@@ -274,7 +271,7 @@ export class CommentsComponent implements OnInit {
     }
   }
 
-  deleteTermClick(glossaryId: number, termId: number) {
+  deleteTermClick(glossaryId: Guid, termId: Guid) {
     this.glossariesService.deleteTerm(glossaryId, termId).subscribe();
 
     for (var i = 0; i < this.termsList.length; i++) {
@@ -284,5 +281,4 @@ export class CommentsComponent implements OnInit {
       }
     }
   }
-
 }

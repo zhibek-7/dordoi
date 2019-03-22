@@ -11,12 +11,12 @@ namespace Models.DatabaseEntities
     {
         public string Name_text { get; set; }
         public string Description { get; set; }
-        public int? ID_File { get; set; }
+        public Guid? ID_File { get; set; }
 
-        public int? Locale_ID { get; set; }
+        public Guid Locale_ID { get; set; }
         public string Locale_Name { get; set; }
 
-        public int? Localization_Project_ID { get; set; }
+        public Guid? Localization_Project_ID { get; set; }
         public string Localization_Project_Name { get; set; }
     }
 }

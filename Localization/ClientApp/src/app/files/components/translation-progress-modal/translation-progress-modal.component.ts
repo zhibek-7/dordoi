@@ -6,6 +6,7 @@ import { Locale } from 'src/app/models/database-entities/locale.type';
 import { File } from 'src/app/models/database-entities/file.type';
 import { FileService } from 'src/app/services/file.service';
 import { FileTranslationInfo } from 'src/app/models/database-entities/fileTranslationInfo.type';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-translation-progress-modal',
@@ -20,7 +21,7 @@ export class TranslationProgressModalComponent extends ModalComponent implements
 
   locales: Locale[] = [];
 
-  getLocale(id: number): Locale {
+  getLocale(id: Guid): Locale {
     return this.locales.filter(locale => locale.id == id)[0];
   }
 

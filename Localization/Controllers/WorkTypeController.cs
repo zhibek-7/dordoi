@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Models.DatabaseEntities;
 using Microsoft.AspNetCore.Cors;
 using Utilities;
+using System;
 
 namespace Localization.Controllers
 {
@@ -46,7 +47,7 @@ namespace Localization.Controllers
         [Authorize]
         [Route("{id}")]
         [HttpPost]
-        public async Task<ActionResult<WorkType>> GetWorkTypeById(int id)
+        public async Task<ActionResult<WorkType>> GetWorkTypeById(Guid id)
         {
             WorkType typeOfWork = await workTypeRepository.GetByIDAsync(id);
             if (typeOfWork == null)
