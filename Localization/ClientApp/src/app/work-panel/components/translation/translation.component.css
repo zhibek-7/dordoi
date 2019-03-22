@@ -95,12 +95,13 @@
 .imageBlock {
   cursor: pointer;
   margin-right: 5%;
-  margin-bottom: 2%;
   padding: 2%;
   border-radius: 15%;
   border-color: #4430ffea;
   border-width: 2px;
   border-style: dashed;
+  height: 3rem;
+  width: 3rem;
 }
 
 .arrowsIcons {
