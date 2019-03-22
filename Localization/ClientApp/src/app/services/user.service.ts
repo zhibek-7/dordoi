@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from "@angular/common/http";
 import { User } from "../models/database-entities/user.type";
 import { Observable } from "rxjs";
 import { UserProfile } from "../models/DTO/userProfile.type";
 import { userPasswordChange } from "../account/models/userPasswordChange.model";
+import { Translator } from "../models/Translators/translator.type";
 import { Guid } from "guid-typescript";
+
 @Injectable()
 export class UserService {
   private url: string = "api/User/";
@@ -116,4 +118,73 @@ export class UserService {
     let id = sessionStorage.getItem("currentUserID");
     return this.httpClient.delete<boolean>(this.url + "delete/" + id);
   }
+  
+  /**
+   * Возвращает список пользователей (переводчиков), со строками перечислений имен связанных объектов.
+   * @param currentLanguagesId Идентификатор языка оригинала.
+   * @param translateLanguagesId Идентификатор языка перевода.
+   * @param nativeLanguage Флаг родной язык, указанный язык перевода.
+   * @param servicesId Идентификатор услуги.
+   * @param topicsId Идентификаторы тематик.
+   * @param minPrice Ставка за слово минимальная.
+   * @param maxPrice Ставка за слово максимальная.
+   * @param limit Количество возвращаемых строк.
+   * @param offset Количество пропущенных строк.
+   * @param sortBy Имя сортируемого столбца.
+   * @param sortAscending Порядок сортировки.
+   */
+  getAllTranslators(
+    currentLanguagesId?: Guid,
+    translateLanguagesId?: Guid,
+    nativeLanguage?: boolean,
+    servicesId?: Guid,
+    topicsId?: Guid[],
+    minPrice?: number,
+    maxPrice?: number,
+    limit?: number,
+    offset?: number,
+    sortBy?: string[],
+    sortAscending?: boolean): Observable<HttpResponse<Translator[]>> {
+    let params = new HttpParams();
+
+    if (currentLanguagesId) {
+      params = params.set('currentLanguagesId', currentLanguagesId.toString());
+    }
+    if (translateLanguagesId) {
+      params = params.set('translateLanguagesId', translateLanguagesId.toString());
+    }
+    if (nativeLanguage != null) {
+      params = params.set('nativeLanguage', nativeLanguage.toString());
+    }
+    if (servicesId) {
+      params = params.set('servicesId', servicesId.toString());
+    }
+    if (topicsId && topicsId.length > 0) {
+      topicsId.forEach(topicsIdItem => params = params.append('topicsId', topicsIdItem.toString()));
+    }
+    if (minPrice) {
+      params = params.set('minPrice', minPrice.toString());
+    }
+    if (maxPrice) {
+      params = params.set('maxPrice', maxPrice.toString());
+    }
+    if (limit) {
+      params = params.set('limit', limit.toString());
+    }
+    if (offset) {
+      params = params.set('offset', offset.toString());
+    }
+    if (sortBy && sortBy.length > 0) {
+      sortBy.forEach(sortByItem => params = params.append('sortBy', sortByItem));
+      if (sortAscending !== undefined) {
+        params = params.set('sortAscending', sortAscending.toString());
+      }
+    }
+    return this.httpClient.post<Translator[]>(this.url + "ListTranslators", null,
+      {
+        params: params,
+        observe: 'response'
+      });
+  }
 }
+

@@ -840,5 +840,255 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
+
+        //
+        public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
+        {
+            { "id", "users.id" },
+            { "wordsQuantity", "" },
+            { "cost", "" }
+        };
+
+        /// <summary>
+        /// Возвращает строки (со связанными объектами).
+        /// </summary>
+        /// <param name="currentLanguagesId">Идентификатор языка оригинала.</param>
+        /// <param name="translateLanguagesId">Идентификатор языка перевода.</param>
+        /// <param name="nativeLanguage">Флаг родной язык, указанный язык перевода.</param>
+        /// <param name="servicesId">Идентификатор услуги.</param> 
+        /// <param name="topicsId">Идентификаторы тематик.</param>
+        /// <param name="minPrice">Ставка за слово минимальная.</param>
+        /// <param name="maxPrice">Ставка за слово максимальная.</param> 
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Translator>> GetAllTranslatorsAsync(
+            Guid? currentLanguagesId,
+            Guid? translateLanguagesId,
+            bool? nativeLanguage,
+            Guid? servicesId,
+            Guid[] topicsId,
+            int? minPrice,
+            int? maxPrice,
+            int offset,
+            int limit,
+            string[] sortBy = null,
+            bool sortAscending = true)
+        {
+            if (sortBy == null || !sortBy.Any())
+            {
+                sortBy = new[] { "id" };
+            }
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = GetAllTranslatorsQuery(
+                        currentLanguagesId,
+                        translateLanguagesId,
+                        nativeLanguage,
+                        servicesId,
+                        topicsId,
+                        minPrice,
+                        maxPrice);
+
+                    query = ApplyPagination(
+                        query: query,
+                        offset: offset,
+                        limit: limit);
+
+                    query = ApplySorting(
+                        query: query,
+                        columnNamesMappings: UserRepository.SortColumnNamesMapping,
+                        sortBy: sortBy,
+                        sortAscending: sortAscending);
+
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+
+                    var translators = await dbConnection.QueryAsync<Translator>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+
+                    return translators;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetAllTranslatorsAsync)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetAllTranslatorsAsync)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Возвращает количество строк.
+        /// </summary>
+        /// <param name="currentLanguagesId">Идентификатор языка оригинала.</param>
+        /// <param name="translateLanguagesId">Идентификатор языка перевода.</param>
+        /// <param name="nativeLanguage">Флаг родной язык, указанный язык перевода.</param>
+        /// <param name="servicesId">Идентификатор услуги.</param> 
+        /// <param name="topicsId">Идентификаторы тематик.</param>
+        /// <param name="minPrice">Ставка за слово минимальная.</param>
+        /// <param name="maxPrice">Ставка за слово максимальная.</param> 
+        /// <returns></returns>
+        public async Task<int> GetAllTranslatorsCountAsync(
+            Guid? currentLanguagesId = null,
+            Guid? translateLanguagesId = null,
+            bool? nativeLanguage = null,
+            Guid? servicesId = null,
+            Guid[] topicsId = null,
+            int? minPrice = null,
+            int? maxPrice = null)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = GetAllTranslatorsQuery(
+                        currentLanguagesId,
+                        translateLanguagesId,
+                        nativeLanguage,
+                        servicesId,
+                        topicsId,
+                        minPrice,
+                        maxPrice);
+                    query = query.Distinct().AsCount("users.id");
+
+
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+
+                    var count = await dbConnection.ExecuteScalarAsync<int>(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings
+                    );
+
+                    return count;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetAllTranslatorsCountAsync)} {nameof(NpgsqlException)} ", exception);
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetAllTranslatorsCountAsync)} {nameof(Exception)} ", exception);
+                return 0;
+            }
+
+        }
+
+        /// <summary>
+        /// Возвращает запрос строк (со связанными объектами).
+        /// </summary>
+        /// <param name="currentLanguagesId">Идентификатор языка оригинала.</param>
+        /// <param name="translateLanguagesId">Идентификатор языка перевода.</param>
+        /// <param name="nativeLanguage">Флаг родной язык, указанный язык перевода.</param>
+        /// <param name="servicesId">Идентификатор услуги.</param> 
+        /// <param name="topicsId">Идентификаторы тематик.</param>
+        /// <param name="minPrice">Ставка за слово минимальная.</param>
+        /// <param name="maxPrice">Ставка за слово максимальная.</param> 
+        /// <returns></returns>
+        private Query GetAllTranslatorsQuery(
+            Guid? currentLanguagesId = null,
+            Guid? translateLanguagesId = null,
+            bool? nativeLanguage = null,
+            Guid? servicesId = null,
+            Guid[] topicsId = null,
+            int? minPrice = null,
+            int? maxPrice = null)
+        {
+            try
+            {
+                var queryUsersTranslationTopics = new Query("users")
+                    .LeftJoin("users_translation_topics", "users_translation_topics.id_user", "users.id")
+                    .LeftJoin("translation_topics", "translation_topics.id", "users_translation_topics.id_translation_topics")
+                    .WhereTrue("users.public_profile")
+                    .Select("users.id as id_user")
+                    .GroupBy("users.id")
+                    .SelectRaw("string_agg(translation_topics.name_text, ', ' order by translation_topics.name_text) as translation_topics_name");
+
+                var queryUsersTranslationServices = new Query("users")
+                    .LeftJoin("translation_services", "translation_services.id_user", "users.id")
+                    .LeftJoin("type_of_service", "type_of_service.id", "translation_services.id_type_of_service")
+                    .LeftJoin("currency", "currency.id", "translation_services.id_currency")
+                    .WhereTrue("users.public_profile")
+                    .SelectRaw("DISTINCT on (users.id) users.id AS id_user, type_of_service.name_text AS service_name, translation_services.price, currency.name_text AS currency_name");
+                //.Select("users.id as id_user", "type_of_service.name_text as service_name", "translation_services.price", "currency.name_text as currency_name")
+                //.Take(1);
+                //.GroupBy("translation_services.id")
+                //.Distinct();
+
+                //Добавить запрос на вычисление кол-ва переведенных слов.
+
+                var query = new Query("users")
+                    .With("users_topics", queryUsersTranslationTopics)
+                    .With("users_services", queryUsersTranslationServices)
+                    .Join("users_topics", "users_topics.id_user", "users.id")
+                    .Join("users_services", "users_services.id_user", "users.id")
+                    .LeftJoin("participants", "participants.id_user", "users.id")
+                    .WhereTrue("users.public_profile")
+                    .Select(
+                        "users.id as user_Id",
+                        "users.name_text as user_Name",
+                        "users.photo as user_pic",
+                        "users_topics.translation_topics_name",
+                        "users_services.service_name as service",
+                        "users_services.price as cost",
+                        "users_services.currency_name as currency"//,
+                                                                  //"participants.deadlines",//заменить на вычисление среднего значения
+                                                                  //"participants.quality_of_work"//заменить на вычисление среднего значения
+                                                                  //вставить кол-во переведенных слов.
+                    )//.Distinct();
+                    .GroupBy(
+                        "users.id",
+                        "users.name_text",
+                        "users.photo",
+                        "users_topics.translation_topics_name",
+                        "users_services.service_name",
+                        "users_services.price",
+                        "users_services.currency_name")
+                    .SelectRaw("avg(participants.deadlines) as termRating")
+                    .SelectRaw("avg(participants.quality_of_work) as translationRating");
+
+                if (currentLanguagesId != null)
+                {
+                    //query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                    //             .Where("translation_memories_strings.id_translation_memory", translationMemoryId);
+                }
+                else
+                {
+                    //query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
+                    //             .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_strings.id_translation_memory")
+                    //             .Where("localization_projects_translation_memories.id_localization_project", projectId);
+                }
+
+                var compiledQuery = _compiler.Compile(query);
+                LogQuery(compiledQuery);
+
+                return query;
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetAllTranslatorsQuery)} {nameof(NpgsqlException)} ", exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(UserRepository)}.{nameof(UserRepository.GetAllTranslatorsQuery)} {nameof(Exception)} ", exception);
+                return null;
+            }
+        }
+
     }
 }
