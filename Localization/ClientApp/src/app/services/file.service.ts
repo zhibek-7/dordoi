@@ -240,11 +240,12 @@ export class FileService {
 
   downloadFile(fileData: FileData, localeId?: Guid): Observable<Blob> {
     const url = `${this._url}/${fileData.id}/download`;
-    if (!localeId) {
-      localeId = null;
+    let body: any = {};
+    if (localeId) {
+      body.localeId = localeId;
     }
 
-    return this.http.post(url + "/" + localeId, localeId, {
+    return this.http.post(url + "/" + localeId, body, {
       headers: new HttpHeaders().set(
         "Authorization",
         "Bearer " + sessionStorage.getItem("userToken")

@@ -193,11 +193,16 @@ namespace Localization.WebApi
                 localesIds: localesIds);
         }
 
+
+        public class DownloadFileAsyncParam
+        {
+            public Guid? localeId { get; set; }
+        }
         [HttpPost("{fileId}/download/{localeId}")]
         [Authorize]
-        public async Task<FileResult> DownloadFileAsync(Guid fileId, Guid? localeId)
+        public async Task<FileResult> DownloadFileAsync(Guid fileId, DownloadFileAsyncParam param)
         {
-            var fileStream = await this._filesService.GetFileAsync(fileId, localeId);
+            var fileStream = await this._filesService.GetFileAsync(fileId, param?.localeId);
             return this.File(
                 fileStream: fileStream,
                 contentType: "application/octet-stream",
