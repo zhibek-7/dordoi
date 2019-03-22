@@ -115,9 +115,9 @@ export class LanguagesComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // Предоставляет доступ к финальному подтверждению перевода только пользователю с ролью "Менеджер"
+  // Предоставляет доступ к финальному подтверждению перевода только пользователю с ролью "Менеджер" и "Владелец проекта"
   checkAccessToSelectTranslation(): boolean {
-    let roles: string[] = ["Менеджер"];
+    let roles: string[] = ["Менеджер", "Владелец проекта"];
 
     if (this.authenticationService.provideAccessOnlyFor(roles)) {
       return true;

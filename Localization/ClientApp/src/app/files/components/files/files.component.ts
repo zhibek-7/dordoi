@@ -52,7 +52,7 @@ export class FilesComponent implements OnInit {
     //    console.log("ProjectID=" + sessionStorage.getItem("ProjectID"));
     //    console.log("Projec=" + sessionStorage.getItem("Projec"));
 
-    if (this.router.url.indexOf("LanguageFiles") != -1) {
+    if (this.router.url.indexOf("LanguageFiles") != null) {
       this.isSelectionFileForTranslation = true;
       this.selectedProjectId = this.activatedRoute.snapshot.params["projectId"];
       this.selectedLanguageId = this.activatedRoute.snapshot.params["localeId"];
@@ -371,9 +371,8 @@ export class FilesComponent implements OnInit {
   }
 
   requestFileDownload(node: TreeNode) {
-    console.log(node);
     this.ngxSpinnerService.show();
-    this.fileService.downloadFile(node.data).subscribe(
+    this.fileService.downloadFile(node.data, this.selectedLanguageId).subscribe(
       data => {
         let fileName = node.data.name_text;
         if (node.data.download_name && node.data.download_name != "") {
