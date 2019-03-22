@@ -32,10 +32,7 @@ export class PhrasesComponent implements OnInit {
     this.phrasesList = new Array<TranslationSubstring>();
 
     this.sharePhraseService.onClickCheckBoxChanged.subscribe(status => {  
-
-      // можно удалить т.к. в таблице translation_substrings не нужно поле status
-      // this.stringService.setTranslationSubstringStatus(this.pickedPhrase.id, status).subscribe();
-
+  
       this.pickedPhrase.status = status;
     });
 

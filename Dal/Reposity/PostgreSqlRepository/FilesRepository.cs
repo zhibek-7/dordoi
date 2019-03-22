@@ -452,9 +452,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "SELECT * FROM localization_projects WHERE id = @ID_LocalizationProject";
                         var localizationProject =
                             await connection.QuerySingleOrDefaultAsync<LocalizationProject>(sqlLocalizationProjectQuery,
-                                new { ID = file.id });
+                                new { ID_LocalizationProject = file.id_localization_project });
                         var sqlTranslationSubstringsQuery =
-                            "SELECT * FROM translation_substring WHERE id_file_owner = @id";
+                            "SELECT * FROM translation_substrings WHERE id_file_owner = @id";
                         var translationSubstrings =
                             (await connection.QueryAsync<TranslationSubstring>(sqlTranslationSubstringsQuery, new { id }))
                             .AsList();
@@ -462,12 +462,16 @@ namespace DAL.Reposity.PostgreSqlRepository
                         var output = file.original_full_text;
                         for (int i = translationSubstrings.Count - 1; i >= 0; i--)
                         {
+                            // ПРИСУТСВУЮТ ОШИБКИ В ДАННОМ ЗАПРОСЕ
                             var sqlTranslationQuery = string.Format(
-                                "SELECT * FROM translations WHERE id_string = @id_translationSubstring AND id_locale = @id_locale{0} SORT BY selected DESC, confirmed DESC, datetime DESC LIMIT 1",
+                                "SELECT * " +
+                                "FROM translations " +
+                                "WHERE id_string = @id_translationSubstring AND id_locale = @id_locale{0} " +
+                                "SORT BY selected DESC, confirmed DESC, datetime DESC LIMIT 1",
                                 localizationProject.export_only_approved_translations ? " AND confirmed = true" : "");
                             var translation =
                                 await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery,
-                                    new { ID = translationSubstrings[i].id, id_locale });
+                                    new { id_translationSubstring = translationSubstrings[i].id, id_locale });
                             if (translation == null)
                             {
                                 if (localizationProject.AbleTo_Left_Errors)

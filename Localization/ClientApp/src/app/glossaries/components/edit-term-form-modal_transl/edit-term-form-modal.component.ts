@@ -107,7 +107,7 @@ console.log("updateTerm()="+this.glossary.id )
             translationLocales =>
               (this.translations = translationLocales.map(locale => {
                 let translation = translations.find(
-                  translation => locale.id == translation.ID_Locale
+                  translation => locale.id == translation.iD_Locale
                 );
                 if (!translation) {
                   translation = new Translation(

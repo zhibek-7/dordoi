@@ -5,8 +5,8 @@ export class TranslationWithLocale extends Translation {
   constructor(translation: Translation, public locale: Locale) {
     super(
       translation.translated,
-      translation.ID_String,
-      translation.ID_Locale,
+      translation.iD_String,
+      translation.iD_Locale,
       translation.id
     );
   }
