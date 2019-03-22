@@ -46,6 +46,70 @@ namespace Localization.Controllers
             return userRepository.GetByProjectID(projectId).ToList();
         }
 
+        /// <summary>
+        /// Возвращает пользователей(переводчиков) (со связанными объектами).
+        /// </summary>
+        /// <param name="currentLanguagesId">Идентификатор языка оригинала.</param>
+        /// <param name="translateLanguagesId">Идентификатор языка перевода.</param>
+        /// <param name="nativeLanguage">Флаг родной язык, указанный язык перевода.</param>
+        /// <param name="servicesId">Идентификатор услуги.</param> 
+        /// <param name="topicsId">Идентификаторы тематик.</param>
+        /// <param name="minPrice">Ставка за слово минимальная.</param>
+        /// <param name="maxPrice">Ставка за слово максимальная.</param> 
+        /// <param name="offset">Количество пропущенных строк.</param>
+        /// <param name="limit">Количество возвращаемых строк.</param>
+        /// <param name="sortBy">Имя сортируемого столбца.</param>
+        /// <param name="sortAscending">Порядок сортировки.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("ListTranslators")]
+        public async Task<ActionResult<IEnumerable<Translator>>> GetAllTranslatorsAsync(
+            Guid? currentLanguagesId,
+            Guid? translateLanguagesId,
+            bool? nativeLanguage,
+            Guid? servicesId,
+            Guid[] topicsId,
+            int? minPrice,
+            int? maxPrice,
+            int? offset,
+            int? limit,
+            string[] sortBy = null,
+            bool? sortAscending = true)
+        {
+            Response.Headers.Add(
+                key: "totalCount",
+                value: (await userRepository.GetAllTranslatorsCountAsync(
+                    currentLanguagesId: currentLanguagesId,
+                    translateLanguagesId: translateLanguagesId,
+                    nativeLanguage: nativeLanguage,
+                    servicesId: servicesId,
+                    topicsId: topicsId,
+                    minPrice: minPrice,
+                    maxPrice: maxPrice
+                )).ToString());
+
+            var strings = await userRepository.GetAllTranslatorsAsync(
+                currentLanguagesId: currentLanguagesId,
+                translateLanguagesId: translateLanguagesId,
+                nativeLanguage: nativeLanguage,
+                servicesId: servicesId,
+                topicsId: topicsId,
+                minPrice: minPrice,
+                maxPrice: maxPrice,
+                offset: offset ?? 0,
+                limit: limit ?? 25,
+                sortBy: sortBy,
+                sortAscending: sortAscending ?? true
+            );
+
+            if (strings == null)
+            {
+                return BadRequest("Users(Translators) not found");
+            }
+
+            return Ok(strings);
+        }
+
         [Authorize]
         [HttpPost("{userId}/getPhoto")]
         public async Task<byte[]> GetPhoto(Guid userId)

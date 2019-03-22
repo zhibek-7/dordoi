@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthenticationGuard } from 'src/app/services/authentication.guard';
 import { CurrentProjectTranslationsComponent } from '../components/current-project-translations/current-project-translations.component';
 import { CurrentProjectSettingsComponent } from '../components/current-project-settings/current-project-settings.component';
-import { TranslatorsListComponent } from '../../translators-list/translators-list.component';
+//import { TranslatorsListComponent } from '../../translators-list/translators-list.component';
 
 
 const routes: Routes = [
@@ -66,7 +66,8 @@ const routes: Routes = [
 
       {
         path: 'translators',
-        component: TranslatorsListComponent,
+        loadChildren: "src/app/translators-list/module/translators-list.module#TranslatorsListModule",
+        //component: TranslatorsListComponent,
         canActivate: [AuthenticationGuard]
       },
     ]
