@@ -41,6 +41,13 @@ export class TranslationService {
     let translations: Translation[] = await this.http
       .post<Translation[]>(this.url + "/InStringWithLocale/", params)
       .toPromise();
+
+    console.log(
+      "getAllTranslationsInStringByIdAndLocale=" + translations[0].translated
+    );
+    console.log(
+      "getAllTranslationsInStringByIdAndLocale 2=" + translations[0].id
+    );
     return translations;
   }
 
