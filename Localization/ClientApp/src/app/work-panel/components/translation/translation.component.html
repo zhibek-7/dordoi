@@ -12,7 +12,7 @@
 
   <div class="contextBlock">
     <div class="row mt-2">
-      <div ng-cl class="translateTextArea">
+      <div ng-cl class="textArea">
         <div (dblclick)="openSelectionDialog($event)">
           {{phraseForTranslate.substring_to_translate}}
         </div>
@@ -38,8 +38,8 @@
     <div *ngIf="showContextBlock">
       <div class="row mb-1">
         <div class="col-sm">
-          <div class="objectInCode translateTreanslArea">{{phraseForTranslate.context}}</div>
-          <div class="objectInCode">Из файла: {{phraseForTranslate.context_file}}</div>
+          <div class="textAreaContext">{{phraseForTranslate.context}}</div>
+          <div class="textAreaContext">Из файла: {{phraseForTranslate.context_file}}</div>
         </div>
         <div class="col-sm">
           <ul class="row">
@@ -61,7 +61,7 @@
       <!-- <div class="row mt-2">
         <div ng-cl class="translateTextArea">-->
       <textarea rows="2" id="inputForTranslation" name="translatedText" [(ngModel)]="translatedText"
-        placeholder="Введите вариант перевода" class="translateTreanslArea"></textarea>
+        placeholder="Введите вариант перевода" class="translateTextArea"></textarea>
       <!--</div>
       </div>-->
       <!--</div>-->

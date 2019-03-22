@@ -36,27 +36,38 @@
 .workWithTranslation {
 }
 
-.translateTextArea {
+.textArea {
   padding-left: 1rem;
   padding-right: 1rem;
 width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
 //height:5rem;
- min-width: 7rem;
+ 
   font-size: 1em;
     min-width: 30em;
 }
 
-.translateTreanslArea {
+.textAreaContext {
   padding-left: 1rem;
   padding-right: 1rem;
 width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-height:2rem;
+//height:5rem;
   font-size: 0.8em;
     min-width: 40em;
+}
+
+.translateTextArea {
+  padding-left: 1rem;
+  padding-right: 1rem;
+width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+height:3rem;
+  font-size: 1em;
+    min-width: 28em;
 }
 
 

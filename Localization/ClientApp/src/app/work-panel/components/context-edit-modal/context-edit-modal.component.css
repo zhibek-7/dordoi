@@ -28,3 +28,16 @@ input[type=number]::-webkit-outer-spin-button {
   width: 3rem;
 
 }
+
+
+.translateTextArea {
+  padding-left: 1rem;
+  padding-right: 1rem;
+width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+//height:5rem;
+ min-width: 7rem;
+  font-size: 1em;
+    min-width: 30em;
+}
