@@ -14,9 +14,9 @@ namespace Test
 
         static void Main(string[] args)
         {
-            SettingJson sj = new SettingJson();
-            sj.WriteSettings();
-
+            //SettingJson sj = new SettingJson();
+            // sj.WriteSettings();
+            Migration
 
         }
     }

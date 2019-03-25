@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -7,11 +8,10 @@ using Utilities.Logs;
 
 namespace External.Migration
 {
-    /// <summary>
-    /// Класс, предназначенный для считывания данных из tmx
-    /// </summary>
-    class TmxReader
+    public class TbxReader
     {
+
+
         /// <summary>
         /// Поле, предназначенное для логирования исполнения класса
         /// </summary>
@@ -26,42 +26,44 @@ namespace External.Migration
         /// <summary>
         /// Конструктор по умолчанию, не содержащий кода
         /// </summary>
-        public TmxReader()
+        public TbxReader()
         {
 
         }
 
         /// <summary>
-        /// Функция, предназначенная для распарсивания файла 'tmx'
-        /// Translation Memory Exchange Format — Обмен памятью переводов
+        /// Функция, предназначенная для распарсивания файла 'tbx'?
+        /// Termbase Exchange format — Обмен терминологическими базами
         /// </summary>
-        /// <param name="fs">Поток tmx-файла миграции</param>
-        public void Read(FileStream fs)
+        /// <param name="fs">Поток tbx-файла миграции</param>
+        public void LoadTbx(FileStream fs)
         {
             try
             {
-                _logger.WriteLn("Распарсивание tmx-файла");
+                _logger.WriteLn("Распарсивание tbx-файла");
                 var tempFileName = Path.GetTempFileName();
                 fs.Seek(0, SeekOrigin.Begin);
                 fs.CopyTo(File.Open(tempFileName, FileMode.Open));
                 var d = XDocument.Load(tempFileName);
-                var srclang = d.Root.Element("header").Attribute("srclang");
-                var body = d.Root.Element("body");
-                var ns_xml = body.GetNamespaceOfPrefix("xml");
-                foreach (var tu in body.Elements("tu"))
+                var ns = d.Root.GetNamespaceOfPrefix("xml");
+                foreach (var text in d.Root.Elements("text"))
                 {
-                    foreach (var tuv in tu.Elements("tuv"))
+                    foreach (var termEntry in text.Element("body").Elements("termEntry"))
                     {
-                        var lang = tuv.Attribute(ns_xml + "lang").Value;
-                        var trans = tuv.Element("seg").Value;
+                        foreach (var langSet in termEntry.Elements("langSet"))
+                        {
+                            string lang = langSet.Attribute(ns + "lang").Value;
+                            string term = langSet.Element("tig").Element("term").Value;
+                            //ok, now it's all about where to write gathered data
+                        }
                     }
                 }
+                _logger.WriteLn("tbx-файл успешно распарсен");
                 File.Delete(tempFileName);
-                _logger.WriteLn("tmx-файл успешно распарсен");
             }
             catch (Exception ex)
             {
-                _loggerError.WriteLn($"Ошибка в {typeof(TmxReader)}.{nameof(Read)}", ex);
+                _loggerError.WriteLn($"Ошибка в {typeof(TbxReader)}.{nameof(LoadTbx)}", ex);
             }
         }
     }
