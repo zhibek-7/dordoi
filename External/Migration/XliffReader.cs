@@ -6,12 +6,12 @@ using System.Text;
 using System.Xml.Linq;
 using Utilities.Logs;
 
-namespace TestParseConsoleApp
+namespace External.Migration
 {
     /// <summary>
     /// Класс, предназначенный для миграции данных
     /// </summary>
-    public class XliffReader
+    public class XliffReader : DataReader
     {
         /// <summary>
         /// Поле, предназначенное для логирования исполнения класса
@@ -32,11 +32,16 @@ namespace TestParseConsoleApp
 
         }
 
+        public void Initialize()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Функция, предназначенная для распарсивания файла 'xliff'
         /// </summary>
         /// <param name="fs">Поток xliff-файла миграции</param>
-        public void LoadXliff(FileStream fs)
+        public void Load(FileStream fs)
         {
             try
             {
@@ -73,7 +78,7 @@ namespace TestParseConsoleApp
             }
             catch (Exception ex)
             {
-                _loggerError.WriteLn($"Ошибка в {typeof(XliffReader)}.{nameof(LoadXliff)}", ex);
+                _loggerError.WriteLn($"Ошибка в {typeof(XliffReader)}.{nameof(Load)}", ex);
             }
         }
 

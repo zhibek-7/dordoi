@@ -10,6 +10,7 @@ using Models.DatabaseEntities.DTO;
 using SqlKata;
 using Models.Interfaces.Repository;
 using Npgsql;
+using System.Text.RegularExpressions;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -48,17 +49,27 @@ namespace DAL.Reposity.PostgreSqlRepository
                             "context_file, " +
                             "id_file_owner, " +
                             "value, " +
-                            "position_in_text" +
+                            "position_in_text," +
+                            "word_count" +
                             ") " +
                             "VALUES (" +
                             "@substring_to_translate, " +
                             "@context_file, " +
                             "@id_file_owner, " +
                             "@value, " +
-                            "@position_in_text" +
+                            "@position_in_text, " +
+                            "@word_count" +
                             ") RETURNING translation_substrings.id";
+
             try
             {
+                if (translationSubstring.substring_to_translate != null)
+                {
+                    var wordsCount = GetWordsCount(translationSubstring.substring_to_translate);
+
+                    translationSubstring.word_count = wordsCount;
+                }
+
                 this.LogQuery(sqlString, translationSubstring.GetType(), translationSubstring);
                 var id = connection.ExecuteScalar(sqlString, translationSubstring, transaction);
 
@@ -80,6 +91,23 @@ namespace DAL.Reposity.PostgreSqlRepository
                 transaction.Rollback();
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Расчет количества слов
+        /// </summary>
+        /// <param name="translationSubstring"></param>
+        /// <returns></returns>
+        public static int GetWordsCount(string str)
+        {
+            //TODO тут не понятно как считать слова с дефисом "из-зи", сейчас считает как 2 слова. Можно заменить на одно, но тогда проблема будет в "Это-слово" считаться как одно слово
+            var words = Regex.Split(str.ToLower(), @"\W+");
+            int count = 0;
+            if (words != null)
+            {
+                count = words.Length;
+            }
+            return count;
         }
 
 
@@ -449,8 +477,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+                    item.word_count = GetWordsCount(item.substring_to_translate);
+
                     var query = new Query("translation_substrings")
                         .Where("id", item.id)
+
                         .AsUpdate(item);
 
                     var compiledQuery = this._compiler.Compile(query);
@@ -459,6 +490,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                              sql: compiledQuery.Sql,
                              param: compiledQuery.NamedBindings
                              );
+
+
                     return true;
                 }
             }
@@ -1163,6 +1196,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+                    /*
                     var forSave = new
                     {
                         translationSubstring.substring_to_translate
@@ -1177,6 +1211,15 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
                     );
+                    */
+
+                    var sql = @" UPDATE public.translation_substrings " +
+                    "SET substring_to_translate='" + translationSubstring.substring_to_translate + "', word_count= " + GetWordsCount(translationSubstring.substring_to_translate) +
+                    " WHERE id = " + translationSubstring.id;
+
+                    LogQuery(sql);
+                    await dbConnection.ExecuteAsync(sql: sql);
+
                     return true;
                 }
             }

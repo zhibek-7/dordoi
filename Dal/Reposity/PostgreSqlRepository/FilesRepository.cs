@@ -394,6 +394,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                         if (n == 0)
                         {
+                            //TODO word_count
                             file.strings_count = translationSubstringsCount;
                             sqlString = "UPDATE files SET strings_count = @Strings_Count WHERE id = @Id";
                             this.LogQuery(sqlString, file.GetType(), file);

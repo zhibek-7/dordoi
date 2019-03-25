@@ -201,6 +201,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var glossary = await this.GetByIDAsync(id: glossaryId);
             newTerm.id_file_owner = glossary.ID_File;
+            newTerm.word_count = TranslationSubstringRepository.GetWordsCount(newTerm.substring_to_translate);
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
@@ -214,7 +215,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "translation_max_length, " +
                         "id_file_owner, " +
                         "value, " +
-                        "position_in_text" +
+                        "position_in_text, " +
+                        "word_count" +
                         ") VALUES " +
                         "(" +
                         "@substring_to_translate, " +
@@ -223,7 +225,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "@translation_max_length, " +
                         "@id_file_owner, " +
                         "@value, " +
-                        "@position_in_text" +
+                        "@position_in_text, " +
+                        "@word_count" +
                         ") " +
                         "RETURNING id";
                     var insertNewStingParam = newTerm;

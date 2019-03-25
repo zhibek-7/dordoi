@@ -438,6 +438,42 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        /// <summary>
+        /// Получение локали по коду
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public Locale GetByCode(string code)
+        {
+            // Sql string to select all rows
+            var sqlString = "SELECT * FROM locales WHERE code = @code";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { code };
+                    this.LogQuery(sqlString, param);
+                    var project = dbConnection.Query<Locale>(sqlString, param).FirstOrDefault();
+                    return project;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocaleRepository)}.{nameof(LocaleRepository.GetByID)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+
 
     }
 }

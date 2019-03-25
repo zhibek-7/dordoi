@@ -5,6 +5,7 @@ import { Guid } from "guid-typescript";
  */
 export class TranslationMemoryForEditingDTO {
   id: Guid;
+  id_file: Guid;
   name_text: string;
   locales_ids: Guid[];
 

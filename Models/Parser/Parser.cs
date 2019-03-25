@@ -66,6 +66,7 @@ namespace Models.Parser
         /// <returns>Cловарь, в котором ключ <see cref="string"/> - расширение, а значение - выделенный соответствующим парсером список <see cref="List{}"/> объектов класса <see cref="TranslationSubstring"/></returns>
         public Dictionary<string, List<TranslationSubstring>> UseAllParsers(File file)
         {
+            //TODO word_count
             _logger.WriteLn("Parser: " + string.Format("Попытка распарсивания файла {0} всеми доступными парсерами", file.name_text));
             var ans = new Dictionary<string, List<TranslationSubstring>>();
             foreach (var pf in ParseFunctions.GroupBy(v => v.Value)) ans.Add(pf.First().Key, pf.Key(file));

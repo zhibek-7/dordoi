@@ -27,6 +27,8 @@ namespace Models.DatabaseEntities
 
         public string context_file { get; set; }
 
+        public int word_count { get; set; }
+
         public TranslationSubstring() { }
 
         public TranslationSubstring(string substringToTranslate, string context_file, Guid id_FileOwner, string value, int positionInText, int docxParagraphID = -1)
