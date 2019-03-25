@@ -914,6 +914,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                         param: compiledQuery.NamedBindings
                     );
 
+                    foreach (var translator in translators)
+                    {
+                        translator.topics = translator.topics_string.Trim().Split(',').Take(5).ToList();
+                    }
+
                     return translators;
                 }
             }
@@ -1016,7 +1021,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .WhereTrue("users.public_profile")
                     .Select("users.id as id_user")
                     .GroupBy("users.id")
-                    .SelectRaw("string_agg(translation_topics.name_text, ', ' order by translation_topics.name_text) as translation_topics_name");
+                    .SelectRaw("string_agg(translation_topics.name_text, ',' order by translation_topics.name_text) as translation_topics_name");
 
                 var queryUsersTranslationServices = new Query("users")
                     .LeftJoin("translation_services", "translation_services.id_user", "users.id")
@@ -1024,12 +1029,51 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .LeftJoin("currency", "currency.id", "translation_services.id_currency")
                     .WhereTrue("users.public_profile")
                     .SelectRaw("DISTINCT on (users.id) users.id AS id_user, type_of_service.name_text AS service_name, translation_services.price, currency.name_text AS currency_name");
-                //.Select("users.id as id_user", "type_of_service.name_text as service_name", "translation_services.price", "currency.name_text as currency_name")
-                //.Take(1);
-                //.GroupBy("translation_services.id")
-                //.Distinct();
+                
 
                 //Добавить запрос на вычисление кол-ва переведенных слов.
+
+                //
+
+                if (topicsId != null && topicsId.Length > 0)
+                {
+                    queryUsersTranslationTopics = queryUsersTranslationTopics.WhereIn("users_translation_topics.id_translation_topics", topicsId);
+                }
+
+                //
+
+                if (currentLanguagesId != null)
+                {
+                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_original_locale", currentLanguagesId);
+                }
+
+                if (translateLanguagesId != null)
+                {
+                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_translation_locale", translateLanguagesId);
+                }
+
+                if (nativeLanguage != null)
+                {
+                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.is_native", nativeLanguage);
+                }
+
+                if (servicesId != null)
+                {
+                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_type_of_service", servicesId);
+                }
+
+                if (minPrice != null)
+                {
+                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.price", ">=", minPrice);
+                }
+
+                if (maxPrice != null)
+                {
+                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.price", "<=", maxPrice);
+                }
+
+                //
+
 
                 var query = new Query("users")
                     .With("users_topics", queryUsersTranslationTopics)
@@ -1042,12 +1086,10 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "users.id as user_Id",
                         "users.name_text as user_Name",
                         "users.photo as user_pic",
-                        "users_topics.translation_topics_name",
+                        "users_topics.translation_topics_name as topics_string",
                         "users_services.service_name as service",
                         "users_services.price as cost",
                         "users_services.currency_name as currency"//,
-                                                                  //"participants.deadlines",//заменить на вычисление среднего значения
-                                                                  //"participants.quality_of_work"//заменить на вычисление среднего значения
                                                                   //вставить кол-во переведенных слов.
                     )//.Distinct();
                     .GroupBy(
@@ -1061,18 +1103,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .SelectRaw("avg(participants.deadlines) as termRating")
                     .SelectRaw("avg(participants.quality_of_work) as translationRating");
 
-                if (currentLanguagesId != null)
-                {
-                    //query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
-                    //             .Where("translation_memories_strings.id_translation_memory", translationMemoryId);
-                }
-                else
-                {
-                    //query = query.Join("translation_memories_strings", "translation_memories_strings.id_string", "translation_substrings.id")
-                    //             .Join("localization_projects_translation_memories", "localization_projects_translation_memories.id_translation_memory", "translation_memories_strings.id_translation_memory")
-                    //             .Where("localization_projects_translation_memories.id_localization_project", projectId);
-                }
-
+                
                 var compiledQuery = _compiler.Compile(query);
                 LogQuery(compiledQuery);
 

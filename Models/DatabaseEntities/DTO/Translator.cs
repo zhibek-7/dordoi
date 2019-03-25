@@ -14,6 +14,7 @@ namespace Models.DatabaseEntities.DTO
         public int? translationRating { get; set; } // рейтинг за переводы
         public int? termRating { get; set; } // рейтинг за сроки
         public IEnumerable<string> topics { get; set; } // темы, в которых у переводчика есть компетенция
+        public string topics_string { get; set; } // темы, в которых у переводчика есть компетенция
         //public IEnumerable<string> languages { get; set; } // языки, которыми владеет переводчик
         public int? wordsQuantity { get; set; } // переведено слов
         public int? cost { get; set; } // стоимость за слово
