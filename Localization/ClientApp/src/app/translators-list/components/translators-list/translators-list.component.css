@@ -30,9 +30,10 @@
 }
 
 /*Отображает символ валюты рубль*/
-.amount:before {
+/*.amount:before {
   content: "\20BD"; 
-}
+}*/
+
 .content-top {
   background: #7c529e;
   height: 3rem;
