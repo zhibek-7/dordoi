@@ -54,7 +54,8 @@ namespace Models.Parser
                 {"docx", ParseAsDocx },
                 {"odt", ParseAsOdt },
                 {"xlsx", ParseAsXlsx },
-                {"ods", ParseAsOds }
+                {"ods", ParseAsOds },
+                {"html", ParseAsHtml }
             };
         }
 
@@ -556,6 +557,33 @@ namespace Models.Parser
             foreach (Match m in matches) ts.Add(new TranslationSubstring(m.Groups[1].Value, string.Empty, file.id, m.Groups[1].Value, m.Groups[1].Index));
             //Directory.Delete(path, true);
             _logger.WriteLn("Parser: " + string.Format("Парсер 'ods'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
+            return ts;
+        }
+
+        /// <summary>
+        /// Функция-парсер файлов с расширением 'html'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
+        private List<TranslationSubstring> ParseAsHtml(File file)
+        {
+            _logger.WriteLn("Parser: " + string.Format("К файлу {0} применяется парсер для файлов с расширением 'html'", file.name_text));
+            var ts = new List<TranslationSubstring>();
+            var pattern = ">([^>]+)<";
+            var pattern_fns = "[^\\s].*";
+            var pattern_lns = ".*[^\\s]";
+            var matches = Regex.Matches(file.original_full_text, pattern);
+            foreach (Match m in matches)
+            {
+                var m_fns = Regex.Match(m.Groups[1].Value, pattern_fns, RegexOptions.Singleline);
+                if (m_fns.Success)
+                {
+                    var m_lns = Regex.Match(m_fns.Value, pattern_lns, RegexOptions.Singleline);
+                    var pos = m.Groups[1].Index + m_fns.Index;
+                    ts.Add(new TranslationSubstring(m_lns.Value, string.Empty, file.id, m_lns.Value, pos));
+                }
+            }
+            _logger.WriteLn("Parser: " + string.Format("Парсер 'html'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
         }
     }
