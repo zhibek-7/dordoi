@@ -34,5 +34,16 @@ namespace Localization.WebApi
                 return this._partOfSpeechRepository.GetAll();
         }
 
+
+        [Authorize]
+        [HttpPost]
+        [Route("ListTerm/{termId}")]
+        public IEnumerable<PartOfSpeech> GetAllTerm(Guid? termId)
+        {
+            if (termId != null)
+                return this._partOfSpeechRepository.GetByTermId(termId: termId);
+            else
+                return this._partOfSpeechRepository.GetAll();
+        }
     }
 }

@@ -22,4 +22,17 @@ export class PartsOfSpeechService {
       }
     );
   }
+
+  public getListByTermId(termId: Guid): Observable<PartOfSpeech[]> {
+    return this.httpClient.post<PartOfSpeech[]>(
+      PartsOfSpeechService.connectionUrl + "ListTerm/" + termId,
+      termId,
+      {
+        headers: new HttpHeaders().set(
+          "Authorization",
+          "Bearer " + sessionStorage.getItem("userToken")
+        )
+      }
+    );
+  }
 }

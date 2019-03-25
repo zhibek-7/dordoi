@@ -54,7 +54,7 @@ export class EditTermFormTranslComponent extends ModalComponent
     if (!this.glossary) return;
 
     // this._term.substring_to_translate = this._term.value;
-console.log("updateTerm()="+this.glossary.id )
+    console.log("updateTerm()=" + this.glossary.id);
     let updateTermObservable = this.glossariesService.updateTerm(
       this.glossary.id,
       this._term,

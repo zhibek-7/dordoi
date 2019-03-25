@@ -1,13 +1,23 @@
 .languagesBlock {}
 
-.languagesOptionsBlock {}
+.languagesOptionsBlock {
+    background-color: #F6F5F1;
+    padding-top: 1vh;
+    padding-left: 1%;
+}
+.languagesOptionsBlock a {
+    color: gray;
+}
 
-.languagesOptionsBlock a {}
+.offersBlock {
+    padding: 2px 2px 2px 2px;
+}
 
 .offersBlock {}
 
-
-.list-group-item {}
+.list-group-item{
+  padding: 2px 2px 2px 2px;
+}
 
 .userIcon {
   width: 1.2rem;
@@ -22,7 +32,9 @@
   font-size: 1em;
 }
 
-.translationInfo {}
+.translationInfo {
+    padding-top: 0.1rem;
+}
 
 .utilitiesIcon {
   width: 1.2rem;
@@ -31,24 +43,24 @@
 }
 
 .translationsEmpty {
-    text-align: center;
-    color: gray;
-    padding: 12vh;
-    font-size: 1em;
+  text-align: center;
+  color: gray;
+  padding: 12vh;
+  font-size: 1em;
 }
 
 .otherLanguages {
-    text-align: center;
-    color: gray;
-    padding: 12vh;
-    font-size: 1em;
+  text-align: center;
+  color: gray;
+  padding: 12vh;
+  font-size: 1em;
 }
 
 .searchByMemory {
-    padding: 15px;
-    text-align: justify;
-    color: gray;
-    font-size: 1em;
+  padding: 15px;
+  text-align: justify;
+  color: gray;
+  font-size: 1em;
 }
 
 .form-check-input {
@@ -71,19 +83,22 @@
 }
 
 
-.col-6{
+.col-6 {
   font-size: 0.8rem;
 }
-.userLogin
-{
+
+.userLogin {
   font-size: 0.8rem;
 
 }
 
 
-.arrowIcon {}
-
-.align-center {}
+.row{
+margin: 0px;
+}
+.arrowIcon {    
+    cursor: pointer;
+}
 
 .mat-icon {
   color: grey;
@@ -95,4 +110,14 @@
 
 .col-6 {
   font-size: 0.8rem;
+}
+
+
+hr {
+  margin: 0.3rem;
+}
+
+
+.margin-small {
+  margin: 0.3rem;
 }

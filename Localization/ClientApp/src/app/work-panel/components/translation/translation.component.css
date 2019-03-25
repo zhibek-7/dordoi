@@ -1,17 +1,10 @@
-.controlBlock {
-}
+.controlBlock {}
 
-.hideBlocksIcons {
-}
 
-.rightHideIcon {
-}
 
-.contextBlock {
-}
+.contextBlock {}
 
-.textForTranslate {
-}
+.textForTranslate {}
 
 .context {
   margin-top: 1%;
@@ -20,61 +13,57 @@
 
 }
 
-.verticalLine {
-}
+
 
 .contextPicker {
-
+  cursor: pointer;
+  padding: 1em
 }
 
-.contextEdit {
-}
+.contextEdit {}
 
-.objectInCode {
-}
-
-.workWithTranslation {
-}
 
 .textArea {
-  padding-left: 1rem;
-  padding-right: 1rem;
-width: 100%;
+
+  width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-//height:5rem;
- 
+  height: 5rem;
+  min-height: 3em;
   font-size: 1em;
-    min-width: 30em;
+  min-width: 18em;
+  background-color: #F4F7FC;
+  padding: 0.1rem;
+
 }
 
 .textAreaContext {
-  padding-left: 1rem;
-  padding-right: 1rem;
-width: 100%;
+
+  padding: 0.1rem;
+  width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-//height:5rem;
+  height: 2rem;
   font-size: 0.8em;
-    min-width: 40em;
+  min-width: 18em;
+  background-color: #F4F7FC;
+
 }
 
 .translateTextArea {
-  padding-left: 1rem;
-  padding-right: 1rem;
-width: 100%;
+
+  padding: 0.1rem;
+  width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-height:3rem;
+  height: 3rem;
   font-size: 1em;
-    min-width: 28em;
+  min-width: 18em;
 }
 
-
-.translateTextArea textarea {
-}
 
 .arrowIcon {
+  cursor: pointer;
 }
 
 .mat-icon {
@@ -104,30 +93,55 @@ height:3rem;
   width: 3rem;
 }
 
-.arrowsIcons {
-}
+.arrowsIcons {}
 
 .translationBlockWithoutPhrase {
+  text-align: center;
+  font-size: 1.5em;
+  width: 20rem;
 }
 
-.phraseUndifinedBlock {
-}
+.phraseUndifinedBlock {}
 
-.selectionDialog {
-}
+.selectionDialog {}
 
-.col-sm-2 {
+
+
+.col-1 {
+  font-size: 1.5em;
+  width: 3rem;
+  text-align: left;
 }
 
 .col-2 {
+  font-size: 1.5em;
+  width: 100%;
+  text-align: center;
+}
+
+.col-3 {
+  font-size: 1.5em;
+  width: 3rem;
+  text-align: right;
 }
 
 
-.col-11{
+
+.col-11 {
   font-size: 0.9em;
   padding: 0em
 }
-.headline-text {
+
+
+.hr-style {
+  padding: 0.1rem;
+  margin: 0.3rem;
 }
 
+.col-sm {
+  margin: 0.3rem;
+}
 
+.margin-small {
+  margin: 0.3rem;
+}

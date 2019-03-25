@@ -109,8 +109,9 @@ export class GlossariesService {
     return this.httpClient
       .put(
         GlossariesService.connectionUrl +
-          glossaryId +
-          "/terms/" +
+          //glossaryId +
+          //"/terms/" +
+	"terms/" +
           updatedTerm.id,
         updatedTerm
       )

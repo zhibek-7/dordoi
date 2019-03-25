@@ -1,18 +1,21 @@
 <div class="mainBlock">
   <div class="row">
-    <div class="noPadding" [ngClass]="{'col-md-3':left3, 'col-md-0':left0}" *ngIf="showLeftBlock">
+    <div class="noPadding" [ngClass]="{'col-3':left3, 'col-0':left0}" *ngIf="showLeftBlock">
       <phrases-component [fileId]="fileIdForTranslation" [localeId]="localeForTranslation"></phrases-component>
     </div>
-    <div class="bd-content noPadding " [ngClass]="{'col-6':middleCol6, 'col-9':middleCol9, 'col-2':middleCol12, 'middleBlock': true, 'middleBlockAndRight': middleAndRight}">
+    <div class="bd-content noPadding "
+      [ngClass]="{'col-6':middleCol6, 'col-9':middleCol9, 'col-2':middleCol12, 'middleBlock': true, 'middleBlockAndRight': middleAndRight}">
       <div class="row">
         <translation-component class="translationBlock" (onChangedLeftBlock)="hideLeftBlockFunction($event)"
-          (onChangedRightBlock)="hideRightBlockFunction($event)" [localeId]="localeForTranslation"></translation-component>
+          (onChangedRightBlock)="hideRightBlockFunction($event)" [localeId]="localeForTranslation">
+        </translation-component>
       </div>
       <div class="row">
-        <languages-component style="width:100%; margin-top:1rem;" [localeId]="localeForTranslation"></languages-component>
+        <languages-component style="width:100%;" [localeId]="localeForTranslation">
+        </languages-component>
       </div>
     </div>
-    <div class="noPadding" [ngClass]="{'col-md-3':right3, 'col-md-0':right0}" *ngIf="showRightBlock">
+    <div class="noPadding" [ngClass]="{'col-3':right3, 'col-0':right0}" *ngIf="showRightBlock">
       <comments-component></comments-component>
     </div>
   </div>

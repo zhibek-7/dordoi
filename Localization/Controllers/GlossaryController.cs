@@ -111,7 +111,8 @@ namespace Localization.WebApi
         }
 
         [Authorize]
-        [HttpPut("{glossaryId}/terms/{termId}")]
+        //[HttpPut("{glossaryId}/terms/{termId}")]
+        [HttpPut("terms/{termId}")]
         public async Task UpdateTermAsync(
             Guid glossaryId,
             Guid termId,

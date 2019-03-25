@@ -27,6 +27,7 @@
 
 
 .list-group-item-action {
+  padding: 2px 2px 2px 1rem;
 }
 
 /* .inputSearch {
@@ -40,6 +41,7 @@
 } */
 
 .form-control {
+  padding: 0px;
 }
 
 .conditionsBlock {
@@ -55,6 +57,10 @@
 }
 
 .controlText {
+
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px 2px 2px 2px;
 }
 
 .greenBtn {
@@ -90,6 +96,9 @@
   align-items: center;
 }
 
+.col-12{
+  font-size: 0.8em;
+}
 .mat-icon {
   color: grey;
 }

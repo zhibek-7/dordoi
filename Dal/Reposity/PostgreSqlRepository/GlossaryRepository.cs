@@ -267,6 +267,8 @@ namespace DAL.Reposity.PostgreSqlRepository
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
+
+
                     var updateTermSql =
                         "UPDATE translation_substrings SET " +
                         "substring_to_translate=@substring_to_translate, " +
@@ -286,8 +288,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                     var updateTermPartOfSpeechIdSql =
                         "UPDATE glossaries_strings SET " +
                         "id_part_of_speech=@PartOfSpeechId " +
-                        "WHERE id_string=@StringId " +
-                        "AND id_glossary=@GlossaryId";
+                        "WHERE id_string=@StringId ";// +
+                                                     //"AND id_glossary=@GlossaryId";
                     var updateTermPartOfSpeechIdParam = new { GlossaryId = glossaryId, StringId = updatedTerm.id, PartOfSpeechId = partOfSpeechId };
                     this.LogQuery(updateTermPartOfSpeechIdSql, updateTermPartOfSpeechIdParam);
                     await dbConnection.ExecuteAsync(

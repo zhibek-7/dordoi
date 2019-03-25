@@ -78,5 +78,49 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         }
 
+
+        /// <summary>
+        /// Получение записи по id термина
+        /// </summary>
+        /// <param name="termId"></param>
+        /// <returns></returns>
+        public IEnumerable<PartOfSpeech> GetByTermId(Guid? termId)
+        {
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("localization_projects_glossaries as lpg")
+                        .Join("glossaries_strings as gs", "lpg.id_glossary", "gs.id_glossary")
+                        .Where("gs.id_string", termId)
+                        .RightJoin("localization_projects as lp", "lpg.id_localization_project", "lp.id")
+                        .RightJoin("parts_of_speech as pos", "lp.id_source_locale", "pos.locale_id")
+                        .Select("pos.*");
+                    var compiledQuery = this._compiler.Compile(query);
+                    this.LogQuery(compiledQuery);
+                    var partsOfSpeechForLocale = dbConnection
+                        .Query<PartOfSpeech>(
+                            sql: compiledQuery.Sql,
+                            param: compiledQuery.NamedBindings);
+                    return partsOfSpeechForLocale;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(PartOfSpeechRepository)}.{nameof(PartOfSpeechRepository.GetByTermId)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(PartOfSpeechRepository)}.{nameof(PartOfSpeechRepository.GetByTermId)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
+        }
+
     }
 }

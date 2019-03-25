@@ -54,11 +54,25 @@ export class TermDetailsEditableComponent extends LoadOnRequestBase
   }
 
   loadPartsOfSpeech() {
-    this.partsOfSpeechService.getListByGlossaryId(this.glossary.id).subscribe(
+
+    console.log("..loadPartsOfSpeech--this.glossary.id=" + this.glossary.id);
+        console.log("..loadPartsOfSpeech--term.id=" + this.term.id);
+        console.log("..loadPartsOfSpeech--term.substring_to_translate=" + this.term.substring_to_translate);
+
+//TODO нет ее в режиме ереводов this.glossary.id
+//    this.partsOfSpeechService.getListByGlossaryId(this.glossary.id).subscribe(
+//      partsOfSpeech => {
+//        this.partsOfSpeech = partsOfSpeech;
+//      },
+//      error => console.log(error)
+//    );
+
+    this.partsOfSpeechService.getListByTermId(this.term.id).subscribe(
       partsOfSpeech => {
         this.partsOfSpeech = partsOfSpeech;
       },
       error => console.log(error)
     );
+
   }
 }
