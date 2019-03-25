@@ -608,5 +608,31 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
+        public async void AddTranslationMemoriesStrings(Guid id_translation_memory, Guid id_string)
+        {
+            var sql = "INSERT INTO public.translation_memories_strings (id_translation_memory, id_string)  VALUES ('" + id_translation_memory + "','" + id_string + "')";
+
+            this.LogQuery(sql);
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    await dbConnection.ExecuteAsync(sql: sql);
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.AddTranslationMemoriesStrings)} {nameof(NpgsqlException)} ",
+                    exception);
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationMemoryRepository)}.{nameof(TranslationMemoryRepository.AddTranslationMemoriesStrings)} {nameof(Exception)} ",
+                    exception);
+            }
+        }
+
     }
 }

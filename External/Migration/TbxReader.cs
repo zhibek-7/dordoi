@@ -29,10 +29,12 @@ namespace External.Migration
 
         private GlossariesRepository gsr;
         private Glossaries glossaries;
-        private GlossaryRepository glossaryRep;
-        private TranslationRepository translationRep;
-        private LocaleRepository localeRep;
         private Guid glossaryId;
+
+        private string _localDefault = "ru";
+
+        private TranslationWriter tWriter;
+        private GlossaryRepository glossaryRep;
         //
 
 
@@ -55,10 +57,8 @@ namespace External.Migration
             List<Glossaries> tt = gList.ToList();
             glossaries = tt[0];
             //TODO нужно обработать создание нового глоссария, если текущего нет
-
+            tWriter = new TranslationWriter(_localDefault);
             glossaryRep = new GlossaryRepository(connectionString);
-            translationRep = new TranslationRepository(connectionString);
-            localeRep = new LocaleRepository(connectionString);
             //
         }
 
@@ -73,7 +73,7 @@ namespace External.Migration
             {
 
                 _logger.WriteLn("Распарсивание tbx-файла");
-                var tempFileName = CopyFile(fs);
+                var tempFileName = tWriter.CopyFile(fs);
 
                 var d = XDocument.Load(tempFileName);
                 var ns = d.Root.GetNamespaceOfPrefix("xml");
@@ -89,28 +89,20 @@ namespace External.Migration
                             string term = langSet.Element("tig").Element("term").Value;
                             //ok, now it's all about where to write gathered data
 
-                            if (ht.Contains(lang))
+                            tWriter.AppendTable(ht, lang, term);
+                            TranslationSubstring termString = tWriter.AddTranslationSubstring(lang, ht, newTermId, glossaryId, (Guid)glossaries.ID_File);
+
+                            if (termString != null)
                             {
-                                _loggerError.WriteLn($"Ошибка в {typeof(TbxReader)}.{nameof(Load)} Два перевода одного термина {"+term+"} на один язык {"+lang+"}");
+                                newTermId = glossaryRep.AddNewTermAsync(glossaryId, termString, null).Result;
                             }
-                            else
-                            {
-                                ht.Add(lang, term);
-                            }
-                            newTermId = AddTranslationSubstring(lang, ht, glossaries, newTermId, glossaryRep, glossaryId);
                         }
 
-
-                        if (newTermId != null)
+                        foreach (var lang in ht.Keys)
                         {
-                            foreach (var lang in ht.Keys)
-                            {
-                                AddTranslation(lang, newTermId, localeRep, ht, translationRep);
-                            }
+                            tWriter.AddTranslation(lang, newTermId, ht);
                         }
-
                         // break;
-
                     }
                 }
                 _logger.WriteLn("tbx-файл успешно распарсен");
@@ -144,64 +136,6 @@ FROM public.translations) as f
             }
         }
 
-        private static Guid? AddTranslationSubstring(string lang, Hashtable ht, Glossaries glossaries, Guid? newTermId,
-            GlossaryRepository glossaryRep, Guid glossaryId)
-        {
-            if (lang.Equals("ru"))
-            {
-                TranslationSubstring newTerm =
-                    new TranslationSubstring(ht["ru"].ToString(), null, (Guid)glossaries.ID_File, null, 0);
-                newTermId = glossaryRep.AddNewTermAsync(glossaryId, newTerm, null).Result;
-            }
 
-            return newTermId;
-        }
-
-        private void AddTranslation(object lang, Guid? newTermId, LocaleRepository localeRep, Hashtable ht,
-            TranslationRepository translationRep)
-        {
-            if (lang.Equals("ru") == false)
-            {
-                String error = "";
-                try
-                {
-                    Translation item = new Translation();
-                    item.ID_String = (Guid)newTermId;
-                    _logger.WriteLn("Язык " + lang.ToString());
-                    error = " ERROR: Ошибка в Языке: [" + lang.ToString() + "]";
-                    item.ID_Locale = localeRep.GetByCode(lang.ToString()).id;
-                    item.Confirmed = false;
-                    item.Selected = false;
-                    //TODO переделать на реального пользователя
-                    item.ID_User = Guid.Parse("1d2d530a-b3eb-45a1-8250-721b3b2237b2");
-                    ;
-                    item.DateTime = new DateTime();
-                    item.Translated = ht[lang].ToString();
-
-
-                    _logger.WriteLn("Добавление термина ", item.GetType(), item);
-                    translationRep.AddAsync(item);
-                }
-                catch (Exception ex)
-                {
-                    _loggerError.WriteLn($"Ошибка в {typeof(TbxReader)}.{nameof(Load)} " + error, ex);
-                }
-            }
-        }
-
-        private static string CopyFile(FileStream fs)
-        {
-            var tempFileName = Path.GetTempFileName();
-            fs.Seek(0, SeekOrigin.Begin);
-            //fs.CopyTo(File.Open(tempFileName, FileMode.Open));
-            using (FileStream file =
-                new FileStream(tempFileName,
-                    FileMode.OpenOrCreate))
-            {
-                fs.CopyTo(file);
-            }
-
-            return tempFileName;
-        }
     }
 }

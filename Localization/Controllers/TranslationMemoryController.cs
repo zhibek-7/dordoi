@@ -100,6 +100,7 @@ namespace Localization.Controllers
         {
             var userId = (Guid)ur.GetID(User.Identity.Name);
             await _translationMemoryService.AddAsync(userId, translationMemory);
+            // await _translationMemoryService.AddAsync(userId, null);
         }
 
         /// <summary>

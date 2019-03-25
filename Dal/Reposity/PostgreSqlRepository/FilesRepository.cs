@@ -17,7 +17,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         private readonly string _insertFileSql =
             "INSERT INTO files (" +
-            "id, " +
+            //"id, " +
             "id_localization_project, " +
             "name_text, " +
             "description, " +
@@ -36,7 +36,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             "visibility" +
             ") "
             + "VALUES (" +
-            "@id," +
+            //"@id," +
             "@ID_Localization_Project," +
             "@Name_text, " +
             "@Description, " +

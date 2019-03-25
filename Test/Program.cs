@@ -28,11 +28,12 @@ namespace Test
             //// sj.WriteSettings();
 
 
-            using (FileStream fs = new FileStream(@"D:\PJ\Codelink\! Переводчик\_вариант файлов для переводов\_test\taxsee-driver.tbx", FileMode.OpenOrCreate))
+            //using (FileStream fs = new FileStream(@"D:\PJ\Codelink\! Переводчик\_вариант файлов для переводов\_test\taxsee-driver.tbx", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(@"D:\PJ\Codelink\! Переводчик\_вариант файлов для переводов\_test\small.tmx", FileMode.OpenOrCreate))
             {
 
                 Import im = new Import();
-                im.imp(Import.FileType.TBX, fs);
+                im.imp(Import.FileType.TMX, fs);
             }
         }
     }

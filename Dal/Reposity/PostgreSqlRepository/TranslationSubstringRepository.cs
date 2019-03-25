@@ -36,6 +36,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted))
                 {
                     Guid? t = AddAsync(item, connection, transaction);
+                    transaction.Commit();
                     return Task.FromResult(t);
                 }
             }
@@ -46,7 +47,9 @@ namespace DAL.Reposity.PostgreSqlRepository
             var sqlString = "INSERT INTO translation_substrings " +
                             "(" +
                             "substring_to_translate, " +
+                            "description, " +
                             "context_file, " +
+                            "translation_max_length, " +
                             "id_file_owner, " +
                             "value, " +
                             "position_in_text," +
@@ -54,7 +57,9 @@ namespace DAL.Reposity.PostgreSqlRepository
                             ") " +
                             "VALUES (" +
                             "@substring_to_translate, " +
+                            "@description, " +
                             "@context_file, " +
+                            "@translation_max_length, " +
                             "@id_file_owner, " +
                             "@value, " +
                             "@position_in_text, " +
