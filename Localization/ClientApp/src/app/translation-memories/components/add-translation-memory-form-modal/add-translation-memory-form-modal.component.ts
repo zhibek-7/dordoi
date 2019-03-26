@@ -40,7 +40,8 @@ export class AddTranslationMemoryFormModalComponent extends ModalComponent imple
     this.newTranslationMemory.locales_ids = [];
     this.newTranslationMemory.localization_projects_ids = [];
     let currentProjectId = this.projectsService.currentProjectId;
-    this.newTranslationMemory.localization_projects_ids.push(currentProjectId);
+    if (!currentProjectId.isEmpty())
+      this.newTranslationMemory.localization_projects_ids.push(currentProjectId);
   }
 
 }
