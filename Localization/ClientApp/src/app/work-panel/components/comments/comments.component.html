@@ -36,8 +36,8 @@
                       </li>
                     </ul>
                     <div class="row">
-                      <button class="btn btn-link m-1" (click)="changeCommentClick(comment)">Изменить</button>
-                      <button class="btn btn-link" (click)="deleteCommentClick(comment)">Удалить</button>
+                      <button class="btn btn-link m-1 btn-sm" (click)="changeCommentClick(comment)">Изменить</button>
+                      <button class="btn btn-link btn-sm" (click)="deleteCommentClick(comment)">Удалить</button>
                     </div>
                   </div>
                   <div *ngIf="commentEdited">
@@ -130,9 +130,9 @@
                             <div class="col-12">{{term.glossary_name}} </div>
                           </div>
                           <div class="row">
-                            <button class="btn btn-link m-1" (click)="editTermFormModal.show()">Изменить</button>
+                            <button class="btn btn-link m-1 btn-sm" (click)="editTermFormModal.show()">Изменить</button>
                             <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary" [term]="term.term"></app-edit-term-form-modal>
-                            <button class="btn btn-link" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
+                            <button class="btn btn-link btn-sm" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
                           </div>
                         </div>
 

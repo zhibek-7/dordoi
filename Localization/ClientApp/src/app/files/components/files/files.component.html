@@ -3,9 +3,9 @@
 
   <div class="row m-2">
     <div class="col">
-      <label class="btn btn-primary m-1">Добавить файл <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
-      <button class="btn btn-primary m-1" (click)="addFolderModal.showForNode(null)">Создать папку</button>
-      <button class="btn btn-primary m-1" (click)="folderInput.value = ''; folderInput.click()">
+      <label class="btn btn-primary m-1 btn-sm">Добавить файл <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
+      <button class="btn btn-primary m-1 btn-sm" (click)="addFolderModal.showForNode(null)">Создать папку</button>
+      <button class="btn btn-primary m-1 btn-sm" (click)="folderInput.value = ''; folderInput.click()">
         Загрузить папку
         <input type="file" #folderInput webkitdirectory style="display: none;" (change)="uploadFolder(folderInput.files)">
       </button>
@@ -97,7 +97,7 @@
           {{rowData.strings_count}}
         </td>
         <td class="col-xs-2">
-          <button class="btn btn-light" [style.width]="100+'%'" *ngIf="!rowData.is_folder" disabled>{{rowData.version}}</button>
+          <button class="btn btn-light btn-sm" [style.width]="100+'%'" *ngIf="!rowData.is_folder" disabled>{{rowData.version}}</button>
         </td>
         <!--<td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
           <button class="btn btn-primary" *ngIf="!rowData.is_folder" disabled>{{rowData.priority}}</button>

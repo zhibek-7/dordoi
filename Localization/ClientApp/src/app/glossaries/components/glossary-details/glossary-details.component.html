@@ -3,7 +3,7 @@
     <div class="col">
       <div class="btn-group m-1">
         <button class="btn btn-primary m-1 btn-sm" disabled>Загрузить</button>
-        <button class="btn btn-primary btn-sm" disabled>Скачать</button>
+        <button class="btn btn-primary m-1 btn-sm" disabled>Скачать</button>
       </div>
       <button class="btn btn-primary m-1 btn-sm" (click)="addTermFormModal.show()">Добавить термин</button>
       <app-add-term-form-modal [glossary]="glossary" (newTermSubmitted)="addNewTerm($event)" #addTermFormModal></app-add-term-form-modal>

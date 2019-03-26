@@ -3,7 +3,7 @@
 
     <li class="nav-item">
       <div>
-        <label for="file-upload" class="btn nav-element">
+        <label for="file-upload" class="btn nav-element btn-sm">
           Открыть
         </label>
         <input id="file-upload" (change)="unload($event.target.files)" type="file" [accept]="fileTypes">
@@ -11,7 +11,7 @@
     </li>
 
     <li class="nav-item">
-      <button type="button" class="btn nav-element" (click)="getLoad()" [disabled]="!isSelected">
+      <button class="btn nav-element btn-sm" (click)="getLoad()" [disabled]="!isSelected">
         Скачать
       </button>
       <app-load-string-project-form-modal #loadFormModal (loadSubmitted)="load($event)" *ngIf="isSelected"
@@ -20,8 +20,8 @@
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="getConfirmSelectedDelete()" [disabled]="!isSelected">
-        <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
+      <button class="btn nav-element btn-sm" (click)="getConfirmSelectedDelete()" [disabled]="!isSelected">
+        <img src="../assets/icons/main/bin.png" class="d-inline-block align-li img " alt="Удалить">
       </button>
       <app-confirm-delete-string-project-form-modal #confirmDeleteFormModal *ngIf="isSelected || translationSubstrings.length > 0"
         [translationSubstrings]="translationSubstrings" (confirmedDelete)="delete($event)">
@@ -29,7 +29,7 @@
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="appointFormModalShow()">
+      <button class="btn nav-element btn-sm" (click)="appointFormModalShow()">
         Назначить ПП
       </button>
       <app-appoint-translation-memories-project-form-modal #appointFormModal *ngIf="isVisibleAppointFormModal">

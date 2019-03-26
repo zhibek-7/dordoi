@@ -10,12 +10,12 @@
   <ul class="navbar-nav nav">
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать словарь </button>
+      <button class="btn nav-element btn-sm" (click)="addGlossaryFormModal.show()"> Создать словарь </button>
       <app-add-glossary-form-modal #addGlossaryFormModal (newGlossarySubmitted)="addNewGlossary($event)"></app-add-glossary-form-modal>
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="getEditingGlossary()" [disabled]="!isSelectedGlossary">
+      <button class="btn nav-element btn-sm" (click)="getEditingGlossary()" [disabled]="!isSelectedGlossary">
         Редактировать
         словарь
       </button>
@@ -24,7 +24,7 @@
     </li>
 
     <li class="nav-item">
-      <button type="button" class="btn nav-element" (click)="getConfirmClear()" [disabled]="!isSelectedGlossary">
+      <button type="button" class="btn nav-element btn-sm" (click)="getConfirmClear()" [disabled]="!isSelectedGlossary">
         Очистить
       </button>
       <app-confirm-clear-glossary-of-terms #confirmClearGlossaryFormModal *ngIf="isSelectedGlossary" [glossary]="glossary"
@@ -32,7 +32,7 @@
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="getConfirmDelete()" [disabled]="!isSelectedGlossary">
+      <button class="btn nav-element btn-sm" (click)="getConfirmDelete()" [disabled]="!isSelectedGlossary">
         <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
       </button>
       <app-confirm-delete-glossary #confirmDeleteGlossaryFormModal *ngIf="isSelectedGlossary" [glossary]="glossary"
