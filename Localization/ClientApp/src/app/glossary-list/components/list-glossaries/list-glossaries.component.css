@@ -97,3 +97,16 @@ table th
 .headerSortUp {
   padding-right: 5px;
 }
+
+
+.col-2{
+width : 20%;
+}
+
+.col-3{
+width : 55%;
+}
+
+.col-4{
+width : 5%;
+}

@@ -70,28 +70,28 @@
       <th (click)="requestSortBy('name_text')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'name_text'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'name_text'"
-          class="col-xs">
+          class="col-2">
         Имя
       </th>
       <th (click)="requestSortBy('string_count')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'string_count'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'string_count'"
-          class="col-xs">
+          class="col-4">
         Строки
       </th>
       <th (click)="requestSortBy('locales_name')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'locales_name'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'locales_name'"
-          class="col-xs">
+          class="col-3">
         Языки
       </th>
       <th (click)="requestSortBy('localization_projects_name')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'localization_projects_name'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'localization_projects_name'"
-          class="col-xs">
+          class="col-2">
         Проекты
       </th>
-      <th class="col-xs-10">
+      <th class="col-4">
         
       </th>
     </tr>
@@ -99,23 +99,23 @@
   <tr (click)="selected(row)"
       [class.row-selected]="row.isSelected"
       *ngFor="let row of dataSource">
-    <td class="col-xs">
+    <td>
       {{row.model.name_text}}
     </td>
-    <td class="col-xs">
+    <td>
       {{row.model.string_count}}
     </td>
-    <td class="col-xs">
+    <td>
       {{row.model.locales_name}}
     </td>
-    <td class="col-xs">
+    <td>
       {{row.model.localization_projects_name}}
     </td>
     <td class="col-xs-10">
         <div class="dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
              aria-haspopup="true" aria-expanded="false">
-            <b>...</b>
+            <b>Действия</b>
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <label for="file-upload" class="dropdown-item m-0">

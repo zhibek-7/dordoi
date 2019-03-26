@@ -51,22 +51,22 @@
       <th (click)="requestSortBy('name_text')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'name_text'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'name_text'"
-          class="col-xs">
+          class="col-2">
         Имя словаря
       </th>
       <th (click)="requestSortBy('locales_name')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'locales_name'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'locales_name'"
-          class="col-xs">
+          class="col-3">
         Языки
       </th>
       <th (click)="requestSortBy('localization_projects_name')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'localization_projects_name'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'localization_projects_name'"
-          class="col-xs">
+          class="col-2">
         Проекты
       </th>
-      <th class="col-xs-10">
+      <th class="col-4">
 
       </th>
     </tr>
@@ -87,7 +87,7 @@
       <div class="dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false">
-          <b>...</b>
+          <b>Действия</b>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <button class="dropdown-item" (click)="getEditingGlossary()"> Изменить </button>
