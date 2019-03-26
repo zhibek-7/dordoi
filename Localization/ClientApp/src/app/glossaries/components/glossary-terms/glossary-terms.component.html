@@ -2,14 +2,14 @@
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
-        <th>
+        <th class="col-1">
           <input type="checkbox" class="checkbox" [(ngModel)]="allDispayedTermsSelectedCheckboxChecked" (change)="toggleSelectionForAllDisplayedTerms()">
         </th>
-        <th (click)="requestSortBy('substring_to_translate')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+        <th class="col-2" (click)="requestSortBy('substring_to_translate')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'">Термин</th>
-        <th (click)="requestSortBy('description')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'description'"
+        <th class="col-2" (click)="requestSortBy('description')" [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'description'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'description'">Описание</th>
-        <th>Действия</th>
+        <th class="col-3">Действия</th>
       </tr>
     </thead>
     <tr *ngFor="let termViewModel of termViewModels">

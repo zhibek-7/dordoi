@@ -47,7 +47,7 @@
 .mat-form-field {
   width: 100%;
   margin-bottom: 1rem;
-  font-size: 14px;
+  font-size: 0.8rem;
 }
 
 .control-group {
@@ -90,7 +90,7 @@ fieldset {
 
 legend {
   text-align: center;
-  font-size: 16px;
+  font-size: 1rem;
   width: 50%;
 }
 

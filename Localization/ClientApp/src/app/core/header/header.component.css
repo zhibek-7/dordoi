@@ -5,12 +5,12 @@
 
 .leftUl a {
     color: gray;
-    font-size: 20px;
+    font-size: 1.4rem;
 }
 
 .rightUl a {    
     color: gray;
-    font-size: 20px;
+    font-size: 1.4rem;
     padding-left: 50px;        
 }
 

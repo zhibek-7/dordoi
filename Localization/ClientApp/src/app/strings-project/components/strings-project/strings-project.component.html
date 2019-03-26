@@ -48,22 +48,22 @@
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th class="col-xs-1">
+      <th class="col-1">
         <input #checkboxHead type="checkbox" [ngModel]="isSelectedAllCurrentPage" (change)="allSelectedCurrentPage()">
       </th>
       <th (click)="requestSortBy('substring_to_translate')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'"
-          class="col-xs-55">
+          class="col-2">
         Строка
       </th>
       <th (click)="requestSortBy('translation_memories.name_text')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
-          class="col-xs-34">
-        ТМ
+          class="col-3">
+        Память переводов
       </th>
-      <th class="col-xs-10">
+      <th class="col-4">
         Действия
       </th>
     </tr>
@@ -81,8 +81,8 @@
     </td>
     <td class="col-xs-10">
       <div class="btn-group" role="group">
-        <button (click)="getEditing(row.model)" class="btn btn-primary m-1"> Изменить </button>
-        <button (click)="getConfirmDelete(row.model)" class="btn btn-warning m-1"> Удалить </button>
+        <button (click)="getEditing(row.model)" class="btn btn-primary m-1 btn-sm"> Изменить </button>
+        <button (click)="getConfirmDelete(row.model)" class="btn btn-warning m-1 btn-sm"> Удалить </button>
       </div>
     </td>
   </tr>
