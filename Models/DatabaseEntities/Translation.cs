@@ -26,5 +26,6 @@ namespace Models.DatabaseEntities
         public Guid ID_Locale { get; set; }
 
         public bool Selected { get; set; }
+        public int status { get; set; }
     }
 }

@@ -191,9 +191,33 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "confirmed=@Confirmed, " +
                         "id_user=@ID_User, " +
                         "datetime=@DateTime, " +
-                        "id_locale=@ID_Locale " +
+                        "id_locale=@ID_Locale, " +
+                        "status = @Status " +
                         "WHERE id=@id";
-                    var updateTranslationParam = item;
+                    //var updateTranslationParam = item;
+
+                    var status = 0;
+                    if (item.Selected == true)
+                    {
+                        status = 20;
+                    }
+                    else
+                    if (item.Confirmed == true)
+                    {
+                        status = 10;
+                    }
+
+                    var updateTranslationParam = new
+                    {
+                        ID_String = item.ID_String,
+                        Translated = item.Translated,
+                        Selected = item.Selected,
+                        Confirmed = item.Confirmed,
+                        ID_User = item.ID_User,
+                        DateTime = item.DateTime,
+                        ID_Locale = item.ID_Locale,
+                        Status = status
+                    };
                     this.LogQuery(updateTranslationSql, updateTranslationParam.GetType(), updateTranslationParam);
                     await dbConnection.ExecuteAsync(
                         sql: updateTranslationSql,
@@ -323,11 +347,12 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var query = "UPDATE translations " +
                         "SET confirmed = true " +
+                        ", status = 20 " +
                         "WHERE id = @Id";
 
             var querySelectedTranslation =
                         "UPDATE translations " +
-                        "SET confirmed = true, selected = true " +
+                        "SET confirmed = true, selected = true, status = 30 " +
                         "WHERE id = @Id";
 
             try
@@ -375,12 +400,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<bool> RejectTranslation(Guid idTranslation, bool selectTranslation = false)
         {
             var query = "UPDATE translations " +
-                        "SET confirmed = false " +
+                        "SET confirmed = false, " +
+                        " status = 0 " +
                         "WHERE id = @Id";
 
             var querySelectedTranslation =
                        "UPDATE translations " +
-                       "SET confirmed = false, selected = false " +
+                       "SET confirmed = false, selected = false, status = 0 " +
                        "WHERE id = @Id";
 
             try
