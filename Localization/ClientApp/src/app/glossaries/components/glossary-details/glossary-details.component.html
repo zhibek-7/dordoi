@@ -9,7 +9,7 @@
       <app-add-term-form-modal [glossary]="glossary" (newTermSubmitted)="addNewTerm($event)" #addTermFormModal></app-add-term-form-modal>
       <button [disabled]="selectedTerms.length == 0 ? true : null" class="btn btn-warning m-1 btn-sm" (click)="deleteSelectedTermsConfirmationModal.show()">Удалить</button>
       <app-delete-terms-confirmation-modal #deleteSelectedTermsConfirmationModal (deleteTermsConfirmed)="deleteSelectedTerms()"></app-delete-terms-confirmation-modal>
-      <button class="btn btn-primary m-1 btn-sm" (click)="openSetProjectsModal()">Назначить глоссарий</button>
+      <button class="btn btn-primary m-1 btn-sm" (click)="openSetProjectsModal()">Назначить словарь</button>
     </div>
     <div class="col d-flex justify-content-end">
       <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
@@ -22,7 +22,7 @@
     <div class="col d-flex justify-content-end">
       <div class="form-check m-1" style="visibility: hidden">
         <label class="form-check-label">
-          <input type="checkbox" class="form-check-input" value="">Переводить глоссарий
+          <input type="checkbox" class="form-check-input" value="">Переводить словарь
         </label>
       </div>
     </div>

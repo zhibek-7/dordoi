@@ -90,7 +90,7 @@
       <div class="tab-pane fade" id="nav-condition" role="tabpanel" aria-labelledby="nav-condition-tab">
 
         <div *ngIf="!checkNumberOfTermsInProject()" class="conditionsBlock">
-          <div>Глоссарий пуст</div>
+          <div>Словарь пуст</div>
         </div>
 
         <div *ngIf="checkNumberOfTermsInProject()">
@@ -104,7 +104,7 @@
                 </div>
                 <form class="col-11">
                   <div class=" inputSearch">
-                    <input type="text" id="searchTermInput" name="first" class="form-control input-lg" placeholder="Поиск в глоссарие"
+                    <input type="text" id="searchTermInput" name="first" class="form-control input-lg" placeholder="Поиск в словаре"
                       [(ngModel)]="searchTermText" class="col-12">
                   </div>
                 </form>

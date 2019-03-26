@@ -17,9 +17,9 @@ export class GlossaryService {
 
 
   /**
-   * Возвращает список глоссариев текущего пользователя, со строками перечислений имен связанных объектов.
+   * Возвращает список словарей текущего пользователя, со строками перечислений имен связанных объектов.
    * @param projectId Идентификатор проекта.
-   * @param searchString Шаблон названия глоссария (поиск по name_text).
+   * @param searchString Шаблон названия словаря (поиск по name_text).
    * @param limit Количество возвращаемых строк.
    * @param offset Количество пропущенных строк.
    * @param sortBy Имя сортируемого столбца.
@@ -59,8 +59,8 @@ export class GlossaryService {
   }
 
   /**
-   * Возвращает глоссарий для редактирования (со связанными объектами).
-   * @param glossaryId Идентификатор глоссария.
+   * Возвращает словарь для редактирования (со связанными объектами).
+   * @param glossaryId Идентификатор словаря.
    */
   async getGlossaryForEditing(
     glossaryId: Guid
@@ -78,8 +78,8 @@ export class GlossaryService {
   }
 
   /**
-   * Добавление нового глоссария.
-   * @param glossary Новый глоссарий.
+   * Добавление нового словарь.
+   * @param glossary Новый словарь.
    */
   addNewGlossary(glossary: GlossariesForEditing): Observable<Object> {
     return this.httpClient.post(
@@ -89,8 +89,8 @@ export class GlossaryService {
   }
 
   /**
-   * Сохранение изменений в глоссарии.
-   * @param glossary Отредактированный глоссарий.
+   * Сохранение изменений в словарь.
+   * @param glossary Отредактированный словарь.
    */
   editSaveGlossary(glossary: GlossariesForEditing): Observable<Object> {
     return this.httpClient.post(
@@ -100,8 +100,8 @@ export class GlossaryService {
   }
 
   /**
-   * Удаление глоссария.
-   * @param glossaryId Идентификатор глоссария.
+   * Удаление словарь.
+   * @param glossaryId Идентификатор словарь.
    */
   deleteGlossary(glossaryId: Guid): Observable<Object> {
     return this.httpClient.delete(
@@ -111,8 +111,8 @@ export class GlossaryService {
 
   //
   /**
-   * Удаление всех терминов глоссария.
-   * @param glossaryId Идентификатор глоссария.
+   * Удаление всех терминов словарь.
+   * @param glossaryId Идентификатор словарь.
    */
   clearGlossary(glossaryId: Guid): Observable<Object> {
     return this.httpClient.delete(

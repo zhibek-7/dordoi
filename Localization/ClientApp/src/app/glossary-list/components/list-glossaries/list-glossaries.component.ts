@@ -82,7 +82,7 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
     );
   }
   
-  /** Получение списка глоссарий для отображения в таблице. */
+  /** Получение списка словарь для отображения в таблице. */
   loadData(offset = 0) {
     super.loadData();
     let sortBy = new Array<string>();
@@ -114,7 +114,7 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
       );
   }
 
-  //#region Выбранный глоссарий. Его отметка и возврат.
+  //#region Выбранный словарь. Его отметка и возврат.
 
   /**
    * Фиксация индекса выбранного элемента.
@@ -146,8 +146,8 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
   //#endregion
 
   /**
-   * Добавление нового глоссария.
-   * @param newGlossary Новый глоссарий.
+   * Добавление нового словарь.
+   * @param newGlossary Новый словарь.
    */
   addNewGlossary(newGlossary: GlossariesForEditing) {
     this.glossariesService
@@ -158,7 +158,7 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
     this.isSelectedGlossary = false;
   }
 
-  //#region Редактирование глоссария
+  //#region Редактирование словарь
 
   /**
    * Отображает диалог для редактирования.
@@ -186,7 +186,7 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
 
   //#endregion
 
-  //#region Удаление глоссария.
+  //#region Удаление словарь.
 
   /**
    * Отображает диалог для получения подтверждения.
@@ -197,8 +197,8 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
   }
 
   /**
-   * Удаление глоссария.
-   * @param glossary Выбранный глоссарий.
+   * Удаление словарь.
+   * @param glossary Выбранный словарь.
    */
   deleteGlossary(glossary: Glossary) {
     this.glossariesService
@@ -211,7 +211,7 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
 
   //#endregion
 
-  //#region Удаление всех терминов глоссария.
+  //#region Удаление всех терминов словарь.
 
   /**
    * Отображает диалог для получения подтверждения.
@@ -222,8 +222,8 @@ export class ListGlossariesComponent extends MainListPageComponent implements On
   }
 
   /**
-   * Удаление всех терминов глоссария
-   * @param glossary Выбранный глоссарий.
+   * Удаление всех терминов словарь
+   * @param glossary Выбранный словарь.
    */
   clearGlossary(glossary: Glossary) {
     this.glossariesService

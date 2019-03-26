@@ -69,5 +69,5 @@ import { RequestInterceptorService } from 'src/app/services/requestInterceptor.s
       RequestDataReloadService,
       { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
     ]
-}) //Модуль для глоссария (Glossaries)
+}) //Модуль для словарь (Glossaries)
 export class ListGlossariesModule { }

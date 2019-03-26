@@ -37,7 +37,7 @@ export class EditGlossaryFormModalComponent extends ModalComponent implements On
       super.show();
     else {
       this.hide();
-      alert("Не удалось открыть для редактирования глоссарий \"" + this.glossary.name_text + "\", ранее он был удален. \n" +
+      alert("Не удалось открыть для редактирования словарь \"" + this.glossary.name_text + "\", ранее он был удален. \n" +
         "Страница будет перезагружена для обновления данных.");
       this.glossaryEditable = new GlossariesForEditing();
       this.error.emit();

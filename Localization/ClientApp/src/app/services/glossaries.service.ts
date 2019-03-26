@@ -177,7 +177,7 @@ export class GlossariesService {
       .pipe(catchError(this.handleError));
   }
 
-  // Получить все термины из всех глоссариев присоедененных к проекту локализации, по id необходимого проекта локализации
+  // Получить все термины из всех словарь присоедененных к проекту локализации, по id необходимого проекта локализации
   getAllTermsFromAllGlossarisInProject(
     projectId: Guid
   ): Observable<TermWithGlossary[]> {

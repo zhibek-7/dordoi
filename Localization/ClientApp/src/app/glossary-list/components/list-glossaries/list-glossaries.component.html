@@ -10,14 +10,14 @@
   <ul class="navbar-nav nav">
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать глоссарий </button>
+      <button class="btn nav-element" (click)="addGlossaryFormModal.show()"> Создать словарь </button>
       <app-add-glossary-form-modal #addGlossaryFormModal (newGlossarySubmitted)="addNewGlossary($event)"></app-add-glossary-form-modal>
     </li>
 
     <li class="nav-item">
       <button class="btn nav-element" (click)="getEditingGlossary()" [disabled]="!isSelectedGlossary">
         Редактировать
-        глоссарий
+        словарь
       </button>
       <app-edit-glossary-form-modal #editGlossaryFormModal *ngIf="isVisibleEditGlossaryFormModal" [glossary]="glossary"
                                     (editedGlossarySubmitted)="editedGlossary($event)" (error)="getGlossariesDTO()"></app-edit-glossary-form-modal>
