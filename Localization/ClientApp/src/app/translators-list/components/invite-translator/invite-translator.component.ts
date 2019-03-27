@@ -121,6 +121,7 @@ export class InviteTranslatorComponent extends ModalComponent implements OnInit 
 
   saveInvitation() {
     this.invitations.forEach(invitation => {
+      invitation.id_role = this.selectedRoleId;
       this.invitationsService.addInvitation(invitation).subscribe();
     });
     this.hide();
