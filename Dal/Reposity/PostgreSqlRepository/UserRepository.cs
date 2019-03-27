@@ -845,8 +845,8 @@ namespace DAL.Reposity.PostgreSqlRepository
         public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
         {
             { "id", "users.id" },
-            { "wordsQuantity", "" },
-            { "cost", "" }
+            { "words_quantity", "words_quantity" },
+            { "cost", "users_services.price" }
         };
 
         /// <summary>
@@ -1071,10 +1071,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .Join("users_topics", "users_topics.id_user", "users.id")
                     .Join("users_services", "users_services.id_user", "users.id")
                     .LeftJoin("participants", "participants.id_user", "users.id")
+                    .LeftJoin("translations", "translations.id_user", "users.id")
+                    .LeftJoin("translation_substrings", "translation_substrings.id", "translations.id_string")
                     .WhereTrue("users.public_profile")
                     .Select(
-                        "users.id as user_Id",
-                        "users.name_text as user_Name",
+                        "users.id as id",
+                        "users.name_text as user_name",
+                        "users.email as user_email",
                         "users.photo as user_pic",
                         "users_topics.translation_topics_name as topics_string",
                         "users_services.service_name as service",
@@ -1085,14 +1088,17 @@ namespace DAL.Reposity.PostgreSqlRepository
                     .GroupBy(
                         "users.id",
                         "users.name_text",
+                        "users.email",
                         "users.photo",
                         "users_topics.translation_topics_name",
                         "users_services.service_name",
                         "users_services.price",
                         "users_services.currency_name")
-                    .SelectRaw("avg(participants.deadlines) as termRating")
-                    .SelectRaw("avg(participants.quality_of_work) as translationRating");
-                
+                    .SelectRaw("avg(participants.deadlines) as term_rating")
+                    .SelectRaw("avg(participants.quality_of_work) as translation_rating")
+                    .SelectRaw("count(participants.id) as number_of_ratings")
+                    .SelectRaw("sum(case when translation_substrings.word_count = null then 0 else translation_substrings.word_count end)/1000 as words_quantity");
+
                 if (topicsId != null && topicsId.Length > 0)
                 {
                     query = query.LeftJoin("users_translation_topics", "users_translation_topics.id_user", "users.id")

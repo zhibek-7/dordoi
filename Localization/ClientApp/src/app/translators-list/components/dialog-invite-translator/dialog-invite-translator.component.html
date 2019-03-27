@@ -1,36 +1,18 @@
 <h1 mat-dialog-title></h1>
 <div mat-dialog-content>
-  <p>{{data.name}}</p>
-  <section class="example-section">
-    <mat-checkbox
-      class="example-margin"
-      labelPosition="before">
-      Проект 1
-    </mat-checkbox>
-  </section>
-  <section class="example-section">
-    <mat-checkbox
-      class="example-margin"
-      labelPosition="before">
-      Проект 2
-    </mat-checkbox>
-  </section>
-  <section class="example-section">
-    <mat-checkbox
-      class="example-margin"
-      labelPosition="before">
-      Проект 3
-    </mat-checkbox>
-  </section>
-  <section class="example-section">
-    <mat-checkbox
-      class="example-margin"
-      labelPosition="before">
-      Проект 4
+  <p>{{data.user.user_name}}</p>
+  <section *ngFor="let project of projects"
+           class="example-section">
+    <mat-checkbox class="example-margin"
+                  labelPosition="before"
+                  (change)="valueChange(project,$event)">
+      {{project.name_text}}
     </mat-checkbox>
   </section>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Отмена</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Пригласить</button>
+  <button mat-button cdkFocusInitial (click)="inviteUser.show()">Пригласить</button>  <!--[mat-dialog-close]="data"-->
 </div>
+
+<app-invite-translator #inviteUser [user]="data.user" [projects]="selectedProjects"></app-invite-translator>

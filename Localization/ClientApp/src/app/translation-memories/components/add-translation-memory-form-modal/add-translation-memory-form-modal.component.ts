@@ -42,6 +42,7 @@ export class AddTranslationMemoryFormModalComponent extends ModalComponent imple
     let currentProjectId = this.projectsService.currentProjectId;
     if (!currentProjectId.isEmpty())
       this.newTranslationMemory.localization_projects_ids.push(currentProjectId);
+    console.log("currentProjectId: ", currentProjectId);
   }
 
 }

@@ -20,11 +20,12 @@ import { TypeOfServiceForSelectDTO } from '../../../models/DTO/typeOfServiceForS
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { DialogInviteTranslatorComponent } from '../dialog-invite-translator/dialog-invite-translator.component';
 import { Guid } from "guid-typescript";
+import { ProjectsService } from 'src/app/services/projects.service';
 
-export interface DialogData {
-  animal: string;
-  name: string;
-}
+//export interface DialogData {
+//  animal: string;
+//  name: string;
+//}
 
 @Component({
   selector: 'app-translators-list',
@@ -44,11 +45,11 @@ export class TranslatorsListComponent implements OnInit {
 
   sortingList = [
     {
-      value: [false, 'wordsQuantity'],
+      value: [false, 'words_quantity'],
       name: 'По числу переведенных слов (убыв.)'
     },
     {
-      value: [true, 'wordsQuantity'],
+      value: [true, 'words_quantity'],
       name: 'По числу переведенных слов (возр.)'
     },
     {
@@ -99,6 +100,7 @@ export class TranslatorsListComponent implements OnInit {
     private languagesService: LanguageService,
     private translationTopicService: TranslationTopicService,
     private typeOfServiceService: TypeOfServiceService,
+    private projectsService: ProjectsService,
     public dialog: MatDialog
   ) {}
 
@@ -180,11 +182,11 @@ export class TranslatorsListComponent implements OnInit {
   openDialog(translator): void {
     const dialogRef = this.dialog.open(DialogInviteTranslatorComponent, {
       width: '650px',
-      data: {item: translator, name: translator.user_Name}
+      data: { user: translator }//, name: translator.user_Name}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      console.log('The dialog was closed', result);
     });
   }
 
@@ -286,8 +288,7 @@ export class TranslatorsListComponent implements OnInit {
       this.max = undefined;
     }
   }
-
-
+  
   onPageChanged(args: PageEvent) {
     this.pageSize = args.pageSize;
     const currentOffset = args.pageSize * args.pageIndex;
@@ -295,8 +296,6 @@ export class TranslatorsListComponent implements OnInit {
   }
 
   loadPublicTranslators(pageIndex = 0) {
-    console.log("this.selectedSorting: ", this.selectedSorting); //this.selectedSorting = undefined
-    console.log("this.topics: ", this.topics);
 
     let sortingColumns: string[] = null;
     if (this.sortingColumn) {
@@ -306,7 +305,6 @@ export class TranslatorsListComponent implements OnInit {
     let selectedTopics: Guid[] = null;
     if (this.topics.value != null && this.topics.value.length > 0) {
       selectedTopics = this.topics.value.map(t => t.id);
-      console.log("selectedTopics: ", selectedTopics);
     }
 
     this.usersService.getAllTranslators(
@@ -325,6 +323,7 @@ export class TranslatorsListComponent implements OnInit {
       response => {
         this.translators = response.body;
 
+        //console.log("this.translators: ", this.translators);
         this.listLength = +response.headers.get("totalCount");
         //this.parent.currentOffset = offset;
       },

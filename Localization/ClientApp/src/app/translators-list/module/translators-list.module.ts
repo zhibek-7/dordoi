@@ -3,27 +3,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
   MatIconModule,
-  MatButtonModule,//+
-  MatTableModule,
-  MatNativeDateModule,
-  MatSortModule,
+  MatButtonModule,
   MatPaginatorModule,
-  MatMenuModule,
-  //ниже точно нужные, выше перебрать
   MatOptionModule,
   MatSelectModule,
   MatCheckboxModule,
-  MatDialogModule
+  MatDialogModule,
+  MatFormFieldModule,
+  MatInputModule
 } from '@angular/material';
 
 import { TranslatorsListComponent } from '../components/translators-list/translators-list.component';
 import { DialogInviteTranslatorComponent } from '../components/dialog-invite-translator/dialog-invite-translator.component';
+import { InviteTranslatorComponent } from '../components/invite-translator/invite-translator.component';
 
 import { TranslationTopicService } from 'src/app/services/translation-topic.service';
 import { TypeOfServiceService } from 'src/app/services/type-of-service.service';
-//import { TranslatorsService } from 'src/app/services/translators.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
+import { ProjectsService } from 'src/app/services/projects.service';
+
 import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
 
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -34,33 +33,38 @@ import { TranslatorsListRoutingModule } from './translators-list-routing.module'
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 
+import { RolesService } from 'src/app/services/roles.service';
+import { InvitationsService } from 'src/app/services/invitations.service';
+import { GuidsService } from 'src/app/services/guids.service';
+//import { AppConfigService } from 'src/services/app-config.service';
+
 
 @NgModule({
   declarations:
     [
       TranslatorsListComponent,
       DialogInviteTranslatorComponent,
+      InviteTranslatorComponent,
       ItemsSortBy
     ],
+  entryComponents: [DialogInviteTranslatorComponent],
   imports:
     [
       FormsModule,
       ReactiveFormsModule,
       CommonModule,
       HttpClientModule,
-
-      MatTableModule,
+      
       MatIconModule,
       MatButtonModule,
-      MatNativeDateModule,
-      MatSortModule,
-      MatMenuModule,
       MatPaginatorModule,
-      //
       MatOptionModule,
       MatSelectModule,
       MatCheckboxModule,
       MatDialogModule,
+
+      MatInputModule,
+      MatFormFieldModule,
 
       SharedModule,
 
@@ -70,9 +74,15 @@ import { RequestInterceptorService } from 'src/app/services/requestInterceptor.s
     [
       TranslationTopicService,
       TypeOfServiceService,
-      //TranslatorsService,
       UserService,
       LanguageService,
+      ProjectsService,
+
+      InvitationsService,
+      GuidsService,
+      RolesService,
+      //AppConfigService,
+
       RequestDataReloadService,
       { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
     ]
