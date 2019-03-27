@@ -32,7 +32,7 @@ namespace External.Migration
 
         }
 
-        public void Initialize()
+        public void Initialize(Guid id)
         {
             throw new NotImplementedException();
         }

@@ -45,12 +45,13 @@ namespace External.Migration
         {
         }
 
-        public void Initialize()
+        public void Initialize(Guid id)
         {
 
             var connectionString = Settings.GetStringDB();
             //TOD нужно передавать глассарий
-            glossaryId = Guid.Parse("e5f51aa3-8c6b-478f-a277-5497f608eba6");
+            //glossaryId = Guid.Parse("e5f51aa3-8c6b-478f-a277-5497f608eba6");
+            glossaryId = id;
             gsr = new GlossariesRepository(connectionString);
             IEnumerable<Glossaries> gList = gsr.GetGlossaryForEditAsync(glossaryId).Result;
 

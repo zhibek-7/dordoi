@@ -1,10 +1,10 @@
 <div>
-  <label class="m-1"> Название глоссария </label>
+  <label class="m-1"> Название словаря </label>
   <input id="name" name="name" class="form-control m-1" type="text" required [(ngModel)]="glossary.name_text" #name="ngModel">
   <div *ngIf="name.invalid && (name.dirty || name.touched)"
        class="alert alert-danger">
     <div *ngIf="name.errors.required">
-      Введите название глоссария.
+      Введите название словаря.
     </div>
   </div>
 </div>
@@ -15,7 +15,7 @@
 </div>
 
 <div>
-  <label class="m-1"> Назначить глоссарий для следующих проектов: </label>
+  <label class="m-1"> Назначить словарь для следующих проектов: </label>
   <div class="input-group">
     <div>
       <div class="form-check" *ngFor="let localizationProject of availableLocalizationProjects">

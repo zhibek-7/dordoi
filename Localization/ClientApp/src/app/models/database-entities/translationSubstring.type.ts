@@ -31,6 +31,6 @@ export class TranslationSubstring {
     public outdated?: boolean,
     public status?: string
   ) {
-    console.log("TranslationSubstring.context_file=" + context_file);
+    //console.log("TranslationSubstring.context_file=" + context_file);
   }
 }

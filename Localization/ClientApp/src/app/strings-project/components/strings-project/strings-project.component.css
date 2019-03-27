@@ -39,7 +39,7 @@
 }
 
 .table {
-  font-size: 14px;
+  font-size: 0.8rem;
 }
 
 table td, table th {
@@ -50,21 +50,20 @@ table th {
   text-align: justify;
 }
 
-.col-xs-34 {
-  width: 34%;
+.col-1{
+ width : 2rem;
+}
+.col-2{
+ width : 60%;
+}
+.col-3{
+ width : 20%;
 }
 
-.col-xs-55 {
-  width: 55%;
+.col-4{
+ width : 20%;
 }
 
-.col-xs-10 {
-  width: 10%;
-}
-
-.col-xs-1 {
-  width: 1%;
-}
 
 .row-selected {
   background: #A4BF82 !important;

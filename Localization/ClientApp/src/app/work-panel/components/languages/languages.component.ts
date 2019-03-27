@@ -235,7 +235,6 @@ export class LanguagesComponent implements OnInit {
   findSimilarTranslations() {
     let phraseForTranslation = this.sharePhraseService.getSharedPhrase();
     let currentProjectId = this.projectService.currentProjectId;
-
     this.translationService
       .findSimilarTranslations(
         currentProjectId,

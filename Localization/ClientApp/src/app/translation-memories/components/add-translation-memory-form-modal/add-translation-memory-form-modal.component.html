@@ -7,12 +7,12 @@
     <app-translation-memory-editable-details [translationMemory]="newTranslationMemory" [triggerLoading]="visible"></app-translation-memory-editable-details>
   </div>
   <div class="app-modal-footer">
-    <button class="btn btn-success m-1"
+    <button class="btn btn-success m-1 btn-sm"
             (click)="submit()"
             [disabled]="newTranslationMemory.name_text == null || newTranslationMemory.name_text.length == 0 || newTranslationMemory.localization_projects_ids.length == 0"> <!--newTranslationMemory.locales_ids.length == 0 ||-->
       Создать
       </button>
-    <button class="btn btn-primary"
+    <button class="btn btn-primary btn-sm"
             (click)="hide()">
        Отмена
     </button>

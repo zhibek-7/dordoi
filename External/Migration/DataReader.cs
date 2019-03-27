@@ -9,7 +9,7 @@ namespace External.Migration
     public interface DataReader
     {
 
-        void Initialize();
+        void Initialize(Guid id);
 
         // public String[] splitLine();
 

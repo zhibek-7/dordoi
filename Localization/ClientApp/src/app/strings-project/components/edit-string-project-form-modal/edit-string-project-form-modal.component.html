@@ -4,7 +4,6 @@
     <button type="button" class="close" (click)="hide()">&times;</button>
   </div>
   <div class="app-modal-body">
-
     <div>
       <label class="m-1">{{translationSubstring.localization_project_source_locale_name}}</label>
       <textarea class="form-control m-1" [(ngModel)]="translationSubstring.substring_to_translate"></textarea>
@@ -14,10 +13,9 @@
       <label class="m-1">{{row.locale_name}}</label>
       <textarea class="form-control m-1" [(ngModel)]="row.translated"></textarea>
     </div>
-
   </div>
   <div class="app-modal-footer">
-    <button class="btn btn-success m-1" (click)="submit()"> Сохранить </button>
-    <button class="btn btn-primary" (click)="hide()"> Отмена </button>
+    <button class="btn btn-success m-1 btn-sm" (click)="submit()"> Сохранить </button>
+    <button class="btn btn-primary btn-sm" (click)="hide()"> Отмена </button>
   </div>
 </app-modal>

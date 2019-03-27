@@ -26,6 +26,6 @@ export class Term extends TranslationSubstring {
       position_in_text,
       context_file
     );
-    console.log("Term.context_file=" + context_file);
+//    console.log("Term.context_file=" + context_file);
   }
 }

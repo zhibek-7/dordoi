@@ -5,7 +5,7 @@
         <input type="text" class="form-control" [(ngModel)]="searchText" placeholder="Фильтровать языки">
       </div>
       <div class="input-group-append">
-        <button style="height: 38px;" type="button" class="btn btn-primary m-1" (click)="args='ascending';reverse=!reverse">
+        <button style="height: 38px;" type="button" class="btn btn-primary m-1 btn-sm" (click)="args='ascending';reverse=!reverse">
           <i class="material-icons">sort_by_alpha</i>
         </button>
       </div>
@@ -21,7 +21,7 @@
     </div>
     <div class="input-group">
       <div class="btn-group mr-1">
-        <button type="button" class="btn btn-primary" (click)="selectAll()">Выбрать все</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="selectAll()">Выбрать все</button>
       </div>
     </div>
   </div>

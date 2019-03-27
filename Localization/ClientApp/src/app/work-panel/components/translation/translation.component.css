@@ -26,10 +26,10 @@
 .textArea {
 
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
-  height: 5rem;
-  min-height: 3em;
+  min-height: 5rem;
+  max-height: 20rem;
   font-size: 1em;
   min-width: 18em;
   background-color: #F4F7FC;
@@ -41,9 +41,10 @@
 
   padding: 0.1rem;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
-  height: 2rem;
+  min-height: 2rem;
+  max-height: 20rem;
   font-size: 0.8em;
   min-width: 18em;
   background-color: #F4F7FC;
@@ -54,9 +55,10 @@
 
   padding: 0.1rem;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
-  height: 3rem;
+  min-height: 3rem;
+  max-height: 20rem;
   font-size: 1em;
   min-width: 18em;
 }

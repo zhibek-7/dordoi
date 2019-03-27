@@ -1,21 +1,22 @@
 .languagesBlock {}
 
 .languagesOptionsBlock {
-    background-color: #F6F5F1;
-    padding-top: 1vh;
-    padding-left: 1%;
+  background-color: #F6F5F1;
+  padding-top: 1vh;
+  padding-left: 1%;
 }
+
 .languagesOptionsBlock a {
-    color: gray;
+  color: gray;
 }
 
 .offersBlock {
-    padding: 2px 2px 2px 2px;
+  padding: 2px 2px 2px 2px;
 }
 
 .offersBlock {}
 
-.list-group-item{
+.list-group-item {
   padding: 2px 2px 2px 2px;
 }
 
@@ -29,11 +30,19 @@
 }
 
 .translatedText {
-  font-size: 1em;
+  font-size: 0.8em;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 2rem;
+  max-height: 20rem;
+  min-width: 18em;
+  padding: 0.1rem;
+
 }
 
 .translationInfo {
-    padding-top: 0.1rem;
+  padding-top: 0.1rem;
 }
 
 .utilitiesIcon {
@@ -93,11 +102,12 @@
 }
 
 
-.row{
-margin: 0px;
+.row {
+  margin: 0px;
 }
-.arrowIcon {    
-    cursor: pointer;
+
+.arrowIcon {
+  cursor: pointer;
 }
 
 .mat-icon {

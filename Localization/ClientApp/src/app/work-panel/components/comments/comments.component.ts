@@ -37,7 +37,7 @@ export class CommentsComponent implements OnInit {
 
   addCommentText: string = "";
 
-  // Переменные для блока с Глоссарием
+  // Переменные для блока с словарь
   termsList: TermWithGlossary[];
 
   searchTermText: string = "";
@@ -77,11 +77,11 @@ export class CommentsComponent implements OnInit {
       $("#nav-comment").addClass("active show");
     });
 
-    // Событие, срабатываемое при поиске слова в глоссарие из модального окна
+    // Событие, срабатываемое при поиске слова в словаря из модального окна
     this.shareWordFromModalService.onClickFindInGlossary.subscribe(word => {
       this.searchTermText = word;
 
-      // переключает TabBar на вкладку "Глоссарии"
+      // переключает TabBar на вкладку "словарь"
       let activeTab = $(".directoryBlock .nav-tabs .active").attr("href");
 
       if (activeTab != "#nav-condition") {
@@ -224,7 +224,7 @@ export class CommentsComponent implements OnInit {
     }
   }
 
-  // Поиск всех терминов из всех глоссариев присоедененных к проекту локализации
+  // Поиск всех терминов из всех словарь присоедененных к проекту локализации
   getTerms() {
     const id = this.projectsService.currentProjectId;
     this.glossariesService
@@ -264,7 +264,7 @@ export class CommentsComponent implements OnInit {
     }
   }
 
-  // Событие, срабатываемое при нажатии клавиши Enter при поиске в глоссарие
+  // Событие, срабатываемое при нажатии клавиши Enter при поиске в словарь
   onEnterPressComment(event: any) {
     if (event.which == 13 || event.keyCode == 13) {
       this.addComment();

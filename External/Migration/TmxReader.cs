@@ -47,12 +47,13 @@ namespace External.Migration
 
         }
 
-        public void Initialize()
+        public void Initialize(Guid id)
         {
 
             var connectionString = Settings.GetStringDB();
             //TOD нужно передавать глассарий
-            memoryId = Guid.Parse("47faa0d8-56da-4e09-b151-ded06b587338");
+            //memoryId = Guid.Parse("47faa0d8-56da-4e09-b151-ded06b587338");
+            memoryId = id;
             gsr = new TranslationMemoryRepository(connectionString);
             IEnumerable<TranslationMemory> gList = gsr.GetForEditAsync(memoryId).Result;
             List<TranslationMemory> tt = gList.ToList();

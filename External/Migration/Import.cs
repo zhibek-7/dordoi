@@ -34,7 +34,7 @@ namespace External.Migration
         /**
          * Импорт
          */
-        public void imp(FileType ti, FileStream fs)
+        public void imp(FileType ti, FileStream fs, Guid id)
         {
 
             try
@@ -52,7 +52,7 @@ namespace External.Migration
                         break;
                 }
 
-                reader.Initialize();
+                reader.Initialize(id);
                 reader.Load(fs);
 
             }

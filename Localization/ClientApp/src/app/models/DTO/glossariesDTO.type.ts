@@ -1,7 +1,7 @@
 import { Guid } from 'guid-typescript';
 
 /**
- * Для создания нового и редактирования глоссария
+ * Для создания нового и редактирования словарь
  */
 export class GlossariesForEditing {
   id: Guid;
@@ -14,7 +14,7 @@ export class GlossariesForEditing {
 }
 
 /**
- * Для отображения в таблице списка глоссарий
+ * Для отображения в таблице списка словарь
  */
 export class GlossariesTableViewDTO {
   id: Guid;

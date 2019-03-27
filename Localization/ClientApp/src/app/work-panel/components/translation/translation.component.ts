@@ -58,6 +58,7 @@ export class TranslationComponent implements OnInit, OnDestroy {
 
   //Действия при двойном клике по слову
   openSelectionDialog(event) {
+ console.log("openSelectionDialog");
     let selectedWord;
     if (window.getSelection) {
       selectedWord = window.getSelection();
