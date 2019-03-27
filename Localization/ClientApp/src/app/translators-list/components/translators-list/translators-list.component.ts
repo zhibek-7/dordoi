@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { checkAndUpdateBinding } from '@angular/core/src/view/util';
@@ -35,6 +35,11 @@ import { ProjectsService } from 'src/app/services/projects.service';
 export class TranslatorsListComponent implements OnInit {
 
   translators: Translator[] = [];
+  currentUser: Translator;
+
+  @ViewChild("invite")
+  public invite: DialogInviteTranslatorComponent;
+  visibleInvite: boolean = false;
 
   languages: Locale[] = [];
   services: TypeOfServiceForSelectDTO[] = []; // = ['Перевод', 'Редактура'];
@@ -152,16 +157,7 @@ export class TranslatorsListComponent implements OnInit {
 
   filtredFn(searchingVal) {
     console.log(searchingVal);
-    //let filtredTranslators = [];
-
-    //this.translators.forEach(item => {
-    //  console.log('item')
-    //  if(this.check(item, searchingVal)) {
-    //    filtredTranslators.push(item);
-    //  }
-    //});
-    //this.translators = filtredTranslators;
-
+    
     this.loadPublicTranslators();
   }
 
@@ -180,102 +176,13 @@ export class TranslatorsListComponent implements OnInit {
   //#endregion
 
   openDialog(translator): void {
-    const dialogRef = this.dialog.open(DialogInviteTranslatorComponent, {
-      width: '650px',
-      data: { user: translator }//, name: translator.user_Name}
-    });
+    this.currentUser = translator;
+    this.visibleInvite = true;
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed', result);
+    setTimeout(() => {
+      this.invite.show();
     });
   }
-
-  //checkValue(translator, filter, name) {
-  //  if (!filter) {
-  //    return true;
-  //  } else {
-  //    return translator[name] === filter;
-  //  }
-  //}
-
-  //checkMulti(translator, filter, name) {
-  //  if (!filter[name] || name.length === 0) {
-  //    return true;
-  //  } else {
-  //    return translator.topics.some(r => filter[name].indexOf(r) >= 0);
-  //  }
-  //}
-
-  //checkLang(translator, filter, name) {
-  //  if (!filter) {
-  //    return true;
-  //  } else {
-  //    return translator.languages.includes(filter);
-  //  }
-  //}
-
-  //checkMin(translator, filter, name) {
-  //  if (!filter.min) {
-  //    return true;
-  //  } else {
-  //    return translator[name] >= filter.min;
-  //  }
-  //}
-
-  //checkMax(translator, filter, name) {
-  //  if (!filter.max) {
-  //    return true;
-  //  } else {
-  //    return translator[name] <= filter.max;
-  //  }
-  //}
-
-  //check(translator, filter) {
-  //  return (this.checkMulti(translator, filter, 'topics') &&
-  //          this.checkMin(translator, filter, 'cost') &&
-  //          this.checkMax(translator, filter, 'cost')) &&
-  //          this.checkLang(translator, filter.currentLanguage, 'languages') &&
-  //          this.checkLang(translator, filter.translateLanguage, 'languages') &&
-  //          this.checkValue(translator, filter.service, 'service') ;
-  //}
-
-  //loadPublicTranslators(pageIndex = 0) {
-  //  this.translationService.getAllPublicTranslators().subscribe({
-  //    next: response => {
-  //      // console.log('next', response);
-  //      this.translators = response.slice(pageIndex, this.pageSize + pageIndex);
-  //      this.listLength = response.length;
-  //    },
-  //    error: err => console.log(err),
-  //    complete: () => {
-  //      this.translators.forEach(item => {
-  //        item.user_pic = this.loadPhoto(item.user_Id);
-  //      });
-  //    }
-  //  });
-  //}
-
-  //loadPhoto(id) {
-  //  this.usersService.getPhotoById(id).subscribe(
-  //    imageBlob => {
-  //      const reader = new FileReader();
-  //      reader.addEventListener(
-  //        'load',
-  //        () => {
-  //          return reader.result;
-  //        },
-  //        false
-  //      );
-
-  //      if (imageBlob) {
-  //        reader.readAsDataURL(imageBlob);
-  //      }
-  //    },
-  //    error => {
-  //      return '';
-  //    }
-  //  );
-  //}
 
   onMinPriceChange(minPrice: number) {
     if (this.max != undefined && (this.min > this.max) || (this.min < 0)) {
@@ -328,7 +235,6 @@ export class TranslatorsListComponent implements OnInit {
         //this.parent.currentOffset = offset;
       },
       error => {
-        //this.isDataSourceLoaded = false;
         console.log(error);
       }
     );

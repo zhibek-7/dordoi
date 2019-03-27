@@ -8,14 +8,14 @@ import {
   MatOptionModule,
   MatSelectModule,
   MatCheckboxModule,
-  MatDialogModule,
+  MatDialogModule,
+
   MatFormFieldModule,
   MatInputModule
 } from '@angular/material';
 
 import { TranslatorsListComponent } from '../components/translators-list/translators-list.component';
 import { DialogInviteTranslatorComponent } from '../components/dialog-invite-translator/dialog-invite-translator.component';
-import { InviteTranslatorComponent } from '../components/invite-translator/invite-translator.component';
 
 import { TranslationTopicService } from 'src/app/services/translation-topic.service';
 import { TypeOfServiceService } from 'src/app/services/type-of-service.service';
@@ -36,7 +36,6 @@ import { RequestInterceptorService } from 'src/app/services/requestInterceptor.s
 import { RolesService } from 'src/app/services/roles.service';
 import { InvitationsService } from 'src/app/services/invitations.service';
 import { GuidsService } from 'src/app/services/guids.service';
-//import { AppConfigService } from 'src/services/app-config.service';
 
 
 @NgModule({
@@ -44,10 +43,8 @@ import { GuidsService } from 'src/app/services/guids.service';
     [
       TranslatorsListComponent,
       DialogInviteTranslatorComponent,
-      InviteTranslatorComponent,
       ItemsSortBy
     ],
-  entryComponents: [DialogInviteTranslatorComponent],
   imports:
     [
       FormsModule,
@@ -62,7 +59,7 @@ import { GuidsService } from 'src/app/services/guids.service';
       MatSelectModule,
       MatCheckboxModule,
       MatDialogModule,
-
+      
       MatInputModule,
       MatFormFieldModule,
 
@@ -81,7 +78,6 @@ import { GuidsService } from 'src/app/services/guids.service';
       InvitationsService,
       GuidsService,
       RolesService,
-      //AppConfigService,
 
       RequestDataReloadService,
       { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },

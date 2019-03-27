@@ -11,6 +11,9 @@
       <div class="jumbotron" *ngIf="!translators.length">
         Согласно заданным параметрам фильтра не найдено ни одного переводчика.
       </div>
+      
+      <app-dialog-invite-translator #invite *ngIf="visibleInvite" [user]="currentUser"></app-dialog-invite-translator>
+
       <div class="jumbotron" *ngFor="let item of translators; let i=index">
         <div class="row">
           <div class="col-2">
@@ -62,13 +65,13 @@
           </div>
         </div>
       </div>
-      <mat-paginator
-          [length]="listLength"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="pageSizeOptions"
-          (page)="onPageChanged($event)"
-          style="margin-bottom: 1rem;">
+      <mat-paginator [length]="listLength"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="pageSizeOptions"
+                     (page)="onPageChanged($event)"
+                     style="margin-bottom: 1rem;">
       </mat-paginator>
+
     </div>
     <div class="col-3" style="font-size: 14px;">
       <div class="content-top">
@@ -127,7 +130,7 @@
           </div>
           <div class="col-6">
             <label for="max">до</label>
-            <input matInput type="number" id="max" name="max" [(ngModel)]="max" (input)="onMaxPriceChange($event.target.value)"/>
+            <input matInput type="number" id="max" name="max" [(ngModel)]="max" (input)="onMaxPriceChange($event.target.value)" />
           </div>
         </div>
       </fieldset>
@@ -141,7 +144,9 @@
           topics: topics.value,
           min: min,
           max: max
-        })">Поиск</button>
+        })">
+          Поиск
+        </button>
       </div>
     </div>
   </div>
