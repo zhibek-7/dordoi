@@ -1,10 +1,14 @@
 <app-modal [isWide]="true" [(visible)]="visible">
   <div class="app-modal-header d-flex m-2">
-    <h4 class="modal-title">Пригласить в проект {{user.user_name}}</h4>
+    <h4 class="modal-title">Пригласить в проект(ы) {{user.user_name}}</h4>
     <button type="button" class="close" (click)="hide()">&times;</button>
   </div>
   <div class="app-modal-body">
     <form [formGroup]="formGroup">
+      <div class="m-2">
+        <h6>Проекты</h6>
+        <ul *ngFor="let project of projects"><li>{{project.name_text}}</li></ul>
+      </div>
       <div class="m-2">
         <div>
           <h6>Роль</h6>
@@ -13,7 +17,7 @@
           <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name_text}}</option>
         </select>
       </div>
-      <div class="m-2">
+      <!--<div class="m-2">
         <div>
           <h6>Электронная почта</h6>
         </div>
@@ -26,7 +30,7 @@
         <div class="alert alert-danger" *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.email">
           Некорректный email
         </div>
-      </div>
+      </div>-->
       <div class="m-2">
         <div>
           <h6>Сообщение</h6>
