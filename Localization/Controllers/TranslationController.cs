@@ -44,9 +44,7 @@ namespace Localization.WebApi
         {
             var identityName = User.Identity.Name;
             Guid userId = (Guid)userRepository.GetID(identityName);
-
             translation.ID_User = userId;
-
 
             if (translation == null)
             {
@@ -63,17 +61,20 @@ namespace Localization.WebApi
             return Ok(insertedTranslationId);
         }
 
-        /// <summary>
-        /// Получить все варианты перевода всех фраз
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<Translation>>> GetTranslations()
-        {
-            IEnumerable<Translation> translations = await translationRepository.GetAllAsync();
-            return Ok(translations);
-        }
+        //TODO нужно завязать на userId
+        ///// <summary>
+        ///// Получить все варианты перевода всех фраз
+        ///// </summary>
+        ///// <returns></returns>
+        //[Authorize]
+        //[HttpPost]
+        //public async Task<ActionResult<IEnumerable<Translation>>> GetTranslations()
+        //{
+        //    var identityName = User.Identity.Name;
+        //    Guid userId = (Guid)userRepository.GetID(identityName);
+        //    IEnumerable<Translation> translations = await translationRepository.GetAllAsync();
+        //    return Ok(translations);
+        //}
 
         /// <summary>
         /// Получить все варианты перевода конкретной фразы
@@ -122,6 +123,9 @@ namespace Localization.WebApi
             var currentProjectId = Request.Form["currentProjectId"].ToString();
             var translationSubstingId = Request.Form["translationSubstingId"].ToString();
             var localeId = Request.Form["localeId"].ToString();
+            var identityName = User.Identity.Name;
+            Guid userId = (Guid)userRepository.GetID(identityName);
+
 
             IEnumerable<TranslationWithLocaleText> translationsInOtherLanguages = await translationRepository.GetTranslationsInOtherLanguages(Guid.Parse(currentProjectId),
                 Guid.Parse(translationSubstingId), Guid.Parse(localeId));
@@ -318,16 +322,19 @@ namespace Localization.WebApi
         /// <param name="translationText">фраза по которой производится поиск вариантов перевода</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("FindTranslationByMemory/{currentProjectId}/{translationText}")]
+        [Route("FindTranslationByMemory/{currentProjectId}/{translationText}/{locId}")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(Guid currentProjectId, string translationText)
+        public async Task<ActionResult<IEnumerable<TranslationWithFile>>> FindTranslationByMemory(Guid currentProjectId, string translationText, Guid locId)
         {
             if (translationText == null || translationText == "")
             {
                 return NotFound($"Запрашиваемый вариант перевода пуст");
             }
 
-            var translations = await translationRepository.GetAllTranslationsByMemory(currentProjectId, translationText);
+            var identityName = User.Identity.Name;
+            Guid userId = (Guid)userRepository.GetID(identityName);
+
+            var translations = await translationRepository.GetAllTranslationsByMemory(translationText, userId, locId);
             return Ok(translations);
         }
 
@@ -342,7 +349,10 @@ namespace Localization.WebApi
         [Authorize]
         public async Task<ActionResult<IEnumerable<SimilarTranslation>>> FindSimilarTranslations(Guid currentProjectId, Guid localeId, [FromBody] TranslationSubstring translationSubstring)
         {
-            var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, localeId, translationSubstring);
+            var identityName = User.Identity.Name;
+            Guid userId = (Guid)userRepository.GetID(identityName);
+
+            var similarTranslations = await translationRepository.GetSimilarTranslationsAsync(currentProjectId, localeId, translationSubstring, userId);
             return Ok(similarTranslations);
         }
 

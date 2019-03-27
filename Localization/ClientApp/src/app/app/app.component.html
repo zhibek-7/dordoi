@@ -51,10 +51,21 @@
           <a class="dropdown-item" routerLink='/list-glossaries'>Словари</a>
         </div>
       </li>
-
       <!--//-->
-    </ul>
+  <!--  </ul>
 
+    <ul class="navbar-nav mr-auto">
+      -->
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Поиск команды
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" routerLink="translators">Список людей</a>
+        </div>
+      </li>
+    </ul>
 
     <ul class="navbar-nav mr-auto" *ngIf="this.usersService.currentUserName!=null">
 

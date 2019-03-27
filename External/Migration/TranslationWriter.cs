@@ -90,7 +90,7 @@ namespace External.Migration
                     item.Selected = false;
                     //TODO переделать на реального пользователя
                     item.ID_User = Guid.Parse("1d2d530a-b3eb-45a1-8250-721b3b2237b2");
-                    ;
+
                     item.DateTime = new DateTime();
                     item.Translated = ht[lang].ToString();
 

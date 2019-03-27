@@ -112,14 +112,16 @@ export class TranslationService {
 
   findTranslationByMemory(
     currentProjectId: Guid,
-    translationText: string
+    translationText: string,
+	localeId: Guid
   ): Observable<TranslationWithFile[]> {
     return this.http.post<TranslationWithFile[]>(
       this.url +
         "/FindTranslationByMemory/" +
         currentProjectId +
         "/" +
-        translationText,
+        translationText+"/" +
+        localeId,
       null
     );
   }
