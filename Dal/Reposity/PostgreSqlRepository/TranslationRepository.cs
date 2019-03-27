@@ -448,19 +448,40 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
-        /// Метод получения всех вариантов перевода заданой фразы в проекте локализации
+        /// Метод получения всех вариантов перевода заданой фразы в памяти переводов
         /// </summary>
         /// <param name="translationText">Фраза по которой необходимо найти переводы</param>
         /// <returns>Список вариантов перевода</returns>
-        public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(Guid currentProjectId, string translationText)
+        public async Task<IEnumerable<TranslationWithFile>> GetAllTranslationsByMemory(string translationText, Guid userId, Guid locId)
         {
-            var query = "SELECT F.name_text AS file_Owner_Name, T.translated AS translation_Variant, " +
-                        "TS.substring_to_translate AS translation_Text " +
-                        "FROM localization_projects AS LP " +
-                        "INNER JOIN files AS F ON F.id_localization_project = LP.id " +
-                        "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +
-                        "INNER JOIN translations AS T ON T.id_string = TS.id " +
-                        "WHERE  LOWER(TS.substring_to_translate) LIKE LOWER(@TranslationText)";
+            /* var query = "SELECT F.name_text AS file_Owner_Name, T.translated AS translation_Variant, " +
+                         "TS.substring_to_translate AS translation_Text " +
+                         "FROM localization_projects AS LP " +
+                         "INNER JOIN files AS F ON F.id_localization_project = LP.id " +
+                         "INNER JOIN translation_substrings AS TS ON TS.id_file_owner = F.id " +
+                         "INNER JOIN translations AS T ON T.id_string = TS.id " +
+                         "WHERE  LOWER(TS.substring_to_translate) LIKE LOWER(@TranslationText)";
+                         */
+
+            var query =
+                @"  select *
+ from (select  distinct tm.name_text AS file_Owner_Name, T.translated as translation_Variant, TS.substring_to_translate as translation_Text
+            from translation_memories as tm
+                inner join translation_memories_strings as tms
+            on tm.id = tms.id_translation_memory
+            inner join translation_substrings as TS on
+            tms.id_string = TS.id
+            inner join translations as T on
+            T.id_string = TS.id
+            inner join localization_projects_translation_memories as lptm
+            on tm.id = lptm.id_translation_memory
+            inner join participants as p
+            on lptm.id_localization_project = p.id_localization_project
+            where lower(TS.substring_to_translate) like lower(@TranslationText)
+            and p.id_user = '" + userId + @"'
+            and T.id_locale = '" + locId + @"'
+            ) as t
+            order by char_length(t.translation_Text)";
 
             try
             {
@@ -495,25 +516,67 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// <param name="currentProjectId">id проекта в котором происходит поиск</param>
         /// <param name="translationSubstring">фраза для которой происходит поиск совпадений</param>
         /// <returns></returns>
-        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(Guid currentProjectId, Guid localeId, TranslationSubstring translationSubstring)
+        public async Task<IEnumerable<SimilarTranslation>> GetSimilarTranslationsAsync(Guid currentProjectId, Guid localeId, TranslationSubstring translationSubstring, Guid userId)
         {
-            var query = "SELECT substring_to_translate AS translation_text, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
-                        "files.name_text AS file_owner_name, translations.translated AS translation_variant" +
-                        " FROM localization_projects " +
-                        "INNER JOIN files ON files.id_localization_project = localization_projects.id " +
-                        "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
-                        "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
-                        "WHERE (localization_projects.id = @ProjectId " +
-                        "AND substring_to_translate % @TranslationSubstringText " +
-                        "AND translation_substrings.id != @TranslationSubstringId " +
-                        "AND translations.id_locale = @localeId);";
+
+
+            var query = @"select*
+            from(select substring_to_translate as translation_text, similarity(substring_to_translate, @TranslationSubstringText) as similarity, files.name_text as file_owner_name,
+            translations.translated as translation_variant
+            from localization_projects
+            inner join files on
+            files.id_localization_project = localization_projects.id
+            inner
+                join translation_substrings on
+            translation_substrings.id_file_owner = files.id
+            inner
+                join translations on
+            translations.id_string = translation_substrings.id
+            where (localization_projects.id = @ProjectId
+            and substring_to_translate % @TranslationSubstringText
+            and translation_substrings.id != @TranslationSubstringId
+            and translations.id_locale = @localeId)
+
+            union
+                select substring_to_translate as translation_text, similarity(substring_to_translate, @TranslationSubstringText) as similarity, tm.name_text as file_owner_name,
+            translations.translated as translation_variant
+            from translation_memories as tm
+                inner join translation_memories_strings as tms
+            on tm.id = tms.id_translation_memory
+            inner join translation_substrings on
+            translation_substrings.id = tms.id_string
+            inner join translations on
+            translations.id_string = translation_substrings.id
+            inner join localization_projects_translation_memories as lptm
+            on tm.id = lptm.id_translation_memory
+            inner join participants as p
+            on lptm.id_localization_project = p.id_localization_project
+
+            where(
+                p.id_user = @UserId
+            and substring_to_translate % @TranslationSubstringText
+            and translation_substrings.id != @TranslationSubstringId
+            and translations.id_locale = @localeId)) as t
+                order by  t.similarity desc";
+
+
+            //var query = "SELECT substring_to_translate AS translation_text, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
+            //            "files.name_text AS file_owner_name, translations.translated AS translation_variant" +
+            //            " FROM localization_projects " +
+            //            "INNER JOIN files ON files.id_localization_project = localization_projects.id " +
+            //            "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +
+            //            "INNER JOIN translations ON translations.id_string = translation_substrings.id " +
+            //            "WHERE (localization_projects.id = @ProjectId " +
+            //            "AND substring_to_translate % @TranslationSubstringText " +
+            //            "AND translation_substrings.id != @TranslationSubstringId " +
+            //            "AND translations.id_locale = @localeId);";
 
 
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var param = new { TranslationSubstringText = translationSubstring.substring_to_translate, TranslationSubstringId = translationSubstring.id, ProjectId = currentProjectId, localeId };
+                    var param = new { TranslationSubstringText = translationSubstring.substring_to_translate, TranslationSubstringId = translationSubstring.id, ProjectId = currentProjectId, localeId, UserId = userId };
                     this.LogQuery(query, param);
                     IEnumerable<SimilarTranslation> similarTranslations = await dbConnection.QueryAsync<SimilarTranslation>(query, param);
                     return similarTranslations;

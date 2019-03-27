@@ -290,7 +290,7 @@ export class LanguagesComponent implements OnInit {
     let currentProjectId = this.projectService.currentProjectId;
 
     this.translationService
-      .findTranslationByMemory(currentProjectId, this.searchByMemoryText)
+      .findTranslationByMemory(currentProjectId, this.searchByMemoryText, this.localeId)
       .subscribe(translations => {
         this.listOfTranslationsByMemory = translations;
       });
