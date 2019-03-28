@@ -23,7 +23,10 @@ import { Guid } from 'guid-typescript';
   styleUrls: ["./glossary-details.component.css"]
 })
 export class GlossaryDetailsComponent implements OnInit {
-  private _glossary: Glossary;
+
+  glossaries: Glossary[];
+
+  private _glossary: Glossary = null;
 
   pageSize: number = 10;
 
@@ -66,16 +69,25 @@ export class GlossaryDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      let glossaryId = params["id"];
-      this.glossariesService
-        .get(glossaryId)
-        .subscribe(glossary => (this.glossary = glossary));
-    });
+    this.loadGlossaries();
+    this.loadTerms();
+
+    //this.route.params.subscribe(params => {
+    //  let glossaryId = params["id"];
+    //  this.glossariesService
+    //    .get(glossaryId)
+    //    .subscribe(glossary => (this.glossary = glossary));
+    //});
+  }
+
+  loadGlossaries() {
+    this.glossariesService.getGlossaries()
+      .subscribe(
+        glossaries => this.glossaries = glossaries);
   }
 
   loadTerms(offset = 0) {
-    if (!this.glossary) return;
+    //if (!this.glossary) return;
 
     let sortByColumns = [];
     if (this.sortByColumnName) {
@@ -84,7 +96,7 @@ export class GlossaryDetailsComponent implements OnInit {
 
     this.glossariesService
       .getAssotiatedTerms(
-        this.glossary.id,
+        this.glossary ? this.glossary.id : null,
         this.termSearchString,
         this.pageSize,
         offset,

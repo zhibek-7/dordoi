@@ -47,6 +47,9 @@ export class GlossariesService {
     sortAscending?: boolean
   ): Observable<HttpResponse<Term[]>> {
     let body: any = {};
+    if (glossaryId) {
+      body.glossaryId = glossaryId;
+    }
     if (termPart && termPart != "") {
       body.termSearch = termPart;
     }
@@ -64,7 +67,7 @@ export class GlossariesService {
     }
     return this.httpClient
       .post<Term[]>(
-        GlossariesService.connectionUrl + glossaryId + "/terms/list",
+        GlossariesService.connectionUrl + "terms/list",
         body,
         {
           headers: new HttpHeaders().set(

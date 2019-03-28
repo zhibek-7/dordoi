@@ -19,6 +19,14 @@
     <div class="col">
       <input type="text" class="form-control m-1" placeholder="Искать термин" [(ngModel)]="termSearchString" (input)="loadTerms()" />
     </div>
+    
+    <div class="col">
+      <select class="form-control m-1" [(ngModel)]="glossary"> <!--(change)="loadTerms()"-->
+        <option [ngValue]="null">Все</option>
+        <option *ngFor="let item of glossaries" [ngValue]="item">{{item.name_text}}</option>
+      </select>
+    </div>
+
     <div class="col d-flex justify-content-end">
       <div class="form-check m-1" style="visibility: hidden">
         <label class="form-check-label">

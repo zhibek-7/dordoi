@@ -16,7 +16,7 @@ import { GlossaryService } from "src/app/services/glossary.service";
 import { ProjectsService } from "src/app/services/projects.service";
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
 
-import { GlossariesComponent } from 'src/app/glossaries/components/glossaries/glossaries.component';
+//import { GlossariesComponent } from 'src/app/glossaries/components/glossaries/glossaries.component';
 import { GlossaryDetailsComponent } from 'src/app/glossaries/components/glossary-details/glossary-details.component';
 import { GlossaryTermsComponent } from 'src/app/glossaries/components/glossary-terms/glossary-terms.component';
 import { AddTermFormComponent } from 'src/app/glossaries/components/add-term-form-modal/add-term-form-modal.component';
@@ -40,7 +40,7 @@ import { SetProjectsModalComponent } from "src/app/glossaries/components/set-pro
     HttpClientModule
   ],
   declarations: [
-    GlossariesComponent,
+    //GlossariesComponent,
     GlossaryDetailsComponent,
     GlossaryTermsComponent,
     AddTermFormComponent,
