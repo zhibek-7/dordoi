@@ -36,7 +36,7 @@ namespace Models.DatabaseEntities
 
         public bool Able_To_Download { get; set; }
 
-        public bool AbleTo_Left_Errors { get; set; }
+        public bool Able_To_Left_Errors { get; set; }
 
         public string Default_String { get; set; }
 

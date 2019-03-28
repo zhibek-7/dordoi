@@ -42,6 +42,7 @@ import {
   MatSortModule,
   MatAutocompleteModule,
   MatExpansionModule } from '@angular/material';
+import { EditProjectComponent } from './components/edit-project/edit-project.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {
     , SettingsComponent
     , DeleteProjectComponent,
     AllSettingsComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    EditProjectComponent
   //  , MenuProjectComponent
   ],
   imports: [
