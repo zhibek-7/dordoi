@@ -330,7 +330,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         };
 
         public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
-            Guid glossaryId,
+            Guid? glossaryId,
             int limit,
             int offset,
             string termPart = null,
@@ -382,7 +382,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<int?> GetAssotiatedTermsCountAsync(Guid glossaryId, string termPart)
+        public async Task<int?> GetAssotiatedTermsCountAsync(Guid? glossaryId, string termPart)
         {
             try
             {
@@ -415,12 +415,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        private Query GetAssotiatedTermsQuery(Guid glossaryId, string termPart)
+        private Query GetAssotiatedTermsQuery(Guid? glossaryId, string termPart)
         {
             var query =
                 new Query("glossaries_strings")
                     .LeftJoin("translation_substrings", "translation_substrings.id", "glossaries_strings.id_string")
-                    .Where("glossaries_strings.id_glossary", glossaryId)
                     .Select(
                         "translation_substrings.id",
                         "translation_substrings.substring_to_translate",
@@ -440,6 +439,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                             .Where("translations.translated", "<>", "''")
                             .WhereRaw("translation_substrings_locales.id_translation_substrings=translation_substrings.id"),
                         alias: "is_editable");
+
+            if (glossaryId != null)
+            {
+                query = query.Where("glossaries_strings.id_glossary", glossaryId);
+            }
 
             if (!string.IsNullOrEmpty(termPart))
             {

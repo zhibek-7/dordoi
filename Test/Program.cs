@@ -29,12 +29,17 @@ namespace Test
 
 
             //using (FileStream fs = new FileStream(@"D:\PJ\Codelink\! Переводчик\_вариант файлов для переводов\_test\taxsee-driver.tbx", FileMode.OpenOrCreate))
-            using (FileStream fs = new FileStream(@"D:\PJ\Codelink\! Переводчик\_вариант файлов для переводов\_test\small.tmx", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(@"D:\PJ\Codelink\! Переводчик\_вариант файлов для переводов\_файлы память переводов\_tmx\taxsee-drivers-tm (1).tmx", FileMode.OpenOrCreate))
+            //using (FileStream fs = new FileStream(@"D:\PJ\Codelink\! Переводчик\_вариант файлов для переводов\___файлы глоссария\taxis-glossary_новый.tbx", FileMode.OpenOrCreate))
             {
 
                 Import im = new Import();
-                im.imp(Import.FileType.TMX, fs);
+                //TODO Проверить даты!!
+                im.imp(Import.FileType.TMX, fs, Guid.Parse("a25c45a0-80f4-4bca-9c4c-cf02d139c1bf"));
             }
+
+
+            Console.ReadKey();
         }
     }
 }

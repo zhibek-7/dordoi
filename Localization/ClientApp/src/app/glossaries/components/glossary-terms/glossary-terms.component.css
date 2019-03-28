@@ -23,7 +23,7 @@
 
 
 .table {
-  font-size: 14px;
+  font-size: 0.8rem;
 }
 
 table td, table th
@@ -42,4 +42,14 @@ table th
 
 .col-xs-2{
   width : 1vw;
+}
+
+.col-1{
+ width : 2rem;
+}
+.col-2{
+ width : 35%;
+}
+.col-3{
+ width : 20%;
 }

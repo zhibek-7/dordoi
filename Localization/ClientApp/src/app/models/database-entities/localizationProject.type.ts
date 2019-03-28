@@ -9,7 +9,7 @@ export class LocalizationProject {
   visibility: boolean;
   date_Of_Creation?: any;
   last_Activity?: any;
-  ID_Source_Locale?: Guid;
+  iD_Source_Locale?: Guid;
   //Исходный язык
   source_Locale_Name: string;
   // Количество активных пользователей
@@ -52,7 +52,7 @@ export class LocalizationProject {
     this.visibility = visibility;
     this.date_Of_Creation = dateOfCreation;
     this.last_Activity = dateOfCreation; // lastActivity;//"12.12.2018";
-    this.ID_Source_Locale = id_SourceLocale;
+    this.iD_Source_Locale = id_SourceLocale;
     this.able_To_Download = ableToDownload;
     this.able_To_Left_Errors = ableToLeftErrors;
     // this.defaultString = defaultString;// '123';

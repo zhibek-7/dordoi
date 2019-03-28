@@ -134,6 +134,7 @@ namespace Localization.WebApi
                 return NotFound($"TranslationSubstring by id \"{ translationSubstringId }\" not found");
             }
 
+            //TODO почему не возврощается??
             string status = await stringRepository.GetStatusOfTranslationSubstringAsync(translationSubstringId, null);
 
             return "";

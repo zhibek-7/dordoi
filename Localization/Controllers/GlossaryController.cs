@@ -68,23 +68,24 @@ namespace Localization.WebApi
             public int? offset { get; set; }
             public string[] sortBy { get; set; }
             public bool? sortAscending { get; set; }
+            public Guid? glossaryId { get; set; }
         }
 
         [Authorize]
-        [HttpPost("{glossaryId}/terms/list")]
+        [HttpPost("terms/list")]
         public async Task<IEnumerable<Term>> GetAssotiatedTermsAsync(
-            Guid glossaryId,
+            //Guid glossaryId,
             [FromBody] GetAssotiatedTermsParam param)
         {
             this.Response.Headers.Add(
                 key: "totalCount",
                 value: (await this._glossaryService.GetAssotiatedTermsCountAsync(
-                    glossaryId: glossaryId,
+                    glossaryId: param.glossaryId,
                     termPart: param.termSearch)).ToString());
 
             return await this._glossaryService
                 .GetAssotiatedTermsByGlossaryIdAsync(
-                    glossaryId: glossaryId,
+                    glossaryId: param.glossaryId,
                     termPart: param.termSearch,
                     limit: param.limit,
                     offset: param.offset,

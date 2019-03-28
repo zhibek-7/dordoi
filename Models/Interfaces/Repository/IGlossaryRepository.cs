@@ -10,8 +10,8 @@ namespace Models.Interfaces.Repository
     {
         Task<Guid?> AddNewTermAsync(Guid glossaryId, TranslationSubstring newTerm, Guid? partOfSpeechId);
         Task DeleteTermAsync(Guid glossaryId, Guid termId);
-        Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(Guid glossaryId, int limit, int offset, string termPart = null, string[] sortBy = null, bool sortAscending = true);
-        Task<int?> GetAssotiatedTermsCountAsync(Guid glossaryId, string termPart);
+        Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(Guid? glossaryId, int limit, int offset, string termPart = null, string[] sortBy = null, bool sortAscending = true);
+        Task<int?> GetAssotiatedTermsCountAsync(Guid? glossaryId, string termPart);
         Task<Locale> GetLocaleByIdAsync(Guid glossaryId);
         Task<Locale> GetLocaleByTermByIdAsync(Guid termId);
         Task UpdateTermAsync(Guid glossaryId, TranslationSubstring updatedTerm, Guid? partOfSpeechId);

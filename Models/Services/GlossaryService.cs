@@ -109,7 +109,7 @@ namespace Models.Services
         }
 
         public async Task<IEnumerable<Term>> GetAssotiatedTermsByGlossaryIdAsync(
-            Guid glossaryId,
+            Guid? glossaryId,
             int? limit,
             int? offset,
             string termPart = null,
@@ -166,7 +166,7 @@ namespace Models.Services
             }
         }
 
-        public async Task<int> GetAssotiatedTermsCountAsync(Guid glossaryId, string termPart)
+        public async Task<int> GetAssotiatedTermsCountAsync(Guid? glossaryId, string termPart)
         {
             try
             {

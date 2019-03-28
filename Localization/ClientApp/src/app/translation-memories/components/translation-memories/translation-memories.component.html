@@ -12,14 +12,14 @@
   <ul class="navbar-nav nav">
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="addFormModal.show()"> Создать память переводов </button>
+      <button class="btn nav-element btn-sm" (click)="addFormModal.show()"> Создать память переводов </button>
       <app-add-translation-memory-form-modal #addFormModal
                                              (newSubmitted)="add($event)">
       </app-add-translation-memory-form-modal>
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="getEditing()" [disabled]="!isSelectedTranslationMemory">
+      <button class="btn nav-element btn-sm" (click)="getEditing()" [disabled]="!isSelectedTranslationMemory">
         Редактировать память переводов
       </button>
       <app-edit-translation-memory-form-modal #editFormModal
@@ -31,7 +31,7 @@
     </li>
 
     <li class="nav-item">
-      <button type="button" class="btn nav-element" (click)="getConfirmClear()" [disabled]="!isSelectedTranslationMemory">
+      <button type="button" class="btn nav-element btn-sm" (click)="getConfirmClear()" [disabled]="!isSelectedTranslationMemory">
         Очистить
       </button>
       <app-confirm-clear-translation-memory-of-string #confirmClearFormModal
@@ -42,7 +42,7 @@
     </li>
 
     <li class="nav-item">
-      <button class="btn nav-element" (click)="getConfirmDelete()" [disabled]="!isSelectedTranslationMemory">
+      <button class="btn nav-element btn-sm" (click)="getConfirmDelete()" [disabled]="!isSelectedTranslationMemory">
         <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
       </button>
       <app-confirm-delete-translation-memory #confirmDeleteFormModal
@@ -70,28 +70,28 @@
       <th (click)="requestSortBy('name_text')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'name_text'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'name_text'"
-          class="col-xs">
+          class="col-2">
         Имя
       </th>
       <th (click)="requestSortBy('string_count')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'string_count'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'string_count'"
-          class="col-xs">
+          class="col-4">
         Строки
       </th>
       <th (click)="requestSortBy('locales_name')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'locales_name'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'locales_name'"
-          class="col-xs">
+          class="col-3">
         Языки
       </th>
       <th (click)="requestSortBy('localization_projects_name')"
           [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'localization_projects_name'"
           [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'localization_projects_name'"
-          class="col-xs">
+          class="col-2">
         Проекты
       </th>
-      <th class="col-xs-10">
+      <th class="col-4">
         
       </th>
     </tr>
@@ -99,23 +99,23 @@
   <tr (click)="selected(row)"
       [class.row-selected]="row.isSelected"
       *ngFor="let row of dataSource">
-    <td class="col-xs">
+    <td>
       {{row.model.name_text}}
     </td>
-    <td class="col-xs">
+    <td>
       {{row.model.string_count}}
     </td>
-    <td class="col-xs">
+    <td>
       {{row.model.locales_name}}
     </td>
-    <td class="col-xs">
+    <td>
       {{row.model.localization_projects_name}}
     </td>
     <td class="col-xs-10">
         <div class="dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
              aria-haspopup="true" aria-expanded="false">
-            <b>...</b>
+            <b>Действия</b>
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <label for="file-upload" class="dropdown-item m-0">

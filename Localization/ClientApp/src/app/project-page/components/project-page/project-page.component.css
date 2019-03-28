@@ -58,7 +58,7 @@ ol {
 
 .table-cell {
   color: black;
-  font-size: 14px;
+  font-size: 0.8rem;
   margin: 0em 0em 0em 0em;
   text-align: center;
 }
@@ -124,7 +124,7 @@ table {
 }
 
 .mat-form-field {
-  font-size: 14px;
+  font-size: 0.8rem;
   /* width: 100%; */
 }
 

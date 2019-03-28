@@ -475,7 +475,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                                     new { id_translationSubstring = translationSubstrings[i].id, id_locale });
                             if (translation == null)
                             {
-                                if (localizationProject.AbleTo_Left_Errors)
+                                if (localizationProject.Able_To_Left_Errors)
                                 {
                                     int n = translationSubstrings[i].position_in_text;
                                     while (n != 0 && (output[n - 1] != '\n' || output[n - 1] != '\r')) n--;

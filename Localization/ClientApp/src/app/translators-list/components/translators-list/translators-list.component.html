@@ -11,7 +11,10 @@
       <div class="jumbotron" *ngIf="!translators.length">
         Согласно заданным параметрам фильтра не найдено ни одного переводчика.
       </div>
-      <div class="jumbotron" *ngFor="let item of translators| sortBy: sortingColumn: isDesc; let i=index">
+      
+      <app-dialog-invite-translator #invite *ngIf="visibleInvite" [user]="currentUser"></app-dialog-invite-translator>
+
+      <div class="jumbotron" *ngFor="let item of translators; let i=index">
         <div class="row">
           <div class="col-2">
             <img class="width-to-parent" src="data:image/JPEG;base64,{{item.user_pic}}" alt="Participant avatar" *ngIf="item.user_pic; else noImageFound" class="rounded float-left" style="height: 4rem;">
@@ -20,10 +23,10 @@
             </ng-template>
           </div>
           <div class="col-2" style="padding: 0rem;">
-            <h6>{{item.user_Name}}</h6>
+            <h6>{{item.user_name}}</h6>
           </div>
           <div class="col">
-            Перевод <br> <span>{{item.wordsQuantity| number:'1.0-0'}}</span> тыс. слов
+            Перевод <br> <span>{{item.words_quantity| number:'1.0-0'}}</span> слов
           </div>
           <div class="col">
             <div class="row">
@@ -39,15 +42,15 @@
           <div class="col-2"></div>
           <div class="col-2" style="font-size: 12px;">
             <div class="row" style="align-items:center;">
-              <mat-icon style="color: green;">stars</mat-icon>{{item.translationRating}}%
+              <mat-icon style="color: green;">stars</mat-icon>{{item.translation_rating}}%
             </div>
             <div class="row">Качество</div>
             <div class="row" style="align-items:center;">
-              <mat-icon style="color: #ffae00;">star_rate</mat-icon><span>{{item.termRating}}%</span>
+              <mat-icon style="color: #ffae00;">star_rate</mat-icon><span>{{item.term_rating}}%</span>
             </div>
             <div class="row">Соблюдение сроков</div>
             <div class="row">
-              <p style="font-size: 10px; color: grey">Основано на <span style="font-weight:600;">4 оценках</span></p>
+              <p style="font-size: 10px; color: grey">Основано на <span style="font-weight:600;">{{item.number_of_ratings}} оценках(е)</span></p>
             </div>
           </div>
           <div class="col topics">
@@ -58,17 +61,17 @@
             </div>
           </div>
           <div class="col col-btn">
-            <button mat-button color="primary" style="height: 2rem;">Посмотреть профиль</button>
+            <button mat-button color="primary" style="height: 2rem;" class="btn-sm">Посмотреть профиль</button>
           </div>
         </div>
       </div>
-      <mat-paginator
-          [length]="listLength"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="pageSizeOptions"
-          (page)="onPageChanged($event)"
-          style="margin-bottom: 1rem;">
+      <mat-paginator [length]="listLength"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="pageSizeOptions"
+                     (page)="onPageChanged($event)"
+                     style="margin-bottom: 1rem;">
       </mat-paginator>
+
     </div>
     <div class="col-3" style="font-size: 14px;">
       <div class="content-top">
@@ -127,7 +130,7 @@
           </div>
           <div class="col-6">
             <label for="max">до</label>
-            <input matInput type="number" id="max" name="max" [(ngModel)]="max" (input)="onMaxPriceChange($event.target.value)"/>
+            <input matInput type="number" id="max" name="max" [(ngModel)]="max" (input)="onMaxPriceChange($event.target.value)" />
           </div>
         </div>
       </fieldset>
@@ -141,7 +144,9 @@
           topics: topics.value,
           min: min,
           max: max
-        })">Поиск</button>
+        })">
+          Поиск
+        </button>
       </div>
     </div>
   </div>

@@ -1,0 +1,6 @@
+.output-block {
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-size: 0.8em;
+  max-height: 100%;
+}

@@ -36,8 +36,8 @@
                       </li>
                     </ul>
                     <div class="row">
-                      <button class="btn btn-link m-1" (click)="changeCommentClick(comment)">Изменить</button>
-                      <button class="btn btn-link" (click)="deleteCommentClick(comment)">Удалить</button>
+                      <button class="btn btn-link m-1 btn-sm" (click)="changeCommentClick(comment)">Изменить</button>
+                      <button class="btn btn-link btn-sm" (click)="deleteCommentClick(comment)">Удалить</button>
                     </div>
                   </div>
                   <div *ngIf="commentEdited">
@@ -90,7 +90,7 @@
       <div class="tab-pane fade" id="nav-condition" role="tabpanel" aria-labelledby="nav-condition-tab">
 
         <div *ngIf="!checkNumberOfTermsInProject()" class="conditionsBlock">
-          <div>Глоссарий пуст</div>
+          <div>Словарь пуст</div>
         </div>
 
         <div *ngIf="checkNumberOfTermsInProject()">
@@ -104,7 +104,7 @@
                 </div>
                 <form class="col-11">
                   <div class=" inputSearch">
-                    <input type="text" id="searchTermInput" name="first" class="form-control input-lg" placeholder="Поиск в глоссарие"
+                    <input type="text" id="searchTermInput" name="first" class="form-control input-lg" placeholder="Поиск в словаре"
                       [(ngModel)]="searchTermText" class="col-12">
                   </div>
                 </form>
@@ -130,9 +130,9 @@
                             <div class="col-12">{{term.glossary_name}} </div>
                           </div>
                           <div class="row">
-                            <button class="btn btn-link m-1" (click)="editTermFormModal.show()">Изменить</button>
+                            <button class="btn btn-link m-1 btn-sm" (click)="editTermFormModal.show()">Изменить</button>
                             <app-edit-term-form-modal #editTermFormModal [glossary]="term.glossary" [term]="term.term"></app-edit-term-form-modal>
-                            <button class="btn btn-link" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
+                            <button class="btn btn-link btn-sm" (click)="deleteTermClick(term.glossary_Id, term.id)">Удалить</button>
                           </div>
                         </div>
 

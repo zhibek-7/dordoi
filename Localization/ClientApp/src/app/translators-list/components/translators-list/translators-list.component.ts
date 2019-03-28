@@ -1,10 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { checkAndUpdateBinding } from '@angular/core/src/view/util';
-
 import {PageEvent} from '@angular/material';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { TranslationTopicService } from '../../../services/translation-topic.service';
 import { TypeOfServiceService } from '../../../services/type-of-service.service';
@@ -12,19 +9,18 @@ import { TypeOfServiceService } from '../../../services/type-of-service.service'
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
 
-import { ItemsSortBy } from '../../itemsSortBy.pipe';
-
 import { Translator } from 'src/app/models/Translators/translator.type';
 import { TranslationTopicForSelectDTO } from '../../../models/DTO/translationTopicForSelectDTO.type';
 import { TypeOfServiceForSelectDTO } from '../../../models/DTO/typeOfServiceForSelectDTO.type';
 import { Locale } from "src/app/models/database-entities/locale.type";
 import { DialogInviteTranslatorComponent } from '../dialog-invite-translator/dialog-invite-translator.component';
 import { Guid } from "guid-typescript";
+import { ProjectsService } from 'src/app/services/projects.service';
 
-export interface DialogData {
-  animal: string;
-  name: string;
-}
+//export interface DialogData {
+//  animal: string;
+//  name: string;
+//}
 
 @Component({
   selector: 'app-translators-list',
@@ -34,6 +30,11 @@ export interface DialogData {
 export class TranslatorsListComponent implements OnInit {
 
   translators: Translator[] = [];
+  currentUser: Translator;
+
+  @ViewChild("invite")
+  public invite: DialogInviteTranslatorComponent;
+  visibleInvite: boolean = false;
 
   languages: Locale[] = [];
   services: TypeOfServiceForSelectDTO[] = []; // = ['Перевод', 'Редактура'];
@@ -44,11 +45,11 @@ export class TranslatorsListComponent implements OnInit {
 
   sortingList = [
     {
-      value: [false, 'wordsQuantity'],
+      value: [false, 'words_quantity'],
       name: 'По числу переведенных слов (убыв.)'
     },
     {
-      value: [true, 'wordsQuantity'],
+      value: [true, 'words_quantity'],
       name: 'По числу переведенных слов (возр.)'
     },
     {
@@ -99,7 +100,7 @@ export class TranslatorsListComponent implements OnInit {
     private languagesService: LanguageService,
     private translationTopicService: TranslationTopicService,
     private typeOfServiceService: TypeOfServiceService,
-    public dialog: MatDialog
+    private projectsService: ProjectsService
   ) {}
 
   //#region Init
@@ -150,16 +151,7 @@ export class TranslatorsListComponent implements OnInit {
 
   filtredFn(searchingVal) {
     console.log(searchingVal);
-    //let filtredTranslators = [];
-
-    //this.translators.forEach(item => {
-    //  console.log('item')
-    //  if(this.check(item, searchingVal)) {
-    //    filtredTranslators.push(item);
-    //  }
-    //});
-    //this.translators = filtredTranslators;
-
+    
     this.loadPublicTranslators();
   }
 
@@ -178,102 +170,13 @@ export class TranslatorsListComponent implements OnInit {
   //#endregion
 
   openDialog(translator): void {
-    const dialogRef = this.dialog.open(DialogInviteTranslatorComponent, {
-      width: '650px',
-      data: {item: translator, name: translator.user_Name}
-    });
+    this.currentUser = translator;
+    this.visibleInvite = true;
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+    setTimeout(() => {
+      this.invite.show();
     });
   }
-
-  //checkValue(translator, filter, name) {
-  //  if (!filter) {
-  //    return true;
-  //  } else {
-  //    return translator[name] === filter;
-  //  }
-  //}
-
-  //checkMulti(translator, filter, name) {
-  //  if (!filter[name] || name.length === 0) {
-  //    return true;
-  //  } else {
-  //    return translator.topics.some(r => filter[name].indexOf(r) >= 0);
-  //  }
-  //}
-
-  //checkLang(translator, filter, name) {
-  //  if (!filter) {
-  //    return true;
-  //  } else {
-  //    return translator.languages.includes(filter);
-  //  }
-  //}
-
-  //checkMin(translator, filter, name) {
-  //  if (!filter.min) {
-  //    return true;
-  //  } else {
-  //    return translator[name] >= filter.min;
-  //  }
-  //}
-
-  //checkMax(translator, filter, name) {
-  //  if (!filter.max) {
-  //    return true;
-  //  } else {
-  //    return translator[name] <= filter.max;
-  //  }
-  //}
-
-  //check(translator, filter) {
-  //  return (this.checkMulti(translator, filter, 'topics') &&
-  //          this.checkMin(translator, filter, 'cost') &&
-  //          this.checkMax(translator, filter, 'cost')) &&
-  //          this.checkLang(translator, filter.currentLanguage, 'languages') &&
-  //          this.checkLang(translator, filter.translateLanguage, 'languages') &&
-  //          this.checkValue(translator, filter.service, 'service') ;
-  //}
-
-  //loadPublicTranslators(pageIndex = 0) {
-  //  this.translationService.getAllPublicTranslators().subscribe({
-  //    next: response => {
-  //      // console.log('next', response);
-  //      this.translators = response.slice(pageIndex, this.pageSize + pageIndex);
-  //      this.listLength = response.length;
-  //    },
-  //    error: err => console.log(err),
-  //    complete: () => {
-  //      this.translators.forEach(item => {
-  //        item.user_pic = this.loadPhoto(item.user_Id);
-  //      });
-  //    }
-  //  });
-  //}
-
-  //loadPhoto(id) {
-  //  this.usersService.getPhotoById(id).subscribe(
-  //    imageBlob => {
-  //      const reader = new FileReader();
-  //      reader.addEventListener(
-  //        'load',
-  //        () => {
-  //          return reader.result;
-  //        },
-  //        false
-  //      );
-
-  //      if (imageBlob) {
-  //        reader.readAsDataURL(imageBlob);
-  //      }
-  //    },
-  //    error => {
-  //      return '';
-  //    }
-  //  );
-  //}
 
   onMinPriceChange(minPrice: number) {
     if (this.max != undefined && (this.min > this.max) || (this.min < 0)) {
@@ -286,8 +189,7 @@ export class TranslatorsListComponent implements OnInit {
       this.max = undefined;
     }
   }
-
-
+  
   onPageChanged(args: PageEvent) {
     this.pageSize = args.pageSize;
     const currentOffset = args.pageSize * args.pageIndex;
@@ -295,8 +197,6 @@ export class TranslatorsListComponent implements OnInit {
   }
 
   loadPublicTranslators(pageIndex = 0) {
-    console.log("this.selectedSorting: ", this.selectedSorting); //this.selectedSorting = undefined
-    console.log("this.topics: ", this.topics);
 
     let sortingColumns: string[] = null;
     if (this.sortingColumn) {
@@ -306,7 +206,6 @@ export class TranslatorsListComponent implements OnInit {
     let selectedTopics: Guid[] = null;
     if (this.topics.value != null && this.topics.value.length > 0) {
       selectedTopics = this.topics.value.map(t => t.id);
-      console.log("selectedTopics: ", selectedTopics);
     }
 
     this.usersService.getAllTranslators(
@@ -325,11 +224,11 @@ export class TranslatorsListComponent implements OnInit {
       response => {
         this.translators = response.body;
 
+        //console.log("this.translators: ", this.translators);
         this.listLength = +response.headers.get("totalCount");
         //this.parent.currentOffset = offset;
       },
       error => {
-        //this.isDataSourceLoaded = false;
         console.log(error);
       }
     );

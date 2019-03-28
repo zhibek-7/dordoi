@@ -200,7 +200,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
                  + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
-                 + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.AbleTo_Left_Errors + "','"
+                 + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.Able_To_Left_Errors + "','"
                  + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')"
                   + " RETURNING localization_projects.id";
             try
@@ -242,7 +242,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
                   + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
-                  + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.AbleTo_Left_Errors + "','"
+                  + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.Able_To_Left_Errors + "','"
                   + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')";
 
                     this.LogQuery(sqlQuery);
@@ -317,7 +317,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                              " \"id_source_locale\"=@ID_Source_Locale," +
 
                              " \"able_to_download\"=@Able_To_Download," +
-                             " \"able_to_left_errors\"=@AbleTo_Left_Errors," +
+                             " \"able_to_left_errors\"=@Able_To_Left_Errors," +
                              " \"default_string\"=@Default_String," +
                              " \"notify_new\"=@Notify_New," +
                              " \"notify_finish\"=@Notify_Finish," +

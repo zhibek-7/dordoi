@@ -281,18 +281,26 @@ namespace DAL.Reposity.PostgreSqlRepository
                         "TS.value AS value, " +
                         "TS.position_in_text AS position_in_text, " +
                         "TS.id AS id " +
+                        ", case when max(t.status) = 30 then 'Selected'  when max(t.status) = 20 then 'Confirmed' else 'Empty' end as status " +
                         "FROM translation_substrings AS TS " +
                         "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
                         "INNER JOIN translation_substrings_locales AS TSL ON TSL.id_translation_substrings = TS.id " +
-                        "WHERE F.id = @FileId AND TSL.id_locale = @LocaleId ";
+                        "left join translations as t on ts.id = t.id_string " +
+                        "WHERE F.id = @FileId AND TSL.id_locale = @LocaleId " +
+            "group by TS.substring_to_translate, TS.description, TS.context, TS.context_file, TS.translation_max_length, TS.id_file_owner, TS.value, TS.position_in_text, TS.id";
+
 
             var queryForSubstingsInFile = "SELECT TS.substring_to_translate AS substring_to_translate, TS.description AS description, " +
                         "TS.context AS context, TS.context AS context_file,  TS.translation_max_length AS translation_max_length," +
                         "TS.id_file_owner AS id_file_owner, TS.value AS value," +
                         "TS.position_in_text AS position_in_text, TS.id AS id " +
+                        ", case when max(t.status) = 30 then 'Selected'  when max(t.status) = 20 then 'Confirmed' else 'Empty' end as status " +
                         "FROM translation_substrings AS TS " +
                         "INNER JOIN files AS F ON TS.id_file_owner = F.id " +
-                        "WHERE F.id = @FileId";
+                        "left join translations as t on ts.id = t.id_string " +
+                        "WHERE F.id = @FileId " +
+                        "group by TS.substring_to_translate, TS.description, TS.context, TS.context_file, TS.translation_max_length, TS.id_file_owner, TS.value, TS.position_in_text, TS.id";
+
 
             try
             {
@@ -313,20 +321,21 @@ namespace DAL.Reposity.PostgreSqlRepository
                         stringsInFile = await dbConnection.QueryAsync<TranslationSubstring>(queryForSubstingsInFile, param);
                     }
 
-                    if (localeId != null)
-                    {
-                        foreach (var translationSubstring in stringsInFile)
-                        {
-                            translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id, localeId);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var translationSubstring in stringsInFile)
-                        {
-                            translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id, null);
-                        }
-                    }
+                    //TODO неправлеьно это, замедляет работу. переделал все на SQL
+                    //if (localeId != null)
+                    //{
+                    //    foreach (var translationSubstring in stringsInFile)
+                    //    {
+                    //        translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id, localeId);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    foreach (var translationSubstring in stringsInFile)
+                    //    {
+                    //        translationSubstring.status = await GetStatusOfTranslationSubstringAsync(translationSubstring.id, null);
+                    //    }
+                    //}
 
                     return stringsInFile;
                 }

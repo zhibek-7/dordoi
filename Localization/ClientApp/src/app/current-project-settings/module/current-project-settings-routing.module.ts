@@ -47,7 +47,7 @@ const routes: Routes = [
       },
 
       {
-        path: "create-project",
+        path: "project",
         loadChildren:
           "src/app/create-project/create-project.module#CreateProjectModule",
         canActivate: [AuthenticationGuard]
