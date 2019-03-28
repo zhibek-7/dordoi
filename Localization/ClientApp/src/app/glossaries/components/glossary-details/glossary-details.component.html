@@ -21,8 +21,7 @@
     </div>
     
     <div class="col">
-      <select class="form-control m-1" [(ngModel)]="glossary"> <!--(change)="loadTerms()"-->
-        <option [ngValue]="null">Все</option>
+      <select class="form-control m-1" [(ngModel)]="glossary">
         <option *ngFor="let item of glossaries" [ngValue]="item">{{item.name_text}}</option>
       </select>
     </div>

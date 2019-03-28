@@ -71,23 +71,20 @@ export class GlossaryDetailsComponent implements OnInit {
   ngOnInit() {
     this.loadGlossaries();
     this.loadTerms();
-
-    //this.route.params.subscribe(params => {
-    //  let glossaryId = params["id"];
-    //  this.glossariesService
-    //    .get(glossaryId)
-    //    .subscribe(glossary => (this.glossary = glossary));
-    //});
   }
 
   loadGlossaries() {
     this.glossariesService.getGlossaries()
       .subscribe(
-        glossaries => this.glossaries = glossaries);
+        glossaries => {
+          this.glossaries = glossaries;
+          if (this.glossaries != null && this.glossaries.length > 0)
+            this.glossary = this.glossaries[0];
+        });
   }
 
   loadTerms(offset = 0) {
-    //if (!this.glossary) return;
+    if (!this.glossary) return;
 
     let sortByColumns = [];
     if (this.sortByColumnName) {
@@ -96,7 +93,7 @@ export class GlossaryDetailsComponent implements OnInit {
 
     this.glossariesService
       .getAssotiatedTerms(
-        this.glossary ? this.glossary.id : null,
+        this.glossary.id,
         this.termSearchString,
         this.pageSize,
         offset,
