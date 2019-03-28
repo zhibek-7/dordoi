@@ -907,7 +907,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sortAscending: sortAscending);
 
                     var compiledQuery = _compiler.Compile(query);
-                    LogQuery(compiledQuery);
+                   LogQuery(compiledQuery);
 
                     var translators = await dbConnection.QueryAsync<Translator>(
                         sql: compiledQuery.Sql,
@@ -916,7 +916,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     foreach (var translator in translators)
                     {
-                        translator.topics = translator.topics_string.Trim().Split(',').Take(5).ToList();
+                        translator.topics = string.IsNullOrEmpty(translator.topics_string) ? null : translator.topics_string.Trim().Split(',').Take(5).ToList();
                     }
 
                     return translators;

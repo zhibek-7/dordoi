@@ -1,18 +1,13 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { checkAndUpdateBinding } from '@angular/core/src/view/util';
-
 import {PageEvent} from '@angular/material';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { TranslationTopicService } from '../../../services/translation-topic.service';
 import { TypeOfServiceService } from '../../../services/type-of-service.service';
 //import { TranslatorsService } from 'src/app/services/translators.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
-
-import { ItemsSortBy } from '../../itemsSortBy.pipe';
 
 import { Translator } from 'src/app/models/Translators/translator.type';
 import { TranslationTopicForSelectDTO } from '../../../models/DTO/translationTopicForSelectDTO.type';
@@ -105,8 +100,7 @@ export class TranslatorsListComponent implements OnInit {
     private languagesService: LanguageService,
     private translationTopicService: TranslationTopicService,
     private typeOfServiceService: TypeOfServiceService,
-    private projectsService: ProjectsService,
-    public dialog: MatDialog
+    private projectsService: ProjectsService
   ) {}
 
   //#region Init

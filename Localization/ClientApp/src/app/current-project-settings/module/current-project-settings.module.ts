@@ -9,11 +9,7 @@ import {
   MatButtonModule,
   MatTableModule,
   MatSortModule,
-  MatMenuModule,
-  MatSelectModule,
-  MatCheckboxModule,
-  MatPaginatorModule,
-  MatDialogModule
+  MatMenuModule
 } from "@angular/material";
 
 import { RequestInterceptorService } from "src/app/services/requestInterceptor.service";
@@ -44,10 +40,6 @@ import { CurrentProjectSettingsComponent } from '../components/current-project-s
     MatTableModule,
     MatSortModule,
     MatMenuModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatPaginatorModule,
-    MatDialogModule,
 
     CurrentProjectSettingsRoutingModule
   ],

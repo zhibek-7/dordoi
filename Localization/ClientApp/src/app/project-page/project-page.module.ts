@@ -33,7 +33,6 @@ import { WorkTypeService } from "../services/workType.service";
 import { UserActionsService } from "../services/userActions.service";
 import { ParticipantsService } from "../services/participants.service";
 import { RequestInterceptorService } from '../services/requestInterceptor.service';
-import { TranslatorsService } from '../services/translators.service';
 
 @NgModule({
   imports: [
@@ -69,7 +68,6 @@ import { TranslatorsService } from '../services/translators.service';
     WorkTypeService,
     UserActionsService,
     ParticipantsService,
-    TranslatorsService,
     { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true }
   ],
 })

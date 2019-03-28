@@ -8,7 +8,6 @@ import {
   MatOptionModule,
   MatSelectModule,
   MatCheckboxModule,
-  MatDialogModule,
 
   MatFormFieldModule,
   MatInputModule
@@ -22,8 +21,6 @@ import { TypeOfServiceService } from 'src/app/services/type-of-service.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
 import { ProjectsService } from 'src/app/services/projects.service';
-
-import { ItemsSortBy } from 'src/app/translators-list/itemsSortBy.pipe';
 
 import { SharedModule } from 'src/app/shared/shared.module';
 import { RequestDataReloadService } from 'src/app/glossaries/services/requestDataReload.service';
@@ -42,8 +39,7 @@ import { GuidsService } from 'src/app/services/guids.service';
   declarations:
     [
       TranslatorsListComponent,
-      DialogInviteTranslatorComponent,
-      ItemsSortBy
+      DialogInviteTranslatorComponent
     ],
   imports:
     [
@@ -58,7 +54,6 @@ import { GuidsService } from 'src/app/services/guids.service';
       MatOptionModule,
       MatSelectModule,
       MatCheckboxModule,
-      MatDialogModule,
       
       MatInputModule,
       MatFormFieldModule,
