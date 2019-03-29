@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-
 import { ProjectsService } from "../services/projects.service";
 import { AuthenticationService } from "../services/authentication.service";
 
@@ -21,18 +20,18 @@ export class AppComponent implements OnInit {
 
   userAuthorized: boolean = false;
   currentUserName: string;
-
   constructor(
     private projectService: ProjectsService,
     private authenticationService: AuthenticationService,
     private router: Router,
-    public usersService: UserService
+    public usersService: UserService,
   ) {
     this.currentUserName = this.usersService.currentUserName;
-  }
+}
 
   ngOnInit() {
     this.name = sessionStorage.getItem("ProjectName");
+
   }
 
   createNewProject() {
@@ -70,6 +69,7 @@ export class AppComponent implements OnInit {
   }
 
   checkAuthorization() {
+
     this.authenticationService.checkUserAuthorisationAsync().subscribe(
       response => {
         this.userAuthorized = response;

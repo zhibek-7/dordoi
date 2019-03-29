@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NotifierModule } from 'angular-notifier';
 
 import {
   MatIconModule,
@@ -40,7 +41,7 @@ import { CurrentProjectSettingsComponent } from '../components/current-project-s
     MatTableModule,
     MatSortModule,
     MatMenuModule,
-
+     NotifierModule,
     CurrentProjectSettingsRoutingModule
   ],
   exports: [

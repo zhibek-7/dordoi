@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ProjectsService } from "../../../services/projects.service";
 import { ActivatedRoute } from "@angular/router";
 import { Guid } from 'guid-typescript';
+import { NotifierService } from 'angular-notifier';
 
 import * as moment from "moment";
 moment.locale("ru");
@@ -17,7 +18,8 @@ export class CurrentProjectSettingsComponent implements OnInit {
   projectName: string;
   
   constructor(    private route: ActivatedRoute,
-private projectService: ProjectsService) {}
+private projectService: ProjectsService) {
+}
 
   ngOnInit() {
     this.projectId = this.projectService.currentProjectId;

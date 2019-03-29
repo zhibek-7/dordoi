@@ -11,8 +11,9 @@ import { ProjectsService } from "src/app/services/projects.service";
 import { FilesSignalRService } from "src/app/services/filesSignalR.service";
 
 import { UploadingLogModalComponent } from "../uploading-log-modal/uploading-log-modal.component";
-import { Guid } from 'guid-typescript';
+import { Guid } from "guid-typescript";
 import { File as FileData } from "src/app/models/database-entities/file.type";
+import { NotifierService } from "angular-notifier";
 
 @Component({
   selector: "app-files",
@@ -22,11 +23,8 @@ import { File as FileData } from "src/app/models/database-entities/file.type";
 })
 export class FilesComponent implements OnInit {
   files: TreeNode[];
-
   cols: any[];
-
   searchFilesNamesString: string = "";
-
   cuttedNode: TreeNode;
   selectedNode: TreeNode;
 
@@ -36,6 +34,7 @@ export class FilesComponent implements OnInit {
   isSelectionFileForTranslation: boolean = false;
   selectedProjectId: Guid;
   selectedLanguageId: Guid;
+  private readonly notifier: NotifierService;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -44,8 +43,11 @@ export class FilesComponent implements OnInit {
     private projectsService: ProjectsService,
     private ngxSpinnerService: NgxSpinnerService,
     private filesSignalRService: FilesSignalRService,
-    public dialog: MatDialog
-  ) {}
+    public dialog: MatDialog,
+    notifierService: NotifierService
+  ) {
+    this.notifier = notifierService;
+  }
 
   ngOnInit(): void {
     //    console.log("ProjectName=" + sessionStorage.getItem("ProjectName"));
@@ -130,7 +132,9 @@ export class FilesComponent implements OnInit {
           this.addNode(this.cuttedNode, selectedNode);
           this.cuttedNode = null;
         },
-        error => alert(error)
+        error => {
+          this.alertErro(error, "Ошибка вставки");
+        }
       );
   }
 
@@ -145,7 +149,9 @@ export class FilesComponent implements OnInit {
         this.deleteNode(nodeToMove);
         this.addNode(nodeToMove, newParent);
       },
-      error => alert(error)
+      error => {
+        this.alertErro(error, "Ошибка переноса");
+      }
     );
   }
 
@@ -185,14 +191,14 @@ export class FilesComponent implements OnInit {
           }
           this.isLoading = false;
         },
-        error => alert(error)
+        error => this.alertErro(error, "Ошибка получения списка файлов")
       );
   }
 
   addFolder(newFolder: FileData, parentNode?: TreeNode): void {
     const parentId = parentNode ? parentNode.data.id : null;
-
     console.log(" ....addFolder");
+    this.notifier.notify("success", "Добавление папки");
     this.fileService
       .addFolder(
         newFolder.name_text,
@@ -201,7 +207,11 @@ export class FilesComponent implements OnInit {
       )
       .subscribe(
         node => this.addNode(node, parentNode),
-        error => alert(error.error)
+        error =>
+          this.alertErro(
+            error,
+            "Ошибка добавления папки " + newFolder.name_text
+          )
       );
   }
 
@@ -227,7 +237,9 @@ export class FilesComponent implements OnInit {
       )
       .subscribe(
         null,
-        error => alert(error),
+        error => {
+          this.alertErro(error, "Ошибка загрузки ");
+        },
         () => {
           this.getFiles();
           this.ngxSpinnerService.hide();
@@ -245,14 +257,18 @@ export class FilesComponent implements OnInit {
       .addFile(file, this.projectsService.currentProjectId, parentId)
       .subscribe(
         node => {
+          console.log(" ....node=" + node);
           this.addNode(node, parentNode);
+          console.log(" ....parentNode=" + parentNode);
           this.ngxSpinnerService.hide();
         },
         error => {
+          this.alertErro(error, "Ошибка добавления " + file.name);
           this.ngxSpinnerService.hide();
-          this.dialog.open(UploadingLogModalComponent, {
-            data: { name: file.name, errorMessage: error.error }
-          });
+
+          //this.dialog.open(UploadingLogModalComponent, {
+          //  data: { name: file.name, errorMessage: error.error }
+          //});
         }
       );
   }
@@ -274,7 +290,11 @@ export class FilesComponent implements OnInit {
             this.deleteNode(oldNode);
             this.addNode(newNode, parentNode);
           },
-          error => alert(error)
+          error =>
+            this.alertErro(
+              error,
+              "Ошибка обновления версии " + oldNode.data.name_text
+            )
         );
     }
   }
@@ -304,6 +324,7 @@ export class FilesComponent implements OnInit {
       // Insert node object in founded index position
       this.files.splice(lastIndex, 0, addedNode);
     }
+
     this.reloadView();
   }
 
@@ -313,7 +334,7 @@ export class FilesComponent implements OnInit {
         console.log(response);
         this.deleteNode(node);
       },
-      error => alert(error)
+      error => this.alertErro(error, "Ошибка удаления " + node.data.name_text)
     );
   }
 
@@ -336,7 +357,10 @@ export class FilesComponent implements OnInit {
   updateNode(data: FileData): void {
     this.fileService
       .updateNode(data)
-      .subscribe(response => console.log(response), error => alert(error));
+      .subscribe(
+        response => console.log(response),
+        error => this.alertErro(error, "Ошибка обновления " + data.name_text)
+      );
   }
 
   onFileUpload(event: any, parentNode?: TreeNode): void {
@@ -369,7 +393,8 @@ export class FilesComponent implements OnInit {
       () => {
         this.reloadView();
       },
-      error => alert(error)
+      error =>
+        this.alertErro(error, "Ошибка переменования " + node.data.name_text)
     );
   }
 
@@ -387,7 +412,7 @@ export class FilesComponent implements OnInit {
         saveAs(data, fileName);
         this.ngxSpinnerService.hide();
       },
-      error => alert(error)
+      error => this.alertErro(error, "Ошибка загрузки " + node.data.name_text)
     );
   }
 
@@ -397,5 +422,13 @@ export class FilesComponent implements OnInit {
         "Translation/" + selectedFile.id + "/" + this.selectedLanguageId
       ]);
     }
+  }
+
+  alertErro(error: any, text: string) {
+    this.notifier.notify(
+      "error",
+      text //+ " {" + error.message + "} {" + error.error + "}"
+    );
+    //alert(error);
   }
 }

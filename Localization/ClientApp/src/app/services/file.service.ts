@@ -79,14 +79,13 @@ export class FileService {
       formData.append("parentId", "");
     }
 
-    return this.http
-      .post<TreeNode>(url, formData, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      })
-      .pipe(catchError(this.handleError("addFile")));
+    return this.http.post<TreeNode>(url, formData, {
+      headers: new HttpHeaders().set(
+        "Authorization",
+        "Bearer " + sessionStorage.getItem("userToken")
+      )
+    });
+    //.pipe(catchError(this.handleError("addFile")));
   }
 
   updateFileVersion(

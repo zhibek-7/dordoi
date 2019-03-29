@@ -22,6 +22,8 @@ import { NewProjectComponent } from "../new-project/new-project.component";
 import { NewProfileComponent } from "../new-profile/new-profile.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
 //import { UserRegistrationComponent } from "../user-registration/user-registration.component";
+import { NotifierModule } from 'angular-notifier';
+
 
 import {
   MatIconModule,
@@ -61,6 +63,7 @@ import {
     MatDividerModule,
     MatExpansionModule,
     ReactiveFormsModule,
+NotifierModule,
 
     //
     MatNativeDateModule,
