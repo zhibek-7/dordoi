@@ -6,17 +6,40 @@ import { LocalizationProjectsLocales } from "src/app/models/database-entities/lo
 import { Router } from "@angular/router";
 import { Guid } from "guid-typescript";
 
+
+import { Locale } from "src/app/models/database-entities/locale.type";
+import { LanguageService } from "src/app/services/languages.service";
+import { LocalizationProjectForSelectDTO } from "src/app/models/DTO/localizationProjectForSelectDTO.type";
+import { Selectable } from "src/app/shared/models/selectable.model";
+import { ProjectsLocalesService } from "src/app/services/projectsLocales.service";
+
 @Component({
   selector: 'app-edit-project',
   templateUrl: './edit-project.component.html',
   styleUrls: ['./edit-project.component.css']
 })
 export class EditProjectComponent implements OnInit {
-  args = "ascending";
-  reverse = false;
-  searchText = "";
+
+  public project: LocalizationProject;
+
+  allLocales: Locale[] = [];
+  availableLocales: Selectable<Locale>[] = [];
+  availableLocalizationProjects: Selectable<LocalizationProjectForSelectDTO>[] = [];
+  allProjectLocales: LocalizationProjectsLocales[] = [];
+
+  loaded: boolean = false;
+  
   form: FormGroup;
-  //title = "Создание проекта";
+  settings_proj = new FormGroup({
+    pjPublic: new FormControl(),
+    pjFileTrue: new FormControl(),
+    pjExportTrue: new FormControl(),
+    pjSkipUntranslStrTrue: new FormControl(),
+    pjNotificationTrue: new FormControl(),
+    selectedLang: new FormControl()
+  });
+  
+  isChecked = true;
 
   forms: Array<any> = [
     {
@@ -56,123 +79,100 @@ export class EditProjectComponent implements OnInit {
   //////////////////////////////////////////////////
   constructor(
     private router: Router,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private languageService: LanguageService,
+    private projectsLocalesService: ProjectsLocalesService
   ) { }
-  isChecked = true;
-
-  public project: LocalizationProject;
   
-  selectedL: boolean;
-
-  settings_proj = new FormGroup({
-    pjPublic: new FormControl(),
-    pjFileTrue: new FormControl(),
-    pjExportTrue: new FormControl(),
-    pjSkipUntranslStrTrue: new FormControl(),
-    pjNotificationTrue: new FormControl(),
-    selectedLang: new FormControl()
-  });
-
-  dropdownList = [];
-  allProjLocales: LocalizationProjectsLocales[];
-  allLocale = [];
-
-  selectedItems = [];
-  dropdownSettings = {};
 
   ngOnInit() {
+    this.loadLanguages();
+    this.loadProject();
+  }
+  
+  loadProject() {
     this.projectsService.getProject(this.projectsService.currentProjectId).subscribe(
       project => {
         this.project = project;
-        console.log("this.project: ", this.project);
-      },
-      error => console.error(error)
-    );
-
-    let allLangsPr = [];
-    this.projectsService.getLocales().subscribe(
-      projects => {
-        this.allLocale = projects;
-        this.allLocale.forEach(lang => {
-          allLangsPr.push({
-            itemName: lang["name_text"],
-            checked: false,
-            id: lang["id"]
-          });
-        });
-
-        this.dropdownList = allLangsPr;
+        this.loadProjectLocales();
       },
       error => console.error(error)
     );
   }
 
-  AddSelected(event, lang) {
-    var target = event.target || event.srcElement || event.currentTarget;
-    var idAttr = target.attributes.id;
-    var itemNameAttr = target.attributes.name;
+  async save() {
 
-    lang.checked = !lang.checked;
-    if (lang.checked == true) {
-      this.selectedItems.push({
-        itemName: itemNameAttr.nodeValue,
-        selected: lang.checked,
-        id: idAttr.nodeValue
-      });
-    } else {
-      const index = this.selectedItems.findIndex(list => list.id == lang.id); //Find the index of stored id
-      this.selectedItems.splice(index, 1);
-    }
-  }
-
-  AllSelected() {
-    this.dropdownList.forEach(element => {
-      element.checked = !element.checked;
-      if (element.checked == true) {
-        this.selectedItems.push({
-          itemName: element.itemName,
-          selected: element.checked,
-          id: element.id
-        });
-      } else {
-        const index = this.selectedItems.findIndex(
-          list => list.id == element.id
-        ); //Find the index of stored id
-        this.selectedItems.splice(index, 1);
-      }
-    });
-  }
-
-  FiterByName() {
-    this.dropdownList.forEach(element => {
-      element.checked = !element.checked;
-      if (element.checked == true) {
-        this.selectedItems.push({
-          itemName: element.itemName,
-          selected: element.checked,
-          id: element.id
-        });
-      } else {
-        const index = this.selectedItems.findIndex(
-          list => list.id == element.id
-        ); //Find the index of stored id
-        this.selectedItems.splice(index, 1);
-      }
-    });
-  }
-
-  idPrLocale: number;
-  idLocale: number;
-
-
-  save(): void {
-    this.project.date_Of_Creation = Date.now;
-
+    this.projectsService.update(this.project).subscribe(
+      result => {},
+      error => console.error(error)
+    );
+    
+    this.projectsLocalesService.editProjectLocales(this.project.id, this.allProjectLocales).subscribe(
+      result => {},
+      error => console.error(error)
+    );
   }
 
   editTmx(Id: Guid): void {
-    this.project.date_Of_Creation = Date.now;
+    this.project.last_Activity = Date.now;
     
     this.projectsService.tmxFile(this.project.id, this.project);
   }
+
+  //#region Работа с Locales
+
+  loadLanguages() {
+    this.languageService.getLanguageList().subscribe(
+      locale => {
+        this.allLocales = locale;
+      },
+      error => console.error(error)
+    );
+  }
+
+  loadProjectLocales() {
+    this.projectsLocalesService.getByProjectId(this.projectsService.currentProjectId).subscribe(
+      projectLocales => {
+        this.allProjectLocales = projectLocales;
+
+        this.loadAvailableLanguages();
+        //this.availableLocales = this.allLocales.map(
+        //  local =>
+        //  new Selectable<Locale>(
+        //    local,
+        //    projectLocales.some(selectedLocale => selectedLocale.iD_Locale == local.id)
+        //  )
+        //);
+      },
+      error => console.error(error)
+    );
+  }
+
+  loadAvailableLanguages() {
+    this.availableLocales = this.allLocales.map(
+      local =>
+      new Selectable<Locale>(
+        local,
+        this.allProjectLocales.some(selectedLocale => selectedLocale.iD_Locale == local.id)
+      )
+    );
+
+    this.loaded = true;
+  }
+  
+
+  setSelectedLocales(newSelection: Locale[]) {
+    //this.allProjectLocales = newSelection.map(t => new LocalizationProjectsLocales(this.project.id, t.id));
+
+    let selectedLocales = newSelection.map(t => new LocalizationProjectsLocales(this.project.id, t.id));
+
+    //Оставляет те что хранятся в БД, которые выбраны, что бы не потерять значения других полей
+    this.allProjectLocales = this.allProjectLocales.filter(t => selectedLocales.some(n => n.iD_Locale == t.iD_Locale));
+
+    //Добавляет только новые выбранные,
+    selectedLocales = selectedLocales.filter(t => !this.allProjectLocales.some(n => n.iD_Locale == t.iD_Locale));
+    this.allProjectLocales.push(...selectedLocales);
+  }
+
+  //#endregion
 }

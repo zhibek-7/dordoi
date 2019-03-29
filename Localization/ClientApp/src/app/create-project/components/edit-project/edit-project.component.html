@@ -5,7 +5,7 @@
 </div>
 <form [formGroup]="settings_proj"
       name="formName"
-      *ngIf="project">
+      *ngIf="loaded">
 
   <div class="form-group row">
     <label for="" class="col-3 col-form-label">Название проекта:</label>
@@ -95,76 +95,18 @@
     </div>
     <div>
       <select class="form-control" [(ngModel)]="project.iD_Source_Locale" [ngModelOptions]="{standalone: true}">
-        <option id='{{lang.id}}' *ngFor="let lang of dropdownList" value='{{lang.id}}'> {{lang.itemName}}</option>
+        <option *ngFor="let lang of allLocales" [value]="lang.id">{{lang.name_text}}</option>
       </select>
     </div>
     <div class="row">
       <div class="col">
-        <label for="">Целевые языки</label>
-        <div class="input-group">
-          <div class="custom-file">
-            <input type="text" name="itemName" class="form-control" [(ngModel)]="searchText" id="idFilter" placeholder="Фильтровать языки"
-                   [ngModelOptions]="{standalone: true}">
-          </div>
-          <div class="input-group-append">
-            <button style="height: 38px;" type="button" class="btn btn-primary m-1 btn-sm" data-toggle="tooltip" data-placement="top"
-                    title="Tooltip on top" (click)="args='ascending';reverse=!reverse" id="idOrder">
-              <i class="material-icons">sort_by_alpha</i>
-            </button>
-          </div>
-        </div>
-        <div class="input-group">
-          <div class="col-md" size="4" style="height: 10em; overflow: auto;">
-            <div class="form-check" *ngFor="let lang of dropdownList |filter:searchText|orderBy:args:reverse">
-              <label class="form-check-label" *ngIf="lang.checked==true" for=' {{lang.id}}'>
-                <input class="form-check-input" type="checkbox" checked id='{{lang.id}}' name='{{lang.itemName}}' (click)="AddSelected($event,lang)">
-                {{lang.itemName}}
-              </label>
-              <label class="form-check-label" *ngIf="lang.checked==false" for=' {{lang.id}}'>
-                <input class="form-check-input" type="checkbox" id='{{lang.id}}' name='{{lang.itemName}}' (click)="AddSelected($event,lang)">
-                {{lang.itemName}}
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="input-group">
-          <div class="btn-group mr-2 btn-sm" role="group" aria-label="First group">
-            <button type="primary m-1" class="btn btn-primary m-1 btn-sm" data-toggle="tooltip" data-placement="top" title="Tooltip on top"
-                    (click)="AllSelected()">
-              Select top 30
-            </button>
-            <!--<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Tooltip on right">
-                Пользовательские языки
-              </button>
-              -->
-          </div>
-
-        </div>
-      </div>
-      <div class="col">
-        <label for=""> </label>
-        <div class="input-group">
-          <div class="custom-file">
-            <label class="form-check-label"> No language selected</label>
-          </div>
-          <div class="input-group-append">
-          </div>
-        </div>
-        <div class="col-md" size="4" style="height: 10em; overflow: auto;">
-          <div class="form-check" *ngFor="let lang of selectedItems">
-            <label class="form-check-label" for=' {{lang.id}}' id='{{lang.id}}'>
-              {{lang.itemName}}
-            </label>
-          </div>
-        </div>
-
+        <label class="m-1"> Целевые языки: </label>
+        <app-set-languages [availableLocales]="availableLocales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
       </div>
     </div>
   </div>
   <div>
     <button mat-raised-button color="primary" style="width: 15rem;" (click)="save()">Сохранить проект</button>
-
-
   </div>
 </form>
 <!--<router-outlet></router-outlet>-->

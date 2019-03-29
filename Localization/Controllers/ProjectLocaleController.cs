@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +27,31 @@ namespace Localization.Controllers
         {
             _localizationProjectsLocalesRepository = new LocalizationProjectsLocalesRepository(Settings.GetStringDB());
             _userActionRepository = new UserActionRepository(Settings.GetStringDB());
+        }
+
+        /// <summary>
+        /// Возвращает назначенные языки переводов на проект локализации.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("listByProjectId/{projectId}")]
+        public async Task<IEnumerable<LocalizationProjectsLocales>> GetAllByProjectId(Guid projectId)
+        {
+            return await _localizationProjectsLocalesRepository.GetAllByProjectId(projectId);
+        }
+
+        /// <summary>
+        /// Назначение языков переводов на проект локализации.
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="projectLocales"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("editProjectLocales/{projectId}")]
+        public async Task UpdateProjectsLocales(Guid projectId, [FromBody] LocalizationProjectsLocales[] projectLocales)
+        {
+            await _localizationProjectsLocalesRepository.UpdateProjectLocales(projectId, projectLocales);
         }
 
         [Authorize]

@@ -124,7 +124,22 @@ namespace Localization.Controllers
         [Route("edit/{Id}")]
         public async Task<LocalizationProject> EditProject(LocalizationProject project, Guid Id)
         {
-            _localizationProjectRepository.UpdateAsync(project);
+            _localizationProjectRepository.Update(project);
+            await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
+
+            return project;
+        }
+
+        /// <summary>
+        /// Обновление данных проекта локализации.
+        /// </summary>
+        /// <param name="project">Проект локализации.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("update")]
+        public async Task<LocalizationProject> UpdateProject(LocalizationProject project)
+        {
+            await _localizationProjectRepository.UpdateAsync(project);
             await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
 
             return project;

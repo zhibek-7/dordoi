@@ -305,7 +305,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Обновить проект
         /// </summary>
         /// <param name="project"></param>
-        public async Task<bool> UpdateAsync(LocalizationProject project)
+        public async Task<bool> Update(LocalizationProject project)
         {
             var sqlQuery = "UPDATE \"localization_projects\" SET" +
                              "\"name_text\"=@Name_text, " +
@@ -344,15 +344,66 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.Update)} {nameof(NpgsqlException)} ",
                         exception);
                 return false;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.Update)} {nameof(Exception)} ",
                     exception);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Обновление данных проекта локализации.
+        /// </summary>
+        /// <param name="project">Проект локализации.</param>
+        /// <returns></returns>
+        public async Task<bool> UpdateAsync(LocalizationProject project)
+        {
+            project.Last_Activity = DateTime.Now;
+
+            var sqlQuery = "UPDATE \"localization_projects\" SET" +
+                             "\"name_text\"=@Name_text, " +
+                             "\"description\"=@Description," +
+                             "\"url\"=@URL," +
+                             " \"visibility\"=@Visibility," +
+                             " \"date_of_creation\"=@Date_Of_Creation," +
+                             " \"last_activity\"=@Last_Activity," +
+                             " \"id_source_locale\"=@ID_Source_Locale," +
+
+                             " \"able_to_download\"=@Able_To_Download," +
+                             " \"able_to_left_errors\"=@Able_To_Left_Errors," +
+                             " \"default_string\"=@Default_String," +
+                             " \"notify_new\"=@Notify_New," +
+                             " \"notify_finish\"=@Notify_Finish," +
+                             " \"notify_confirm\"=@Notify_Confirm," +
+                             " \"notify_new_comment\"=@notify_new_comment," +
+                             " \"export_only_approved_translations\"=@export_only_approved_translations," +
+                             " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated  " +
+                             "WHERE \"id\"=@id";
+            
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    LogQuery(sqlQuery, project.GetType(), project);
+                    await dbConnection.ExecuteAsync(sqlQuery, project);
+
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(Exception)} ", exception);
                 return false;
             }
         }

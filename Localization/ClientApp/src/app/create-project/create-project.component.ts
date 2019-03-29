@@ -211,10 +211,10 @@ export class CreateProjectComponent implements OnInit {
       let projectLocales: LocalizationProjectsLocales[] = [];
       this.selectedItems.forEach(lang => {
         projectLocales.push({
-          id_Localization_Project: pr.id,
-          id_Locale: lang.id,
+          iD_Localization_Project: pr.id,
+          iD_Locale: lang.id,
           percent_Of_Translation: 0,
-          Percent_Of_Confirmed: 0
+          percent_Of_Confirmed: 0
         });
       });
 

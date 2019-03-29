@@ -211,4 +211,8 @@ export class ProjectsService {
       .toPromise();
     return asyncResult;
   }
+
+  update(project: LocalizationProject): Observable<Object> {
+    return this.httpClient.post(this.controllerUrl + "update", project);
+  }
 }

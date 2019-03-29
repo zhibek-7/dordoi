@@ -225,10 +225,10 @@ export class AllSettingsComponent implements OnInit {
       //);
       //if (index!=-1) {
       DeleteprojectLocales.push({
-        id_Localization_Project: this.currentProjectId,
-        id_Locale: lang["iD_Locale"],
+        iD_Localization_Project: this.currentProjectId,
+        iD_Locale: lang["iD_Locale"],
         percent_Of_Translation: 0,
-        Percent_Of_Confirmed: 0
+        percent_Of_Confirmed: 0
       });
       //}
     });
@@ -246,10 +246,10 @@ export class AllSettingsComponent implements OnInit {
 
           //if (index == -1) {
           projectLocales.push({
-            id_Localization_Project: this.currentProjectId,
-            id_Locale: lang.id,
+            iD_Localization_Project: this.currentProjectId,
+            iD_Locale: lang.id,
             percent_Of_Translation: 0,
-            Percent_Of_Confirmed: 0
+            percent_Of_Confirmed: 0
           });
           //} else {
 
