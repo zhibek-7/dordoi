@@ -1,17 +1,25 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Injectable } from "@angular/core";
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HttpResponse
+} from "@angular/common/http";
+import { Observable, of } from "rxjs";
 
-import { TranslationMemoryForEditingDTO, TranslationMemoryTableViewDTO, TranslationMemoryForSelectDTO } from 'src/app/models/DTO/translationMemoryDTO.type';
-import { catchError } from 'rxjs/operators';
-import { Guid } from 'guid-typescript';
+import {
+  TranslationMemoryForEditingDTO,
+  TranslationMemoryTableViewDTO,
+  TranslationMemoryForSelectDTO
+} from "src/app/models/DTO/translationMemoryDTO.type";
+import { catchError } from "rxjs/operators";
+import { Guid } from "guid-typescript";
 
 @Injectable()
 export class TranslationMemoryService {
-  static connectionUrl: string = 'api/TranslationMemory/';
+  static connectionUrl: string = "api/TranslationMemory/";
 
-  constructor(private httpClient: HttpClient) { }
-
+  constructor(private httpClient: HttpClient) {}
 
   /**
    * Возвращает список памяти переводов текущего пользователя, со строками перечислений имен связанных объектов.
@@ -28,47 +36,65 @@ export class TranslationMemoryService {
     limit?: number,
     offset?: number,
     sortBy?: string[],
-    sortAscending?: boolean): Observable<HttpResponse<TranslationMemoryTableViewDTO[]>> {
+    sortAscending?: boolean
+  ): Observable<HttpResponse<TranslationMemoryTableViewDTO[]>> {
     let params = new HttpParams();
-    if (searchString && searchString != '') {
-      params = params.set('searchString', searchString);
+    if (searchString && searchString != "") {
+      params = params.set("searchString", searchString);
     }
     if (projectId) {
-      params = params.set('projectId', projectId.toString());
+      params = params.set("projectId", projectId.toString());
     }
     if (limit) {
-      params = params.set('limit', limit.toString());
+      params = params.set("limit", limit.toString());
     }
     if (offset) {
-      params = params.set('offset', offset.toString());
+      params = params.set("offset", offset.toString());
     }
     if (sortBy && sortBy.length > 0) {
-      sortBy.forEach(sortByItem => params = params.append('sortBy', sortByItem));
+      sortBy.forEach(
+        sortByItem => (params = params.append("sortBy", sortByItem))
+      );
       if (sortAscending !== undefined) {
-        params = params.set('sortAscending', sortAscending.toString());
+        params = params.set("sortAscending", sortAscending.toString());
       }
     }
-    return this.httpClient.post<TranslationMemoryTableViewDTO[]>(TranslationMemoryService.connectionUrl + "byUserId", null,
+    return this.httpClient.post<TranslationMemoryTableViewDTO[]>(
+      TranslationMemoryService.connectionUrl + "byUserId",
+      null,
       {
         params: params,
-        observe: 'response'
-      });
+        observe: "response"
+      }
+    );
   }
-  
+
   /**
    * Возвращает список памятей переводов назначенных на проект локализации.
    * @param projectId Идентификатор проекта локализации.
    */
-  getForSelectByProjectAsync(projectId: Guid): Observable<TranslationMemoryForSelectDTO[]> {
-    return this.httpClient.post<TranslationMemoryForSelectDTO[]>(TranslationMemoryService.connectionUrl + "forSelectByProject/"+projectId, projectId);
+  getForSelectByProjectAsync(
+    projectId: Guid
+  ): Observable<TranslationMemoryForSelectDTO[]> {
+    return this.httpClient.post<TranslationMemoryForSelectDTO[]>(
+      TranslationMemoryService.connectionUrl +
+        "forSelectByProject/" +
+        projectId,
+      projectId
+    );
   }
 
   /**
    * Добавление новой памяти переводов.
    * @param translationMemory Новая память переводов.
    */
-  create(translationMemory: TranslationMemoryForEditingDTO): Observable<Object> {
-    return this.httpClient.post(TranslationMemoryService.connectionUrl + "create", translationMemory);
+  create(
+    translationMemory: TranslationMemoryForEditingDTO
+  ): Observable<Object> {
+    return this.httpClient.post(
+      TranslationMemoryService.connectionUrl + "create",
+      translationMemory
+    );
   }
 
   /**
@@ -76,8 +102,13 @@ export class TranslationMemoryService {
    * @param id Идентификатор памяти переводов.
    */
   async getForEditing(id: Guid): Promise<TranslationMemoryForEditingDTO> {
-    let result = await this.httpClient.post<TranslationMemoryForEditingDTO>(TranslationMemoryService.connectionUrl + "edit/"+id, id)
-//      .pipe(catchError(this.handleError('getForEditing', null))).toPromise();
+    let result = await this.httpClient
+      .post<TranslationMemoryForEditingDTO>(
+        TranslationMemoryService.connectionUrl + "edit/" + id,
+        id
+      )
+      .toPromise();
+    //      .pipe(catchError(this.handleError('getForEditing', null))).toPromise();
     return result;
   }
 
@@ -85,8 +116,13 @@ export class TranslationMemoryService {
    * Сохранение изменений в памяти переводов.
    * @param translationMemory Отредактированная память переводов.
    */
-  editSave(translationMemory: TranslationMemoryForEditingDTO): Observable<Object> {
-    return this.httpClient.post(TranslationMemoryService.connectionUrl + "editSave", translationMemory);
+  editSave(
+    translationMemory: TranslationMemoryForEditingDTO
+  ): Observable<Object> {
+    return this.httpClient.post(
+      TranslationMemoryService.connectionUrl + "editSave",
+      translationMemory
+    );
   }
 
   /**
@@ -94,28 +130,31 @@ export class TranslationMemoryService {
    * @param id Идентификатор памяти переводов.
    */
   delete(id: Guid): Observable<Object> {
-    return this.httpClient.delete(TranslationMemoryService.connectionUrl + "delete/" + id);
+    return this.httpClient.delete(
+      TranslationMemoryService.connectionUrl + "delete/" + id
+    );
   }
 
-  // 
+  //
   /**
    * Удаление всех строк памяти переводов.
    * @param id Идентификатор памяти переводов.
    */
   clear(id: Guid): Observable<Object> {
-    return this.httpClient.delete(TranslationMemoryService.connectionUrl + "clear/" + id);
+    return this.httpClient.delete(
+      TranslationMemoryService.connectionUrl + "clear/" + id
+    );
   }
-
 
   /**
    * Обработка исключений (вывод на консоль).
    * @param operation Наименование функции/метода, в которой(ом) перехвачено исключение.
    * @param result Результат функции/метода.
    */
-  handleError<T>(operation = 'Operation', result?: T) {
+  handleError<T>(operation = "Operation", result?: T) {
     return (error: any): Observable<T> => {
       console.log(`${operation} failed: ${error.message}`);
       return of(result as T);
-    }
+    };
   }
 }
