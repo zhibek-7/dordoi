@@ -3,6 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 //import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
 import { NewProjectComponent } from "../new-project/new-project.component";
+import { NewProfileComponent } from "../new-profile/new-profile.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
 //import { UserRegistrationComponent } from "../user-registration/user-registration.component";
 
@@ -17,6 +18,10 @@ const routes: Routes = [
     path: "Translation/:fileId/:localeId",
     loadChildren: "../work-panel/work-panel.module#WorkPanelModule",
     canActivate: [AuthenticationGuard]
+  },
+  {
+   path: "new-profile",
+   component: NewProfileComponent
   },
   //{
   //  path: "Projects/:id/reports",

@@ -1,0 +1,172 @@
+<div class="jumbotron" *ngIf="user">
+  <div class="container-fluide">
+    <div class="row">
+      <div class="col-2">
+        <div style="min-height: 10rem;">
+          <img *ngIf="user.photo == null" [src]="imageUrl" alt="" class="img-thumbnail mx-auto d-block">
+          <img *ngIf="user.photo != null" src="data:image/JPEG;base64,{{user.photo}}" class="img-thumbnail mx-auto d-block" />
+        </div>
+        <div class="row mb-4 ml-4 mt-4">
+          <button mat-raised-button (click)="file.click()">
+            <span>Изменить</span>
+            <input type="file" #file (change)="uploadFile(file.files)" hidden>
+          </button>
+        </div>
+        <div class="row mb-4 ml-4">
+          <button mat-raised-button (click)="deleteImage()">Удалить</button>
+        </div>
+      </div>
+      <div class="col-10">
+        <div class="row mb-4">
+          <div class="col-4"><span class="name">{{user.full_name}}</span></div>
+          <div class="col-4">
+            <mat-slide-toggle class="example-margin" color="primer" [checked]="public" labelPosition='before'>
+              Опубликовать
+            </mat-slide-toggle>
+          </div>
+          <div class="col-4" style="display: flex; justify-content: flex-end;">
+            <button mat-raised-button style="margin-right:1rem;" (click)="save()">Сохранить</button>
+            <button mat-raised-button>Отмена</button>
+          </div>
+        </div>
+        <div class="row mb-custom">
+          <div class="col-3 rate">
+            <mat-icon style="color: green;">stars</mat-icon><span>100% Качество</span>
+          </div>
+          <div class="col-3 rate">
+            <mat-icon style="color: #ffae00;">star_rate</mat-icon><span>100% Сроки</span>
+          </div>
+          <div class="col-3">Переведено 10 млн слов</div>
+          <div class="col-3" style="text-align: right;">Участие в 5 проектах</div>
+        </div>
+        <div class="row mb-4">
+          <div class="col">
+            <span class="name">Контактные дынные</span>
+          </div>
+        </div>
+        <form [formGroup]="profileFormGroup">
+          <div class="row mb-4">
+            <div class="col">
+              <div class="row mb-2">
+                <div class="col-4">
+                  <span>Полное имя</span>
+                </div>
+                <div class="col-8">
+                  <input name="full_name" type="text" [value]="user.full_name" class="w75" formControlName="fullNameFormControl" (keyup)="isUniqueName()" (blur)="isUniqueName()"><br>
+                  <mat-hint *ngIf="profileFormGroup.controls['fullNameFormControl'].invalid && profileFormGroup.controls['fullNameFormControl'].touched && profileFormGroup.controls['fullNameFormControl'].errors?.isUniqueFullName">
+                    Имя пользователя не уникально!</mat-hint>
+                  <mat-hint *ngIf="profileFormGroup.controls['fullNameFormControl'].invalid && profileFormGroup.controls['fullNameFormControl'].touched && profileFormGroup.controls['fullNameFormControl'].errors?.required">
+                    Имя пользователя обязательно!</mat-hint>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">
+                  <span>Страна</span>
+                </div>
+                <div class="col-8">
+                  <input type="text" value="" class="w75">
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">
+                  <span>Email</span>
+                </div>
+                <div class="col-8">
+                  <input type="text" [value]="user.email" class="w75" formControlName="emailFormControl" (keyup)="isUniqueEmail()" (blur)="isUniqueEmail()"><br>
+                  <mat-hint *ngIf="profileFormGroup.controls['emailFormControl'].invalid && profileFormGroup.controls['emailFormControl'].touched && profileFormGroup.controls['emailFormControl'].errors?.isUniqueEmail">
+                    Email не уникален!</mat-hint>
+                  <mat-hint *ngIf="profileFormGroup.controls['emailFormControl'].invalid && profileFormGroup.controls['emailFormControl'].touched && profileFormGroup.controls['emailFormControl'].errors?.required">
+                    Email обязателен!</mat-hint>
+                  <mat-hint *ngIf="profileFormGroup.controls['emailFormControl'].invalid && profileFormGroup.controls['emailFormControl'].touched && profileFormGroup.controls['emailFormControl'].errors?.email">
+                    Некорректный email!</mat-hint>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">
+                  <span>Меседжеры</span>
+                </div>
+                <div class="col-8">
+                  <input formControlName="messengersFormControl" type="text" value="" class="w100">
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">
+                  <span>Дополнительно</span>
+                </div>
+                <div class="col-8">
+                  <textarea formControlName="aboutMeFormControl" name="" id="" cols="30" rows="6" class="w100"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-3" style="margin-right:1rem;">
+        <div class="wrap">
+          <div class="lt-inner"></div>
+          <div class="rt-inner"></div>
+          <div class="lb-inner"></div>
+          <div class="rb-inner"></div>
+        </div>
+        <h6 style="text-transform: uppercase; color: #7c529e;">Добавить услугу</h6>
+      </div>
+      <div class="col-3 service">
+        <div>
+          <div class="">
+            Письменный перевод
+          </div>
+          <mat-form-field>
+            <mat-select placeholder="Язык оригинала" [(ngModel)]="selectedCurrentLanguage" name="currentLanguages">
+              <mat-option *ngFor="let language of languages" [value]="language.id">
+                {{language.name_text}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select placeholder="Язык перевода" [(ngModel)]="selectedTranslateLanguage" name="translateLanguages">
+              <mat-option *ngFor="let language of languages" [value]="language.id">
+                {{language.name_text}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-accordion>
+              <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Перевод
+                  </mat-panel-title>
+                   <mat-icon *ngIf="!switch" (click)="switch = !switch">add_circle_outline</mat-icon>
+                   <mat-icon *ngIf="switch" (click)="switch = !switch">remove_circle_outline</mat-icon>
+                </mat-expansion-panel-header>
+                <p>Тут цена за услугу</p>
+              </mat-expansion-panel>
+              <mat-expansion-panel hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Редактура
+                  </mat-panel-title>
+                  <mat-icon *ngIf="!switch2" (click)="switch2 = !switch2; ">add_circle_outline</mat-icon>
+                  <mat-icon *ngIf="switch2" (click)="switch2 = !switch2; ">remove_circle_outline</mat-icon>
+                </mat-expansion-panel-header>
+                <p>Тут цена за услугу</p>
+              </mat-expansion-panel>
+            </mat-accordion>
+            <mat-form-field>
+                <mat-select placeholder="Тематика" [(ngModel)]="selectedTranslateLanguage" name="translateLanguages">
+                  <mat-option *ngFor="let language of languages" [value]="language.id">
+                    <!-- {{language.name_text}} -->
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+        </div>
+        <div style="margin-top: 3rem;">
+          <div class="row row-btn"><button mat-button color="primary">Удалить</button></div>
+          <div class="row row-btn"><button mat-button color="primary">Отмена</button></div>
+          <div class="row row-btn"><button mat-button color="primary">Сохранить</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

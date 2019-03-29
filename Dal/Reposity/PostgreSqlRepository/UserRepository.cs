@@ -844,9 +844,9 @@ namespace DAL.Reposity.PostgreSqlRepository
         //
         public static Dictionary<string, string> SortColumnNamesMapping = new Dictionary<string, string>()
         {
-            { "id", "users.id" },
+            { "id", "id_user" },
             { "words_quantity", "words_quantity" },
-            { "cost", "users_services.price" }
+            { "cost", "cost" }
         };
 
         /// <summary>
@@ -879,7 +879,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             if (sortBy == null || !sortBy.Any())
             {
-                sortBy = new[] { "id" };
+                sortBy = new[] { "id_user" };
             }
 
             try
@@ -895,6 +895,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         minPrice,
                         maxPrice);
 
+                    query = query.Distinct();
                     query = ApplyPagination(
                         query: query,
                         offset: offset,
@@ -907,7 +908,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sortAscending: sortAscending);
 
                     var compiledQuery = _compiler.Compile(query);
-                   LogQuery(compiledQuery);
+                    LogQuery(compiledQuery);
 
                     var translators = await dbConnection.QueryAsync<Translator>(
                         sql: compiledQuery.Sql,
@@ -966,7 +967,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         topicsId,
                         minPrice,
                         maxPrice);
-                    query = query.Distinct().AsCount("users.id");
+                    query = query.Distinct().AsCount("users_info.id_user");
 
 
                     var compiledQuery = _compiler.Compile(query);
@@ -976,6 +977,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                         sql: compiledQuery.Sql,
                         param: compiledQuery.NamedBindings
                     );
+
 
                     return count;
                 }
@@ -1015,95 +1017,145 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
             try
             {
-                var queryUsersTranslationTopics = new Query("users")
-                    .LeftJoin("users_translation_topics", "users_translation_topics.id_user", "users.id")
-                    .LeftJoin("translation_topics", "translation_topics.id", "users_translation_topics.id_translation_topics")
-                    .WhereTrue("users.public_profile")
-                    .Select("users.id as id_user")
-                    .GroupBy("users.id")
-                    .SelectRaw("string_agg(translation_topics.name_text, ',' order by translation_topics.name_text) as translation_topics_name");
+                //var queryUsersTranslationTopics = new Query("users")
+                //     .LeftJoin("users_translation_topics", "users_translation_topics.id_user", "users.id")
+                //     .LeftJoin("translation_topics", "translation_topics.id", "users_translation_topics.id_translation_topics")
+                //     .WhereTrue("users.public_profile")
+                //     .Select("users.id as id_user")
+                //     .GroupBy("users.id")
+                //     .SelectRaw("string_agg(translation_topics.name_text, ',' order by translation_topics.name_text) as translation_topics_name");
 
-                var queryUsersTranslationServices = new Query("users")
-                    .LeftJoin("translation_services", "translation_services.id_user", "users.id")
-                    .LeftJoin("type_of_service", "type_of_service.id", "translation_services.id_type_of_service")
-                    .LeftJoin("currency", "currency.id", "translation_services.id_currency")
-                    .WhereTrue("users.public_profile")
-                    .SelectRaw("DISTINCT on (users.id) users.id AS id_user, type_of_service.name_text AS service_name, translation_services.price, currency.name_text AS currency_name");
-                
+                // var queryUsersTranslationServices = new Query("users")
+                //     .LeftJoin("translation_services", "translation_services.id_user", "users.id")
+                //     .LeftJoin("type_of_service", "type_of_service.id", "translation_services.id_type_of_service")
+                //     .LeftJoin("currency", "currency.id", "translation_services.id_currency")
+                //     .WhereTrue("users.public_profile")
+                //     .SelectRaw("DISTINCT on (users.id) users.id AS id_user, type_of_service.name_text AS service_name, translation_services.price, currency.name_text AS currency_name");
 
-                //Добавить запрос на вычисление кол-ва переведенных слов.
 
-                
+                // //Добавить запрос на вычисление кол-ва переведенных слов.
+
+
+                // if (currentLanguagesId != null)
+                // {
+                //     queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_original_locale", currentLanguagesId);
+                // }
+
+                // if (translateLanguagesId != null)
+                // {
+                //     queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_translation_locale", translateLanguagesId);
+                // }
+
+                // if (nativeLanguage != null)
+                // {
+                //     queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.is_native", nativeLanguage);
+                // }
+
+                // if (servicesId != null)
+                // {
+                //     queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_type_of_service", servicesId);
+                // }
+
+                // if (minPrice != null)
+                // {
+                //     queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.price", ">=", minPrice);
+                // }
+
+                // if (maxPrice != null)
+                // {
+                //     queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.price", "<=", maxPrice);
+                // }
+
+
+                // var query = new Query("users")
+                //     .With("users_topics", queryUsersTranslationTopics)
+                //     .With("users_services", queryUsersTranslationServices)
+                //     .Join("users_topics", "users_topics.id_user", "users.id")
+                //     .Join("users_services", "users_services.id_user", "users.id")
+                //     .LeftJoin("participants", "participants.id_user", "users.id")
+                //     .LeftJoin("translations", "translations.id_user", "users.id")
+                //     .LeftJoin("translation_substrings", "translation_substrings.id", "translations.id_string")
+                //     .WhereTrue("users.public_profile")
+                //     .Select(
+                //         "users.id as id",
+                //         "users.name_text as user_name",
+                //         "users.email as user_email",
+                //         "users.photo as user_pic",
+                //         "users_topics.translation_topics_name as topics_string",
+                //         "users_services.service_name as service",
+                //         "users_services.price as cost",
+                //         "users_services.currency_name as currency"//,
+                //                                                   //вставить кол-во переведенных слов.
+                //     )//.Distinct();
+                //     .GroupBy(
+                //         "users.id",
+                //         "users.name_text",
+                //         "users.email",
+                //         "users.photo",
+                //         "users_topics.translation_topics_name",
+                //         "users_services.service_name",
+                //         "users_services.price",
+                //         "users_services.currency_name")
+                //     .SelectRaw("avg(participants.deadlines) as term_rating")
+                //     .SelectRaw("avg(participants.quality_of_work) as translation_rating")
+                //     .SelectRaw("count(participants.id) as number_of_ratings")
+                //     .SelectRaw("sum(case when translation_substrings.word_count = null then 0 else translation_substrings.word_count end)/1000 as words_quantity");
+
+                // if (topicsId != null && topicsId.Length > 0)
+                // {
+                //     query = query.LeftJoin("users_translation_topics", "users_translation_topics.id_user", "users.id")
+                //         .WhereIn("users_translation_topics.id_translation_topics", topicsId);
+                // }
+
+
+                var query = new Query("users_info");
+
+
+                if (currentLanguagesId != null || nativeLanguage != null || servicesId != null || translateLanguagesId != null)
+                {
+                    query = query.LeftJoin("translation_services", "translation_services.id_user",
+                        "users_info.id_user");
+                }
+
+                //var query = new Query("users_info");
                 if (currentLanguagesId != null)
                 {
-                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_original_locale", currentLanguagesId);
+                    query = query.Where("translation_services.id_original_locale", currentLanguagesId);
+
                 }
 
                 if (translateLanguagesId != null)
                 {
-                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_translation_locale", translateLanguagesId);
+                    query = query.Where("id_translation_locale", translateLanguagesId);
                 }
 
                 if (nativeLanguage != null)
                 {
-                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.is_native", nativeLanguage);
+                    query = query.Where("is_native", nativeLanguage);
                 }
 
                 if (servicesId != null)
                 {
-                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.id_type_of_service", servicesId);
+                    query = query.Where("id_type_of_service", servicesId);
                 }
 
                 if (minPrice != null)
                 {
-                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.price", ">=", minPrice);
+                    query = query.Where("cost", ">=", minPrice);
                 }
 
                 if (maxPrice != null)
                 {
-                    queryUsersTranslationServices = queryUsersTranslationServices.Where("translation_services.price", "<=", maxPrice);
+                    query = query.Where("cost", "<=", maxPrice);
                 }
-                
-
-                var query = new Query("users")
-                    .With("users_topics", queryUsersTranslationTopics)
-                    .With("users_services", queryUsersTranslationServices)
-                    .Join("users_topics", "users_topics.id_user", "users.id")
-                    .Join("users_services", "users_services.id_user", "users.id")
-                    .LeftJoin("participants", "participants.id_user", "users.id")
-                    .LeftJoin("translations", "translations.id_user", "users.id")
-                    .LeftJoin("translation_substrings", "translation_substrings.id", "translations.id_string")
-                    .WhereTrue("users.public_profile")
-                    .Select(
-                        "users.id as id",
-                        "users.name_text as user_name",
-                        "users.email as user_email",
-                        "users.photo as user_pic",
-                        "users_topics.translation_topics_name as topics_string",
-                        "users_services.service_name as service",
-                        "users_services.price as cost",
-                        "users_services.currency_name as currency"//,
-                                                                  //вставить кол-во переведенных слов.
-                    )//.Distinct();
-                    .GroupBy(
-                        "users.id",
-                        "users.name_text",
-                        "users.email",
-                        "users.photo",
-                        "users_topics.translation_topics_name",
-                        "users_services.service_name",
-                        "users_services.price",
-                        "users_services.currency_name")
-                    .SelectRaw("avg(participants.deadlines) as term_rating")
-                    .SelectRaw("avg(participants.quality_of_work) as translation_rating")
-                    .SelectRaw("count(participants.id) as number_of_ratings")
-                    .SelectRaw("sum(case when translation_substrings.word_count = null then 0 else translation_substrings.word_count end)/1000 as words_quantity");
 
                 if (topicsId != null && topicsId.Length > 0)
                 {
-                    query = query.LeftJoin("users_translation_topics", "users_translation_topics.id_user", "users.id")
+                    query = query.LeftJoin("users_translation_topics", "users_translation_topics.id_user", "users_info.id_user")
                         .WhereIn("users_translation_topics.id_translation_topics", topicsId);
                 }
+
+
 
                 var compiledQuery = _compiler.Compile(query);
                 LogQuery(compiledQuery);
