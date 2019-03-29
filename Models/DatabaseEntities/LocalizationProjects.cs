@@ -53,5 +53,7 @@ namespace Models.DatabaseEntities
         public bool original_if_string_is_not_translated { get; set; }
 
         public bool export_only_approved_translations { get; set; }
+
+        public bool able_translators_change_terms_in_glossaries { get; set; }
     }
 }

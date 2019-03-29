@@ -41,52 +41,96 @@
     </div>
   </div>
 
-  <label class="form-check-label" for="PrivatLabl">
-    Приватность
-  </label>
-  <div class="form-check">
-    <mat-radio-group [(ngModel)]="project.visibility" name="currentProjectPublic" [ngModelOptions]="{standalone: true}" ng-checked="">
-      <mat-radio-button name="PublicName" [value]="true">Виден всем пользователям</mat-radio-button>
-      <small id="nameHelp" class="form-text text-muted">Visible to anyone</small>
-      <mat-radio-button name="PrivateName" [value]="false">Виден только участникам</mat-radio-button>
-      <small id="nameHelp" class="form-text text-muted"> Visible only to the invited project members</small>
-    </mat-radio-group>
+  <div class="form-group row">
+    <label class="col-3 form-check-label" for="PrivatLabl">
+      Приватность
+    </label>
+    <div class="col-9 form-check" style="padding-left: 0px;">
+      <mat-radio-group [(ngModel)]="project.visibility" name="currentProjectPublic" [ngModelOptions]="{standalone: true}" ng-checked="">
+        <mat-radio-button name="PublicName" [value]="true">Виден всем пользователям</mat-radio-button>
+        <small id="nameHelp" class="form-text text-muted">Visible to anyone</small>
+        <mat-radio-button name="PrivateName" [value]="false">Виден только участникам</mat-radio-button>
+        <small id="nameHelp" class="form-text text-muted"> Visible only to the invited project members</small>
+      </mat-radio-group>
+    </div>
   </div>
-  <div class="form-check">
-    <mat-checkbox class="example-margin" [(ngModel)]="project.able_To_Download" id="FileName" name="FileName" [checked]="isChecked" [ngModelOptions]="{standalone: true}">
-      <label class="form-check-label" for="">Переводчики могут загружать файлы для перевода из проекта</label>
-    </mat-checkbox>
 
-    <small id="nameHelp" class="form-text text-muted">
-      Позволяет переводчикам загружать файлы из проекта на свой
-      компьютер для перевода офлайн. Вы, как владелец/менеджер проекта, всегда можете загружать эти файлы.
-    </small>
-  </div>
-  <div class="form-check">
-    <mat-checkbox class="example-margin" [(ngModel)]="project.able_To_Left_Errors" name="ScipName" [ngModelOptions]="{standalone: true}">
-      <label class="form-check-label" for="">Пропускать непереведенные строки</label>
-    </mat-checkbox>
+  <div class="form-group row">
+    <!--<div class="form-check">
+        <mat-checkbox class="example-margin" [(ngModel)]="project.able_To_Download" id="FileName" name="FileName" [checked]="isChecked" [ngModelOptions]="{standalone: true}">
+          <label class="form-check-label" for="">Переводчики могут загружать файлы для перевода из проекта</label>
+        </mat-checkbox>
 
-    <small id="nameHelp" class="form-text text-muted">
-      Если отмечено, то строки без перевода не будут включены в экспортируемый файл.
-      Эта функция не будет применена к текстовым документам:*.docx, *.pptx,*.xlsx и т.д. во избежание ошибок в
-      переведенных файлах.
-    </small>
-  </div>
-  <div class="form-check">
-    <mat-checkbox class="example-margin" [(ngModel)]="project.export_only_approved_translations" name="ExportName" [ngModelOptions]="{standalone: true}">
-      <label class="form-check-label" for="">Экспортировать только утвержденные переводы</label>
-    </mat-checkbox>
+        <small id="nameHelp" class="form-text text-muted">
+          Позволяет переводчикам загружать файлы из проекта на свой
+          компьютер для перевода офлайн. Вы, как владелец/менеджер проекта, всегда можете загружать эти файлы.
+        </small>
+      </div>-->
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.able_To_Left_Errors" name="ScipName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Пропускать непереведенные строки</label>
+      </mat-checkbox>
 
-    <small id="nameHelp" class="form-text text-muted">
-      Будут экспортированы только утвержденные переводы. Утверждение переводов потребует дополнительных усилий от ваших
-      переводчиков\корректоров.
-    </small>
+      <small id="nameHelp" class="form-text text-muted">
+        Если отмечено, то строки без перевода не будут включены в экспортируемый файл.
+        Эта функция не будет применена к текстовым документам:*.docx, *.pptx,*.xlsx и т.д. во избежание ошибок в
+        переведенных файлах.
+      </small>
+    </div>
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.original_if_string_is_not_translated" id="FileName" name="FileName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Выводить оригинал, если строка не переведена</label>
+      </mat-checkbox>
+
+      <small id="nameHelp" class="form-text text-muted">
+        Если отмечено, то выгружает в итоговый файл не переведенные строки как текст базового языка.
+      </small>
+    </div>
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.export_only_approved_translations" name="ExportName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Экспортировать только утвержденные переводы</label>
+      </mat-checkbox>
+
+      <small id="nameHelp" class="form-text text-muted">
+        Будут экспортированы только утвержденные переводы. Утверждение переводов потребует дополнительных усилий от ваших
+        переводчиков\корректоров.
+      </small>
+    </div>
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.able_translators_change_terms_in_glossaries" name="ExportName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Переводчикам разрешено изменять термины в глоссарий</label>
+      </mat-checkbox>
+
+      <small id="nameHelp" class="form-text text-muted">
+        Если отмечено, то разрешено переводчикам и редакторам изменять глоссарий.
+      </small>
+    </div>
+
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.notify_New" name="PublicName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Уведомлять менеджеров проекта о новых строках</label>
+      </mat-checkbox>
+    </div>
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.notify_Finish" name="PublicName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Уведомлять менеджеров проекта о завершение перевода файлов</label>
+      </mat-checkbox>
+    </div>
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.notify_Confirm" name="PublicName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Уведомлять владельцов о завершение проверки файлов редакторами</label>
+      </mat-checkbox>
+    </div>
+    <div class="form-check">
+      <mat-checkbox class="example-margin" [(ngModel)]="project.notify_new_comment" name="PublicName" [ngModelOptions]="{standalone: true}">
+        <label class="form-check-label" for="">Уведомлять менеджеров проекта о новом комментарии к строке</label>
+      </mat-checkbox>
+    </div>
   </div>
-  <div class="form-check">
-    <mat-checkbox class="example-margin" [(ngModel)]="project.notify_New" name="PublicName" [ngModelOptions]="{standalone: true}">
-      <label class="form-check-label" for="">Уведомлять менеджеров проекта о новых строках</label>
-    </mat-checkbox>
+
+  <div class="form-group">
+      <label class="form-check-label" for="">Укажите в текстовом поле строку, которая будет записана в файл, если перевод обязательный и не был сделан (для удобства проверки)</label>
+      <input type="text" class="form-control" [(ngModel)]="project.default_String" [ngModelOptions]="{standalone: true}">
   </div>
 
   <div class="form-group">

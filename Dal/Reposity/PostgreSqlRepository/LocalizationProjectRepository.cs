@@ -383,7 +383,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                              " \"notify_confirm\"=@Notify_Confirm," +
                              " \"notify_new_comment\"=@notify_new_comment," +
                              " \"export_only_approved_translations\"=@export_only_approved_translations," +
-                             " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated  " +
+                             " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated,  " +
+                             " \"able_translators_change_terms_in_glossaries\"=@able_translators_change_terms_in_glossaries  " +
                              "WHERE \"id\"=@id";
             
             try

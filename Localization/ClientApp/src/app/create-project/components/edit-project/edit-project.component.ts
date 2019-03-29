@@ -39,7 +39,7 @@ export class EditProjectComponent implements OnInit {
     selectedLang: new FormControl()
   });
   
-  isChecked = true;
+  //isChecked = true;
 
   forms: Array<any> = [
     {
