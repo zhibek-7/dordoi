@@ -41,7 +41,7 @@ export class CommentService {
   getAllCommentsInStringById(idString: Guid): Observable<CommentWithUser[]> {
     return this.http
       .post<CommentWithUser[]>(this.url + "InString/" + idString, null)
-      .pipe(catchError(this.handleError("Get comments in string", [])));
+      //.pipe(catchError(this.handleError("Get comments in string", [])));
   }
 
   deleteComment(commentId: Guid) {

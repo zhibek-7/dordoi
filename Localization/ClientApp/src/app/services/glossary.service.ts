@@ -72,7 +72,7 @@ export class GlossaryService {
         GlossaryService.connectionUrl + "edit/"+glossaryId,
         glossaryId
       )
-      .pipe(catchError(this.handleError("getGlossaryForEditing", null)))
+      //.pipe(catchError(this.handleError("getGlossaryForEditing", null)))
       .toPromise();
     return result;
   }

@@ -77,7 +77,7 @@ export class TranslationMemoryService {
    */
   async getForEditing(id: Guid): Promise<TranslationMemoryForEditingDTO> {
     let result = await this.httpClient.post<TranslationMemoryForEditingDTO>(TranslationMemoryService.connectionUrl + "edit/"+id, id)
-      .pipe(catchError(this.handleError('getForEditing', null))).toPromise();
+//      .pipe(catchError(this.handleError('getForEditing', null))).toPromise();
     return result;
   }
 

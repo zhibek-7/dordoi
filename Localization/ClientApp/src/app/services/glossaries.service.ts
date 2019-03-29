@@ -29,13 +29,13 @@ export class GlossariesService {
   public get(id: Guid): Observable<Glossary> {
     return this.httpClient
       .post<Glossary>(GlossariesService.connectionUrl + id + "/get", null)
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   getGlossaries(): Observable<Glossary[]> {
     return this.httpClient
       .post<Glossary[]>(GlossariesService.connectionUrl + "list", null)
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   getAssotiatedTerms(
@@ -77,7 +77,7 @@ export class GlossariesService {
           observe: "response"
         }
       )
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   addNewTerm(
@@ -91,13 +91,13 @@ export class GlossariesService {
     }
     return this.httpClient
       .post(GlossariesService.connectionUrl + glossaryId + "/terms", newTerm)
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   deleteTerm(glossaryId: Guid, termId: Guid): Observable<Object> {
     return this.httpClient
       .delete(GlossariesService.connectionUrl + glossaryId + "/terms/" + termId)
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   updateTerm(
@@ -118,7 +118,7 @@ export class GlossariesService {
           updatedTerm.id,
         updatedTerm
       )
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   getGlossaryLocale(glossaryId: Guid): Observable<Locale> {
@@ -127,7 +127,7 @@ export class GlossariesService {
         GlossariesService.connectionUrl + glossaryId + "/locale/get",
         null
       )
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   getGlossaryLocaleByTerm(termId?: Guid): Observable<Locale> {
@@ -140,14 +140,14 @@ export class GlossariesService {
             Guid.createEmpty(),
           null
         )
-        .pipe(catchError(this.handleError));
+        //.pipe(catchError(this.handleError));
     } else {
       return this.httpClient
         .post<Locale>(
           GlossariesService.connectionUrl + "term/locale/get/" + termId,
           null
         )
-        .pipe(catchError(this.handleError));
+        //.pipe(catchError(this.handleError));
     }
   }
 
@@ -160,7 +160,7 @@ export class GlossariesService {
         GlossariesService.connectionUrl + "terms/" + termId + "/locales/list",
         null
       )
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   setTranslationLocalesForTerm(
@@ -177,7 +177,7 @@ export class GlossariesService {
           "/locales",
         localesIds
       )
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 
   // Получить все термины из всех словарь присоедененных к проекту локализации, по id необходимого проекта локализации
@@ -189,6 +189,6 @@ export class GlossariesService {
         GlossariesService.connectionUrl + "FindAllTermsInProjects/" + projectId,
         projectId
       )
-      .pipe(catchError(this.handleError));
+      //.pipe(catchError(this.handleError));
   }
 }
