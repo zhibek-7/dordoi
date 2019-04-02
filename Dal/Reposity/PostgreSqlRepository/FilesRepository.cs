@@ -469,7 +469,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                                 "SELECT * " +
                                 "FROM translations " +
                                 "WHERE id_string = @id_translationSubstring AND id_locale = @id_locale{0} " +
-                                "SORT BY selected DESC, confirmed DESC, datetime DESC LIMIT 1",
+                                "order BY selected DESC, confirmed DESC, datetime DESC LIMIT 1",
                                 localizationProject.export_only_approved_translations ? " AND confirmed = true" : "");
                             var translation =
                                 await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery,
