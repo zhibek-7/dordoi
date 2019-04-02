@@ -104,13 +104,17 @@ const routes: Routes = [
     path: "invitation",
     loadChildren: "../invitations/invitations.module#InvitationsModule",
   },
-      {
-        path: 'translators',
-        loadChildren: "src/app/translators-list/module/translators-list.module#TranslatorsListModule",
-        //component: TranslatorsListComponent,
-        canActivate: [AuthenticationGuard]
-      },
-
+  {
+    path: 'translators',
+    loadChildren: "src/app/translators-list/module/translators-list.module#TranslatorsListModule",
+    //component: TranslatorsListComponent,
+    canActivate: [AuthenticationGuard]
+  },
+  {
+    path: "project",
+    loadChildren: "src/app/project/module/project.module#ProjectModule",
+    canActivate: [AuthenticationGuard]
+  },
   {
     path: "**",
     loadChildren: "../account/module/account.module#AccountModule",

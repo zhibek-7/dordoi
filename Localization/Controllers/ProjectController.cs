@@ -130,6 +130,23 @@ namespace Localization.Controllers
             return project;
         }
 
+
+
+        /// <summary>
+        /// Создание проекта локализации.
+        /// </summary>
+        /// <param name="project">Проект локализации.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("create")]
+        public async Task<Guid?> Create(LocalizationProject project)
+        {
+            var projectId = await _localizationProjectRepository.AddAsync(project);
+            await _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, (Guid)projectId, project.ID_Source_Locale);
+
+            return projectId;
+        }
+
         /// <summary>
         /// Обновление данных проекта локализации.
         /// </summary>
@@ -137,7 +154,7 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("update")]
-        public async Task<LocalizationProject> UpdateProject(LocalizationProject project)
+        public async Task<LocalizationProject> Update(LocalizationProject project)
         {
             await _localizationProjectRepository.UpdateAsync(project);
             await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);

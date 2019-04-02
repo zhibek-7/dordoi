@@ -54,6 +54,19 @@ namespace Localization.Controllers
             await _localizationProjectsLocalesRepository.UpdateProjectLocales(projectId, projectLocales);
         }
 
+        /// <summary>
+        /// Назначение языков переводов на проект локализации.
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="projectLocales"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("create")]
+        public async Task CreateProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
+        {
+            await _localizationProjectsLocalesRepository.CreateProjectLocales(projectLocales);
+        }
+
         [Authorize]
         [HttpPost]
         [Route("edit/{Id}")]

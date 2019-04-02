@@ -45,11 +45,9 @@ const routes: Routes = [
         loadChildren: "src/app/files/files.module#FilesModule",
         canActivate: [AuthenticationGuard]
       },
-
       {
         path: "project",
-        loadChildren:
-          "src/app/create-project/create-project.module#CreateProjectModule",
+        loadChildren: "src/app/project/module/project.module#ProjectModule",
         canActivate: [AuthenticationGuard]
       },
       {

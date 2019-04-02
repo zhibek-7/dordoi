@@ -22,12 +22,21 @@ export class ProjectsLocalesService {
   }
 
   /**
-   * Назначение языков переводов на проект локализации.
+   * Переназначение языков переводов на проект локализации.
    * @param projectId
    * @param projectLocales
    */
   editProjectLocales(projectId: Guid, projectLocales: LocalizationProjectsLocales[]): Observable<Object> {
     return this.httpClient.post(this.controllerUrl + "editProjectLocales/" + projectId, projectLocales);
+  }
+
+  /**
+   * Назначение языков переводов на проект локализации.
+   * @param projectId
+   * @param projectLocales
+   */
+  createProjectLocales(projectLocales: LocalizationProjectsLocales[]): Observable<Object> {
+    return this.httpClient.post(this.controllerUrl + "create", projectLocales);
   }
 
   getProjectLocales(): Observable<LocalizationProjectsLocales[]> {
@@ -36,6 +45,10 @@ export class ProjectsLocalesService {
       null
     );
   }
+
+
+
+  ///////////
   async addProjectLocales(project: LocalizationProjectsLocales) {
     console.log("addProject-->");
     console.log(project);

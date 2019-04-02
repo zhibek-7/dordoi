@@ -278,7 +278,7 @@ export class AllSettingsComponent implements OnInit {
       this.pjAllLeft, //notifynewcomment
       this.pjExportTrue, //export_only_approved_translations
       this.pjAllLeft //original_if_string_is_not_translated
-
+, false
       //
     ); // поменять на id реального пользователя, когда появится
 
@@ -306,6 +306,7 @@ export class AllSettingsComponent implements OnInit {
       this.pjAllLeft, //notifynewcomment
       this.pjExportTrue, //export_only_approved_translations
       this.pjAllLeft //original_if_string_is_not_translated
+      , false
     ); // поменять на id реального пользователя, когда появится
     Id = this.currentProjectId;
     this.projectsService.tmxFile(Id, project);
