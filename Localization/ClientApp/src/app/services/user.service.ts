@@ -69,7 +69,7 @@ export class UserService {
    * Регистрация. Создание пользователя.
    * @param user
    */
-  createUser(user: User): Observable<Object> {
+  createUser(user: User): any {
     return this.httpClient.post<number>(this.url + "registration", user);
   }
 

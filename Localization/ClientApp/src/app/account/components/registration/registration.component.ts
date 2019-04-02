@@ -1,9 +1,17 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl, Validators, AbstractControl, FormGroup } from "@angular/forms";
+import {
+  FormControl,
+  Validators,
+  AbstractControl,
+  FormGroup
+} from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { UserService } from "src/app/services/user.service";
 import { User } from "src/app/models/database-entities/user.type";
+
+import { AuthenticationService } from "src/app/services/authentication.service";
+import { InvitationsService } from "src/app/services/invitations.service";
 
 @Component({
   selector: "app-registration",
@@ -11,7 +19,12 @@ import { User } from "src/app/models/database-entities/user.type";
   styleUrls: ["./registration.component.css"]
 })
 export class RegistrationComponent implements OnInit {
-  constructor(private router: Router, private userService: UserService) {}
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private authenticationService: AuthenticationService,
+    private invitationsService: InvitationsService
+  ) {}
 
   hidePassword: boolean;
   formGroup: FormGroup;
@@ -38,13 +51,15 @@ export class RegistrationComponent implements OnInit {
       ]),
       passwordFormControl: new FormControl("", [
         Validators.required,
-        Validators.pattern("(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}")
+        Validators.pattern(
+          "(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}"
+        )
       ]),
       passwordConfirmFormControl: new FormControl("", Validators.required),
       agreeFormControl: new FormControl("", Validators.requiredTrue)
     });
   }
-  
+
   submit() {
     if (this.formGroup.invalid) {
       return;
@@ -56,11 +71,44 @@ export class RegistrationComponent implements OnInit {
       this.isUniqueLoginConfirmed
     ) {
       let user = this.getUser();
+
+      //      this.userService.createUser(user).subscribe(
+      //        newId => {
+      //          this.router.navigate(["/account"]);
+      //        },
+      //        error => console.error(error)
+      //      );
       this.userService.createUser(user).subscribe(
-        newId => {
-          this.router.navigate(["/account"]);
+        async response => {
+          this.authenticationService.saveToken(response.token);
+
+          if (this.invitationsService.currentInvitationId) {
+            const currentInvitation = await this.invitationsService
+              .getInvitationById(this.invitationsService.currentInvitationId)
+              .toPromise();
+            const currentUserProfile = await this.userService
+              .getProfile()
+              .toPromise();
+            if (currentUserProfile.email == currentInvitation.email) {
+              this.invitationsService
+                .activateInvitation(this.invitationsService.currentInvitationId)
+                .subscribe(
+                  () => (this.invitationsService.currentInvitationId = null)
+                );
+            }
+          }
+
+          //this.userService.getProfile().subscribe();
+          this.router.navigate(["/Profile"]);
+
+          this.authenticationService.authorizeUser();
+          this.authenticationService.setUserRole(response.role);
+          this.authenticationService.setUserName(response.username);
         },
-        error => console.error(error)
+        error => {
+          this.formGroup.setErrors({ login: true });
+          //alert("Авторизация не пройдена");
+        }
       );
     }
   }

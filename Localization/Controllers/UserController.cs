@@ -155,9 +155,11 @@ namespace Localization.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost("registration")]
-        public async Task<Guid?> CreateUser(User user)
+        public async Task<IActionResult> CreateUser(User user)
         {
-            return await userRepository.CreateUser(user);
+            //return await userRepository.CreateUser(user);
+            await userRepository.CreateUser(user);
+            return await LoginAsync(user);
         }
 
         /// <summary>
