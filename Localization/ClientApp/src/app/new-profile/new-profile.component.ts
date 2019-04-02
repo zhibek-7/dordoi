@@ -1,12 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup,
          FormControl,
          Validators,
          AbstractControl } from '@angular/forms';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
 import { UserProfile } from 'src/app/models/DTO/userProfile.type';
 import { Locale } from 'src/app/models/database-entities/locale.type';
+export interface DialogData {
+  user: UserProfile;
+  selectedCurrentLanguage: string;
+  selectedTranslateLanguage: string;
+}
 
 @Component({
   selector: 'app-new-profile',
@@ -17,14 +23,11 @@ export class NewProfileComponent implements OnInit {
   imageUrl = '';
   public = false;
   user: UserProfile;
-  profileFormGroup: FormGroup;
   selectedCurrentLanguage;
   selectedTranslateLanguage;
-  languages: Locale[] = [];
-  switch = false;
-  switch2 = false;
+  profileFormGroup: FormGroup;
 
-  constructor(private languagesService: LanguageService, private userService: UserService) {}
+  constructor(private userService: UserService, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.imageUrl = '../../assets/svg/011-user.svg';
@@ -38,16 +41,6 @@ export class NewProfileComponent implements OnInit {
       },
       error => console.error(error)
     );
-    this.loadLanguages();
-  }
-
-  loadLanguages() {
-    this.languagesService.getLanguageList().subscribe({
-      next: response => {
-        this.languages = response;
-      },
-      error: err => console.log(err)
-    });
   }
 
   save() {
@@ -133,4 +126,71 @@ export class NewProfileComponent implements OnInit {
   uploadFile(files): void {
     console.log(files);
   }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogAddServiceComponent, {
+      width: '20rem',
+      data: {
+        user: this.user,
+        selectedCurrentLanguage: this.selectedCurrentLanguage,
+        selectedTranslateLanguage: this.selectedTranslateLanguage
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed', result);
+    });
+  }
+}
+
+@Component({
+  selector: 'app-dialog-add-service',
+  templateUrl: './service-modal/app-dialog-add-service.component.html',
+})
+export class DialogAddServiceComponent implements OnInit{
+  service1 = false;
+  service2 = false;
+  selectedCurrentLanguage;
+  selectedTranslateLanguage;
+  languages: Locale[] = [];
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogAddServiceComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private languagesService: LanguageService) {}
+
+    ngOnInit() {
+      console.log(this.data)
+      this.loadLanguages();
+    }
+
+    loadLanguages() {
+      this.languagesService.getLanguageList().subscribe({
+        next: response => {
+          this.languages = response;
+        },
+        error: err => console.log(err)
+      });
+    }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  save() {
+    this.data.selectedCurrentLanguage = this.selectedCurrentLanguage;
+    this.data.selectedTranslateLanguage = this.selectedTranslateLanguage;
+    this.dialogRef.close(this.data);
+  }
+
+  switch1() {
+    this.service2 = false;
+    this.service1 = !this.service1;
+  }
+
+  switch2() {
+    this.service1 = false;
+    this.service2 = !this.service2;
+  }
+
 }

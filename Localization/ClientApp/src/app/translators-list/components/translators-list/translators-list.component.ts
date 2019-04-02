@@ -5,22 +5,17 @@ import {PageEvent} from '@angular/material';
 
 import { TranslationTopicService } from '../../../services/translation-topic.service';
 import { TypeOfServiceService } from '../../../services/type-of-service.service';
-//import { TranslatorsService } from 'src/app/services/translators.service';
+// import { TranslatorsService } from 'src/app/services/translators.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
 
 import { Translator } from 'src/app/models/Translators/translator.type';
 import { TranslationTopicForSelectDTO } from '../../../models/DTO/translationTopicForSelectDTO.type';
 import { TypeOfServiceForSelectDTO } from '../../../models/DTO/typeOfServiceForSelectDTO.type';
-import { Locale } from "src/app/models/database-entities/locale.type";
+import { Locale } from 'src/app/models/database-entities/locale.type';
 import { DialogInviteTranslatorComponent } from '../dialog-invite-translator/dialog-invite-translator.component';
-import { Guid } from "guid-typescript";
+import { Guid } from 'guid-typescript';
 import { ProjectsService } from 'src/app/services/projects.service';
-
-//export interface DialogData {
-//  animal: string;
-//  name: string;
-//}
 
 @Component({
   selector: 'app-translators-list',
@@ -32,9 +27,9 @@ export class TranslatorsListComponent implements OnInit {
   translators: Translator[] = [];
   currentUser: Translator;
 
-  @ViewChild("invite")
+  @ViewChild('invite')
   public invite: DialogInviteTranslatorComponent;
-  visibleInvite: boolean = false;
+  visibleInvite = false;
 
   languages: Locale[] = [];
   services: TypeOfServiceForSelectDTO[] = []; // = ['Перевод', 'Редактура'];
@@ -61,7 +56,7 @@ export class TranslatorsListComponent implements OnInit {
       name: 'По тарифу, сначала дороже'
     }
   ];
-  selectedSorting;//: [boolean, string];
+  selectedSorting; // : [boolean, string];
 
   sortingColumn: string = null;
   isDesc: boolean = null;
@@ -86,8 +81,8 @@ export class TranslatorsListComponent implements OnInit {
 
   //#region pagination
 
-  listLength: number = 0;
-  pageSize: number = 10;
+  listLength = 0;
+  pageSize = 10;
   pageSizeOptions: number[] = [10, 25, 100];
   pageEvent: PageEvent;
 
@@ -95,7 +90,7 @@ export class TranslatorsListComponent implements OnInit {
 
 
   constructor(
-    //private translationService: TranslatorsService,
+    // private translationService: TranslatorsService,
     private usersService: UserService,
     private languagesService: LanguageService,
     private translationTopicService: TranslationTopicService,
@@ -151,7 +146,7 @@ export class TranslatorsListComponent implements OnInit {
 
   filtredFn(searchingVal) {
     console.log(searchingVal);
-    
+
     this.loadPublicTranslators();
   }
 
@@ -189,7 +184,7 @@ export class TranslatorsListComponent implements OnInit {
       this.max = undefined;
     }
   }
-  
+
   onPageChanged(args: PageEvent) {
     this.pageSize = args.pageSize;
     const currentOffset = args.pageSize * args.pageIndex;
@@ -218,15 +213,15 @@ export class TranslatorsListComponent implements OnInit {
       this.max,
       this.pageSize,
       pageIndex,
-      sortingColumns,//[this.selectedSorting[1]],
-      this.isDesc//this.selectedSorting[0]
+      sortingColumns, // [this.selectedSorting[1]],
+      this.isDesc// this.selectedSorting[0]
     ).subscribe(
       response => {
         this.translators = response.body;
 
-        //console.log("this.translators: ", this.translators);
-        this.listLength = +response.headers.get("totalCount");
-        //this.parent.currentOffset = offset;
+        // console.log("this.translators: ", this.translators);
+        this.listLength = +response.headers.get('totalCount');
+        // this.parent.currentOffset = offset;
       },
       error => {
         console.log(error);
