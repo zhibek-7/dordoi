@@ -83,7 +83,7 @@ button:focus {
 .service div {
   width: 100%;
 }
-.mat-form-field{
+.mat-form-field {
   width: 100% !important;
 }
 .row-btn {
@@ -113,4 +113,16 @@ button:focus {
 }
 ::ng-deep .mat-expansion-panel-header {
   padding: 0px !important;
+}
+::ng-deep .mat-dialog-container {
+  border-radius: 0px !important;
+}
+::ng-deep .mat-form-field {
+  width: 100% !important;
+}
+::ng-deep .mat-dialog-actions {
+  flex-direction: column !important;
+}
+::ng-deep .align {
+  align-self: flex-end !important;
 }

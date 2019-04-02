@@ -4,23 +4,23 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { CoreRoutingModule } from "./core-routing.model";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AuthenticationGuard } from "../services/authentication.guard";
+import { AuthenticationGuard } from '../services/authentication.guard';
 
-import { RequestInterceptorService } from "../services/requestInterceptor.service";
-import { AuthenticationService } from "../services/authentication.service";
+import { RequestInterceptorService } from '../services/requestInterceptor.service';
+import { AuthenticationService } from '../services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
 import { LanguageService } from 'src/app/services/languages.service';
-import { AppInitService } from "src/app/services/app-init.service";
+import { AppInitService } from 'src/app/services/app-init.service';
 
-import { HeaderComponent } from "./header/header.component";
-import { NotFoundComponent } from "./not-found/not-found.component";
+import { HeaderComponent } from './header/header.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 //import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
-import { NewProjectComponent } from "../new-project/new-project.component";
-import { NewProfileComponent } from "../new-profile/new-profile.component";
-import { UserAccountComponent } from "../user-account/user-account.component";
+import { NewProjectComponent } from '../new-project/new-project.component';
+import { NewProfileComponent, DialogAddServiceComponent } from '../new-profile/new-profile.component';
+import { UserAccountComponent } from '../user-account/user-account.component';
 //import { UserRegistrationComponent } from "../user-registration/user-registration.component";
 import { NotifierModule } from 'angular-notifier';
 
@@ -40,8 +40,9 @@ import {
   MatNativeDateModule,
   MatSortModule,
   MatMenuModule,
-  MatSlideToggleModule
-} from "@angular/material";
+  MatSlideToggleModule,
+  MatDialogModule
+} from '@angular/material';
 
 
 @NgModule({
@@ -63,22 +64,25 @@ import {
     MatDividerModule,
     MatExpansionModule,
     ReactiveFormsModule,
-NotifierModule,
+    MatDialogModule,
+    NotifierModule,
 
     //
     MatNativeDateModule,
     MatSortModule,
     MatMenuModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
     //
   ],
+  entryComponents: [NewProfileComponent, DialogAddServiceComponent],
   declarations: [
     NotFoundComponent,
     HeaderComponent,
     //CurrentProjectSettingsComponent,
     NewProjectComponent,
     UserAccountComponent,
-    NewProfileComponent
+    NewProfileComponent,
+    DialogAddServiceComponent,
     //UserRegistrationComponent
   ],
   exports: [RouterModule, HeaderComponent],
