@@ -196,9 +196,9 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        public async Task<Guid?> AddAsync(LocalizationProject project)
+        public async Task<Guid?> AddAsync(CreateLocalizationProject project) //(LocalizationProject project)
         {
-            project.Date_Of_Creation = project.Last_Activity = DateTime.Now;
+            //project.Date_Of_Creation = project.Last_Activity = DateTime.Now;
 
             var sqlQuery = "INSERT INTO localization_projects " +
                            "(name_text, description, url, " +
@@ -212,13 +212,13 @@ namespace DAL.Reposity.PostgreSqlRepository
                            "logo, " +
 
                            "notify_new_comment, " +
-                           "export_only_approved_translations, " + "original_if_string_is_not_translated, " + "able_translators_change_terms_in_glossaries, " +
+                           "export_only_approved_translations, " + "original_if_string_is_not_translated, " + "able_translators_change_terms_in_glossaries " +
 
                            ") " +
                            "VALUES('"
                  + project.Name_text + "','" + project.Description + "','" + project.URL + "','" 
                  + project.Visibility + "','" 
-                 + project.Date_Of_Creation + "','" + project.Last_Activity + "','" 
+                 + /*project.Date_Of_Creation*/ DateTime.Now + "','" + /*project.Last_Activity*/ DateTime.Now + "','" 
                  + project.ID_Source_Locale + "','" 
                  + project.Able_To_Download + "','" 
                  + project.Able_To_Left_Errors + "','"
@@ -238,7 +238,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     this.LogQuery(sqlQuery);
                     Guid? projectId = await dbConnection.ExecuteScalarAsync<Guid>(sqlQuery, project);
-                    return project.id = (Guid)projectId;
+                    return (Guid)projectId;
                 }
             }
 
@@ -292,6 +292,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
 
             }
+        }
+
+        public Task<Guid?> AddAsync(LocalizationProject item)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

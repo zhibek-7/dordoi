@@ -139,10 +139,10 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("create")]
-        public async Task<Guid?> Create(LocalizationProject project)
+        public async Task<Guid?> Create(CreateLocalizationProject project)
         {
             var projectId = await _localizationProjectRepository.AddAsync(project);
-            await _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, (Guid)projectId, project.ID_Source_Locale);
+            await _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, (Guid)projectId, (Guid)project.ID_Source_Locale);
 
             return projectId;
         }
