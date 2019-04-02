@@ -6,7 +6,8 @@ import { LocalizationProjectsLocales } from "src/app/models/database-entities/lo
 import { ProjectsService } from 'src/app/services/projects.service';
 import { ProjectsLocalesService } from "src/app/services/projectsLocales.service";
 
-import { Guid } from 'guid-typescript';
+//import { Guid } from 'guid-typescript';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-add-project',
@@ -20,12 +21,13 @@ export class AddProjectComponent implements OnInit {
   loaded: boolean = false;
 
   constructor(private projectsService: ProjectsService,
-    private projectsLocalesService: ProjectsLocalesService) { }
+    private projectsLocalesService: ProjectsLocalesService,
+    private router: Router) { }
 
   ngOnInit() {
     //this.project = new LocalizationProject(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-    this.project = new LocalizationProject(Guid.createEmpty(), null, null, null, false, null, null, false, false, false, false, false, false, false, false, false);
-    this.project.date_Of_Creation = this.project.last_Activity = "2000-01-01T00:00:00";
+    this.project = new LocalizationProject(null, null, null, null, false, null, null, false, false, false, false, false, false, false, false, false);
+    //this.project.date_Of_Creation = this.project.last_Activity = "2000-01-01T00:00:00";
     this.project.logo = null;
 
 
@@ -41,13 +43,14 @@ export class AddProjectComponent implements OnInit {
 
     this.projectsService.create(editedProject[0]).subscribe(
       projectId => {
-        console.log(projectId); 
+        console.log(projectId);
         
         this.projectsLocalesService.createProjectLocales(editedProject[1].map(t => new LocalizationProjectsLocales(projectId, t.iD_Locale))).subscribe(
-          result => { },
+          result => {},
           error => console.error(error)
         );
 
+        this.router.navigate(["/Projects/" + projectId]);
       },
       error => console.error(error)
     );
