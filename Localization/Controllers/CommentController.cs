@@ -98,17 +98,18 @@ namespace Localization.WebApi
             return Ok(commentsInString);
         }
 
-        /// <summary>
-        /// Получает все комментарии
-        /// </summary>
-        /// <returns>Список комментариев</returns>
-        [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<Comments>>> GetComments()
-        {
-            IEnumerable<Comments> comments = await commentRepository.GetAllAsync();
-            return Ok(comments);
-        }
+        //TODO нельзя так делать
+        ///// <summary>
+        ///// Получает все комментарии
+        ///// </summary>
+        ///// <returns>Список комментариев</returns>
+        //[Authorize]
+        //[HttpPost]
+        //public async Task<ActionResult<IEnumerable<Comments>>> GetComments()
+        //{
+        //    IEnumerable<Comments> comments = await commentRepository.GetAllAsync(Guid.Empty);
+        //    return Ok(comments);
+        //}
 
 
         /// <summary>

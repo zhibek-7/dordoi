@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Localization.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using DAL.Reposity.PostgreSqlRepository;
+using Utilities;
 
 namespace Localization.WebApi
 {
@@ -17,18 +19,22 @@ namespace Localization.WebApi
     {
 
         private readonly GlossaryService _glossaryService;
+        private UserRepository ur;
 
         public GlossaryController(GlossaryService glossaryService)
         {
             this._glossaryService = glossaryService;
+            var connectionString = Settings.GetStringDB();
+            ur = new UserRepository(connectionString);
         }
 
         [Authorize]
         [HttpPost("list")]
         public async Task<IEnumerable<Glossary>> GetAllAsync()
         {
-            //TOO поправить потом для фильтрации по проекту
-            return await this._glossaryService.GetAllAsync();
+            var identityName = User.Identity.Name;
+            Guid userId = (Guid)ur.GetID(identityName);
+            return await this._glossaryService.GetAllAsync(userId);
         }
 
         [Authorize]

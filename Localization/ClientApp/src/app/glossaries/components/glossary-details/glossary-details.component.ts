@@ -91,6 +91,8 @@ export class GlossaryDetailsComponent implements OnInit {
       sortByColumns.push(this.sortByColumnName);
     }
 
+console.log("this.glossary.id==");
+console.log("this.glossary.id==" + this.glossary.id);
     this.glossariesService
       .getAssotiatedTerms(
         this.glossary.id,

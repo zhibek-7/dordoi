@@ -94,38 +94,46 @@ namespace DAL.Reposity.PostgreSqlRepository
 
         //}
 
-        /// <summary>
-        /// Получить все комментарии
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<Comments>> GetAllAsync()
-        {
-            var query = "SELECT * FROM comments_text";
 
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    this.LogQuery(query);
-                    IEnumerable<Comments> comments = await dbConnection.QueryAsync<Comments>(query);
-                    return comments;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
-                    exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllAsync)} {nameof(Exception)} ",
-                    exception);
-                return null;
-            }
+        public Task<IEnumerable<Comments>> GetAllAsync(Guid userId)
+        {
+            throw new NotImplementedException();
         }
+
+        //TODO нельзя так делать
+
+        ///// <summary>
+        ///// Получить все комментарии
+        ///// </summary>
+        ///// <returns></returns>
+        //public async Task<IEnumerable<Comments>> GetAllAsync()
+        //{
+        //    var query = "SELECT * FROM comments_text";
+
+        //    try
+        //    {
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            this.LogQuery(query);
+        //            IEnumerable<Comments> comments = await dbConnection.QueryAsync<Comments>(query);
+        //            return comments;
+        //        }
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(CommentRepository)}.{nameof(CommentRepository.GetAllAsync)} {nameof(Exception)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //}
 
         /// <summary>
         /// Получает все комментарии которые есть данной фразы

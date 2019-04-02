@@ -32,23 +32,24 @@ namespace Localization.WebApi
             ur = new UserRepository(connectionString);
         }
 
-        /// <summary> 
-        /// GET api/strings        
-        /// </summary> 
-        /// <returns>Список всех фраз</returns> 
-        [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStrings()
-        {
-            var strings = await stringRepository.GetAllAsync();
+        //TODO нельзя так делать
+        ///// <summary> 
+        ///// GET api/strings        
+        ///// </summary> 
+        ///// <returns>Список всех фраз</returns> 
+        //[Authorize]
+        //[HttpPost]
+        //public async Task<ActionResult<IEnumerable<TranslationSubstring>>> GetStrings()
+        //{
+        //    var strings = await stringRepository.GetAllAsync();
 
-            if (strings == null)
-            {
-                return BadRequest("Strings not found");
-            }
+        //    if (strings == null)
+        //    {
+        //        return BadRequest("Strings not found");
+        //    }
 
-            return Ok(strings);
-        }
+        //    return Ok(strings);
+        //}
 
         /// <summary> 
         /// Получить все фразы для перевода из файла 

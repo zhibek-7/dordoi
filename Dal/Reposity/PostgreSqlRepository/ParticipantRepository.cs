@@ -66,7 +66,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public Task<IEnumerable<Participant>> GetAllAsync()
+        public Task<IEnumerable<Participant>> GetAllAsync(Guid id)
         {
             throw new NotImplementedException();
         }

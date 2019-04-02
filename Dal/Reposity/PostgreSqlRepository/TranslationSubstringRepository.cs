@@ -116,40 +116,47 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
 
-        /// <summary>
-        /// Получает все фразы
-        /// </summary>
-        /// <returns>Список фраз</returns>
-        public async Task<IEnumerable<TranslationSubstring>> GetAllAsync()
+
+        public Task<IEnumerable<TranslationSubstring>> GetAllAsync(Guid userId)
         {
-            var query = "SELECT * FROM translation_substrings";
-
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    this.LogQuery(query);
-
-                    IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.TranslationSubstring>(query);
-                    return strings;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
-                    exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllAsync)} {nameof(Exception)} ",
-                    exception);
-                return null;
-            }
-
+            throw new NotImplementedException();
         }
+
+        //TODO нельзя так делать
+        /// <summary>
+        ///// Получает все фразы
+        ///// </summary>
+        ///// <returns>Список фраз</returns>
+        //public async Task<IEnumerable<TranslationSubstring>> GetAllAsync()
+        //{
+        //    var query = "SELECT * FROM translation_substrings";
+
+        //    try
+        //    {
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            this.LogQuery(query);
+
+        //            IEnumerable<TranslationSubstring> strings = await dbConnection.QueryAsync<Models.DatabaseEntities.TranslationSubstring>(query);
+        //            return strings;
+        //        }
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetAllAsync)} {nameof(Exception)} ",
+        //            exception);
+        //        return null;
+        //    }
+
+        //}
 
         /// <summary>
         /// Получает запись с конкретным id
@@ -1330,10 +1337,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return null;
             }
         }
-
-
-
-
 
     }
 }

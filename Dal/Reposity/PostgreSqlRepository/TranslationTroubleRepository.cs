@@ -154,7 +154,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<IEnumerable<TranslationTrouble>> GetAllAsync()
+        public async Task<IEnumerable<TranslationTrouble>> GetAllAsync(Guid id)
         {
             try
             {

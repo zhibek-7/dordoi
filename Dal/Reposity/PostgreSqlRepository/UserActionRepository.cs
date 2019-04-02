@@ -106,13 +106,13 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Получить список действий всех пользователей системы 
         /// </summary> 
         /// <returns>Список действий</returns> 
-        public async Task<IEnumerable<UserAction>> GetAllAsync()
+        public async Task<IEnumerable<UserAction>> GetAllAsync(Guid projectId)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var query = new Query("user_actions").Select();
+                    var query = new Query("user_actions").WhereRaw("user_actions.id_project='" + projectId + "'").Select();
                     var compiledQuery = this._compiler.Compile(query);
                     this.LogQuery(compiledQuery);
                     var userActions = await dbConnection.QueryAsync<UserAction>(compiledQuery.Sql, compiledQuery.NamedBindings);
