@@ -89,7 +89,11 @@ export class RegistrationComponent implements OnInit {
             const currentUserProfile = await this.userService
               .getProfile()
               .toPromise();
-            if (currentUserProfile.email == currentInvitation.email) {
+            if (
+              currentInvitation != null &&
+              currentUserProfile != null &&
+              currentUserProfile.email == currentInvitation.email
+            ) {
               this.invitationsService
                 .activateInvitation(this.invitationsService.currentInvitationId)
                 .subscribe(

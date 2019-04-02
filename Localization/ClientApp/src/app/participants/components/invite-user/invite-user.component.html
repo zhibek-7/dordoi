@@ -9,7 +9,8 @@
         <div>
           <h6>Роль</h6>
         </div>
-        <select *ngIf="roles" class="form-control m-1" [(ngModel)]="selectedRoleId" [ngModelOptions]="{standalone: true}">
+        <select *ngIf="roles" class="form-control m-1" [(ngModel)]="selectedRoleId"
+          [ngModelOptions]="{standalone: true}">
           <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name_text}}</option>
         </select>
       </div>
@@ -20,10 +21,12 @@
         <div class="width-to-parent">
           <input class="form-control" formControlName="emailFormControl" placeholder="Электронная почта">
         </div>
-        <div class="alert alert-danger" *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.required">
+        <div class="alert alert-danger"
+          *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.required">
           Поле "Email" обязательно для заполнения
         </div>
-        <div class="alert alert-danger" *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.email">
+        <div class="alert alert-danger"
+          *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.email">
           Некорректный email
         </div>
       </div>

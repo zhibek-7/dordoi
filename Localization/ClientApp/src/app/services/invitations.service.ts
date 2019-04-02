@@ -12,7 +12,7 @@ export class InvitationsService {
 
   private readonly invitationIdItemName = "invitationId";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   get currentInvitationId(): string {
     return sessionStorage.getItem(this.invitationIdItemName);
@@ -23,33 +23,31 @@ export class InvitationsService {
   }
 
   addInvitation(invitation: Invitation): Observable<Object> {
-    return this.http
-      .post(`${this._url}/add`, invitation, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      });
+    console.log("addInvitation=" + `${this._url}/add`);
+    console.log("addInvitation=" + invitation.id_project);
+    return this.http.post(`${this._url}/add`, invitation, {
+      headers: new HttpHeaders().set(
+        "Authorization",
+        "Bearer " + sessionStorage.getItem("userToken")
+      )
+    });
   }
 
   getInvitationById(invitationId: string): Observable<Invitation> {
-    return this.http
-      .post<Invitation>(`${this._url}/${invitationId}`, null, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      });
+    return this.http.post<Invitation>(`${this._url}/${invitationId}`, null, {
+      headers: new HttpHeaders().set(
+        "Authorization",
+        "Bearer " + sessionStorage.getItem("userToken")
+      )
+    });
   }
 
   activateInvitation(invitationId: string): Observable<Object> {
-    return this.http
-      .post(`${this._url}/activate/${invitationId}`, null, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      });
+    return this.http.post(`${this._url}/activate/${invitationId}`, null, {
+      headers: new HttpHeaders().set(
+        "Authorization",
+        "Bearer " + sessionStorage.getItem("userToken")
+      )
+    });
   }
-
 }

@@ -27,9 +27,11 @@ namespace Localization.Controllers
         [Authorize]
         public async Task AddInvitationAsync([FromBody] Invitation invitation)
         {
-            string hostName = this._settings.GetString("host_name");
-            string hostProtocol = this._settings.GetString("host_protocol");
-            await this._invitationsService.AddInvitationAsync(invitation, $"{hostProtocol}://{hostName}/invitation/{invitation.id}");
+            //TODO пока выделим в отдельную рассылку
+            string hostName = this._settings.GetString("host_email_name");
+            string hostProtocol = this._settings.GetString("host_email_protocol");
+            hostProtocol = hostProtocol == "" ? "" : (hostProtocol + "://");
+            await this._invitationsService.AddInvitationAsync(invitation, $"{hostProtocol}{hostName}/invitation/{invitation.id}");
         }
 
         [HttpPost("{invitationId}")]
