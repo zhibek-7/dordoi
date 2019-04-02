@@ -203,7 +203,7 @@ export class CreateProjectComponent implements OnInit {
       this.pjAllLeft, //notifynewcomment
       this.pjExportTrue, //export_only_approved_translations
       this.pjAllLeft //original_if_string_is_not_translated
-
+, false
       //
     ); // поменять на id реального пользователя, когда появится
 
@@ -211,10 +211,10 @@ export class CreateProjectComponent implements OnInit {
       let projectLocales: LocalizationProjectsLocales[] = [];
       this.selectedItems.forEach(lang => {
         projectLocales.push({
-          id_Localization_Project: pr.id,
-          id_Locale: lang.id,
+          iD_Localization_Project: pr.id,
+          iD_Locale: lang.id,
           percent_Of_Translation: 0,
-          Percent_Of_Confirmed: 0
+          percent_Of_Confirmed: 0
         });
       });
 
@@ -244,6 +244,7 @@ export class CreateProjectComponent implements OnInit {
       this.pjAllLeft, //notifynewcomment
       this.pjExportTrue, //export_only_approved_translations
       this.pjAllLeft //original_if_string_is_not_translated
+      , false
     ); // поменять на id реального пользователя, когда появится
     Id = this.currentProjectId;
     this.projectsService.tmxFile(Id, project);

@@ -196,12 +196,40 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        public async Task<Guid?> AddAsync(LocalizationProject project)
+        public async Task<Guid?> AddAsync(CreateLocalizationProject project) //(LocalizationProject project)
         {
-            var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
-                 + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
-                 + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.Able_To_Left_Errors + "','"
-                 + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')"
+            //project.Date_Of_Creation = project.Last_Activity = DateTime.Now;
+
+            var sqlQuery = "INSERT INTO localization_projects " +
+                           "(name_text, description, url, " +
+                           "visibility, " +
+                           "date_of_creation, last_activity, " +
+                           "id_source_locale, " +
+                           "able_to_download, " +
+                           "able_to_left_errors, " +
+                           "default_string, " +
+                           "notify_new, notify_finish, notify_confirm, " +
+                           "logo, " +
+
+                           "notify_new_comment, " +
+                           "export_only_approved_translations, " + "original_if_string_is_not_translated, " + "able_translators_change_terms_in_glossaries " +
+
+                           ") " +
+                           "VALUES('"
+                 + project.Name_text + "','" + project.Description + "','" + project.URL + "','" 
+                 + project.Visibility + "','" 
+                 + /*project.Date_Of_Creation*/ DateTime.Now + "','" + /*project.Last_Activity*/ DateTime.Now + "','" 
+                 + project.ID_Source_Locale + "','" 
+                 + project.Able_To_Download + "','" 
+                 + project.Able_To_Left_Errors + "','"
+                 + project.Default_String + "','" 
+                 + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" 
+                 + project.Logo + "','"
+                 
+                 + project.notify_new_comment + "','"
+                 + project.export_only_approved_translations + "','" + project.original_if_string_is_not_translated + "','" + project.able_translators_change_terms_in_glossaries +
+
+                 "')"
                   + " RETURNING localization_projects.id";
             try
             {
@@ -210,7 +238,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     this.LogQuery(sqlQuery);
                     Guid? projectId = await dbConnection.ExecuteScalarAsync<Guid>(sqlQuery, project);
-                    return project.id = (Guid)projectId;
+                    return (Guid)projectId;
                 }
             }
 
@@ -266,6 +294,11 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
+        public Task<Guid?> AddAsync(LocalizationProject item)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Удалить  проект
         /// </summary>
@@ -305,7 +338,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         /// Обновить проект
         /// </summary>
         /// <param name="project"></param>
-        public async Task<bool> UpdateAsync(LocalizationProject project)
+        public async Task<bool> Update(LocalizationProject project)
         {
             var sqlQuery = "UPDATE \"localization_projects\" SET" +
                              "\"name_text\"=@Name_text, " +
@@ -344,15 +377,68 @@ namespace DAL.Reposity.PostgreSqlRepository
             catch (NpgsqlException exception)
             {
                 this._loggerError.WriteLn(
-                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(NpgsqlException)} ",
+                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.Update)} {nameof(NpgsqlException)} ",
                         exception);
                 return false;
             }
             catch (Exception exception)
             {
                 this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(Exception)} ",
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.Update)} {nameof(Exception)} ",
                     exception);
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Обновление данных проекта локализации.
+        /// </summary>
+        /// <param name="project">Проект локализации.</param>
+        /// <returns></returns>
+        public async Task<bool> UpdateAsync(LocalizationProject project)
+        {
+            project.Last_Activity = DateTime.Now;
+
+            var sqlQuery = "UPDATE \"localization_projects\" SET" +
+                             "\"name_text\"=@Name_text, " +
+                             "\"description\"=@Description," +
+                             "\"url\"=@URL," +
+                             " \"visibility\"=@Visibility," +
+                             " \"date_of_creation\"=@Date_Of_Creation," +
+                             " \"last_activity\"=@Last_Activity," +
+                             " \"id_source_locale\"=@ID_Source_Locale," +
+
+                             " \"able_to_download\"=@Able_To_Download," +
+                             " \"able_to_left_errors\"=@Able_To_Left_Errors," +
+                             " \"default_string\"=@Default_String," +
+                             " \"notify_new\"=@Notify_New," +
+                             " \"notify_finish\"=@Notify_Finish," +
+                             " \"notify_confirm\"=@Notify_Confirm," +
+                             " \"notify_new_comment\"=@notify_new_comment," +
+                             " \"export_only_approved_translations\"=@export_only_approved_translations," +
+                             " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated,  " +
+                             " \"able_translators_change_terms_in_glossaries\"=@able_translators_change_terms_in_glossaries  " +
+                             "WHERE \"id\"=@id";
+            
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    LogQuery(sqlQuery, project.GetType(), project);
+                    await dbConnection.ExecuteAsync(sqlQuery, project);
+
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.UpdateAsync)} {nameof(Exception)} ", exception);
                 return false;
             }
         }

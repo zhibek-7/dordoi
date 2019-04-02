@@ -23,6 +23,8 @@ namespace Localization.Controllers
         private readonly LocaleRepository _localeRepository;
         private readonly UserActionRepository _userActionRepository;
         private UserRepository ur;
+        private readonly ParticipantRepository _participantsRepository;
+        private RoleRepository _roleRepository;
 
         public ProjectController()
         {
@@ -32,6 +34,8 @@ namespace Localization.Controllers
             _localeRepository = new LocaleRepository(connectionString);
             _userActionRepository = new UserActionRepository(connectionString);
             ur = new UserRepository(connectionString);
+            _participantsRepository = new ParticipantRepository(connectionString);
+            _roleRepository = new RoleRepository(connectionString);
         }
 
         [Authorize]
@@ -124,7 +128,52 @@ namespace Localization.Controllers
         [Route("edit/{Id}")]
         public async Task<LocalizationProject> EditProject(LocalizationProject project, Guid Id)
         {
-            _localizationProjectRepository.UpdateAsync(project);
+            _localizationProjectRepository.Update(project);
+            await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
+
+            return project;
+        }
+
+
+
+        /// <summary>
+        /// Создание проекта локализации.
+        /// </summary>
+        /// <param name="project">Проект локализации.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("create")]
+        public async Task<Guid?> Create(CreateLocalizationProject project)
+        {
+            var projectId = await _localizationProjectRepository.AddAsync(project);
+            await _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, (Guid)projectId, (Guid)project.ID_Source_Locale);
+
+            var userId = (Guid)ur.GetID(User.Identity.Name);
+            var roleIdOwner = (Guid)_roleRepository.GetRoleId("owner");
+
+            var participant = new Participant
+            {
+                ID_Localization_Project = projectId,
+                ID_User = userId,
+                ID_Role = roleIdOwner,
+                Active = true
+            };
+
+            await _participantsRepository.AddAsync(participant);
+
+            return projectId;
+        }
+
+        /// <summary>
+        /// Обновление данных проекта локализации.
+        /// </summary>
+        /// <param name="project">Проект локализации.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("update")]
+        public async Task<LocalizationProject> Update(LocalizationProject project)
+        {
+            await _localizationProjectRepository.UpdateAsync(project);
             await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
 
             return project;

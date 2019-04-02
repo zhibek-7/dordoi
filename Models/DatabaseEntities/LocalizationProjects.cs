@@ -11,16 +11,16 @@ namespace Models.DatabaseEntities
     {
         [Required]
         public string Name_text { get; set; }
-        [Required]
+        //[Required]
         public string Description { get; set; }
         [Required]
         public string URL { get; set; }
 
         public bool Visibility { get; set; }
-        [Required]
-        public DateTime Date_Of_Creation { get; set; }
-        [Required]
-        public DateTime Last_Activity { get; set; }
+        //[Required]
+        public DateTime? Date_Of_Creation { get; set; }
+        //[Required]
+        public DateTime? Last_Activity { get; set; }
         [Required]
         public Guid ID_Source_Locale { get; set; }
 
@@ -53,5 +53,7 @@ namespace Models.DatabaseEntities
         public bool original_if_string_is_not_translated { get; set; }
 
         public bool export_only_approved_translations { get; set; }
+
+        public bool able_translators_change_terms_in_glossaries { get; set; }
     }
 }

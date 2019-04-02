@@ -41,8 +41,13 @@ import {
   MatPaginatorModule,
   MatSortModule,
   MatAutocompleteModule,
-  MatExpansionModule } from '@angular/material';
-import { EditProjectComponent } from './components/edit-project/edit-project.component';
+  MatExpansionModule
+} from '@angular/material';
+
+import { LanguageService } from '../services/languages.service';
+import { ProjectsLocalesService } from '../services/projectsLocales.service';
+import { ProjectsService } from '../services/projects.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -53,8 +58,8 @@ import { EditProjectComponent } from './components/edit-project/edit-project.com
     , DeleteProjectComponent,
     AllSettingsComponent,
     NotificationsComponent,
-    EditProjectComponent
   //  , MenuProjectComponent
+    
   ],
   imports: [
     CreateProjectRoutingModule,
@@ -87,9 +92,15 @@ import { EditProjectComponent } from './components/edit-project/edit-project.com
     MatSortModule,
     MatAutocompleteModule,
     MatExpansionModule,
-    HttpClientModule
+    HttpClientModule,
+
+    SharedModule
   ],
-  providers: [    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
+  providers: [
+    ProjectsService,
+    LanguageService,
+    ProjectsLocalesService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true },
   ]
 })
 export class CreateProjectModule { }

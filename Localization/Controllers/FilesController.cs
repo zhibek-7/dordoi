@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
 using Localization.Controllers;
@@ -38,26 +40,34 @@ namespace Localization.WebApi
 
         private async Task OnFileParsingFailedAsync(string signalrClientId, FailedFileParsingModel failedParsingInfoModel)
         {
+
             await this._hubContext.Clients.Client(signalrClientId).SendAsync(
                 FilesHub.ParsingFailedEventName,
                 failedParsingInfoModel);
+
         }
 
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<IEnumerable<Node<File>>>> GetAllAsync([FromForm] Guid? project)
         {
-
-            var identityName = User.Identity.Name;
-            Guid? userId = (Guid)ur.GetID(identityName);
-
-            var files = await this._filesService.GetAllAsync(userId, project);
-            if (files == null)
+            try
             {
-                return BadRequest("Files not found");
-            }
+                var identityName = User.Identity.Name;
+                Guid? userId = (Guid)ur.GetID(identityName);
 
-            return Ok(files);
+                var files = await this._filesService.GetAllAsync(userId, project);
+                if (files == null)
+                {
+                    return BadRequest("Файлы не найдены");
+                }
+
+                return Ok(files);
+            }
+            catch (Exception exc)
+            {
+                return BadRequest("ERROR:" + exc.Message);
+            }
         }
 
         public class GetByProjectIdParams
@@ -69,13 +79,20 @@ namespace Localization.WebApi
         [Authorize]
         public async Task<ActionResult<IEnumerable<Node<File>>>> GetByProjectIdAsync(Guid projectId, [FromBody] GetByProjectIdParams param)
         {
-            var files = await this._filesService.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: param.FileNamesSearch);
-            if (files == null)
+            try
             {
-                return BadRequest("Files not found");
-            }
+                var files = await this._filesService.GetByProjectIdAsync(projectId: projectId, fileNamesSearch: param.FileNamesSearch);
+                if (files == null)
+                {
+                    return BadRequest("Файлы не найдены");
+                }
 
-            return Ok(files);
+                return Ok(files);
+            }
+            catch (Exception exc)
+            {
+                return BadRequest("ERROR:" + exc.Message);
+            }
         }
 
 
@@ -85,8 +102,15 @@ namespace Localization.WebApi
         public async Task<ActionResult<File>> GetAsync(Guid id)
         {
 
-            var foundedFile = await this._filesService.GetByIdAsync(id);
-            return Ok(foundedFile);
+            try
+            {
+                var foundedFile = await this._filesService.GetByIdAsync(id);
+                return Ok(foundedFile);
+            }
+            catch (Exception exc)
+            {
+                return BadRequest("ERROR:" + exc.Message);
+            }
         }
 
         [HttpPost]
@@ -94,22 +118,34 @@ namespace Localization.WebApi
         [Authorize]
         public IEnumerable<File> GetInitialFolders(Guid projectId)
         {
+
             var projectFolders = this._filesService.GetInitialFolders(projectId);
             return projectFolders;
+
         }
 
         [HttpPost("add/fileByProjectId/{projectId}")]
         [Authorize]
         public async Task<ActionResult<Node<File>>> AddFileAsync(IFormFile file, [FromForm] Guid? parentId, Guid projectId)
         {
-            using (var fileContentStream = file.OpenReadStream())
+            try
             {
-                var t = await this._filesService.AddFileAsync(
-                    fileName: file.FileName,
-                    fileContentStream: fileContentStream,
-                    parentId: parentId,
-                    projectId: projectId);
-                return t;
+                using (var fileContentStream = file.OpenReadStream())
+                {
+                    var t = await this._filesService.AddFileAsync(
+                        fileName: file.FileName,
+                        fileContentStream: fileContentStream,
+                        parentId: parentId,
+                        projectId: projectId);
+                    return t;
+                }
+
+            }
+            catch (Exception exc)
+            {
+
+                return Conflict(exc);
+                //           return BadRequest("ERROR:" + exc.Message);
             }
         }
 
@@ -117,20 +153,34 @@ namespace Localization.WebApi
         [Authorize]
         public async Task<ActionResult<Node<File>>> UpdateFileVersionAsync(IFormFile file, [FromForm] Guid? parentId, Guid projectId)
         {
-            using (var fileContentStream = file.OpenReadStream())
-                return await this._filesService.UpdateFileVersionAsync(
-                    fileName: file.FileName,
-                    fileContentStream: fileContentStream,
-                    parentId: parentId,
-                    projectId: projectId);
+            try
+            {
+                using (var fileContentStream = file.OpenReadStream())
+                    return await this._filesService.UpdateFileVersionAsync(
+                        fileName: file.FileName,
+                        fileContentStream: fileContentStream,
+                        parentId: parentId,
+                        projectId: projectId);
+            }
+            catch (Exception exc)
+            {
+                return BadRequest("ERROR:" + exc.Message);
+            }
         }
 
         [HttpPost("add/folderByProjectId/{projectId}")]
         [Authorize]
         public async Task<ActionResult<Node<File>>> AddFolderAsync([FromBody] FolderModel newFolder, Guid projectId)
         {
-            //newFolder.projectId = projectId;
-            return await this._filesService.AddFolderAsync(newFolder);
+            try
+            {
+                //newFolder.projectId = projectId;
+                return await this._filesService.AddFolderAsync(newFolder);
+            }
+            catch (Exception exc)
+            {
+                return BadRequest("ERROR:" + exc.Message);
+            }
         }
 
         [HttpPost("upload/folderByProjectId/{projectId}")]
@@ -153,16 +203,30 @@ namespace Localization.WebApi
         [Authorize]
         public async Task<IActionResult> UpdateNodeAsync(Guid id, File file)
         {
-            await this._filesService.UpdateNodeAsync(id: id, file: file);
-            return Ok();
+            try
+            {
+                await this._filesService.UpdateNodeAsync(id: id, file: file);
+                return Ok();
+            }
+            catch (Exception exc)
+            {
+                return BadRequest("ERROR:" + exc.Message);
+            }
         }
 
         [HttpPost("delete")]
         [Authorize]
         public async Task<IActionResult> DeleteNodeAsync([FromBody] File fileToDelete)
         {
-            await this._filesService.DeleteNodeAsync(fileToDelete);
-            return Ok();
+            try
+            {
+                await this._filesService.DeleteNodeAsync(fileToDelete);
+                return Ok();
+            }
+            catch (Exception exc)
+            {
+                return BadRequest("ERROR:" + exc.Message);
+            }
         }
 
         [HttpPost]
@@ -198,6 +262,8 @@ namespace Localization.WebApi
         {
             public Guid? localeId { get; set; }
         }
+
+
         [HttpPost("{fileId}/download/{localeId}")]
         [Authorize]
         public async Task<FileResult> DownloadFileAsync(Guid fileId, DownloadFileAsyncParam param)
@@ -213,7 +279,10 @@ namespace Localization.WebApi
         [Authorize]
         public async Task<IEnumerable<FileTranslationInfo>> GetFileTranslationInfoAsync(Guid fileId)
         {
+
+
             return await this._filesService.GetFileTranslationInfoAsync(fileId: fileId);
+
         }
 
     }

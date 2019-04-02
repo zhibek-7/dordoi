@@ -3,11 +3,13 @@
 
   <div class="row m-2">
     <div class="col">
-      <label class="btn btn-primary m-1 btn-sm">Добавить файл <input type="file" style="display: none;" (change)="onFileUpload($event)"></label>
+      <label class="btn btn-primary m-1 btn-sm">Добавить файл <input type="file" style="display: none;"
+          (change)="onFileUpload($event)"></label>
       <button class="btn btn-primary m-1 btn-sm" (click)="addFolderModal.showForNode(null)">Создать папку</button>
       <button class="btn btn-primary m-1 btn-sm" (click)="folderInput.value = ''; folderInput.click()">
         Загрузить папку
-        <input type="file" #folderInput webkitdirectory style="display: none;" (change)="uploadFolder(folderInput.files)">
+        <input type="file" #folderInput webkitdirectory style="display: none;"
+          (change)="uploadFolder(folderInput.files)">
       </button>
     </div>
     <div class="col">
@@ -18,8 +20,10 @@
   <app-set-languages-modal #setFileLanguagesModal></app-set-languages-modal>
   <app-rename-file-modal #renameModal (nameChangeSubmitted)="renameNode($event[0], $event[1])"></app-rename-file-modal>
   <app-file-input-wrapper #fileInput (fileConfirmed)="onFileUpload($event[0], $event[1])"></app-file-input-wrapper>
-  <app-file-input-wrapper #folderInputWrapper [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
-  <app-file-input-wrapper #updateFileInput (fileConfirmed)="updateFileVersion($event[0], $event[1])"></app-file-input-wrapper>
+  <app-file-input-wrapper #folderInputWrapper [isFolderInput]="true"
+    (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
+  <app-file-input-wrapper #updateFileInput (fileConfirmed)="updateFileVersion($event[0], $event[1])">
+  </app-file-input-wrapper>
   <app-translation-progress-modal #translationProgressModal></app-translation-progress-modal>
   <app-file-settings-modal #fileSettingsModal (changesApplied)="updateNode($event)"></app-file-settings-modal>
   <mat-menu #fileRowContextMenu="matMenu">
@@ -43,7 +47,8 @@
       <button mat-menu-item (click)="pseudoCut(node)">
         Вырезать
       </button>
-      <button mat-menu-item (click)="moveCurrentlyCutted(node)" [disabled]="!data.is_folder || !cuttedNode || data.id === cuttedNode.data.id">
+      <button mat-menu-item (click)="moveCurrentlyCutted(node)"
+        [disabled]="!data.is_folder || !cuttedNode || data.id === cuttedNode.data.id">
         Вставить
       </button>
       <button mat-menu-item (click)="deleteFile(node)">
@@ -70,19 +75,14 @@
   <p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': col.textalign}">{{col.header}}</th>
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': col.textalign}">{{col.header}}
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-      <tr [ttSelectableRow]="rowNode"
-          (dblclick)="fileRowMenuTrigger.openMenu()"
-          dnd-droppable
-          [allowDrop]="canDrop(rowNode.node)"
-          (onDropSuccess)="moveNode($event.dragData, rowNode.node)"
-          dnd-draggable
-          [dragEnabled]="true"
-          [dragData]="rowNode.node"
-          >
+      <tr [ttSelectableRow]="rowNode" (dblclick)="fileRowMenuTrigger.openMenu()" dnd-droppable
+        [allowDrop]="canDrop(rowNode.node)" (onDropSuccess)="moveNode($event.dragData, rowNode.node)" dnd-draggable
+        [dragEnabled]="true" [dragData]="rowNode.node">
         <td [ttEditableColumn]="rowData" class="col-xs-6">
           <div (click)="nodeExpandToggler.onClick($event)">
             <p-treeTableToggler #nodeExpandToggler [rowNode]="rowNode"></p-treeTableToggler>
@@ -97,7 +97,8 @@
           {{rowData.strings_count}}
         </td>
         <td class="col-xs-2">
-          <button class="btn btn-light btn-sm" [style.width]="100+'%'" *ngIf="!rowData.is_folder" disabled>{{rowData.version}}</button>
+          <button class="btn btn-light btn-sm" [style.width]="100+'%'" *ngIf="!rowData.is_folder"
+            disabled>{{rowData.version}}</button>
         </td>
         <!--<td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
           <button class="btn btn-primary" *ngIf="!rowData.is_folder" disabled>{{rowData.priority}}</button>
@@ -105,16 +106,15 @@
         <td class="col-xs-2">
           <button *ngIf="!rowData.is_folder" class="btn btn-btn-success  btn-sm m-1" (click)="updateFileInput.click()">
             Обновить
-            <input #updateFileInput type="file" style="display: none;" (change)="updateFileVersion($event, rowNode.node)">
+            <input #updateFileInput type="file" style="display: none;"
+              (change)="updateFileVersion($event, rowNode.node)">
           </button>
-          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
+          <button class="btn btn-primary btn-sm m-1"
+            (click)="requestFileDownload(rowNode.node)">
             Скачать
           </button>
-          <button mat-icon-button
-                  #fileRowMenuTrigger="matMenuTrigger"
-                  [matMenuTriggerFor]="fileRowContextMenu"
-                  [matMenuTriggerData]="{node: rowNode.node, data: rowData}"
-                  >
+          <button mat-icon-button #fileRowMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="fileRowContextMenu"
+            [matMenuTriggerData]="{node: rowNode.node, data: rowData}">
             <mat-icon> more_horiz </mat-icon>
           </button>
         </td>
@@ -128,9 +128,9 @@
   </p-treeTable>
 </div>
 
-<div *ngIf="isSelectionFileForTranslation">  
+<div *ngIf="isSelectionFileForTranslation">
 
-  <div class="row m-2">    
+  <div class="row m-2">
     <div class="col">
       <input type="text" [(ngModel)]="searchFilesNamesString" (input)="getFiles()" placeholder="Искать по файлам" />
     </div>
@@ -139,22 +139,25 @@
   <app-set-languages-modal #setFileLanguagesModal></app-set-languages-modal>
   <app-rename-file-modal #renameModal (nameChangeSubmitted)="renameNode($event[0], $event[1])"></app-rename-file-modal>
   <app-file-input-wrapper #fileInput (fileConfirmed)="onFileUpload($event[0], $event[1])"></app-file-input-wrapper>
-  <app-file-input-wrapper #folderInputWrapper [isFolderInput]="true" (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
+  <app-file-input-wrapper #folderInputWrapper [isFolderInput]="true"
+    (fileConfirmed)="uploadFolder($event[0].currentTarget.files, $event[1])"></app-file-input-wrapper>
   <app-file-input-wrapper #translateFile></app-file-input-wrapper>
   <app-translation-progress-modal #translationProgressModal></app-translation-progress-modal>
   <app-file-settings-modal #fileSettingsModal (changesApplied)="updateNode($event)"></app-file-settings-modal>
-  <mat-menu #fileRowContextMenu="matMenu">    
+  <mat-menu #fileRowContextMenu="matMenu">
   </mat-menu>
 
   <p-treeTable [value]="files" [columns]="cols" selectionMode="single" [(selection)]="selectedNode" dataKey="id">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': col.textalign}">{{col.header}}</th>
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': col.textalign}">{{col.header}}
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-      <tr [ttSelectableRow]="rowNode" (dblclick)="fileRowMenuTrigger.openMenu()" dnd-droppable [allowDrop]="canDrop(rowNode.node)"
-        (onDropSuccess)="moveNode($event.dragData, rowNode.node)" dnd-draggable [dragEnabled]="true" [dragData]="rowNode.node">
+      <tr [ttSelectableRow]="rowNode" (dblclick)="fileRowMenuTrigger.openMenu()" dnd-droppable
+        [allowDrop]="canDrop(rowNode.node)" (onDropSuccess)="moveNode($event.dragData, rowNode.node)" dnd-draggable
+        [dragEnabled]="true" [dragData]="rowNode.node">
         <td [ttEditableColumn]="rowData" class="col-xs-6">
           <div (click)="nodeExpandToggler.onClick($event)" (click)="translateFileClick(rowData)">
             <p-treeTableToggler #nodeExpandToggler [rowNode]="rowNode"></p-treeTableToggler>
@@ -167,23 +170,25 @@
         </td>
         <td [ngStyle]="{'text-align': 'right'}" class="col-xs-2">
           {{rowData.strings_count}}
-        </td>        
-        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
-          
-<div class="progress">
-  <div class="progress-bar" style="width:{{rowData.percent_of_translation | percent }}"></div>
-{{rowData.percent_of_translation | percent }}/{{rowData.percent_of_confirmed | percent }}</div>
         </td>
-<!--        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
+
+          <div class="progress">
+            <div class="progress-bar" style="width:{{rowData.percent_of_translation | percent }}"></div>
+            {{rowData.percent_of_translation | percent }}/{{rowData.percent_of_confirmed | percent }}
+          </div>
+        </td>
+        <!--        <td [ngStyle]="{'text-align': 'center'}" class="col-xs-2">
           {{rowData.percent_of_confirmed | percent }}
         </td>-->
         <td class="col-xs-2">
           <button *ngIf="!rowData.is_folder" class="btn btn-success btn-sm m-1" (click)="translateFileClick(rowData)">
             Перевести
           </button>
-          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1" (click)="requestFileDownload(rowNode.node)">
+          <button class="btn btn-primary btn-sm m-1"
+            (click)="requestFileDownload(rowNode.node)">
             Скачать
-          </button>          
+          </button>
         </td>
       </tr>
     </ng-template>
@@ -194,3 +199,4 @@
     </ng-template>
   </p-treeTable>
 </div>
+<notifier-container></notifier-container>

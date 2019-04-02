@@ -211,4 +211,13 @@ export class ProjectsService {
       .toPromise();
     return asyncResult;
   }
+
+
+  create(project: LocalizationProject): Observable<Guid> {
+    return this.httpClient.post<Guid>(this.controllerUrl + "create", project);
+  }
+
+  update(project: LocalizationProject): Observable<Object> {
+    return this.httpClient.post(this.controllerUrl + "update", project);
+  }
 }

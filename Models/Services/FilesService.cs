@@ -9,6 +9,7 @@ using Models.DatabaseEntities;
 using Models.Extensions;
 using Models.Interfaces.Repository;
 using Models.Models;
+using Utilities;
 
 namespace Models.Services
 {
@@ -554,48 +555,76 @@ namespace Models.Services
 
             if (file.is_folder)
             {
+
                 var uniqueTempFolderPath = this.GetUniqueFileSystemName();
                 var currentLevelFiles = new Dictionary<File, string>() { { file, uniqueTempFolderPath } };
-                while (currentLevelFiles.Any())
+                var compressedFileName = this.GetUniqueFileSystemName();
+                try
                 {
-                    var newLevelFiles = new Dictionary<File, string>();
-                    foreach (var fileToPath in currentLevelFiles)
+                    while (currentLevelFiles.Any())
                     {
-                        var currentLevelFile = fileToPath.Key;
-                        var currentLevelPath = fileToPath.Value;
-                        var fileName = string
-                            .IsNullOrWhiteSpace(currentLevelFile.download_name) ?
-                                currentLevelFile.name_text :
-                                currentLevelFile.download_name;
-                        if (currentLevelFile.is_folder)
+                        var newLevelFiles = new Dictionary<File, string>();
+                        foreach (var fileToPath in currentLevelFiles)
                         {
-                            var newFolderPath = System.IO.Path.Combine(currentLevelPath, fileName);
-                            var children = await this._filesRepository
-                                .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.id);
-                            foreach (var child in children)
+                            var currentLevelFile = fileToPath.Key;
+                            var currentLevelPath = fileToPath.Value;
+                            var fileName = string
+                                .IsNullOrWhiteSpace(currentLevelFile.download_name)
+                                ? currentLevelFile.name_text
+                                : currentLevelFile.download_name;
+                            if (currentLevelFile.is_folder)
                             {
-                                newLevelFiles[child] = newFolderPath;
+                                System.IO.Directory.CreateDirectory(currentLevelPath);
+                                var newFolderPath = System.IO.Path.Combine(currentLevelPath, fileName);
+                                System.IO.Directory.CreateDirectory(newFolderPath);
+                                var children = await this._filesRepository
+                                    .GetFilesByParentFolderIdAsync(parentFolderId: currentLevelFile.id);
+                                foreach (var child in children)
+                                {
+                                    newLevelFiles[child] = newFolderPath;
+                                }
+                            }
+                            else
+                            {
+                                System.IO.Directory.CreateDirectory(currentLevelPath);
+                                var filePath = System.IO.Path.Combine(currentLevelPath, fileName);
+                                var fileStream = await this.WriteFileAsync(
+                                    file: currentLevelFile,
+                                    filePath: filePath,
+                                    localeId: localeId);
+                                fileStream.Dispose();
                             }
                         }
-                        else
-                        {
-                            System.IO.Directory.CreateDirectory(currentLevelPath);
-                            var filePath = System.IO.Path.Combine(currentLevelPath, fileName);
-                            var fileStream = await this.WriteFileAsync(
-                                file: currentLevelFile,
-                                filePath: filePath,
-                                localeId: localeId);
-                            fileStream.Dispose();
-                        }
+
+                        currentLevelFiles = newLevelFiles;
                     }
-                    currentLevelFiles = newLevelFiles;
+
+
+
+                    var compressionLevel = Settings.getSettings().GetString("zip_CompressionLevel");
+
+                    CompressionLevel level = CompressionLevel.Fastest;
+
+                    if (compressionLevel.Equals("Optimal"))
+                    {
+                        level = CompressionLevel.Optimal;
+                    }
+                    else if (compressionLevel.Equals("NoCompression"))
+                    {
+                        level = CompressionLevel.NoCompression;
+                    }
+
+
+                    ZipFile.CreateFromDirectory(
+                        sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.name_text),
+                        destinationArchiveFileName: compressedFileName, compressionLevel: level,
+                        includeBaseDirectory: true);
+                }
+                finally
+                {
+                    System.IO.Directory.Delete(uniqueTempFolderPath, recursive: true);
                 }
 
-                var compressedFileName = this.GetUniqueFileSystemName();
-                ZipFile.CreateFromDirectory(
-                    sourceDirectoryName: System.IO.Path.Combine(uniqueTempFolderPath, file.name_text),
-                    destinationArchiveFileName: compressedFileName);
-                System.IO.Directory.Delete(uniqueTempFolderPath, recursive: true);
                 return System.IO.File.OpenRead(compressedFileName);
             }
             else

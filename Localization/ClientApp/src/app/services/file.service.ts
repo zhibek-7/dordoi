@@ -31,10 +31,10 @@ export class FileService {
           "Bearer " + sessionStorage.getItem("userToken")
         )
       })
-      .pipe(
+      //.pipe(
         // tap(response => console.log(response)),
-        catchError(this.handleError("Get files", []))
-      );
+     //   catchError(this.handleError("Get files", []))
+      //);
   }
 
   getFilesByProjectIdAsTree(
@@ -51,8 +51,8 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("getFilesByProjectIdAsTree", [])));
+      });
+      //.pipe(catchError(this.handleError("getFilesByProjectIdAsTree", [])));
   }
 
   //Нужно для формирования отчетов
@@ -79,14 +79,13 @@ export class FileService {
       formData.append("parentId", "");
     }
 
-    return this.http
-      .post<TreeNode>(url, formData, {
-        headers: new HttpHeaders().set(
-          "Authorization",
-          "Bearer " + sessionStorage.getItem("userToken")
-        )
-      })
-      .pipe(catchError(this.handleError("addFile")));
+    return this.http.post<TreeNode>(url, formData, {
+      headers: new HttpHeaders().set(
+        "Authorization",
+        "Bearer " + sessionStorage.getItem("userToken")
+      )
+    })
+    //.pipe(catchError(this.handleError("addFile")));
   }
 
   updateFileVersion(
@@ -112,8 +111,8 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("updateFileVersion")));
+      });
+      //.pipe(catchError(this.handleError("updateFileVersion")));
   }
 
   addFolder(
@@ -129,8 +128,8 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("addFolder")));
+      });
+      //.pipe(catchError(this.handleError("addFolder")));
   }
 
   uploadFolder(
@@ -159,8 +158,8 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("Upload folder")));
+      });
+      //.pipe(catchError(this.handleError("Upload folder")));
   }
 
   updateNode(data: FileData): Observable<any> {
@@ -172,8 +171,8 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("Update node")));
+      });
+      //.pipe(catchError(this.handleError("Update node")));
   }
 
   deleteNode(data: FileData): Observable<any> {
@@ -185,8 +184,8 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("Delete node")));
+      });
+      //.pipe(catchError(this.handleError("Delete node")));
   }
 
   changeParentFolder(
@@ -201,8 +200,8 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("changeParentFolder")));
+      });
+      //.pipe(catchError(this.handleError("changeParentFolder")));
   }
 
   getTranslationLocalesForFileAsync(fileData: FileData): Observable<Locale[]> {
@@ -215,9 +214,9 @@ export class FileService {
           "Bearer " + sessionStorage.getItem("userToken")
         )
       })
-      .pipe(
-        catchError(this.handleError("getTranslationLocalesForFileAsync", []))
-      );
+      //.pipe(
+      //  catchError(this.handleError("getTranslationLocalesForFileAsync", []))
+      //);
   }
 
   updateTranslationLocalesForFileAsync(
@@ -233,9 +232,9 @@ export class FileService {
           "Bearer " + sessionStorage.getItem("userToken")
         )
       })
-      .pipe(
-        catchError(this.handleError("updateTranslationLocalesForFileAsync", []))
-      );
+     // .pipe(
+     //   catchError(this.handleError("updateTranslationLocalesForFileAsync", []))
+     // );
   }
 
   downloadFile(fileData: FileData, localeId?: Guid): Observable<Blob> {
@@ -264,13 +263,13 @@ export class FileService {
           "Authorization",
           "Bearer " + sessionStorage.getItem("userToken")
         )
-      })
-      .pipe(catchError(this.handleError("getFileTranslationInfo", [])));
+      });
+      //.pipe(catchError(this.handleError("getFileTranslationInfo", [])));
   }
 
   handleError<T>(operation = "Operation", result?: T) {
     return (error: any): Observable<T> => {
-      console.log(`${operation} failed: ${error.message}`);
+      console.log(`${operation} failed !!!: ${error.message}`);
 
       return of(result as T);
     };
