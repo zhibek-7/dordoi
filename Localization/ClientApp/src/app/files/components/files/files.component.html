@@ -109,7 +109,7 @@
             <input #updateFileInput type="file" style="display: none;"
               (change)="updateFileVersion($event, rowNode.node)">
           </button>
-          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1"
+          <button class="btn btn-primary btn-sm m-1"
             (click)="requestFileDownload(rowNode.node)">
             Скачать
           </button>
@@ -185,7 +185,7 @@
           <button *ngIf="!rowData.is_folder" class="btn btn-success btn-sm m-1" (click)="translateFileClick(rowData)">
             Перевести
           </button>
-          <button *ngIf="!rowData.is_folder" class="btn btn-primary btn-sm m-1"
+          <button class="btn btn-primary btn-sm m-1"
             (click)="requestFileDownload(rowNode.node)">
             Скачать
           </button>
