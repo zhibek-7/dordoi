@@ -175,7 +175,7 @@ namespace Localization.WebApi
             try
             {
                 //newFolder.projectId = projectId;
-                return await this._filesService.AddFolderAsync(newFolder);
+                return await this._filesService.AddFolderAsync(newFolder, projectId);
             }
             catch (Exception exc)
             {

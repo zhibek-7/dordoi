@@ -155,16 +155,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId)
+        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId, Guid projectId)
         {
             using (var connection = new NpgsqlConnection(connectionString))
             {
-                return await GetLastVersionByNameAndParentIdAsync(name, parentId, connection, null);
+                return await GetLastVersionByNameAndParentIdAsync(name, parentId, projectId, connection, null);
             }
 
         }
 
-        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId, NpgsqlConnection connection, IDbTransaction transaction)
+        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId, Guid projectId, NpgsqlConnection connection, IDbTransaction transaction)
         {
 
             try
@@ -173,6 +173,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 //{
                 var query = new Query("files")
                     .Where("id_folder_owner", parentId)
+                    .Where("id_localization_project", projectId)
                     .WhereLike("name_text", name)
                     .Where("is_last_version", true);
 
