@@ -27,15 +27,19 @@ export class GlossariesService {
   }
 
   public get(id: Guid): Observable<Glossary> {
-    return this.httpClient
-      .post<Glossary>(GlossariesService.connectionUrl + id + "/get", null)
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.post<Glossary>(
+      GlossariesService.connectionUrl + id + "/get",
+      null
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   getGlossaries(): Observable<Glossary[]> {
-    return this.httpClient
-      .post<Glossary[]>(GlossariesService.connectionUrl + "list", null)
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.post<Glossary[]>(
+      GlossariesService.connectionUrl + "list",
+      null
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   getAssotiatedTerms(
@@ -65,19 +69,18 @@ export class GlossariesService {
         body.sortAscending = sortAscending;
       }
     }
-    return this.httpClient
-      .post<Term[]>(
-        GlossariesService.connectionUrl + "terms/list",
-        body,
-        {
-          headers: new HttpHeaders().set(
-            "Authorization",
-            "Bearer " + sessionStorage.getItem("userToken")
-          ),
-          observe: "response"
-        }
-      )
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.post<Term[]>(
+      GlossariesService.connectionUrl + "terms/list",
+      body,
+      {
+        headers: new HttpHeaders().set(
+          "Authorization",
+          "Bearer " + sessionStorage.getItem("userToken")
+        ),
+        observe: "response"
+      }
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   addNewTerm(
@@ -89,15 +92,18 @@ export class GlossariesService {
     if (partOfSpeechId !== null) {
       params = params.set("partOfSpeechId", partOfSpeechId.toString());
     }
-    return this.httpClient
-      .post(GlossariesService.connectionUrl + glossaryId + "/terms", newTerm)
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.post(
+      GlossariesService.connectionUrl + glossaryId + "/terms",
+      newTerm
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   deleteTerm(glossaryId: Guid, termId: Guid): Observable<Object> {
-    return this.httpClient
-      .delete(GlossariesService.connectionUrl + glossaryId + "/terms/" + termId)
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.delete(
+      GlossariesService.connectionUrl + glossaryId + "/terms/" + termId
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   updateTerm(
@@ -109,45 +115,41 @@ export class GlossariesService {
     if (partOfSpeechId !== null) {
       params = params.set("partOfSpeechId", partOfSpeechId.toString());
     }
-    return this.httpClient
-      .put(
-        GlossariesService.connectionUrl +
-          //glossaryId +
-          //"/terms/" +
-	"terms/" +
-          updatedTerm.id,
-        updatedTerm
-      )
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.put(
+      GlossariesService.connectionUrl +
+        //glossaryId +
+        //"/terms/" +
+        "terms/" +
+        updatedTerm.id,
+      updatedTerm
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   getGlossaryLocale(glossaryId: Guid): Observable<Locale> {
-    return this.httpClient
-      .post<Locale>(
-        GlossariesService.connectionUrl + glossaryId + "/locale/get",
-        null
-      )
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.post<Locale>(
+      GlossariesService.connectionUrl + glossaryId + "/locale/get",
+      null
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   getGlossaryLocaleByTerm(termId?: Guid): Observable<Locale> {
     console.log("getGlossaryLocaleByTerm==" + termId);
     if (termId == null || termId == Guid.createEmpty()) {
-      return this.httpClient
-        .post<Locale>(
-          GlossariesService.connectionUrl +
-            "term/locale/get/" +
-            Guid.createEmpty(),
-          null
-        )
-        //.pipe(catchError(this.handleError));
+      return this.httpClient.post<Locale>(
+        GlossariesService.connectionUrl +
+          "term/locale/get/" +
+          Guid.createEmpty(),
+        null
+      );
+      //.pipe(catchError(this.handleError));
     } else {
-      return this.httpClient
-        .post<Locale>(
-          GlossariesService.connectionUrl + "term/locale/get/" + termId,
-          null
-        )
-        //.pipe(catchError(this.handleError));
+      return this.httpClient.post<Locale>(
+        GlossariesService.connectionUrl + "term/locale/get/" + termId,
+        null
+      );
+      //.pipe(catchError(this.handleError));
     }
   }
 
@@ -155,12 +157,11 @@ export class GlossariesService {
     glossaryId: Guid,
     termId: Guid
   ): Observable<Locale[]> {
-    return this.httpClient
-      .post<Locale[]>(
-        GlossariesService.connectionUrl + "terms/" + termId + "/locales/list",
-        null
-      )
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.post<Locale[]>(
+      GlossariesService.connectionUrl + "terms/" + termId + "/locales/list",
+      null
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   setTranslationLocalesForTerm(
@@ -168,27 +169,25 @@ export class GlossariesService {
     termId: Guid,
     localesIds: Guid[]
   ): Observable<Object> {
-    return this.httpClient
-      .put(
-        GlossariesService.connectionUrl +
-          glossaryId +
-          "/terms/" +
-          termId +
-          "/locales",
-        localesIds
-      )
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.put(
+      GlossariesService.connectionUrl +
+        glossaryId +
+        "/terms/" +
+        termId +
+        "/locales",
+      localesIds
+    );
+    //.pipe(catchError(this.handleError));
   }
 
   // Получить все термины из всех словарь присоедененных к проекту локализации, по id необходимого проекта локализации
   getAllTermsFromAllGlossarisInProject(
     projectId: Guid
   ): Observable<TermWithGlossary[]> {
-    return this.httpClient
-      .post<TermWithGlossary[]>(
-        GlossariesService.connectionUrl + "FindAllTermsInProjects/" + projectId,
-        projectId
-      )
-      //.pipe(catchError(this.handleError));
+    return this.httpClient.post<TermWithGlossary[]>(
+      GlossariesService.connectionUrl + "FindAllTermsInProjects/" + projectId,
+      projectId
+    );
+    //.pipe(catchError(this.handleError));
   }
 }

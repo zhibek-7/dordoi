@@ -9,7 +9,7 @@ namespace Models.Interfaces.Repository
     {
         Task<bool> UploadAsync(File item, IEnumerable<Locale> locales);
         Task<IEnumerable<File>> GetByProjectIdAsync(Guid projectId, string fileNamesSearch);
-        Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId);
+        Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentIdб, Guid projectId);
         IEnumerable<File> GetInitialFolders(Guid projectId);
         Task ChangeParentFolderAsync(Guid fileId, Guid? newParentId);
         Task AddTranslationLocalesAsync(Guid fileId, IEnumerable<Guid> localesIds);

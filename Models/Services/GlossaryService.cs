@@ -57,11 +57,11 @@ namespace Models.Services
             }
         }
 
-        public async Task<IEnumerable<Glossary>> GetAllAsync()
+        public async Task<IEnumerable<Glossary>> GetAllAsync(Guid userId)
         {
             try
             {
-                return await this._glossaryRepository.GetAllAsync();
+                return await this._glossaryRepository.GetAllAsync(userId);
             }
             catch (Exception exception)
             {

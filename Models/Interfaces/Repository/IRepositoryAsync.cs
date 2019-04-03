@@ -17,6 +17,6 @@ namespace Models.Interfaces.Repository
         Task<bool> UpdateAsync(T item);
 
         Task<T> GetByIDAsync(Guid id);
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync(Guid userId);
     }
 }

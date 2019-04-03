@@ -28,6 +28,8 @@ export class ParticipantsListComponent implements OnInit {
   currentOffset: number = 0;
   pageSize: number = 10;
 
+  projectId: Guid;
+
   constructor(
     private projectService: ProjectsService,
     private participantsService: ParticipantsService,
@@ -46,7 +48,7 @@ export class ParticipantsListComponent implements OnInit {
     if (this.selectedRoleId != null) {
       roleIds.push(this.selectedRoleId);
     }
-
+    this.projectId = this.projectService.currentProjectId;
     this.participantsService
       .getParticipantsByProjectId(
         this.projectService.currentProjectId,

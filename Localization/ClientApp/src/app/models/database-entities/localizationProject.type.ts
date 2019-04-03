@@ -44,8 +44,8 @@ export class LocalizationProject {
     notifyConfirm: boolean,
     notifynewcomment: boolean,
     export_only_approved_translations: boolean,
-    original_if_string_is_not_translated: boolean//,
-    //able_translators_change_terms_in_glossaries: boolean
+    original_if_string_is_not_translated: boolean,
+    able_translators_change_terms_in_glossaries: boolean
   ) {
     this.id = id;
     this.name_text = name;
@@ -65,6 +65,6 @@ export class LocalizationProject {
     this.notify_new_comment = notifynewcomment;
     this.export_only_approved_translations = export_only_approved_translations;
     this.original_if_string_is_not_translated = original_if_string_is_not_translated;
-    //this.able_translators_change_terms_in_glossaries = able_translators_change_terms_in_glossaries;
+    this.able_translators_change_terms_in_glossaries = able_translators_change_terms_in_glossaries;
   }
 }

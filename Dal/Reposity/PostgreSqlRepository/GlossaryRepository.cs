@@ -22,13 +22,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Glossary>> GetAllAsync()
+        public async Task<IEnumerable<Glossary>> GetAllAsync(Guid id)
         {
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    var selectAllGlossariesSql = "SELECT * FROM glossaries";
+                    var selectAllGlossariesSql = @"SELECT g.* FROM glossaries   as g
+inner join localization_projects_glossaries as lpg on g.id = lpg.id_glossary
+inner join participants as p on lpg.id_localization_project = p.id_localization_project
+where p.id_user = '" + id + "' and p.active = true";
                     this.LogQuery(selectAllGlossariesSql);
                     var glossaries = await dbConnection.QueryAsync<Glossary>(selectAllGlossariesSql);
                     return glossaries;

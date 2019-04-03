@@ -8,7 +8,8 @@ import { Role } from "src/app/models/database-entities/role.type";
 import { Invitation } from "src/app/models/database-entities/invitation.type";
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 import { AppConfigService } from "src/services/app-config.service";
-import { Guid } from 'guid-typescript';
+import { ProjectsService } from "src/app/services/projects.service";
+import { Guid } from "guid-typescript";
 
 @Component({
   selector: "app-invite-user",
@@ -32,6 +33,7 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
   text = "";
 
   constructor(
+    private projectService: ProjectsService,
     private invitationsService: InvitationsService,
     private guidsService: GuidsService,
     private appConfigService: AppConfigService
@@ -42,7 +44,9 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
   ngOnInit() {
     this.text =
       "Добрый день.\r\n" +
-      "Мы хотели бы пригласить Вас помочь нам в процессе перевода нашего проекта.\r\n" +
+      "Мы хотели бы пригласить Вас помочь нам в процессе перевода нашего проекта '" +
+      this.projectService.currentProjectName +
+      "'.\r\n" +
       "\r\n" +
       "Для подключения к проекту необходимо авторизоваться в системе или зарегистрироваться.\r\n" +
       "Регистрация простая и бесплатная.";
@@ -67,22 +71,25 @@ export class InviteUserComponent extends ModalComponent implements OnInit {
     this.guidsService.getNew().subscribe(
       newGuid => {
         this.invitationId = newGuid;
-        const hostProtocol = this.appConfigService.config.host.protocol;
-        const hostName = this.appConfigService.config.host.name;
-        this.invitationLink = `${hostProtocol}://${hostName}/invitation/${
-          this.invitationId
-        }`;
+        const hostProtocol = this.appConfigService.config.host_email.protocol;
+        const hostName = this.appConfigService.config.host_email.name;
+        //TODO пока невозможно this.invitationLink = `${hostProtocol}://${hostName}/invitation/${
+        this.invitationLink = `${hostName}/invitation/${this.invitationId}`;
       },
       error => console.log(error)
     );
   }
 
   saveInvitation() {
+    console.log("!!!");
+    console.log("saveInvitation=" + this.projectId);
+    console.log(" 11=" + this.projectId.toString());
+
     this.invitationsService
       .addInvitation(
         new Invitation(
           this.invitationId,
-          this.projectId,
+          this.projectId.toString(),
           this.selectedRoleId,
           this.formGroup.controls.emailFormControl.value,
           this.formGroup.controls.invitationMessageFormControl.value

@@ -44,7 +44,6 @@ import {
   MatExpansionModule
 } from '@angular/material';
 
-import { EditProjectComponent } from './components/edit-project/edit-project.component';
 import { LanguageService } from '../services/languages.service';
 import { ProjectsLocalesService } from '../services/projectsLocales.service';
 import { ProjectsService } from '../services/projects.service';
@@ -60,8 +59,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     AllSettingsComponent,
     NotificationsComponent,
   //  , MenuProjectComponent
-
-    EditProjectComponent
+    
   ],
   imports: [
     CreateProjectRoutingModule,

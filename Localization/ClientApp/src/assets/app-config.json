@@ -1,6 +1,11 @@
 {
   "host": {
     "protocol": "http",
-    "name": "localhost:1527"
+    "name": "localhost:8888"
+  },
+ "host_email": {
+    "protocol": "http",
+    "name": "coderlink02.taximaxim.local"
   }
+
 }

@@ -1,13 +1,13 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject, Input } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { Guid } from 'guid-typescript';
+import { Guid } from "guid-typescript";
 
-import { Translator } from 'src/app/models/Translators/translator.type';
-import { LocalizationProjectForSelectDTO } from 'src/app/models/DTO/localizationProjectForSelectDTO.type';
+import { Translator } from "src/app/models/Translators/translator.type";
+import { LocalizationProjectForSelectDTO } from "src/app/models/DTO/localizationProjectForSelectDTO.type";
 import { Invitation } from "src/app/models/database-entities/invitation.type";
 import { Role } from "src/app/models/database-entities/role.type";
 
-import { ProjectsService } from 'src/app/services/projects.service';
+import { ProjectsService } from "src/app/services/projects.service";
 import { RolesService } from "src/app/services/roles.service";
 import { InvitationsService } from "src/app/services/invitations.service";
 import { AppConfigService } from "src/services/app-config.service";
@@ -15,15 +15,13 @@ import { GuidsService } from "src/app/services/guids.service";
 
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 
-
-
 @Component({
-  selector: 'app-dialog-invite-translator',
-  templateUrl: './dialog-invite-translator.component.html',
-  styleUrls: ['./dialog-invite-translator.component.css']
+  selector: "app-dialog-invite-translator",
+  templateUrl: "./dialog-invite-translator.component.html",
+  styleUrls: ["./dialog-invite-translator.component.css"]
 })
-export class DialogInviteTranslatorComponent extends ModalComponent implements OnInit {
-
+export class DialogInviteTranslatorComponent extends ModalComponent
+  implements OnInit {
   @Input()
   user: Translator;
 
@@ -32,38 +30,38 @@ export class DialogInviteTranslatorComponent extends ModalComponent implements O
 
   roles: Role[];
   selectedRoleId: Guid;
-  
+
   invitationWithLinks: [Invitation, string][] = [];
 
   formGroup: FormGroup;
   text = "";
-  
 
-  constructor(private projectsService: ProjectsService,
+  constructor(
+    private projectsService: ProjectsService,
     private invitationsService: InvitationsService,
     private rolesService: RolesService,
     private guidsService: GuidsService,
-    private appConfigService: AppConfigService) {
+    private appConfigService: AppConfigService
+  ) {
     super();
   }
 
   ngOnInit() {
-
     this.text =
       "Добрый день.\r\n" +
-      "Мы хотели бы пригласить Вас помочь нам в процессе перевода нашего проекта.\r\n" +
-      "\r\n" +
-      "Для подключения к проекту необходимо авторизоваться в системе или зарегистрироваться.\r\n" +
-      "Регистрация простая и бесплатная.";
+      "Мы хотели бы пригласить Вас помочь нам в процессе перевода нашего проекта.\r\n";
     this.formGroup = new FormGroup({
       invitationMessageFormControl: new FormControl(this.text)
     });
   }
-  
+
   loadProjects() {
-    this.projectsService.getLocalizationProjectForSelectDTOByUser().subscribe(
-      localizationProject => this.projects = localizationProject,
-      error => console.error(error));
+    this.projectsService
+      .getLocalizationProjectForSelectDTOByUser()
+      .subscribe(
+        localizationProject => (this.projects = localizationProject),
+        error => console.error(error)
+      );
   }
 
   loadRoles() {
@@ -71,8 +69,7 @@ export class DialogInviteTranslatorComponent extends ModalComponent implements O
       roles => {
         this.roles = roles;
 
-        if (this.roles.length > 0) 
-          this.selectedRoleId = this.roles[0].id;
+        if (this.roles.length > 0) this.selectedRoleId = this.roles[0].id;
       },
       error => console.log(error)
     );
@@ -82,10 +79,7 @@ export class DialogInviteTranslatorComponent extends ModalComponent implements O
     this.invitationWithLinks = [];
     this.text =
       "Добрый день.\r\n" +
-      "Мы хотели бы пригласить Вас помочь нам в процессе перевода нашего проекта.\r\n" +
-      "\r\n" +
-      "Для подключения к проекту необходимо авторизоваться в системе или зарегистрироваться.\r\n" +
-      "Регистрация простая и бесплатная.";
+      "Мы хотели бы пригласить Вас помочь нам в процессе перевода нашего проекта.\r\n";
     this.formGroup.controls.invitationMessageFormControl.setValue(this.text);
   }
 
@@ -97,32 +91,36 @@ export class DialogInviteTranslatorComponent extends ModalComponent implements O
     super.show();
   }
 
-  changeSelectedProjects(selected: LocalizationProjectForSelectDTO, event: any) {
+  changeSelectedProjects(
+    selected: LocalizationProjectForSelectDTO,
+    event: any
+  ) {
     if (event.checked) {
       this.selectedProjects.push(selected);
       this.generateNewInvitationLink(selected);
-    }
-    else {
+    } else {
       this.selectedProjects = this.selectedProjects.filter(t => t != selected);
-      this.invitationWithLinks = this.invitationWithLinks.filter(t => t[0].id_project != selected.id);
+      this.invitationWithLinks = this.invitationWithLinks.filter(
+        t => t[0].id_project != selected.id.toString()
+      );
     }
   }
 
   generateNewInvitationLink(project: LocalizationProjectForSelectDTO) {
     this.guidsService.getNew().subscribe(
       newGuid => {
-        let invit =
-          new Invitation(
-            newGuid,
-            project.id,
-            this.selectedRoleId,
-            this.user.user_email,
-            this.formGroup.controls.invitationMessageFormControl.value
-          );
+        let invit = new Invitation(
+          newGuid,
+          project.id.toString(),
+          this.selectedRoleId,
+          this.user.user_email,
+          this.formGroup.controls.invitationMessageFormControl.value
+        );
 
-        const hostProtocol = this.appConfigService.config.host.protocol;
-        const hostName = this.appConfigService.config.host.name;
-        let link = `${hostProtocol}://${hostName}/invitation/${newGuid}`;
+        const hostProtocol = this.appConfigService.config.host_email.protocol;
+        const hostName = this.appConfigService.config.host_email.name;
+        //TODO пока невозможно let link = `${hostProtocol}://${hostName}/invitation/${newGuid}`;
+        let link = `${hostName}/invitation/${newGuid}`;
 
         this.invitationWithLinks.push([invit, link]);
       },
@@ -142,5 +140,4 @@ export class DialogInviteTranslatorComponent extends ModalComponent implements O
     this.hide();
     this.saveInvitation();
   }
-  
 }

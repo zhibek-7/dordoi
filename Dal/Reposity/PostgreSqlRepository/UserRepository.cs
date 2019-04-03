@@ -462,6 +462,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         password_text = Utilities.Cryptography.CryptographyProvider.GetMD5Hash(user.Password_text),
                         data_create = DateTime.Now
                     };
+
+
                     /* var query = new Query("users").AsInsert(newUser,
                          true); //true - вернуть сгенерированный id нового объекта
                      var compiledQuery = _compiler.Compile(query);
@@ -474,8 +476,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                       */
 
                     var sql = "INSERT INTO users (name_text, email,password_text, data_create) VALUES('" +
-                              newUser.name_text + "', " + newUser.email + ", " + newUser.password_text + ", " +
-                              newUser.data_create + ") RETURNING  users.id";
+                              newUser.name_text + "', '" + newUser.email + "', '" + newUser.password_text + "', '" +
+                              newUser.data_create + "') RETURNING  users.id";
                     var idOfNewUser = await dbConnection
                         .ExecuteScalarAsync<Guid>(sql);
 

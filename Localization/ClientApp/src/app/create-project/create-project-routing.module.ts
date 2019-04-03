@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CreateProjectComponent } from './create-project.component';
 
-import { EditProjectComponent } from './components/edit-project/edit-project.component';
-
 import { SettingsComponent } from './components/settings/settings.component';
 import { DeleteProjectComponent } from './components/delete-project/delete-project.component';
 import { AllSettingsComponent } from './components/all-settings/all-settings.component';
@@ -13,11 +11,6 @@ const routes: Routes = [
   {
     path: '',
     component: CreateProjectComponent
-
-  },
-  {
-    path: 'edit',
-    component: EditProjectComponent
 
   },
   {

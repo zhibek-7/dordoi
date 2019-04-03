@@ -44,8 +44,20 @@ namespace DAL.Reposity.Report
         {
             using (var dbConnection = new NpgsqlConnection(connectionString))
             {
+                //string userIdNew = null;
+                //if (userId.Equals(Guid.Empty) == false)
+                // {
+                //    userIdNew = userId.ToString();
+                //}
+
+                //string localeIdNew = null;
+                //if (localeId.Equals(Guid.Empty) == false)
+                //{
+                //   localeIdNew = localeId.ToString();
+                //}
+
                 var sqlQuery = "SELECT name_ as name_text, lang_ as language, worktype_ as work_Type, count_ as translations" +
-                               $" FROM translatedwords({projectID}, '{dateFrom.ToString("dd-MM-yyyy")}', '{dateTo.ToString("dd-MM-yyyy")}', {userId}, {localeId}, {countByChar}, {countTranslations});";
+                               $" FROM translatedwords('{projectID}', '{dateFrom.ToString("dd-MM-yyyy")}', '{dateTo.ToString("dd-MM-yyyy")}', '{userId}', '{localeId}', {countByChar}, {countTranslations});";
                 var rows = dbConnection.Query<TranslatedWordsReportRow>(sqlQuery, new { dateFrom, dateTo }).ToList();
                 return rows;
             }

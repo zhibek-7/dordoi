@@ -66,38 +66,45 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        /// <summary>
-        /// Метод получения всех переводов
-        /// </summary>
-        /// <returns>Список переводов</returns>
-        public async Task<IEnumerable<Translation>> GetAllAsync()
+        public Task<IEnumerable<Translation>> GetAllAsync(Guid userId)
         {
-            var query = @"SELECT * FROM translations";
-
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    this.LogQuery(query);
-                    IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query);
-                    return translations;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
-                    exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllAsync)} {nameof(Exception)} ",
-                    exception);
-                return null;
-            }
+            throw new NotImplementedException();
         }
+
+        //TODO нельзя так делать
+
+        ///// <summary>
+        ///// Метод получения всех переводов
+        ///// </summary>
+        ///// <returns>Список переводов</returns>
+        //public async Task<IEnumerable<Translation>> GetAllAsync()
+        //{
+        //    var query = @"SELECT * FROM translations";
+
+        //    try
+        //    {
+        //        using (var dbConnection = new NpgsqlConnection(connectionString))
+        //        {
+        //            this.LogQuery(query);
+        //            IEnumerable<Translation> translations = await dbConnection.QueryAsync<Translation>(query);
+        //            return translations;
+        //        }
+        //    }
+        //    catch (NpgsqlException exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        this._loggerError.WriteLn(
+        //            $"Ошибка в {nameof(TranslationRepository)}.{nameof(TranslationRepository.GetAllAsync)} {nameof(Exception)} ",
+        //            exception);
+        //        return null;
+        //    }
+        //}
 
 
         /// <summary>

@@ -196,12 +196,40 @@ namespace DAL.Reposity.PostgreSqlRepository
 
 
 
-        public async Task<Guid?> AddAsync(LocalizationProject project)
+        public async Task<Guid?> AddAsync(CreateLocalizationProject project) //(LocalizationProject project)
         {
-            var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
-                 + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
-                 + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.Able_To_Left_Errors + "','"
-                 + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')"
+            //project.Date_Of_Creation = project.Last_Activity = DateTime.Now;
+
+            var sqlQuery = "INSERT INTO localization_projects " +
+                           "(name_text, description, url, " +
+                           "visibility, " +
+                           "date_of_creation, last_activity, " +
+                           "id_source_locale, " +
+                           "able_to_download, " +
+                           "able_to_left_errors, " +
+                           "default_string, " +
+                           "notify_new, notify_finish, notify_confirm, " +
+                           "logo, " +
+
+                           "notify_new_comment, " +
+                           "export_only_approved_translations, " + "original_if_string_is_not_translated, " + "able_translators_change_terms_in_glossaries " +
+
+                           ") " +
+                           "VALUES('"
+                 + project.Name_text + "','" + project.Description + "','" + project.URL + "','" 
+                 + project.Visibility + "','" 
+                 + /*project.Date_Of_Creation*/ DateTime.Now + "','" + /*project.Last_Activity*/ DateTime.Now + "','" 
+                 + project.ID_Source_Locale + "','" 
+                 + project.Able_To_Download + "','" 
+                 + project.Able_To_Left_Errors + "','"
+                 + project.Default_String + "','" 
+                 + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" 
+                 + project.Logo + "','"
+                 
+                 + project.notify_new_comment + "','"
+                 + project.export_only_approved_translations + "','" + project.original_if_string_is_not_translated + "','" + project.able_translators_change_terms_in_glossaries +
+
+                 "')"
                   + " RETURNING localization_projects.id";
             try
             {
@@ -210,7 +238,7 @@ namespace DAL.Reposity.PostgreSqlRepository
 
                     this.LogQuery(sqlQuery);
                     Guid? projectId = await dbConnection.ExecuteScalarAsync<Guid>(sqlQuery, project);
-                    return project.id = (Guid)projectId;
+                    return (Guid)projectId;
                 }
             }
 
@@ -264,6 +292,11 @@ namespace DAL.Reposity.PostgreSqlRepository
                     exception);
 
             }
+        }
+
+        public Task<Guid?> AddAsync(LocalizationProject item)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -356,6 +389,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return false;
             }
         }
+
 
         /// <summary>
         /// Обновление данных проекта локализации.

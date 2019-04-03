@@ -103,7 +103,7 @@
       </div>
     </div>
     <div class="row mb-4">
-      <div class="col-3" style="margin-right:1rem;">
+      <div class="col-3" style="margin-right:1rem;" (click)="openDialog()">
         <div class="wrap">
           <div class="lt-inner"></div>
           <div class="rt-inner"></div>
@@ -113,60 +113,9 @@
         <h6 style="text-transform: uppercase; color: #7c529e;">Добавить услугу</h6>
       </div>
       <div class="col-3 service">
-        <div>
-          <div class="">
-            Письменный перевод
-          </div>
-          <mat-form-field>
-            <mat-select placeholder="Язык оригинала" [(ngModel)]="selectedCurrentLanguage" name="currentLanguages">
-              <mat-option *ngFor="let language of languages" [value]="language.id">
-                {{language.name_text}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-select placeholder="Язык перевода" [(ngModel)]="selectedTranslateLanguage" name="translateLanguages">
-              <mat-option *ngFor="let language of languages" [value]="language.id">
-                {{language.name_text}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-accordion>
-              <mat-expansion-panel hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Перевод
-                  </mat-panel-title>
-                   <mat-icon *ngIf="!switch" (click)="switch = !switch">add_circle_outline</mat-icon>
-                   <mat-icon *ngIf="switch" (click)="switch = !switch">remove_circle_outline</mat-icon>
-                </mat-expansion-panel-header>
-                <p>Тут цена за услугу</p>
-              </mat-expansion-panel>
-              <mat-expansion-panel hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Редактура
-                  </mat-panel-title>
-                  <mat-icon *ngIf="!switch2" (click)="switch2 = !switch2; ">add_circle_outline</mat-icon>
-                  <mat-icon *ngIf="switch2" (click)="switch2 = !switch2; ">remove_circle_outline</mat-icon>
-                </mat-expansion-panel-header>
-                <p>Тут цена за услугу</p>
-              </mat-expansion-panel>
-            </mat-accordion>
-            <mat-form-field>
-                <mat-select placeholder="Тематика" [(ngModel)]="selectedTranslateLanguage" name="translateLanguages">
-                  <mat-option *ngFor="let language of languages" [value]="language.id">
-                    <!-- {{language.name_text}} -->
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-        </div>
-        <div style="margin-top: 3rem;">
-          <div class="row row-btn"><button mat-button color="primary">Удалить</button></div>
-          <div class="row row-btn"><button mat-button color="primary">Отмена</button></div>
-          <div class="row row-btn"><button mat-button color="primary">Сохранить</button></div>
-        </div>
       </div>
     </div>
   </div>
 </div>
+
+

@@ -155,16 +155,16 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId)
+        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId, Guid projectId)
         {
             using (var connection = new NpgsqlConnection(connectionString))
             {
-                return await GetLastVersionByNameAndParentIdAsync(name, parentId, connection, null);
+                return await GetLastVersionByNameAndParentIdAsync(name, parentId, projectId, connection, null);
             }
 
         }
 
-        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId, NpgsqlConnection connection, IDbTransaction transaction)
+        public async Task<File> GetLastVersionByNameAndParentIdAsync(string name, Guid? parentId, Guid projectId, NpgsqlConnection connection, IDbTransaction transaction)
         {
 
             try
@@ -173,6 +173,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                 //{
                 var query = new Query("files")
                     .Where("id_folder_owner", parentId)
+                    .Where("id_localization_project", projectId)
                     .WhereLike("name_text", name)
                     .Where("is_last_version", true);
 
@@ -468,7 +469,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                                 "SELECT * " +
                                 "FROM translations " +
                                 "WHERE id_string = @id_translationSubstring AND id_locale = @id_locale{0} " +
-                                "SORT BY selected DESC, confirmed DESC, datetime DESC LIMIT 1",
+                                "order BY selected DESC, confirmed DESC, datetime DESC LIMIT 1",
                                 localizationProject.export_only_approved_translations ? " AND confirmed = true" : "");
                             var translation =
                                 await connection.QuerySingleOrDefaultAsync<Translation>(sqlTranslationQuery,

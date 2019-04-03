@@ -211,6 +211,19 @@ namespace DAL.Reposity.PostgreSqlRepository
         }
 
         /// <summary>
+        /// Назначение языков переводов на проект локализации.
+        /// </summary>
+        /// <param name="projectLocales"></param>
+        /// <returns></returns>
+        public async Task CreateProjectLocales(IEnumerable<LocalizationProjectsLocales> projectLocales)
+        {
+            foreach (var projectLocale in projectLocales)
+            {
+                await AddProjectsLocalesAsync(projectLocale);
+            }
+        }
+
+        /// <summary>
         /// Обновление
         /// </summary>
         /// <param name="project"></param>

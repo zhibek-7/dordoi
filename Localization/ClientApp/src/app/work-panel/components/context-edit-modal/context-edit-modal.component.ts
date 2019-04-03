@@ -112,13 +112,11 @@ export class ContextEditModalComponent extends ModalComponent
     if (this.images == undefined) {
       this.images = [];
     }
-
     var reader = new FileReader();
     reader.onload = (event: any) => {
       var insertedImage = new Image();
       insertedImage.body = event.target.result;
-
-      //обрезаем дополнительную информацию о изображении и оставляем только byte[]
+        //обрезаем дополнительную информацию о изображении и оставляем только byte[]
       insertedImage.body = insertedImage.body.match(".*base64,(.*)")[1];
 
       this.images.push(insertedImage);

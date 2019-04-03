@@ -81,15 +81,6 @@ namespace Localization
             services.AddScoped<TranslationMemoryService>();
             services.AddScoped<InvitationsService>();
 
-            /*
-            services.AddScoped<IFilesRepository, FilesRepository>();
-            services.AddScoped<FilesService>();
-            services.AddScoped<IGlossaryRepository, GlossaryRepository>();
-            services.AddScoped<GlossaryService>();
-            services.AddScoped<IGlossariesRepository, GlossariesRepository>();
-            services.AddScoped<GlossariesService>();
-            services.AddScoped<ITranslationSubstringRepository, TranslationSubstringRepository>();
-            */
             ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////
             var corsBuilder = new CorsPolicyBuilder();
             corsBuilder.AllowAnyHeader();
@@ -104,7 +95,7 @@ namespace Localization
             });
             //////////////Данный блок заканчивается    
 
-
+            ///2. авторизация
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -140,12 +131,16 @@ namespace Localization
                 {
                     configuration.RootPath = "ClientApp/dist";
                 });
+
+            //технологии коммуникаций в реальном времени: 
             services.AddSignalR(options => options.EnableDetailedErrors = false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
+            ///Скрываем исключения от пользовател
             app.UseExceptionHandler(appBuilder
                 => appBuilder.Run(async context =>
                 {
@@ -165,8 +160,10 @@ namespace Localization
                 app.UseHsts();
             }
 
-
-            app.UseHttpsRedirection();
+            //TODO нет пока HTTPS
+            //добавляет для проекта переадресацию на тот же ресурс только по протоколу https 
+            //app.UseHttpsRedirection();
+            // чтобы приложение могло бы отдавать статические файлы клиенту
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
@@ -185,7 +182,6 @@ namespace Localization
             });
 
             app.UseCors("SiteCorsPolicy"); // это тоже для нескольких портов(см. выше)
-
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
