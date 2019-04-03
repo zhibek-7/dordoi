@@ -16,11 +16,7 @@ namespace Models.Services
     {
         private readonly int _initialFileVersion = 1;
         private readonly int _defaultFileStreamBufferSize = 4096;
-        private readonly IDictionary<string, string> FileExtensionToContentFileName = new Dictionary<string, string>()
-        {
-            { "docx", System.IO.Path.Combine("word", "document.xml") },
-            { "odt", "content.xml" },
-        };
+        private readonly IDictionary<string, string> FileExtensionToContentFileName;
         private readonly IFilesRepository _filesRepository;
         private readonly IGlossaryRepository _glossaryRepository;
         private readonly ILocaleRepository _localeRepository;
@@ -32,13 +28,15 @@ namespace Models.Services
             IFilesRepository filesRepository,
             IGlossaryRepository glossaryRepository,
             ILocaleRepository localeRepository,
-            IFilesPackagesRepository filesPackagesRepository
+            IFilesPackagesRepository filesPackagesRepository,
+            SettingsModel settings
             )
         {
             this._filesRepository = filesRepository;
             this._glossaryRepository = glossaryRepository;
             this._localeRepository = localeRepository;
             this._filesPackagesRepository = filesPackagesRepository;
+            this.FileExtensionToContentFileName = settings.Files.FileExtensionToContentFileName;
         }
 
         public async Task<IEnumerable<Node<File>>> GetAllAsync(Guid? userId, Guid? projectId)

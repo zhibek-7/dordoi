@@ -79,5 +79,14 @@ namespace Models.Models
         [DataMember]
         public readonly HostModel host;
 
+        [DataContract]
+        public class FilesModel
+        {
+            [DataMember]
+            public readonly Dictionary<string, string> FileExtensionToContentFileName;
+        }
+        [DataMember]
+        public readonly FilesModel Files;
+
     }
 }
