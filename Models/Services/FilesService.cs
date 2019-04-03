@@ -17,7 +17,7 @@ namespace Models.Services
     {
         private readonly int _initialFileVersion = 1;
         private readonly int _defaultFileStreamBufferSize = 4096;
-        private readonly IDictionary<string, string> FileExtensionToContentFileName;
+        private readonly SettingsModel _settings;
         private readonly IFilesRepository _filesRepository;
         private readonly IGlossaryRepository _glossaryRepository;
         private readonly ILocaleRepository _localeRepository;
@@ -37,7 +37,7 @@ namespace Models.Services
             this._glossaryRepository = glossaryRepository;
             this._localeRepository = localeRepository;
             this._filesPackagesRepository = filesPackagesRepository;
-            this.FileExtensionToContentFileName = settings.Files.FileExtensionToContentFileName;
+            this._settings = settings;
         }
 
         public async Task<IEnumerable<Node<File>>> GetAllAsync(Guid? userId, Guid? projectId)
@@ -228,7 +228,7 @@ namespace Models.Services
             string fileContent = string.Empty;
             string fileEncoding = string.Empty;
             FilePackage filePackage = null;
-            if (this.FileExtensionToContentFileName.ContainsKey(fileExtension))
+            if (this._settings.Files.FileExtensionToContentFileName.ContainsKey(fileExtension))
             {
                 var filePackageFolderName = this.GetUniqueFileSystemName();
                 System.IO.Directory.CreateDirectory(filePackageFolderName);
@@ -246,7 +246,7 @@ namespace Models.Services
                     {
                         file_id = newFile.id,
                         data = temp,
-                        content_file_name = this.FileExtensionToContentFileName[fileExtension]
+                        content_file_name = this._settings.Files.FileExtensionToContentFileName[fileExtension]
                     };
                     await filePackageStream.WriteAsync(temp);
                 }
@@ -599,7 +599,7 @@ namespace Models.Services
 
 
 
-                    var compressionLevel = Settings.getSettings().GetString("zip_CompressionLevel");
+                    var compressionLevel = this._settings.Files.zip.CompressionLevel;
 
                     CompressionLevel level = CompressionLevel.Fastest;
 

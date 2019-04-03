@@ -84,6 +84,15 @@ namespace Models.Models
         {
             [DataMember]
             public readonly Dictionary<string, string> FileExtensionToContentFileName;
+
+            [DataContract]
+            public class ZipModel
+            {
+                [DataMember]
+                public readonly string CompressionLevel;
+            }
+            [DataMember]
+            public readonly ZipModel zip;
         }
         [DataMember]
         public readonly FilesModel Files;
