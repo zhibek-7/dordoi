@@ -43,7 +43,6 @@ namespace Localization.Controllers
         [Route("List")]
         public List<LocalizationProject> GetProjects()
         {
-
             var identityName = User.Identity.Name;
             Guid? userId = (Guid)ur.GetID(identityName);
             return _localizationProjectRepository.GetAllAsync(userId, null).Result?.ToList();
@@ -67,75 +66,11 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("details/{Id}")]
-        public async Task<LocalizationProject> GetWithDetailsById(Guid id)
+        public async Task<LocalizationProject> GetWithDetailsByIdAsync(Guid id)
         {
             return await _localizationProjectRepository.GetWithDetailsById(id);
         }
-
-
-        //[HttpPost]
-        //[Route("add/{project}")]
-        [Authorize]
-        [HttpPost]
-        [Route("newProject")]
-        public async Task<Guid?> newProject([FromBody] LocalizationProject project)
-        {
-            Guid? idProj = await _localizationProjectRepository.AddAsync(project);
-            await _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
-            return idProj;
-        }
-
-        //[HttpPost]
-        //[Route("add/{project}")]
-        [Authorize]
-        [HttpPost]
-        [Route("AddProject")]
-        public async Task<LocalizationProject> AddProject([FromBody] LocalizationProject project)
-        {
-            _localizationProjectRepository.InsertProject(project);
-            await _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
-            return project;
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("AddProject2")]
-        public LocalizationProject AddProjectT([FromBody] LocalizationProject project)
-        {
-            _localizationProjectRepository.InsertProject(project);
-            _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
-            return project;
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("deleteLocales/{Id}")]
-        public void deleteLocalesById(Guid Id)
-        {
-            _localizationProjectsLocalesRepository.DeleteProjectLocalesById(Id);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("delete/{Id}")]
-        public void DeleteProject(Guid Id)
-        {
-            _localizationProjectRepository.RemoveAsync(Id);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [Route("edit/{Id}")]
-        public async Task<LocalizationProject> EditProject(LocalizationProject project, Guid Id)
-        {
-            _localizationProjectRepository.Update(project);
-            await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
-
-            return project;
-        }
-
-
-
+        
         /// <summary>
         /// Создание проекта локализации.
         /// </summary>
@@ -143,7 +78,7 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("create")]
-        public async Task<Guid?> Create(CreateLocalizationProject project)
+        public async Task<Guid?> CreateAsync(CreateLocalizationProject project)
         {
             var projectId = await _localizationProjectRepository.AddAsync(project);
             await _userActionRepository.AddCreateProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, (Guid)projectId, (Guid)project.ID_Source_Locale);
@@ -171,12 +106,27 @@ namespace Localization.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPost("update")]
-        public async Task<LocalizationProject> Update(LocalizationProject project)
+        public async Task<LocalizationProject> UpdateAsync(LocalizationProject project)
         {
             await _localizationProjectRepository.UpdateAsync(project);
             await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
 
             return project;
+        }
+
+        /// <summary>
+        /// Удаление проекта локализации.
+        /// </summary>
+        /// <param name="projectId">Идентификатор проекта локализации.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpDelete("delete/{projectId}")]
+        public async Task DeleteAsync(Guid projectId)
+        {
+            var identityName = User.Identity.Name;
+            Guid userId = (Guid)ur.GetID(identityName);
+            //await _userActionRepository.AddDeleteProject(userId, identityName, projectId, "");
+            await _localizationProjectRepository.RemoveAsync(projectId);
         }
 
         /// <summary>
@@ -191,110 +141,6 @@ namespace Localization.Controllers
             var userName = User.Identity.Name;
             return await _localizationProjectRepository.GetForSelectByUserAsync(userName);
         }
-
-        /// <summary>
-        /// добавляет языки
-        /// </summary>
-        /// <param name="projectLocales"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        [Route("AddProjectLocale")]
-        public LocalizationProjectsLocales[] EditProjectLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
-        {
-            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
-            {
-                try
-                {
-                    _localizationProjectsLocalesRepository.AddProjectsLocales(projectLocale);
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine("{0} Exception caught.", exception);
-                }
-            }
-            return projectLocales;
-        }
-
-
-        /// <summary>
-        /// взвращает все языки по id проекта
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        [Route("ListProjectLocales/{Id}")]
-        public Task<IEnumerable<LocalizationProjectsLocales>> GetProjectsLocales(Guid Id)
-        {
-            return _localizationProjectsLocalesRepository.GetAll(Id);
-        }
-
-        /// <summary>
-        /// взвращает все языки
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        [Route("ListLocales")]
-        public Task<IEnumerable<Locale>> GetLocales()
-        {
-
-            return _localeRepository.GetAllAsync();
-        }
-
-
-
-
-        /// <summary>
-        /// обновляет языки
-        /// </summary>
-        /// <param name="projectLocales"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        [Route("deleteProjectLocale")]
-        public LocalizationProjectsLocales[] DeleteProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
-        {
-            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
-            {
-                try
-                {
-                    _localizationProjectsLocalesRepository.DeleteProjectsLocales(projectLocale);
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine("{0} Exception caught.", exception);
-                }
-            }
-            return projectLocales;
-        }
-
-        /// <summary>
-        /// обновляет языки
-        /// </summary>
-        /// <param name="projectLocales"></param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        [Route("editProjectLocale")]
-        public LocalizationProjectsLocales[] EditProjectsLocales([FromBody] LocalizationProjectsLocales[] projectLocales)
-        {
-            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
-            {
-                try
-                {
-                    _localizationProjectsLocalesRepository.UpdateProjectsLocales(projectLocale);
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine("{0} Exception caught.", exception);
-                }
-            }
-            return projectLocales;
-        }
-
-
-
-
+        
     }
 }

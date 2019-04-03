@@ -1,0 +1,15 @@
+<app-modal [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 class="modal-title">Удалить проект "{{nameProject}}"</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <p class="card-text">
+      <span class="badge badge-outline-danger">Важно</span> Удаление проекта навсегда удалит все ресурсы, связанные с проектом, включая загруженные файлы, переводы, согласования и т.д. Удаленные проекты не могут быть восстановлены.
+    </p>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-warning m-1 btn-sm" (click)="delete()">Удалить</button>
+    <button class="btn btn-primary btn-sm" (click)="hide()">Отмена</button>
+  </div>
+</app-modal>

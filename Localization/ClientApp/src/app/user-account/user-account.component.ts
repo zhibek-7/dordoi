@@ -22,9 +22,9 @@ export class UserAccountComponent implements OnInit {
     private userService: UserService
   ) {}
 
-  getPickedProject(pickedProject) {    
-    sessionStorage.setItem("ProjectName", pickedProject.name_text);
-    sessionStorage.setItem("ProjectID", pickedProject.id.toString());
+  getPickedProject(pickedProject) {
+    this.projectsService.currentProjectId = pickedProject.id;
+    this.projectsService.currentProjectName = pickedProject.name_text;
   }
 
   ngOnInit() {    

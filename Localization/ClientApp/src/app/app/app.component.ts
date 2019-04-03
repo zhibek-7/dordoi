@@ -60,8 +60,8 @@ export class AppComponent implements OnInit {
       "ProjectName projectsService.currentProjectName ==" + this.name
     );
 
-    sessionStorage.setItem("ProjectName", currentProject.name_text);
-    sessionStorage.setItem("ProjectID", currentProject.id.toString());
+    this.projectService.currentProjectId = currentProject.id;
+    this.projectService.currentProjectName = currentProject.name_text;
   }
 
   logOut() {

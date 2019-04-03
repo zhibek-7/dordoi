@@ -70,15 +70,15 @@ export class CurrentProjectTranslationsComponent implements OnInit {
   }
 
   ngOnInit() {
-   console.log(
-      ".CurrentProjectTranslationsComponent.snapshot=" +
-        this.route.snapshot.params["projectId"]
-    );
+    console.log(".CurrentProjectTranslationsComponent.snapshot=" + this.route.snapshot.params["projectId"]);
+
     if (this.route.snapshot.params["projectId"] != null) {
       this.projectId = this.route.snapshot.params["projectId"];
-      sessionStorage.setItem("ProjectID", this.route.snapshot.params["projectId"]);
+      //sessionStorage.setItem("ProjectID", this.route.snapshot.params["projectId"]);
+      this.projectService.currentProjectId = this.route.snapshot.params["projectId"];
     }
 
+    console.log("CurrentProjectTranslationsComponent ngOnInit() projectId: ", this.projectId);
 
 
     this.currentUserName = this.userService.currentUserName;

@@ -21,9 +21,15 @@ export class ProjectsService {
       return Guid.parse(sessionStorage.getItem("ProjectID"));
     }
   }
+  set currentProjectId(id: Guid) {
+    sessionStorage.setItem("ProjectID", id.toString());
+  }
 
   get currentProjectName(): string {
     return sessionStorage.getItem("ProjectName");
+  }
+  set currentProjectName(name: string) {
+    sessionStorage.setItem("ProjectName", name);
   }
 
   getProjects(): Observable<LocalizationProject[]> {
@@ -54,67 +60,8 @@ export class ProjectsService {
     );
   }
 
-  /**
-   * /добавление проекта
-   * @param project
-   */
-  newProject(project: LocalizationProject): Observable<LocalizationProject> {
-    return this.httpClient.post<LocalizationProject>(
-      this.controllerUrl + "newProject",
-      project
-    );
-  }
-
-  /**
-   * /добавление проекта
-   * @param project
-   */
-  async addProject(project: LocalizationProject) {
-    console.log("addProject-->");
-    console.log(project);
-
-    console.log(this.controllerUrl + "add/{project}");
-    console.log(this.controllerUrl + "AddProject");
-
-    let asyncResult = await this.httpClient
-      .post<LocalizationProject>(this.controllerUrl + "AddProject", project)
-      .toPromise();
-    return asyncResult;
-  }
-  async updateProject(Id: Guid, project: LocalizationProject) {
-    console.log("updateProject-->" + Id);
-    console.log(project);
-    project.id = Id;
-    let asyncResult = await this.httpClient
-      .post<LocalizationProject>(this.controllerUrl + "edit/" + Id, project)
-      .toPromise();
-
-    return asyncResult;
-  }
-
-  //удаление проекта
-  async deleteProject(Id: Guid) {
-    console.log("updateProject-->" + Id);
-    let asyncResult = await this.httpClient
-      .post<LocalizationProject>(this.controllerUrl + "delete/" + Id, Id)
-      .toPromise();
-    return asyncResult;
-  }
-
-  //удаление языков
-  deleteProjectLocalesById(Id: Guid): Observable<LocalizationProjectsLocales> {
-    console.log("updateProject-->" + Id);
-    let asyncResult = this.httpClient.post<LocalizationProjectsLocales>(
-      this.controllerUrl + "deleteLocales/" + Id,
-      Id
-    );
-    return asyncResult;
-  }
-
   /** Возвращает список проектов локализации, назначенных на пользователя, содержащий только ID, Name */
-  getLocalizationProjectForSelectDTOByUser(): Observable<
-    LocalizationProjectForSelectDTO[]
-  > {
+  getLocalizationProjectForSelectDTOByUser(): Observable<LocalizationProjectForSelectDTO[]> {
     return this.httpClient.post<LocalizationProjectForSelectDTO[]>(
       this.controllerUrl + "forSelectByUser",
       null,
@@ -127,73 +74,16 @@ export class ProjectsService {
     );
   }
 
-  async addProjectLocales(projectLocales: LocalizationProjectsLocales[]) {
-    console.log("addProject-->");
-    console.log(projectLocales);
-
-    console.log(this.controllerUrl + "add/{project}");
-    console.log(this.controllerUrl + "AddProject");
-
-    let asyncResult = await this.httpClient
-      .post<LocalizationProjectsLocales[]>(
-        this.controllerUrl + "AddProjectLocale",
-        projectLocales
-      )
-      .toPromise();
-    return asyncResult;
+  create(project: LocalizationProject): Observable<Guid> {
+    return this.httpClient.post<Guid>(this.controllerUrl + "create", project);
   }
 
-  //обновление языков
-  async updateProjectLocales(
-    Id: Guid,
-    projectLocale: LocalizationProjectsLocales[]
-  ) {
-    console.log("updateProject-->" + Id);
-    console.log(projectLocale);
-    // projectLocale.id_Localization_Project = Id;
-    let asyncResult = await this.httpClient
-      .post<LocalizationProjectsLocales>(
-        this.controllerUrl + "editProjectLocale/" + Id,
-        projectLocale
-      )
-      .toPromise();
-
-    return asyncResult;
+  update(project: LocalizationProject): Observable<Object> {
+    return this.httpClient.post(this.controllerUrl + "update", project);
   }
 
-  /**
-     newProject(project: LocalizationProject): Observable<LocalizationProject> {
-    return this.httpClient.post<LocalizationProject>(this.controllerUrl + "newProject", project);
-  }
-
-   * @param projectLocales
-   */
-
-  //удаление языков
-  deleteProjectLocales(
-    projectLocales: LocalizationProjectsLocales[]
-  ): Observable<LocalizationProjectsLocales[]> {
-    console.log("addProject-->");
-    console.log(projectLocales);
-    return this.httpClient.post<LocalizationProjectsLocales[]>(
-      this.controllerUrl + "deleteProjectLocale",
-      projectLocales
-    );
-  }
-
-  //все языки 1 проекта
-  getProjectLocales(Id: Guid): Observable<LocalizationProjectsLocales[]> {
-    return this.httpClient.post<LocalizationProjectsLocales[]>(
-      this.controllerUrl + "ListProjectLocales/" + Id,
-      Id
-    ); //.pipe(map(listOfPojLocales => listOfPojLocales.map(singleProjLoc => new LocalizationProjectsLocales(singleProjLoc.id_LocalizationProject, singleProjLoc.id_Locale, singleProjLoc.percentOfTranslation, singleProjLoc.PercentOfConfirmed))));;
-  }
-
-  getLocales(): Observable<Locale[]> {
-    return this.httpClient.post<Locale[]>(
-      this.controllerUrl + "ListLocales",
-      null
-    );
+  delete(projectId: Guid): Observable<Object> {
+    return this.httpClient.delete(this.controllerUrl + "delete/" + projectId);
   }
 
   /**
@@ -211,13 +101,5 @@ export class ProjectsService {
       .toPromise();
     return asyncResult;
   }
-
-
-  create(project: LocalizationProject): Observable<Guid> {
-    return this.httpClient.post<Guid>(this.controllerUrl + "create", project);
-  }
-
-  update(project: LocalizationProject): Observable<Object> {
-    return this.httpClient.post(this.controllerUrl + "update", project);
-  }
+  
 }
