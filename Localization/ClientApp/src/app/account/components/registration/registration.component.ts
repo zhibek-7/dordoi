@@ -47,7 +47,7 @@ export class RegistrationComponent implements OnInit {
       ]),
       nameFormControl: new FormControl("", [
         Validators.required,
-        Validators.pattern("^[a-zA-Z0-9.]+$")
+        Validators.pattern("^[a-zA-Z0-9._]+$")
       ]),
       passwordFormControl: new FormControl("", [
         Validators.required,
