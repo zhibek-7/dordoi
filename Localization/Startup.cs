@@ -22,6 +22,7 @@ using Localization.Authentication;
 using System;
 using Utilities;
 using Utilities.Mail;
+using Models.Models;
 
 namespace Localization
 {
@@ -48,6 +49,7 @@ namespace Localization
             //var connectionString = Configuration.GetConnectionString("db_connection");
             var connectionString = Settings.GetStringDB();
             services.AddSingleton<ISettings>(provider => new Settings(connectionString));
+            services.AddSingleton<SettingsModel>(provider => new SettingsModelService().DeserializeFromDefaultLocation());
 
 
             // TODO нужно будет переделать все классы под этот вариант
