@@ -6,6 +6,8 @@ import { LocalizationProjectsLocales } from "src/app/models/database-entities/lo
 import { ProjectsService } from 'src/app/services/projects.service';
 import { ProjectsLocalesService } from "src/app/services/projectsLocales.service";
 
+import { Router } from "@angular/router";
+
 @Component({
   selector: 'app-edit-project',
   templateUrl: './edit-project.component.html',
@@ -18,7 +20,8 @@ export class EditProjectComponent implements OnInit {
   loaded: boolean = false;
 
   constructor(private projectsService: ProjectsService,
-    private projectsLocalesService: ProjectsLocalesService) { }
+    private projectsLocalesService: ProjectsLocalesService,
+    private router: Router) { }
 
   ngOnInit() {
     this.projectsService.getProject(this.projectsService.currentProjectId).subscribe(
@@ -31,10 +34,6 @@ export class EditProjectComponent implements OnInit {
   }
 
   submit(editedProject: [LocalizationProject, LocalizationProjectsLocales[]]) {
-
-    console.log("LocalizationProject", editedProject[0]);
-    console.log("LocalizationProjectsLocales[]", editedProject[1]);
-
     this.projectsService.update(editedProject[0]).subscribe(
       result => { },
       error => console.error(error)
@@ -45,4 +44,17 @@ export class EditProjectComponent implements OnInit {
       error => console.error(error)
     );
   }
+  
+  delete(confirm: boolean) {
+    if (confirm)
+    {
+      this.projectsService.delete(this.project.id).subscribe(
+        result => {
+          this.router.navigate(["/Profile"]);
+        },
+        error => console.error(error)
+      );
+    }
+  }
+
 }

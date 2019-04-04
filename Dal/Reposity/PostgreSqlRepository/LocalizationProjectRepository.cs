@@ -22,10 +22,6 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
         }
 
-        // public void Add(LocalizationProject locale)
-        // {
-        //     throw new NotImplementedException();
-        // }
 
         public async Task<LocalizationProject> GetByIDAsync(Guid id, Guid? userId)
         {
@@ -183,19 +179,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        // public bool Remove(int Id)
-        // {
-        //     throw new NotImplementedException();
-        // }
-
-        // public void Update(LocalizationProject user)
-        // {
-        //     throw new NotImplementedException();
-        // }
-
-
-
-
         public async Task<Guid?> AddAsync(CreateLocalizationProject project) //(LocalizationProject project)
         {
             //project.Date_Of_Creation = project.Last_Activity = DateTime.Now;
@@ -210,10 +193,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                            "default_string, " +
                            "notify_new, notify_finish, notify_confirm, " +
                            "logo, " +
-
                            "notify_new_comment, " +
                            "export_only_approved_translations, " + "original_if_string_is_not_translated, " + "able_translators_change_terms_in_glossaries " +
-
                            ") " +
                            "VALUES('"
                  + project.Name_text + "','" + project.Description + "','" + project.URL + "','" 
@@ -258,139 +239,38 @@ namespace DAL.Reposity.PostgreSqlRepository
             }
         }
 
-        /// <summary>
-        /// Функция добавления проекта
-        /// </summary>
-        /// <param name="project"></param>
-        public void InsertProject(LocalizationProject project)
-        {
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    var sqlQuery = "INSERT INTO localization_projects (name_text, description, url, visibility, date_of_creation, last_activity, id_source_locale, able_to_download, able_to_left_errors, default_string, notify_new, notify_finish, notify_confirm, logo) VALUES('"
-                  + project.Name_text + "','" + project.Description + "','" + project.URL + "','" + project.Visibility + "','" + project.Date_Of_Creation + "','"
-                  + project.Last_Activity + "','" + project.ID_Source_Locale + "','" + project.Able_To_Download + "','" + project.Able_To_Left_Errors + "','"
-                  + project.Default_String + "','" + project.Notify_New + "','" + project.Notify_Finish + "','" + project.Notify_Confirm + "','" + project.Logo + "')";
-
-                    this.LogQuery(sqlQuery);
-                    Guid? projectId = dbConnection.Query<Guid>(sqlQuery, project).FirstOrDefault();
-                    project.id = (Guid)projectId;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.InsertProject)} {nameof(NpgsqlException)} ",
-                    exception);
-
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.InsertProject)} {nameof(Exception)} ",
-                    exception);
-
-            }
-        }
-
         public Task<Guid?> AddAsync(LocalizationProject item)
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Удалить  проект
-        /// </summary>
-        /// <param name="id"></param>
-        public async Task<bool> RemoveAsync(Guid Id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
-            try
-            {
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    var sqlQuery = "DELETE FROM  localization_projects  WHERE id= " + Id + "";
-                    var param = new { Id };
-
-                    connection.Execute(sqlQuery, param);
-
-                    this.LogQuery(sqlQuery);
-                    return true;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(NpgsqlException)} ",
-                    exception);
-                return false;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(Exception)} ",
-                    exception);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Обновить проект
-        /// </summary>
-        /// <param name="project"></param>
-        public async Task<bool> Update(LocalizationProject project)
-        {
-            var sqlQuery = "UPDATE \"localization_projects\" SET" +
-                             "\"name_text\"=@Name_text, " +
-                             "\"description\"=@Description," +
-                             "\"url\"=@URL," +
-                             " \"visibility\"=@Visibility," +
-                             " \"date_of_creation\"=@Date_Of_Creation," +
-                             " \"last_activity\"=@Last_Activity," +
-                             " \"id_source_locale\"=@ID_Source_Locale," +
-
-                             " \"able_to_download\"=@Able_To_Download," +
-                             " \"able_to_left_errors\"=@Able_To_Left_Errors," +
-                             " \"default_string\"=@Default_String," +
-                             " \"notify_new\"=@Notify_New," +
-                             " \"notify_finish\"=@Notify_Finish," +
-                             " \"notify_confirm\"=@Notify_Confirm," +
-                             " \"notify_new_comment\"=@notify_new_comment," +
-                             " \"export_only_approved_translations\"=@export_only_approved_translations," +
-                             " \"original_if_string_is_not_translated\"=@original_if_string_is_not_translated  " +
-                             "WHERE \"id\"=@id";
-
-
-
-
-
             try
             {
                 using (var dbConnection = new NpgsqlConnection(connectionString))
                 {
-                    this.LogQuery(sqlQuery, project.GetType(), project);
-                    dbConnection.Execute(sqlQuery, project);
-
+                    var query = new Query("localization_projects").Where("id", id).AsDelete();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
                     return true;
                 }
             }
             catch (NpgsqlException exception)
             {
-                this._loggerError.WriteLn(
-                        $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.Update)} {nameof(NpgsqlException)} ",
-                        exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(NpgsqlException)} ", exception);
                 return false;
             }
             catch (Exception exception)
             {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.Update)} {nameof(Exception)} ",
-                    exception);
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(Exception)} ", exception);
                 return false;
             }
         }
-
-
+        
         /// <summary>
         /// Обновление данных проекта локализации.
         /// </summary>
@@ -442,38 +322,6 @@ namespace DAL.Reposity.PostgreSqlRepository
                 return false;
             }
         }
-
-
-        public LocalizationProject GetByID(Guid Id)
-        {
-            // Sql string to select all rows
-            var sqlString = "SELECT * FROM localization_projects WHERE id = @Id";
-
-            try
-            {
-                using (var dbConnection = new NpgsqlConnection(connectionString))
-                {
-                    var param = new { Id };
-                    this.LogQuery(sqlString, param);
-                    var project = dbConnection.Query<LocalizationProject>(sqlString, param).FirstOrDefault();
-                    return project;
-                }
-            }
-            catch (NpgsqlException exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(NpgsqlException)} ",
-                    exception);
-                return null;
-            }
-            catch (Exception exception)
-            {
-                this._loggerError.WriteLn(
-                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(Exception)} ",
-                    exception);
-                return null;
-            }
-        }
-
+        
     }
 }

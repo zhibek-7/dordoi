@@ -42,7 +42,7 @@ namespace Localization.Controllers
         }
 
         /// <summary>
-        /// Назначение языков переводов на проект локализации.
+        /// Переназначение языков переводов на проект локализации.
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="projectLocales"></param>
@@ -66,17 +66,6 @@ namespace Localization.Controllers
         {
             await _localizationProjectsLocalesRepository.CreateProjectLocales(projectLocales);
         }
-
-        [Authorize]
-        [HttpPost]
-        [Route("edit/{Id}")]
-        public LocalizationProjectsLocales[] EditProject(LocalizationProjectsLocales[] projectLocales, int Id)
-        {
-            foreach (LocalizationProjectsLocales projectLocale in projectLocales)
-            {
-                _localizationProjectsLocalesRepository.UpdateProjectsLocales(projectLocale);
-            }
-            return projectLocales;
-        }
+        
     }
 }

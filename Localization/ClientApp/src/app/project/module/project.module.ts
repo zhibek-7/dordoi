@@ -6,6 +6,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AddProjectComponent } from '../components/add-project/add-project.component';
 import { EditProjectComponent } from '../components/edit-project/edit-project.component';
 import { EditableProjectComponent } from '../components/editable-project/editable-project.component';
+import { ConfirmDeleteProjectComponent } from '../components/confirm-delete-project/confirm-delete-project.component';
 
 
 import { ProjectsService } from 'src/app/services/projects.service';
@@ -18,31 +19,12 @@ import { ProjectRoutingModule } from './project-routing.module';
 import { RequestInterceptorService } from 'src/app/services/requestInterceptor.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MatIconModule,
   MatFormFieldModule,
-  MatCheckboxModule,
-  MatSelectModule,
-  MatRadioModule,
-  MatMenuModule,
-  MatToolbarModule,
-  MatListModule,
-  MatGridListModule,
-  MatCardModule,
-  MatTabsModule,
+  MatInputModule,
   MatButtonModule,
-  MatChipsModule,
-  MatProgressSpinnerModule,
-  MatProgressBarModule,
-  MatDialogModule,
-  MatTooltipModule,
-  MatSnackBarModule,
-  MatSlideToggleModule,
-  MatTableModule,
-  MatPaginatorModule,
-  MatSortModule,
-  MatAutocompleteModule,
-  MatExpansionModule,
-  MatInputModule
+  MatCheckboxModule,
+  MatRadioModule,
+  MatIconModule
 } from '@angular/material';
 
 @NgModule({
@@ -50,7 +32,8 @@ import {
     [
       AddProjectComponent,
       EditProjectComponent,
-      EditableProjectComponent
+      EditableProjectComponent,
+      ConfirmDeleteProjectComponent
   ],
   imports: [
     CommonModule,
@@ -59,30 +42,11 @@ import {
 
     MatFormFieldModule,
     MatInputModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatMenuModule,
-    MatToolbarModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatTabsModule,
     MatButtonModule,
-    MatChipsModule,
+    MatCheckboxModule,
+    MatRadioModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
-    MatDialogModule,
-    MatTooltipModule,
-    MatSnackBarModule,
-    MatSlideToggleModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatAutocompleteModule,
-    MatExpansionModule,
-
+    
     HttpClientModule,
 
     SharedModule,

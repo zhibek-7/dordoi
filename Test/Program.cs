@@ -36,6 +36,8 @@ namespace Test
                 Import im = new Import();
                 //TODO Проверить даты!!
                 im.imp(Import.FileType.TMX, fs, Guid.Parse("a25c45a0-80f4-4bca-9c4c-cf02d139c1bf"));
+                //im.imp(Import.FileType.TBX, fs, Guid.Parse("acb2667c-257d-4cde-a0bc-8c2d9ac98574"));
+
             }
 
 

@@ -13,7 +13,10 @@ export class ProjectsLocalesService {
 
   constructor(private httpClient: HttpClient) { }
 
-
+  /**
+   * Возвращает назначенные языки переводов на проект локализации.
+   * @param projectId Идентификатор проекта локализации.
+   */
   getByProjectId(projectId: Guid): Observable<LocalizationProjectsLocales[]> {
     return this.httpClient.post<LocalizationProjectsLocales[]>(
       this.controllerUrl + "listByProjectId/" + projectId,
@@ -23,7 +26,7 @@ export class ProjectsLocalesService {
 
   /**
    * Переназначение языков переводов на проект локализации.
-   * @param projectId
+   * @param projectId Идентификатор проекта локализации.
    * @param projectLocales
    */
   editProjectLocales(projectId: Guid, projectLocales: LocalizationProjectsLocales[]): Observable<Object> {
@@ -32,54 +35,10 @@ export class ProjectsLocalesService {
 
   /**
    * Назначение языков переводов на проект локализации.
-   * @param projectId
    * @param projectLocales
    */
   createProjectLocales(projectLocales: LocalizationProjectsLocales[]): Observable<Object> {
     return this.httpClient.post(this.controllerUrl + "create", projectLocales);
   }
 
-  getProjectLocales(): Observable<LocalizationProjectsLocales[]> {
-    return this.httpClient.post<LocalizationProjectsLocales[]>(
-      this.controllerUrl + "list",
-      null
-    );
-  }
-
-
-
-  ///////////
-  async addProjectLocales(project: LocalizationProjectsLocales) {
-    console.log("addProject-->");
-    console.log(project);
-
-    console.log(this.controllerUrl + "add/{project}");
-    console.log(this.controllerUrl + "AddProject");
-
-    let asyncResult = await this.httpClient
-      .post<LocalizationProjectsLocales>(
-        this.controllerUrl + "AddProject",
-        project
-      )
-      .toPromise();
-    return asyncResult;
-  }
-
-  //обновление языков
-  async updateProjectLocales(
-    Id: Guid,
-    projectLocale: LocalizationProjectsLocales[]
-  ) {
-    console.log("updateProject-->" + Id);
-    console.log(projectLocale);
-    // projectLocale.id_Localization_Project = Id;
-    let asyncResult = await this.httpClient
-      .post<LocalizationProjectsLocales>(
-        this.controllerUrl + "edit/" + Id,
-        projectLocale
-      )
-      .toPromise();
-
-    return asyncResult;
-  }
 }

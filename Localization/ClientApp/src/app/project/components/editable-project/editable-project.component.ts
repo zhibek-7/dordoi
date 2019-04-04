@@ -130,13 +130,17 @@ export class EditableProjectComponent implements OnInit {
   }
 
   loadProjectLocales() {
-    this.projectsLocalesService.getByProjectId(this.projectsService.currentProjectId).subscribe(
-      projectLocales => {
-        this.allProjectLocales = projectLocales;
-        this.loadAvailableLanguages();
-      },
-      error => console.error(error)
-    );
+    if (this.project.id) {
+      this.projectsLocalesService.getByProjectId(this.project.id).subscribe(
+        projectLocales => {
+          this.allProjectLocales = projectLocales;
+          this.loadAvailableLanguages();
+        },
+        error => console.error(error)
+      );
+    } else {
+      this.loadAvailableLanguages();
+    }
   }
 
   loadAvailableLanguages() {

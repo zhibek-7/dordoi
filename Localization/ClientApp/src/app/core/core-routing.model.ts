@@ -1,11 +1,8 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-//import { CurrentProjectSettingsComponent } from "../current-project-settings/current-project-settings.component";
-import { NewProjectComponent } from "../new-project/new-project.component";
 import { NewProfileComponent } from "../new-profile/new-profile.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
-//import { UserRegistrationComponent } from "../user-registration/user-registration.component";
 
 import { AuthenticationGuard } from "../services/authentication.guard";
 
@@ -34,19 +31,8 @@ const routes: Routes = [
   //  canActivate: [AuthenticationGuard]
   //},
   {
-    path: "create-project",
-    loadChildren: "../create-project/create-project.module#CreateProjectModule",
-    canActivate: [AuthenticationGuard]
-  },
-  {
     path: "Projects/:projectId",
-    //component: CurrentProjectSettingsComponent,
     loadChildren: "../current-project-settings/module/current-project-settings.module#CurrentProjectSettingsModule",
-    canActivate: [AuthenticationGuard]
-  },
-  {
-    path: "New-project",
-    component: NewProjectComponent,
     canActivate: [AuthenticationGuard]
   },
   {

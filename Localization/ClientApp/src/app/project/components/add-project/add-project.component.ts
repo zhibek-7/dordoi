@@ -37,20 +37,23 @@ export class AddProjectComponent implements OnInit {
   
   submit(editedProject: [LocalizationProject, LocalizationProjectsLocales[]]) {
     
-    console.log("LocalizationProject", editedProject[0]);
-    console.log("LocalizationProjectsLocales[]", editedProject[1]);
+    //console.log("LocalizationProject", editedProject[0]);
+    //console.log("LocalizationProjectsLocales[]", editedProject[1]);
 
 
     this.projectsService.create(editedProject[0]).subscribe(
       projectId => {
-        console.log(projectId);
+
+        this.projectsService.currentProjectId = projectId;
+        this.projectsService.currentProjectName = editedProject[0].name_text;
         
         this.projectsLocalesService.createProjectLocales(editedProject[1].map(t => new LocalizationProjectsLocales(projectId, t.iD_Locale))).subscribe(
-          result => {},
+          result => {
+            this.router.navigate(["/Projects/" + projectId]);
+          },
           error => console.error(error)
         );
 
-        this.router.navigate(["/Projects/" + projectId]);
       },
       error => console.error(error)
     );

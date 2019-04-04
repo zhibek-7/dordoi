@@ -25,10 +25,16 @@ private projectService: ProjectsService) {
     this.projectId = this.projectService.currentProjectId;
     this.projectName = this.projectService.currentProjectName;
 
+
+
      console.log(".CurrentProjectSettingsComponent=="+this.route.snapshot.params["projectId"]);
     if (this.route.snapshot.params["projectId"] != null) {
-      sessionStorage.setItem("ProjectID", this.route.snapshot.params["projectId"]);
+      //sessionStorage.setItem("ProjectID", this.route.snapshot.params["projectId"]);
+      this.projectService.currentProjectId = this.route.snapshot.params["projectId"];
   }
+
+    console.log("CurrentProjectSettingsComponent ngOnInit() projectId: ", this.projectId);
+    console.log("CurrentProjectSettingsComponent ngOnInit() projectName: ", this.projectName);
   
 }
 }
