@@ -259,6 +259,34 @@ namespace Models.Parser
         }
 
         /// <summary>
+        /// Функция-парсер файлов с расширением 'xml'
+        /// </summary>
+        /// <param name="file">Файл для распарсивания</param>
+        /// <returns>Список объектов <see cref="TranslationSubstring"/></returns>
+        private List<TranslationSubstring> ParseAsXml_any(File file)
+        {
+            _logger.WriteLn("Parser: " + string.Format("К файлу {0} применяется парсер для файлов с расширением 'xml'", file.name_text));
+            var ts = new List<TranslationSubstring>();
+            var pattern = "<\\s*(?<tag>[\\w:-]+)[^>]*(>(?:(?<!<\\s*/\\k<tag>\\s*>).)*<)\\s*/\\k<tag>\\s*>";
+            var pattern_data = ">([^>]+)<";
+            var matches = Regex.Matches(file.original_full_text, pattern).Cast<Match>().Select(m => new { pos = m.Groups[1].Index, val = m.Groups[1].Value, context = "[" + m.Groups["tag"].Value + "]" }).ToList();
+            while (matches.Count > 0)
+            {
+                var matches_in = Regex.Matches(matches[0].val, pattern);
+                if (matches_in.Count > 0)
+                    foreach (Match m in matches_in) matches.Add(new { pos = matches[0].pos + m.Groups[1].Index, val = m.Groups[1].Value, context = matches[0].context + "[" + m.Groups["tag"].Value + "]" });
+                else
+                {
+                    var matches_data = Regex.Matches(matches[0].val, pattern_data);
+                    foreach (Match m in matches_data) if (!Regex.IsMatch(m.Groups[1].Value, "^\\s*$")) ts.Add(new TranslationSubstring(m.Groups[1].Value,matches[0].context,file.id,m.Groups[1].Value, matches[0].pos + m.Groups[1].Index));
+                }
+                matches.RemoveAt(0);
+            }
+            _logger.WriteLn("Parser: " + string.Format("Парсер 'xml'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
+            return ts;
+        }
+
+        /// <summary>
         /// Функция-парсер файлов с расширением 'php'
         /// </summary>
         /// <param name="file">Файл для распарсивания</param>
