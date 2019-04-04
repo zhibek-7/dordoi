@@ -66,22 +66,13 @@ namespace Localization.WebApi
         /// <param name="workType">Тип работы - перевод и редактура</param>
         /// <param name="initialFolderId">ID начальной папки</param>
         /// <returns>Файл Report.xlsx</returns>
-        //[Authorize]  //TODO нужно переделать, в текущем варинате не работает авторизация
+        [Authorize]
         [HttpPost]
         [Route("TranslatedWordsExcel")]
-        public FileResult GetTranslatedWordsReportExcel(
-            Guid projectId,
-            string start,
-            string end,
-            bool volumeCalcType,
-            bool calcBasisType,
-            Guid userId,
-            Guid localeId,
-            string workType,
-            Guid initialFolderId)
+        public FileResult GetTranslatedWordsReportExcel([FromBody] reportParamsDTO body)
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport(Settings.GetStringDB());
-            List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(projectId, DateTime.Parse(start), DateTime.Parse(end), userId, localeId, volumeCalcType, calcBasisType).ToList();
+            List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(body.projectId, DateTime.Parse(body.start), DateTime.Parse(body.end), body.userId, body.localeId, body.volumeCalcType, body.calcBasisType).ToList();
 
             FileResult res;
 

@@ -19,6 +19,8 @@ import {
 } from "@angular/material";
 import { NgxDaterangepickerMd } from "ngx-daterangepicker-material";
 
+import { NgxSpinnerModule } from "ngx-spinner";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import { NgxDaterangepickerMd } from "ngx-daterangepicker-material";
     MatSelectModule,
     MatIconModule,
     MatButtonModule,
-    NgxDaterangepickerMd.forRoot()
+    NgxDaterangepickerMd.forRoot(),
+    NgxSpinnerModule
   ],
   exports: [],
   providers: [

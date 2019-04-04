@@ -1,6 +1,6 @@
 //import { Params } from "@angular/router";
 import { Injectable } from "@angular/core";
-import { HttpClient,  HttpHeaders } from "@angular/common/http";
+import { HttpClient,  HttpHeaders, HttpParams } from "@angular/common/http";
 import { TranslatedWordsReportRow } from "../models/Reports/TranslatedWordsReportRow";
 import { Observable } from "rxjs";
 import { Guid } from 'guid-typescript';
@@ -48,7 +48,7 @@ export class ReportService {
     );
   }
 
-  async getTranslatedWordsReportExcel(
+  getTranslatedWordsReportExcel(
     projectId: Guid,
     start: string,
     end: string,
@@ -58,34 +58,29 @@ export class ReportService {
     localeId: Guid,
     workType: string,
     initialFolderId: Guid
-  ) {
+    ): Observable<Blob> {
+
     //TODO убрать дубляж кода в заполнении параметров
-    let paramsObject = "projectId=" + projectId;
-    paramsObject += "&start=" + start;
-    paramsObject += "&end=" + end;
-    if (volumeCalcType && volumeCalcType != "") {
-      paramsObject += "&volumeCalcType=" + volumeCalcType;
-    }
-    if (calcBasisType && calcBasisType != "") {
-      paramsObject += "&calcBasisType=" + calcBasisType;
-    }
-    if (workType && workType != "") {
-      paramsObject += "&workType=" + workType;
-    }
-
-    paramsObject += "&userId=" + userId;
-    paramsObject += "&localeId=" + localeId;
-    paramsObject += "&initialFolderId=" + initialFolderId;
-
-    console.log(paramsObject);
-
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    //TODO нужно переделать, авторизация не работает
-    a.setAttribute("style", "display: none");
-    a.href = this.url + "TranslatedWordsExcel?" + paramsObject;
-
-    a.click();
-    a.remove(); // remove the element
+      
+    const body = {
+      projectId: projectId,
+      start: start,
+      end: end,
+      volumeCalcType: volumeCalcType,
+      calcBasisType: calcBasisType,
+      workType: workType,
+      userId: userId,
+      localeId: localeId,
+      initialFolderId: initialFolderId
+    };
+      
+      return this.httpClient.post(this.url + "TranslatedWordsExcel", body,
+      {
+        headers: new HttpHeaders().set(
+          "Authorization",
+          "Bearer " + sessionStorage.getItem("userToken")
+        ),
+        responseType: "blob"
+      });
   }
 }

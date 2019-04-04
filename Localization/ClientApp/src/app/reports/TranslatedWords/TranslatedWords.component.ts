@@ -14,6 +14,9 @@ import { LocalizationProject } from "../../models/database-entities/localization
 
 import { MatTableDataSource } from "@angular/material";
 
+import { saveAs } from "file-saver";
+import { NgxSpinnerService } from "ngx-spinner";
+
 import { Moment } from "moment";
 import * as moment from "moment";
 import { Guid } from 'guid-typescript';
@@ -31,7 +34,8 @@ export class TranslatedWordsComponent implements OnInit {
     private languagesService: LanguageService,
     private userService: UserService,
     private fileService: FileService,
-    private projectsService: ProjectsService
+    private projectsService: ProjectsService,
+    private ngxSpinnerService: NgxSpinnerService
   ) {
     //this.selected.from = moment();
     //this.selected.to = moment();
@@ -157,9 +161,11 @@ export class TranslatedWordsComponent implements OnInit {
     this.setHeaderMsg();
   }
 
+  //async
   download() {
     console.log("--report getTranslatedWordsReportExcel-");
 
+    this.ngxSpinnerService.show();
     this.reportService.getTranslatedWordsReportExcel(
       this.project.id,
       this.selected.from.format("DD.MM.YYYY"),
@@ -170,6 +176,12 @@ export class TranslatedWordsComponent implements OnInit {
       this.localeId,
       this.work_Type,
       this.initialFolderId
+    ).subscribe(
+      data => {
+        saveAs(data, "report.xlsx");
+        this.ngxSpinnerService.hide();
+      },
+      error => console.error(error, "Ошибка загрузки report.xlsx")
     );
   }
 }
