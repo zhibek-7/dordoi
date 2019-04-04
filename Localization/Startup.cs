@@ -146,8 +146,9 @@ namespace Localization
                 {
                     var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
                     var unhandledException = errorFeature?.Error;
-                    this._exceptionLog.WriteLn("Localization web app unhandled exception.", unhandledException);
+
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    this._exceptionLog.WriteLn("----->ERROR Не обработканная ошибка: {" + (int)HttpStatusCode.InternalServerError + "} " + unhandledException.Message, unhandledException);
 
                     using (var streamWriter = new System.IO.StreamWriter(context.Response.Body))
                     {

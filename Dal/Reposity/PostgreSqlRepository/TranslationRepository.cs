@@ -527,6 +527,7 @@ namespace DAL.Reposity.PostgreSqlRepository
         {
 
 
+            //TODO полный запрос, тут загвозка в том, что память переводов подключаеться из все проектов где работает пользователь, а это не так
             var query = @"select*
             from(select substring_to_translate as translation_text, similarity(substring_to_translate, @TranslationSubstringText) as similarity, files.name_text as file_owner_name,
             translations.translated as translation_variant
@@ -543,7 +544,6 @@ namespace DAL.Reposity.PostgreSqlRepository
             and substring_to_translate % @TranslationSubstringText
             and translation_substrings.id != @TranslationSubstringId
             and translations.id_locale = @localeId)
-
             union
                 select substring_to_translate as translation_text, similarity(substring_to_translate, @TranslationSubstringText) as similarity, tm.name_text as file_owner_name,
             translations.translated as translation_variant
@@ -558,13 +558,13 @@ namespace DAL.Reposity.PostgreSqlRepository
             on tm.id = lptm.id_translation_memory
             inner join participants as p
             on lptm.id_localization_project = p.id_localization_project
-
-            where(
+            where
                 p.id_user = @UserId
             and substring_to_translate % @TranslationSubstringText
             and translation_substrings.id != @TranslationSubstringId
-            and translations.id_locale = @localeId)) as t
-                order by  t.similarity desc";
+            and translations.id_locale = @localeId
+             and lptm.id_localization_project = @ProjectId
+) as t order by  t.similarity desc";
 
 
             //var query = "SELECT substring_to_translate AS translation_text, similarity(substring_to_translate, @TranslationSubstringText) AS similarity, " +
