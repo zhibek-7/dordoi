@@ -35,6 +35,10 @@ export class TranslationComponent implements OnInit, OnDestroy {
   phraseForTranslate: TranslationSubstring;
   translatedPhrase: Translation;
 
+  images: Image[];
+
+  changingTranslation: boolean = false;
+
   constructor(
     private sharePhraseService: SharePhraseService,
     private shareTranslatedPhraseService: ShareTranslatedPhraseService,
@@ -48,17 +52,31 @@ export class TranslationComponent implements OnInit, OnDestroy {
     // Событие, срабатываемое при выборе фразы для перевода
     this.sharePhraseService.onClick.subscribe(pickedPhrase => {
       this.phraseForTranslate = pickedPhrase;
-      this.translatedText = null;
+      this.translatedText = null;      
 
       this.loadImages(pickedPhrase.id);
+      this.cancelChangeingTranslation();
     });
-  }
 
-  images: Image[];
+    // Событие, происходящие при клике на фразу из списков предложенных вариантов(для каждой из всех трех вкладок)
+    this.shareTranslatedPhraseService.onClickTranslation.subscribe(pickedTranslation => {    
+      this.cancelChangeingTranslation();
+    
+      this.translatedText = pickedTranslation.translation_variant;
+    });
+
+    // Событие, происходящие при клике на уже существующий вариант перевода
+    this.shareTranslatedPhraseService.onClickCurrentTranslation.subscribe(pickedTranslation => {
+      this.translatedText = pickedTranslation.translated;
+      this.translatedPhrase = pickedTranslation;
+
+      this.changingTranslation = true;
+    })
+
+  }
 
   //Действия при двойном клике по слову
   openSelectionDialog(event) {
- console.log("openSelectionDialog");
     let selectedWord;
     if (window.getSelection) {
       selectedWord = window.getSelection();
@@ -134,10 +152,6 @@ export class TranslationComponent implements OnInit, OnDestroy {
     alert("Импортируем файл");
   }
 
-  thisIsAtest() {
-    alert("magic");
-  }
-
   // Событие, срабатывающее при сохранении изменений в модальном окне
   enterContext(changedTranslationSubstring: TranslationSubstring) {
     this.phraseForTranslate.context = changedTranslationSubstring.context;
@@ -153,7 +167,8 @@ export class TranslationComponent implements OnInit, OnDestroy {
   }
 
   // Сохранить вариант перевода
-  async submitTranslate() {
+  async submitTranslate() {    
+
     this.translatedPhrase = new Translation(
       this.translatedText,
       this.phraseForTranslate.id,
@@ -208,5 +223,20 @@ export class TranslationComponent implements OnInit, OnDestroy {
       ShowImageModalComponent,
       dialogConfig
     );
+  }
+
+  changeTranslation(){
+    this.translatedPhrase.translated = this.translatedText;    
+
+    this.translationService.updateTranslation(this.translatedPhrase)
+                .subscribe();
+
+    this.cancelChangeingTranslation();
+  }
+
+  cancelChangeingTranslation(){
+    this.translatedText = null;
+    this.translatedPhrase = null;
+    this.changingTranslation = false;
   }
 }

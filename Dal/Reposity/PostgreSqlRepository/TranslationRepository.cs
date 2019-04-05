@@ -193,14 +193,15 @@ namespace DAL.Reposity.PostgreSqlRepository
                 {
                     var updateTranslationSql =
                         "UPDATE translations SET " +
-                        "id_string=@ID_String, " +
-                        "translated=@Translated, " +
-                        "confirmed=@Confirmed, " +
-                        "id_user=@ID_User, " +
-                        "datetime=@DateTime, " +
-                        "id_locale=@ID_Locale, " +
+                        "id_string = @ID_String, " +
+                        "translated = @Translated, " +
+                        "confirmed = @Confirmed, " +
+                        "selected = @Selected," +
+                        "id_user = @ID_User, " +
+                        "datetime = @DateTime, " +
+                        "id_locale = @ID_Locale, " +
                         "status = @Status " +
-                        "WHERE id=@id";
+                        "WHERE id = @Id";
                     //var updateTranslationParam = item;
 
                     var status = 0;
@@ -223,7 +224,8 @@ namespace DAL.Reposity.PostgreSqlRepository
                         ID_User = item.ID_User,
                         DateTime = item.DateTime,
                         ID_Locale = item.ID_Locale,
-                        Status = status
+                        Status = status,
+                        Id = item.id
                     };
                     this.LogQuery(updateTranslationSql, updateTranslationParam.GetType(), updateTranslationParam);
                     await dbConnection.ExecuteAsync(
@@ -611,7 +613,7 @@ namespace DAL.Reposity.PostgreSqlRepository
             Guid localeId)
         {
             var query = "SELECT " +
-                        "translations.translated AS translation_text, " +
+                        "translations.translated AS translation_variant, " +
                         "locales.name_text AS locale_name_text " +
                         "FROM files " +
                         "INNER JOIN translation_substrings ON translation_substrings.id_file_owner = files.id " +

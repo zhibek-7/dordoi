@@ -10,7 +10,7 @@ namespace Models.DatabaseEntities.PartialEntities.Translation
         /// <summary>
         /// Текст для перевода
         /// </summary>
-        public string translation_text { get; set; }
+        public string translation_variant { get; set; }
 
         /// <summary>
         /// Название языка перевода

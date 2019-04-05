@@ -14,6 +14,7 @@ import { TranslationWithLocaleText } from "../../localEntites/translations/trans
 import { Guid } from "guid-typescript";
 // import 'jquery-ui/ui/widgets/tabs.js';
 import * as $ from "jquery";
+import { transition } from "@angular/animations";
 
 @Component({
   selector: "languages-component",
@@ -29,7 +30,7 @@ export class LanguagesComponent implements OnInit {
 
   listOfTranslationsInOtherLanguages: TranslationWithLocaleText[];
 
-  newTranslation: Translation;
+  // newTranslation: Translation;
 
   searchByMemoryText: string = "";
 
@@ -66,27 +67,17 @@ export class LanguagesComponent implements OnInit {
     // Событие, срабатываемое при выборе фразы для перевода
     this.sharePhraseService.onClick.subscribe(pickedPhrase => {
       this.searchByMemoryText = null;
-
-      // переключает TabBar на вкладку "Предложения языка" при смене слова для перевода
-      let activeTab = $(".languagesOptionsBlock .nav-tabs .active").attr(
-        "href"
-      );
-
-      if (activeTab != "#nav-offers") {
-        $("a[href='" + activeTab + "']")
-          .removeClass("active show")
-          .attr("aria-selected", false);
-        $(activeTab).removeClass("active show");
-      }
-      $("a[href='#nav-offers']")
-        .addClass("active show")
-        .attr("aria-selected", true);
-      $("#nav-offers").addClass("active show");
+      
+      this.changeTabBarOnNavOffers();
     });
 
     // Событие, срабатываемое при введении варианта перевода
     this.shareTranslatedPhraseService.onSumbit.subscribe(translation =>
-      this.listOfTranslations.push(translation)
+      {
+        this.listOfTranslations.push(translation);
+
+        this.changeTabBarOnNavOffers();
+      }
     );
 
     // Событие, срабатываемое при поиске слова по памяти переводов из модального окна
@@ -114,6 +105,24 @@ export class LanguagesComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  // переключает TabBar на вкладку "Предложения языка" при смене слова для перевода
+  changeTabBarOnNavOffers(){
+let activeTab = $(".languagesOptionsBlock .nav-tabs .active").attr(
+        "href"
+      );
+
+      if (activeTab != "#nav-offers") {
+        $("a[href='" + activeTab + "']")
+          .removeClass("active show")
+          .attr("aria-selected", false);
+        $(activeTab).removeClass("active show");
+      }
+      $("a[href='#nav-offers']")
+        .addClass("active show")
+        .attr("aria-selected", true);
+      $("#nav-offers").addClass("active show");
+  }
 
   // Предоставляет доступ к финальному подтверждению перевода только пользователю с ролью "Менеджер" и "Владелец проекта"
   checkAccessToSelectTranslation(): boolean {
@@ -254,6 +263,7 @@ export class LanguagesComponent implements OnInit {
       });
   }
 
+  // Поиск вариантов перевода данной фразы на других языках
   findTranslationsInOtherLanguages() {
     let phraseForTranslation = this.sharePhraseService.getSharedPhrase();
     let currentProjectId = this.projectService.currentProjectId;
@@ -297,4 +307,15 @@ export class LanguagesComponent implements OnInit {
 
     this.searchByMemoryText = null;
   }
+
+  // Событие, происходящие при клике на фразу из списков предложенных вариантов(для каждой из всех трех вкладок)
+  chooseClickedTranslation(similarTranslation: SimilarTranslation | TranslationWithLocaleText | TranslationWithFile){
+    this.shareTranslatedPhraseService.submitClickedTranslation(similarTranslation);
+  }
+
+  // Событие, происходящие при клике на уже существующий вариант перевода
+  chooseTranslationFromCurrentTranslations(pickedTranlsation: Translation){
+    this.shareTranslatedPhraseService.submitClickOnCurrentTranslation(pickedTranlsation);
+  }
+
 }

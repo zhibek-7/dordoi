@@ -43,11 +43,12 @@ export class PhrasesComponent implements OnInit {
   }
 
   // Получение всех фраз для перевода
-  async getStrings() {
+  async getStrings() {    
     this.phrasesList = await this.stringService
       .getStringsInFile(this.fileId, this.localeId)
       .toPromise();
     this.countPages();
+    console.log(this.phrasesOnPages);
   }
 
   // Расчет кол-ва страниц с фразами для перевода

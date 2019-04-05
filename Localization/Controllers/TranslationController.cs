@@ -284,34 +284,16 @@ namespace Localization.WebApi
             return Ok();
         }
 
-
-
-        public class Translation2
-        {
-            public Guid id { get; set; }
-        }
-
         /// <summary>
         /// Обновить вариант перевода
-        /// </summary>
-        /// <param name="translationId">id варианта перевода, который нужно обновить</param>
-        /// <param name="updatedTranslation">вариант перевода с обновленными данными</param>
+        /// </summary>       
         /// <returns></returns>
-        [HttpPut("{translationId}")]
+        [HttpPut("ChangeTranslation")]
         [Authorize]
-        public async Task<IActionResult> UpdateTranslation(Guid translationId, [FromBody] Translation2 updatedTranslation)
+        public async Task<IActionResult> UpdateTranslation([FromBody] Translation updatedTranslation)
         {
-            Translation updatedTranslation3 = null;
-            updatedTranslation3.ID_User = (Guid)userRepository.GetID(User.Identity.Name);
-
-            updatedTranslation3.id = translationId;
-            updatedTranslation3.ID_User = this.userRepository.GetID(this.User.Identity.Name).Value;
-            updatedTranslation3.User_Name = this.User.Identity.Name;
-
-            var updatedSuccessfuly = await translationRepository.UpdateAsync(updatedTranslation3);
-            if (!updatedSuccessfuly)
-                return this.BadRequest();
-            _userActionRepository.AddUpdateTranslationActionAsync((Guid)userRepository.GetID(User.Identity.Name), User.Identity.Name, null, translationId, updatedTranslation3.ID_String, updatedTranslation3.ID_Locale);
+            await translationRepository.UpdateAsync(updatedTranslation);
+            
             return this.Ok();
         }
 

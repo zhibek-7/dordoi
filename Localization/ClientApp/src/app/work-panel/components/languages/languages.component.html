@@ -20,33 +20,33 @@
         <div *ngIf="checkNumberOfTranslations()">
           <ul class="list-group list-group-flush">
             <li class="list-group-item list-group-item-action" *ngFor="let translation of listOfTranslations">
-              <div class="row">
-                <div class="col-sm-1"><img class="userIcon" src="../../../assets/svg/011-user.svg"></div>
-                <div class="col-sm-11 align-self-start translatedText">{{translation.translated}}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-3 col-4">{{translation.dateTime | date: 'd.MM.yyyy H:m'}}</div>
-                <div class="col-sm-6 userLogin">
-                  {{ translation.user_Name }}
+              <div (click)="chooseTranslationFromCurrentTranslations(translation)">
+                <div class="row" >
+                  <div class="col-sm-1"><img class="userIcon" src="../../../assets/svg/011-user.svg"></div>
+                  <div class="col-sm-11 align-self-start translatedText">{{translation.translated}}</div>
                 </div>
-
-                <div class="col-sm-1"><input type="checkbox" class="form-check-input"
-                    [(ngModel)]="translation.confirmed" (change)="changeTranslation(translation)">
-                </div>
-                <div class="col-sm-1">
-                  <div *ngIf="!finalTranslationSelected || translation.selected">
-                    <div *ngIf="checkAccessToSelectTranslation()"> <input type="checkbox" class="form-check-input"
-                        [(ngModel)]="translation.selected" (change)="changeSelectedTranslation(translation)"> </div>
+                <div class="row">
+                  <div class="col-sm-3 col-4">{{translation.dateTime | date: 'd.MM.yyyy H:m'}}</div>
+                  <div class="col-sm-6 userLogin">
+                    {{ translation.user_Name }}
+                  </div>
+  
+                  <div class="col-sm-1"><input type="checkbox" class="form-check-input"
+                      [(ngModel)]="translation.confirmed" (change)="changeTranslation(translation)">
+                  </div>
+                  <div class="col-sm-1">
+                    <div *ngIf="!finalTranslationSelected || translation.selected">
+                      <div *ngIf="checkAccessToSelectTranslation()"> <input type="checkbox" class="form-check-input"
+                          [(ngModel)]="translation.selected" (change)="changeSelectedTranslation(translation)"> </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div *ngIf="!translation.selected && !translation.confirmed"><img
+                        (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon"
+                        src="../../../assets/icons/main/bin.png"></div>
                   </div>
                 </div>
-                <div class="col-sm-1">
-                  <div *ngIf="!translation.selected && !translation.confirmed"><img
-                      (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon"
-                      src="../../../assets/icons/main/bin.png"></div>
-                </div>
-              </div>
-
-
+              </div>              
             </li>
           </ul>
         </div>
@@ -62,7 +62,7 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item list-group-item-action"
               *ngFor="let similarTranslation of listOfSimilarTranslations">
-              <div class="row offersBlock">
+              <div class="row offersBlock" (click)="chooseClickedTranslation(similarTranslation)">
                 <div class="col-12 ">
                   <div class="align-self-start translatedText">
                     {{similarTranslation.translation_variant}}
@@ -92,8 +92,8 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item list-group-item-action"
               *ngFor="let translation of listOfTranslationsInOtherLanguages">
-              <div>
-                <div>{{translation.translation_Text}}</div>
+              <div (click)="chooseClickedTranslation(translation)">
+                <div>{{translation.translation_variant}}</div>
                 <div class="fileDescription">{{translation.locale_name_text}}</div>
               </div>
             </li>
@@ -119,11 +119,11 @@
           </div>
           <div *ngIf="checkNumberOfTranslationsByMemory()">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item list-group-item-action" *ngFor="let translation of listOfTranslationsByMemory">
-                <div>
-                  <div>{{translation.translation_text}}</div>
-                  <div>{{translation.translation_variant}}</div>
-                  <div class="fileDescription">{{translation.file_owner_name}}</div>
+              <li class="list-group-item list-group-item-action" *ngFor="let translationByMemory of listOfTranslationsByMemory">
+                <div (click)="chooseClickedTranslation(translationByMemory)">
+                  <div>{{translationByMemory.translation_text}}</div>
+                  <div>{{translationByMemory.translation_variant}}</div>
+                  <div class="fileDescription">{{translationByMemory.file_owner_name}}</div>
                 </div>
               </li>
             </ul>

@@ -42,12 +42,6 @@ export class TranslationService {
       .post<Translation[]>(this.url + "/InStringWithLocale/", params)
       .toPromise();
 
-//    console.log(
-//      "getAllTranslationsInStringByIdAndLocale=" + translations[0].translated
-//    );
-//    console.log(
-//      "getAllTranslationsInStringByIdAndLocale 2=" + translations[0].id
-//    );
     return translations;
   }
 
@@ -81,33 +75,8 @@ export class TranslationService {
       .toPromise();
   }
 
-  updateTranslation(updatedTranslation: Translation): Observable<Object> {
-    //let body: any ={};
-    //body.text= updatedTranslation;
-    /*
-    let body: any = updatedTranslation;
-    const t: Translation = new Translation(
-      updatedTranslation.Translated,
-      updatedTranslation.ID_String,
-      updatedTranslation.ID_Locale,
-      updatedTranslation.id
-    );
-
-    t.id = null; //updatedTranslation.id;
-    t.ID_String = null; // updatedTranslation.ID_String;
-    t.Translated = updatedTranslation.Translated;
-    t.Confirmed = updatedTranslation.Confirmed;
-    t.ID_User = null; // updatedTranslation.ID_User;
-    t.User_Name = updatedTranslation.User_Name;
-    t.DateTime = updatedTranslation.DateTime;
-    t.ID_Locale = null; //updatedTranslation.ID_Locale;
-    t.Selected = updatedTranslation.Selected;
-    */
-
-    let t: Translation2 = new Translation2(Guid.createEmpty());
-    //t.id = Guid.createEmpty();
-
-    return this.http.put(this.url + "/" + updatedTranslation.id, t);
+  updateTranslation(updatedTranslation: Translation): Observable<Object> {     
+    return this.http.put(this.url + "/ChangeTranslation", updatedTranslation)   
   }
 
   findTranslationByMemory(

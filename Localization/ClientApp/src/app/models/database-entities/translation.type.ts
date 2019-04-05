@@ -19,4 +19,5 @@ export class Translation {
     this.dateTime = new Date(Date.now());
     this.iD_Locale = id_locale;
   }
+  
 }
