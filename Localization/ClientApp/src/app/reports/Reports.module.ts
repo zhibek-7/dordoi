@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http"; //HTTP_INTERCEPTORS
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http"; //HTTP_INTERCEPTORS
 //import { RequestInterceptorService } from "src/app/services/requestInterceptor.service";
 
 import { ReportsRoutingModule } from "./Reports-routing.module";
@@ -10,6 +10,7 @@ import { TranslatedWordsComponent } from "./TranslatedWords/TranslatedWords.comp
 import { ReportService } from "../services/reports.service";
 import { LanguageService } from "../services/languages.service";
 import { UserService } from "../services/user.service";
+import { TypeOfServiceService } from "../services/type-of-service.service";
 import {
   MatIconModule,
   MatTableModule,
@@ -20,6 +21,7 @@ import {
 import { NgxDaterangepickerMd } from "ngx-daterangepicker-material";
 
 import { NgxSpinnerModule } from "ngx-spinner";
+import { RequestInterceptorService } from "../services/requestInterceptor.service";
 
 @NgModule({
   imports: [
@@ -39,12 +41,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
   providers: [
     ReportService,
     LanguageService,
-    UserService
-    //{
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: RequestInterceptorService,
-    //   multi: true
-    //  }
+    UserService,
+    TypeOfServiceService,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptorService, multi: true }
   ],
   declarations: [ReportsComponent, TranslatedWordsComponent]
 })

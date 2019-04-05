@@ -4,6 +4,12 @@ import { HttpClient,  HttpHeaders, HttpParams } from "@angular/common/http";
 import { TranslatedWordsReportRow } from "../models/Reports/TranslatedWordsReportRow";
 import { Observable } from "rxjs";
 import { Guid } from 'guid-typescript';
+
+
+import { Locale } from "../models/database-entities/locale.type";
+import { User } from "../models/database-entities/user.type";
+import { TypeOfServiceForSelectDTO } from '../models/DTO/typeOfServiceForSelectDTO.type';
+
 @Injectable()
 export class ReportService {
   private url: string = "api/Report/";
@@ -20,9 +26,9 @@ export class ReportService {
     end: string,
     volumeCalcType: string,
     calcBasisType: string,
-    userId: Guid,
-    localeId: Guid,
-    workType: string,
+    user: User,
+    locale: Locale,
+    workType: TypeOfServiceForSelectDTO,
     initialFolderId: Guid
   ): Observable<TranslatedWordsReportRow[]> {
     const body = {
@@ -32,8 +38,8 @@ export class ReportService {
       volumeCalcType: volumeCalcType,
       calcBasisType: calcBasisType,
       workType: workType,
-      userId: userId,
-      localeId: localeId,
+      user: user,
+      locale: locale,
       initialFolderId: initialFolderId
     };
     return this.httpClient.post<TranslatedWordsReportRow[]>(
@@ -54,9 +60,9 @@ export class ReportService {
     end: string,
     volumeCalcType: string,
     calcBasisType: string,
-    userId: Guid,
-    localeId: Guid,
-    workType: string,
+    user: User,
+    locale: Locale,
+    workType: TypeOfServiceForSelectDTO,
     initialFolderId: Guid
     ): Observable<Blob> {
 
@@ -69,8 +75,8 @@ export class ReportService {
       volumeCalcType: volumeCalcType,
       calcBasisType: calcBasisType,
       workType: workType,
-      userId: userId,
-      localeId: localeId,
+      user: user,
+      locale: locale,
       initialFolderId: initialFolderId
     };
       

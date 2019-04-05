@@ -5,12 +5,14 @@ import { LanguageService } from "../../services/languages.service";
 import { UserService } from "../../services/user.service";
 import { FileService } from "../../services/file.service";
 import { ProjectsService } from "../../services/projects.service";
+import { TypeOfServiceService } from '../../services/type-of-service.service';
 
 import { TranslatedWordsReportRow } from "../../models/Reports/TranslatedWordsReportRow";
 import { Locale } from "../../models/database-entities/locale.type";
 import { File } from "../../models/database-entities/file.type";
 import { User } from "../../models/database-entities/user.type";
 import { LocalizationProject } from "../../models/database-entities/localizationProject.type";
+import { TypeOfServiceForSelectDTO } from '../../models/DTO/typeOfServiceForSelectDTO.type';
 
 import { MatTableDataSource } from "@angular/material";
 
@@ -35,35 +37,59 @@ export class TranslatedWordsComponent implements OnInit {
     private userService: UserService,
     private fileService: FileService,
     private projectsService: ProjectsService,
+    private typeOfServiceService: TypeOfServiceService,
     private ngxSpinnerService: NgxSpinnerService
   ) {
     //this.selected.from = moment();
     //this.selected.to = moment();
   }
 
+  //#region Init
+
   ngOnInit() {
     console.log("--report ngOnInit-");
+    this.loadLanguages();
+    this.loadTypeOfServices();
+    this.loadUsers();
+    this.loadFolders();
+    this.loadProject();
+  }
+
+  loadLanguages() {
     this.languagesService.getLanguageList().subscribe(
       Languages => {
         this.Languages = Languages;
       },
       error => console.error(error)
     );
+  }
 
+  loadTypeOfServices() {
+    this.typeOfServiceService.getAllForSelect().subscribe(
+      typeOfServices => this.WorkTypes = typeOfServices,
+      error => console.log(error)
+    );
+  }
+
+  loadUsers() {
     this.userService.getUserList().subscribe(
       Users => {
         this.Users = Users;
       },
       error => console.error(error)
     );
+  }
 
+  loadFolders() {
     this.fileService.getInitialProjectFolders(this.projectId).subscribe(
       folders => {
         this.Folders = folders;
       },
       error => console.error(error)
     );
+  }
 
+  loadProject() {
     this.projectsService.getProject(this.projectId).subscribe(
       project => {
         this.project = project;
@@ -74,6 +100,8 @@ export class TranslatedWordsComponent implements OnInit {
       error => console.error(error)
     );
   }
+
+  //#endregion
 
   public project: LocalizationProject;
 
@@ -86,6 +114,8 @@ export class TranslatedWordsComponent implements OnInit {
   public Users: User[];
   //Список папок проекта
   public Folders: File[];
+  //Список типа услуг
+  public WorkTypes: TypeOfServiceForSelectDTO[];
 
   //Название отчета
   msg: string = "Отчет";
@@ -95,9 +125,9 @@ export class TranslatedWordsComponent implements OnInit {
   userLang: string;
 
   //Переменные для выборки
-  userId: Guid;
-  localeId: Guid;
-  work_Type: string = "Все";
+  user: User;
+  locale: Locale;
+  workType: TypeOfServiceForSelectDTO;// = "Все";
   volumeCalcType: string = "false"; //переделать название переменной
   calcBasisType: string = "true"; //переделать название переменной
   initialFolderId: Guid;
@@ -115,6 +145,7 @@ export class TranslatedWordsComponent implements OnInit {
     "translations"
   ];
 
+
   async getRows() {
     console.log("--report getRows-");
     this.reportService
@@ -124,9 +155,9 @@ export class TranslatedWordsComponent implements OnInit {
         this.selected.to.format("DD.MM.YYYY"),
         this.volumeCalcType,
         this.calcBasisType,
-        this.userId,
-        this.localeId,
-        this.work_Type,
+        this.user,
+        this.locale,
+        this.workType,
         this.initialFolderId
       )
       .subscribe(
@@ -164,6 +195,9 @@ export class TranslatedWordsComponent implements OnInit {
   //async
   download() {
     console.log("--report getTranslatedWordsReportExcel-");
+    console.log(this.locale);
+    let t = <Locale>this.locale;
+    console.log(t);
 
     this.ngxSpinnerService.show();
     this.reportService.getTranslatedWordsReportExcel(
@@ -172,16 +206,16 @@ export class TranslatedWordsComponent implements OnInit {
       this.selected.to.format("DD.MM.YYYY"),
       this.volumeCalcType,
       this.calcBasisType,
-      this.userId,
-      this.localeId,
-      this.work_Type,
+      this.user,
+      this.locale,
+      this.workType,
       this.initialFolderId
     ).subscribe(
       data => {
-        saveAs(data, "report.xlsx");
+        saveAs(data, "Report.xlsx");
         this.ngxSpinnerService.hide();
       },
-      error => console.error(error, "Ошибка загрузки report.xlsx")
+      error => console.error(error, "Ошибка загрузки Report.xlsx")
     );
   }
 }

@@ -13,26 +13,27 @@
     <div classs="div_bg">
       <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
         <mat-label>Пользователь</mat-label>
-        <mat-select [(value)]="userId" placeholder="Пользователь" style=" color: green;padding: 2px">
+        <mat-select [(value)]="user" placeholder="Пользователь" style=" color: green;padding: 2px">
           <mat-option value="-1" selected>Все пользователи</mat-option>
-          <mat-option *ngFor="let u of Users" value="{{u.id}}">"{{u.name_text}}"</mat-option>
+          <mat-option *ngFor="let u of Users" [value]="u">"{{u.name_text}}"</mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
         <mat-label>Язык перевода</mat-label>
-        <mat-select [(value)]="localeId" placeholder="Язык перевода">
+        <mat-select [(value)]="locale" placeholder="Язык перевода">
           <mat-option value="-1" selected>Все языки</mat-option>
-          <mat-option *ngFor="let lang of Languages" value="{{lang.id}}">"{{lang.name_text}}"</mat-option>
+          <mat-option *ngFor="let lang of Languages" [value]="lang">"{{lang.name_text}}"</mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
         <mat-label>Вид работ</mat-label>
         <mat-select [(value)]="workType" placeholder="Вид работы">
-          <mat-option value="Все" selected>Все</mat-option>
-          <mat-option value="Перевод">Перевод</mat-option>
-          <mat-option value="Редактура">Редактура</mat-option>
+          <mat-option value="-1" selected>Все</mat-option>
+          <mat-option *ngFor="let workType of WorkTypes" [value]="workType">"{{workType.name_text}}"</mat-option>
+          <!--<mat-option value="Перевод">Перевод</mat-option>
+          <mat-option value="Редактура">Редактура</mat-option>-->
         </mat-select>
       </mat-form-field>
 

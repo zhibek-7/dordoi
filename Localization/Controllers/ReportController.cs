@@ -5,10 +5,12 @@ using DAL.Reposity.Report;
 using Localization.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Models.DatabaseEntities;
 using Models.DatabaseEntities.Reports;
 using Utilities;
 
 using OfficeOpenXml;
+using Models.DatabaseEntities.DTO;
 
 namespace Localization.WebApi
 {
@@ -23,9 +25,9 @@ namespace Localization.WebApi
             public string end { get; set; }
             public bool volumeCalcType { get; set; }
             public bool calcBasisType { get; set; }
-            public Guid userId { get; set; }
-            public Guid localeId { get; set; }
-            public string workType { get; set; }
+            public User user { get; set; }
+            public Locale locale { get; set; }
+            public TypeOfServiceForSelectDTO workType { get; set; }
             public Guid initialFolderId { get; set; }
         }
 
@@ -50,7 +52,7 @@ namespace Localization.WebApi
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport(Settings.GetStringDB());
             return translatedWords.GetRows(body.projectId, DateTime.Parse(body.start), DateTime.Parse(body.end),
-                body.userId, body.localeId, body.volumeCalcType, body.calcBasisType);
+                body.user.id, body.locale.id, body.volumeCalcType, body.calcBasisType);
         }
 
         /// <summary>
@@ -72,7 +74,8 @@ namespace Localization.WebApi
         public FileResult GetTranslatedWordsReportExcel([FromBody] reportParamsDTO body)
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport(Settings.GetStringDB());
-            List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(body.projectId, DateTime.Parse(body.start), DateTime.Parse(body.end), body.userId, body.localeId, body.volumeCalcType, body.calcBasisType).ToList();
+            List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(body.projectId, DateTime.Parse(body.start), DateTime.Parse(body.end), 
+                body.user.id, body.locale.id, body.volumeCalcType, body.calcBasisType).ToList();
 
             FileResult res;
 
@@ -85,6 +88,20 @@ namespace Localization.WebApi
                 var sheet = eP.Workbook.Worksheets.Add("Report");
 
                 var rowNum = 1;
+
+                //Заголовок
+                sheet.Cells[rowNum, 1].Value = "Отчет по работам";
+                rowNum++;
+
+                //Отображение настроек фильтра
+                sheet.Cells[rowNum, 1].Value = "Диапазон дат: 01-23-2014 – 04-04-2019 /" + body.start + " - " + body.end;
+                //sheet.Cells[rowNum, 1].Value = "Пользователь: " + body.user.id != Guid.Empty ? body.user.Name_text : "Все пользователи";
+                //sheet.Cells[rowNum, 1].Value = "Язык: " + body.locale.id != Guid.Empty ? body.locale.name_text : "Все языки";
+                //sheet.Cells[rowNum, 1].Value = "Вид работ: " + body.workType.id != Guid.Empty ? body.workType.name_text : "Все";
+                //sheet.Cells[rowNum, 1].Value = "Подсчет объема по: " + body.volumeCalcType ? "знакам с пробелами" : "словам";
+                //sheet.Cells[rowNum, 1].Value = "Основа: " + body.calcBasisType ? "язык перевода" : "исходный язык";
+                rowNum++;
+
 
                 // шапка
                 sheet.Cells[rowNum, 1].Value = "Пользователь";
