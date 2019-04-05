@@ -11,6 +11,7 @@ using Utilities;
 
 using OfficeOpenXml;
 using Models.DatabaseEntities.DTO;
+using OfficeOpenXml.Style;
 
 namespace Localization.WebApi
 {
@@ -52,7 +53,7 @@ namespace Localization.WebApi
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport(Settings.GetStringDB());
             return translatedWords.GetRows(body.projectId, DateTime.Parse(body.start), DateTime.Parse(body.end),
-                body.user.id, body.locale.id, body.volumeCalcType, body.calcBasisType);
+                body.user == null ? Guid.Empty : body.user.id, body.locale == null ? Guid.Empty : body.locale.id, body.volumeCalcType, body.calcBasisType);
         }
 
         /// <summary>
@@ -74,8 +75,8 @@ namespace Localization.WebApi
         public FileResult GetTranslatedWordsReportExcel([FromBody] reportParamsDTO body)
         {
             TranslatedWordsReport translatedWords = new TranslatedWordsReport(Settings.GetStringDB());
-            List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(body.projectId, DateTime.Parse(body.start), DateTime.Parse(body.end), 
-                body.user.id, body.locale.id, body.volumeCalcType, body.calcBasisType).ToList();
+            List<TranslatedWordsReportRow> reportRows = translatedWords.GetRows(body.projectId, DateTime.Parse(body.start), DateTime.Parse(body.end),
+                body.user == null ? Guid.Empty : body.user.id, body.locale == null ? Guid.Empty : body.locale.id, body.volumeCalcType, body.calcBasisType).ToList();
 
             FileResult res;
 
@@ -87,35 +88,86 @@ namespace Localization.WebApi
 
                 var sheet = eP.Workbook.Worksheets.Add("Report");
 
+                //Стили ячеек
+                var styleBaseTableLeft = eP.Workbook.Styles.CreateNamedStyle("BaseTableLeft");
+                styleBaseTableLeft.Style.Font.Name = "Arial";
+                styleBaseTableLeft.Style.Font.Size = 10;
+                styleBaseTableLeft.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+
+                var styleBaseTableRight = eP.Workbook.Styles.CreateNamedStyle("BaseTableRight");
+                styleBaseTableRight.Style.Font.Name = "Arial";
+                styleBaseTableRight.Style.Font.Size = 10;
+                styleBaseTableRight.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+
                 var rowNum = 1;
 
                 //Заголовок
                 sheet.Cells[rowNum, 1].Value = "Отчет по работам";
-                rowNum++;
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                sheet.Cells[rowNum, 1].Style.Font.Size = 16;
+                sheet.Cells[rowNum, 1].Style.Font.Bold = true;
+                rowNum += 2;
 
                 //Отображение настроек фильтра
-                sheet.Cells[rowNum, 1].Value = "Диапазон дат: 01-23-2014 – 04-04-2019 /" + body.start + " - " + body.end;
-                //sheet.Cells[rowNum, 1].Value = "Пользователь: " + body.user.id != Guid.Empty ? body.user.Name_text : "Все пользователи";
-                //sheet.Cells[rowNum, 1].Value = "Язык: " + body.locale.id != Guid.Empty ? body.locale.name_text : "Все языки";
-                //sheet.Cells[rowNum, 1].Value = "Вид работ: " + body.workType.id != Guid.Empty ? body.workType.name_text : "Все";
-                //sheet.Cells[rowNum, 1].Value = "Подсчет объема по: " + body.volumeCalcType ? "знакам с пробелами" : "словам";
-                //sheet.Cells[rowNum, 1].Value = "Основа: " + body.calcBasisType ? "язык перевода" : "исходный язык";
+                sheet.Cells[rowNum, 1].Value = "Диапазон дат: " + body.start.Replace('.', '-') + " - " + body.end.Replace('.', '-');
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
                 rowNum++;
+                sheet.Cells[rowNum, 1].Value = "Пользователь: " + (body.user != null ? body.user.Name_text : "Все пользователи");
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                rowNum++;
+                sheet.Cells[rowNum, 1].Value = "Язык: " + (body.locale != null ? body.locale.name_text : "Все языки");
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                rowNum++;
+                sheet.Cells[rowNum, 1].Value = "Вид работ: " + (body.workType != null ? body.workType.name_text : "Все");
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                rowNum++;
+                sheet.Cells[rowNum, 1].Value = "Подсчет объема по: " + (body.volumeCalcType ? "знакам с пробелами" : "словам");
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                rowNum++;
+                sheet.Cells[rowNum, 1].Value = "Основа: " + (body.calcBasisType ? "язык перевода" : "исходный язык");
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                rowNum += 2;
 
 
                 // шапка
-                sheet.Cells[rowNum, 1].Value = "Пользователь";
+                sheet.Cells[rowNum, 1].Value = "Имя пользователя";
+                sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                sheet.Cells[rowNum, 1].Style.Font.Bold = true;
+                sheet.Cells[rowNum, 1].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                 sheet.Cells[rowNum, 2].Value = "Языки";
+                sheet.Cells[rowNum, 2].StyleName = styleBaseTableLeft.Name;
+                sheet.Cells[rowNum, 2].Style.Font.Bold = true;
+                sheet.Cells[rowNum, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                 sheet.Cells[rowNum, 3].Value = "Вид работ";
+                sheet.Cells[rowNum, 3].StyleName = styleBaseTableRight.Name;
+                sheet.Cells[rowNum, 3].Style.Font.Bold = true;
+                sheet.Cells[rowNum, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                 sheet.Cells[rowNum, 4].Value = "Переведено";
+                sheet.Cells[rowNum, 4].StyleName = styleBaseTableRight.Name;
+                sheet.Cells[rowNum, 4].Style.Font.Bold = true;
+                sheet.Cells[rowNum, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
                 foreach (var row in reportRows)
                 {
                     rowNum++;
                     sheet.Cells[rowNum, 1].Value = row.name_text;
+                    sheet.Cells[rowNum, 1].StyleName = styleBaseTableLeft.Name;
+                    sheet.Cells[rowNum, 1].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                     sheet.Cells[rowNum, 2].Value = row.language;
+                    sheet.Cells[rowNum, 2].StyleName = styleBaseTableLeft.Name;
+                    sheet.Cells[rowNum, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                     sheet.Cells[rowNum, 3].Value = row.work_Type;
+                    sheet.Cells[rowNum, 3].StyleName = styleBaseTableRight.Name;
+                    sheet.Cells[rowNum, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
                     sheet.Cells[rowNum, 4].Value = row.translations;
+                    sheet.Cells[rowNum, 4].StyleName = styleBaseTableRight.Name;
+                    sheet.Cells[rowNum, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
 
                     // указываем что в этой ячейке число
                     //sheet.Cells[row, 3].Style.Numberformat.Format = @"#,##0.00_ ;\-#,##0.00_ ;0.00_ ;";
