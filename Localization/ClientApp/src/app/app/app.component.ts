@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { ProjectsService } from "../services/projects.service";
 import { AuthenticationService } from "../services/authentication.service";
+import { Guid } from "guid-typescript";
 
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
 import { UserService } from "src/app/services/user.service";
@@ -15,7 +16,8 @@ import { UserService } from "src/app/services/user.service";
 export class AppComponent implements OnInit {
   projects: LocalizationProject[];
   currentProject: LocalizationProject;
-  name = "";
+  name: string = null;
+  projectid: string = null;
   projectVisibility = false;
 
   userAuthorized: boolean = false;
@@ -24,14 +26,13 @@ export class AppComponent implements OnInit {
     private projectService: ProjectsService,
     private authenticationService: AuthenticationService,
     private router: Router,
-    public usersService: UserService,
+    public usersService: UserService
   ) {
     this.currentUserName = this.usersService.currentUserName;
-}
+  }
 
   ngOnInit() {
-    this.name = sessionStorage.getItem("ProjectName");
-
+    this.getProject();
   }
 
   createNewProject() {
@@ -51,25 +52,35 @@ export class AppComponent implements OnInit {
   getCurrentProject(currentProject: LocalizationProject) {
     this.currentProject = currentProject;
 
-    //this.name_text = currentProject.name_text;
-    console.log(
-      "ProjectName  currentProject.name_text ==" + currentProject.name_text
-    );
-    this.name = this.projectService.currentProjectName;
-    console.log(
-      "ProjectName projectsService.currentProjectName ==" + this.name
-    );
-
     this.projectService.currentProjectId = currentProject.id;
     this.projectService.currentProjectName = currentProject.name_text;
+    this.getProject();
+  }
+
+  projectcleaning() {
+    this.projectService.currentProjectId = Guid.createEmpty();
+    this.projectService.currentProjectName = "";
+  }
+
+  getProject() {
+    this.name = sessionStorage.getItem("ProjectName");
+    this.projectid = sessionStorage.getItem("ProjectID");
+  }
+
+  getProjectName() {
+    return sessionStorage.getItem("ProjectName");
+  }
+
+  getProjectId() {
+    return sessionStorage.getItem("ProjectID");
   }
 
   logOut() {
     this.authenticationService.logOut();
+    this.name = "";
   }
 
   checkAuthorization() {
-
     this.authenticationService.checkUserAuthorisationAsync().subscribe(
       response => {
         this.userAuthorized = response;
