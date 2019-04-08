@@ -169,21 +169,21 @@ namespace Models.Parser
         {
             _logger.WriteLn("Parser: " + string.Format("К файлу {0} применяется парсер для файлов с расширением 'json'", file.name_text));
             var ts = new List<TranslationSubstring>();
-            string pattern = "(,|\\{|\\[|:)\\s*\"((?:[^\r\n\"]|(?<=\\\\)[\r\n\"]|(?<=\r)\n)*)\"(\\s*[\\}\\]])*";
+            var pattern = "\"((?:[^\"]|(?<=\\\\)\")*)\"\\s*(?:(:)(\\s*[\\{|\\[])?|,|((?:[\\}\\]]\\s*)+))";
             var matches = Regex.Matches(file.original_full_text, pattern);
-            List<string> context_parts = new List<string>();
+            var context_parts = new List<string>();
             for (int i = 0; i < matches.Count; i++)
             {
-                bool isContextPart = false;
-                if (matches[i].Groups[1].Value == "{") context_parts.Add(matches[i].Groups[2].Value);
-                if (matches[i].Groups[1].Value == "," && Regex.IsMatch(matches[i + 1].Groups[1].Value, "[:\\{\\[]")) { context_parts.RemoveAt(context_parts.Count - 1); context_parts.Add(matches[i].Groups[2].Value); isContextPart = true; }
-                if (!isContextPart && Regex.IsMatch(matches[i].Groups[1].Value, "[:\\[,]"))
+                if (!matches[i].Groups[2].Success)
                 {
-                    string context = string.Empty;
-                    for (int j = 0; j < context_parts.Count; j++) context += context_parts[j] + "->";
-                    ts.Add(new TranslationSubstring(matches[i].Groups[2].Value, context, file.id, matches[i].Groups[2].Value, matches[i].Groups[2].Index));
+                    Console.WriteLine("{0}\t{1}", BuildContext(context_parts), matches[i].Groups[1].Value);
+                    ts.Add(new TranslationSubstring(matches[i].Groups[1].Value, BuildContext(context_parts), file.id, matches[i].Groups[1].Value, matches[i].Groups[1].Index));
+                    if (i > 0 && matches[i - 1].Groups[2].Success && !matches[i - 1].Groups[3].Success) context_parts.RemoveAt(context_parts.Count - 1);
                 }
-                foreach (var m in Regex.Matches(matches[i].Groups[3].Value, "[\\}\\]]")) context_parts.RemoveAt(context_parts.Count - 1);
+                else
+                    context_parts.Add(matches[i].Groups[1].Value);
+                if (matches[i].Groups[4].Success)
+                    for (int j = 0; j < Regex.Matches(matches[i].Groups[4].Value, "(\\]|\\})").Count && context_parts.Count > 0; j++) context_parts.RemoveAt(context_parts.Count - 1);
             }
             _logger.WriteLn("Parser: " + string.Format("Парсер 'json'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
@@ -614,6 +614,13 @@ namespace Models.Parser
             }
             _logger.WriteLn("Parser: " + string.Format("Парсер 'html'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
+        }
+
+        private static string BuildContext(List<string> parts)
+        {
+            string ans = string.Empty;
+            for (int i = 0; i < parts.Count; i++) ans += string.Format("[{0}]", parts[i]);
+            return ans;
         }
     }
 }
