@@ -217,14 +217,14 @@ namespace Models.Parser
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'csv'", file.name_text));
             var ts = new List<TranslationSubstring>();
-            string pattern = "^\\s*(?!#)(\"(?:\"\"|[^\"])*\"[,;]*)+";
-            string subpattern = "\"(?:\"\"|[^\"])*\"";
+            string pattern = "^\\s*(\"(?:\"\"|[^\"])*\"\\s*[,;]*)+";
+            string subpattern = "\"((?:\"\"|[^\"])*)\"";
             var matches = Regex.Matches(file.original_full_text, pattern, RegexOptions.Multiline);
             foreach (Match m in matches)
             {
                 var matches_sp = Regex.Matches(m.Value, subpattern);
-                if (matches_sp.Count == 2) ts.Add(new TranslationSubstring(matches_sp[0].Value, string.Empty, file.id, matches_sp[1].Value, m.Index + matches_sp[1].Index));
-                if (matches_sp.Count >= 3) ts.Add(new TranslationSubstring(matches_sp[1].Value, matches_sp[0].Value, file.id, matches_sp[2].Value, m.Index + matches_sp[2].Index));
+                if (matches_sp.Count == 2) ts.Add(new TranslationSubstring(matches_sp[0].Groups[1].Value, string.Empty, file.id, matches_sp[1].Groups[1].Value, m.Index + matches_sp[1].Groups[1].Index));
+                if (matches_sp.Count >= 3) ts.Add(new TranslationSubstring(matches_sp[1].Groups[1].Value, matches_sp[0].Groups[1].Value, file.id, matches_sp[2].Groups[1].Value, m.Index + matches_sp[2].Groups[1].Index));
             }
             _logger.WriteLn(string.Format("Парсер 'csv'-файлов обнаружил в файле {0} записей: {1}", file.name_text, ts.Count));
             return ts;
