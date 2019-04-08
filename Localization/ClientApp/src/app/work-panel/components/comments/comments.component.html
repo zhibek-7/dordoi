@@ -22,7 +22,7 @@
                 <div class="oneCommentBlock">
                   <div class="row">
                     <div class="col-6 termName">{{comment.user_name}}</div>
-                    <div class="col-6">{{comment.datetime | date: 'd.M.yyyy H:m'}}</div>
+                    <div class="col-6">{{comment.datetime | date: 'd.M.yyyy HH:mm'}}</div>
                   </div>
                   <div *ngIf="!commentEdited">
                     <div class="row">
