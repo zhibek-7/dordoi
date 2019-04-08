@@ -217,7 +217,7 @@ namespace Models.Parser
         {
             _logger.WriteLn(string.Format("К файлу {0} применяется парсер для файлов с расширением 'csv'", file.name_text));
             var ts = new List<TranslationSubstring>();
-            string pattern = "^\\s*(\"(?:\"\"|[^\"])*\"\\s*[,;]*)+";
+            string pattern = "^[^#].*$";
             string subpattern = "\"((?:\"\"|[^\"])*)\"";
             var matches = Regex.Matches(file.original_full_text, pattern, RegexOptions.Multiline);
             foreach (Match m in matches)
