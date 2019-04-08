@@ -6,24 +6,22 @@ namespace Models.DatabaseEntities
 {
     public class Element
     {
-        //int _id;
-        //string _NodeName;
-        //string _NodeOfValue;
-        //IEnumerable<Attribute> _AttributeName;
-
+        
         public int id { get; set; }
         public string NodeName { get; set; }
         public string NodeOfValue { get; set; }
+        public string NodeOfValue1 { get; set; }
+        public string NodeOfValue2 { get; set; }
         public IEnumerable<Attribute> AttributeName { get; set; }
 
 
-
-
-        public Element(int id, string NodeName, string NodeOfValue, IEnumerable<Attribute> AttributeName)
+        public Element(int id, string NodeName, string NodeOfValue, string NodeOfValue1, string NodeOfValue2, IEnumerable<Attribute> AttributeName)
         {
             this.id = id;
             this.NodeName = NodeName;
             this.NodeOfValue = NodeOfValue;
+            this.NodeOfValue1 = NodeOfValue1;
+            this.NodeOfValue2 = NodeOfValue2;
             this.AttributeName = AttributeName;
         }
 

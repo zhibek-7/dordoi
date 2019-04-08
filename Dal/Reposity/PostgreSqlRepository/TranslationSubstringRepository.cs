@@ -11,6 +11,7 @@ using SqlKata;
 using Models.Interfaces.Repository;
 using Npgsql;
 using System.Text.RegularExpressions;
+using Models.DatabaseEntities.PartialEntities.Translation;
 
 namespace DAL.Reposity.PostgreSqlRepository
 {
@@ -22,7 +23,57 @@ namespace DAL.Reposity.PostgreSqlRepository
         public TranslationSubstringRepository(string connectionString) : base(connectionString)
         {
         }
+        /// <summary>
+        ///  получить часть речи
+        /// </summary>
+        /// <param name="glossaries.id"></param>
+        /// <returns></returns>
 
+        public IEnumerable<TranslationSubstringPartOfSpeech> GetByGlossaryId(Guid glossaryId)
+        {
+            var query = "select gs.id_glossary," +
+             "gs.id_part_of_speech," +
+             "gs.id_string, " +
+             "ts.description as ts_description, " +
+             "ts.substring_to_translate as ts_substring_to_translate, " +
+
+                "t.translated as t_translated, " +
+                 " t.id as t_id, " +
+                   "t.id_locale as t_id_locale, " +
+                    "l.code as l_code " +
+             " from glossaries_strings as gs " +
+             "inner join glossaries as g on g.id=gs.id_glossary  " +
+             "inner join translation_substrings as ts on ts.id = gs.id_string  " +
+
+             "INNER JOIN translations AS t ON   t.id_string =ts.id  " +
+             "inner join locales as l on l.id = t.id_locale " +
+             "where g.id = @glossaryId";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { glossaryId };
+                    this.LogQuery(query, param);
+                    IEnumerable<TranslationSubstringPartOfSpeech> strings = dbConnection.Query<TranslationSubstringPartOfSpeech>(query, param);
+                    return strings;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByGlossaryId)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(TranslationSubstringRepository)}.{nameof(TranslationSubstringRepository.GetByGlossaryId)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
         /// <summary> 
         /// Добавляет новую фразу 
         /// </summary> 

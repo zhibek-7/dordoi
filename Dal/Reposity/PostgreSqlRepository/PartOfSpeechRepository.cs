@@ -40,7 +40,44 @@ namespace DAL.Reposity.PostgreSqlRepository
         //{
         //    throw new NotImplementedException();
         //}
+        public IEnumerable<PartOfSpeech> GetPartOfSpeechByGlossaryId(Guid glossaryId)
+        {
+            var query = "select gs.ID_Glossary, " +
+                "gs.ID_PartOfSpeech," +
+                "gs.ID_String, " +
+                "ps.Name," +
+                "ps.LocaleID," +
+                " from GlossariesStrings as gs" +
+                "inner join Glossaries as g on g.ID = gs.ID_Glossary" +
+                "inner join PartsOfSpeech as ps on ps.ID = gs.ID_PartOfSpeech" +
+                "where g.ID = @glossaryId";
+            try
+            {
 
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id = glossaryId };
+                    this.LogQuery(query, param);
+                    IEnumerable<PartOfSpeech> strings = dbConnection.Query<PartOfSpeech>(query, param);
+                    return strings;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(PartOfSpeechRepository)}.{nameof(PartOfSpeechRepository.GetPartOfSpeechByGlossaryId)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(PartOfSpeechRepository)}.{nameof(PartOfSpeechRepository.GetPartOfSpeechByGlossaryId)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+
+        }
         public IEnumerable<PartOfSpeech> GetByGlossaryId(Guid glossaryId)
         {
             try

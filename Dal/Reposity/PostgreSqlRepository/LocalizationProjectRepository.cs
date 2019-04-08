@@ -21,7 +21,68 @@ namespace DAL.Reposity.PostgreSqlRepository
         public LocalizationProjectRepository(string connectionStr) : base(connectionStr)
         {
         }
+        public localization_projects_glossaries GetByIdProjectAsync(Guid idProj)
+        {
+            var sqlString = "select * from localization_projects_glossaries where id_localization_project=@idProj";
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
 
+
+
+                    var _params = new { idProj };
+                    LogQuery(sqlString, _params);
+                    var local_pr_glossaries = dbConnection.Query<localization_projects_glossaries>(sqlString, _params).FirstOrDefault();
+
+                    return local_pr_glossaries;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByIdProjectAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByIdProjectAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
+        public LocalizationProject GetByID(Guid Id)
+        {
+            // Sql string to select all rows
+            var sqlString = "SELECT * FROM localization_projects WHERE id = @Id";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id };
+                    this.LogQuery(sqlString, param);
+                    var project = dbConnection.Query<LocalizationProject>(sqlString, param).FirstOrDefault();
+                    return project;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.GetByID)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
+        }
 
         public async Task<LocalizationProject> GetByIDAsync(Guid id, Guid? userId)
         {
