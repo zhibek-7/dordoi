@@ -37,6 +37,9 @@ label {
     border-top: 6px solid transparent;
     border-left: 10px solid;
     padding: 0 1px;
+  height: 0.8rem;
+  width: 0.8rem;
+
 }
 .pi-chevron-down {
     display: inline-block;
@@ -44,7 +47,18 @@ label {
     border-right: 6px solid transparent;
     border-top: 10px solid;
     padding: 1px 0;
+  height: 0.8rem;
+  width: 0.8rem;
+
 }
+
+.pi-chevron-right:before {
+content: "";
+}
+.pi-chevron-down:before {
+content: "";
+}
+
 
 .table {
   font-size: 0.8rem;
