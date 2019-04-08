@@ -22,14 +22,15 @@
             <li class="list-group-item list-group-item-action" *ngFor="let translation of listOfTranslations">
               <div (click)="chooseTranslationFromCurrentTranslations(translation)">
                 <div class="row" >
-                  <div class="col-sm-1"><img class="userIcon" src="../../../assets/svg/011-user.svg"></div>
                   <div class="col-sm-11 align-self-start translatedText">{{translation.translated}}</div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-3 col-4">{{translation.dateTime | date: 'dd.MM.yyyy HH:mm'}}</div>
-                  <div class="col-sm-6 userLogin">
+                  <div class="col-sm-5 userLogin">
+	  		<img class="userIcon" src="../../../assets/svg/011-user.svg">
                     {{ translation.user_Name }}
                   </div>
+                  <div class="col-sm-3 col-4">{{translation.dateTime | date: 'dd.MM.yyyy HH:mm'}}</div>
+
   
                   <div class="col-sm-1"><input type="checkbox" class="form-check-input"
                       [(ngModel)]="translation.confirmed" (change)="changeTranslation(translation)">
@@ -40,10 +41,9 @@
                           [(ngModel)]="translation.selected" (change)="changeSelectedTranslation(translation)"> </div>
                     </div>
                   </div>
-                  <div class="col-sm-1">
-                    <div *ngIf="!translation.selected && !translation.confirmed"><img
+                    <div *ngIf="!translation.selected && !translation.confirmed"  class="col-sm-1"><img
                         (click)="deleteTranslateClick(translation.id)" class="utilitiesIcon"
-                        src="../../../assets/icons/main/bin.png"></div>
+                        src="../../../assets/icons/main/bin.png">
                   </div>
                 </div>
               </div>              
