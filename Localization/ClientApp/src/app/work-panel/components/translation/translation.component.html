@@ -1,22 +1,19 @@
 <div class="translationBlock" *ngIf="checkPhrase()">
   <table class="controlBlock">
-    <thead>
       <tr>
-        <th scope="col" class=" col-1">
+        <td scope="col" class=" col-1">
           <mat-icon class="arrowIcon mat-icon " (click)="hideLeftBlock()">chevron_left</mat-icon>
-        </th>
-        <th scope="col" class="col-2">Перевод</th>
-        <th scope="col" class="col-3">
+        </td>
+        <td scope="col" class="col-2">
+              <div (dblclick)="openSelectionDialog($event)" class="textArea">{{phraseForTranslate.substring_to_translate}}</div>
+	</td>
+        <td scope="col" class="col-3">
           <mat-icon class="arrowIcon mat-icon " (click)="hideRightBlock()">chevron_right</mat-icon>
-        </th>
+        </td>
       </tr>
-    </thead>
   </table>
-
   <div class="contextBlock">
     <!--<div class="row mt-2"> -->
-      <div (dblclick)="openSelectionDialog($event)" class="textArea">{{phraseForTranslate.substring_to_translate}}</div>
-
     <div class="row context">
       <div class="contextPicker" (click)="contextShowClick()">Контекст</div>
       <div *ngIf="showContextBlock">

@@ -110,21 +110,27 @@
 
 
 .col-1 {
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
   font-size: 1.5em;
-  width: 3rem;
+  width: 2rem;
   text-align: left;
 }
 
 .col-2 {
-  font-size: 1.5em;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
   width: 100%;
-  text-align: center;
+  text-align: left;
 }
 
 .col-3 {
   font-size: 1.5em;
-  width: 3rem;
+  width: 2rem;
   text-align: right;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+
 }
 
 
