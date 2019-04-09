@@ -270,9 +270,9 @@ namespace Localization.Controllers
                     k++;
                     if (item != null)
                     {
-                        writer.WriteField(String.Join(",", string.Format(@"""{0}""", item.NodeName)));
-                        writer.WriteField(String.Join(",", string.Format(@"""{0}""", item.NodeOfValue)));
-                        writer.WriteField(String.Join(",", string.Format(@"""{0}""", item.NodeOfValue1)));
+                        writer.WriteField(item.NodeName);
+                        writer.WriteField( item.NodeOfValue);
+                        writer.WriteField(item.NodeOfValue1);
                     }
                 }
 
@@ -285,9 +285,9 @@ namespace Localization.Controllers
                    if (item1 != null)
                     {
                         i = 0;
-                        writer.WriteField(String.Join(",", string.Format(@"""{0}""", item1.NodeName)));
-                        writer.WriteField(String.Join(",", string.Format(@"""{0}""", item1.NodeOfValue)));
-                        writer.WriteField(String.Join(",", string.Format(@"""{0}""", item1.NodeOfValue1)));
+                        writer.WriteField(item1.NodeName);
+                        writer.WriteField(item1.NodeOfValue);
+                        writer.WriteField(item1.NodeOfValue1);
                         if (item1 != null)
                         {
                             j = 0;
@@ -296,7 +296,7 @@ namespace Localization.Controllers
                                 var select = item1.AttributeName.FirstOrDefault();
                                 if (j == 0)
                                 {
-                                   writer.WriteField(String.Join(",", string.Format(@"""{0}""",item2.AttributeValue)));
+                                   writer.WriteField(item2.AttributeValue);
                                 }
                                 else
                                 {
@@ -304,7 +304,7 @@ namespace Localization.Controllers
                                     {
                                         writer.WriteField(null);
                                     }
-                                    writer.WriteField(String.Join(",", string.Format(@"""{0}""", item2.AttributeValue)));
+                                    writer.WriteField(item2.AttributeValue);
                                 }
                                 j++;
                             }
