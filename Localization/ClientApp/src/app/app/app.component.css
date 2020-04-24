@@ -22,6 +22,11 @@
   padding: 0px;
 }
 
+.row .col-12 .nav .nav-item {
+  padding-right: 2rem;
+}
+
+
 .bnt-create {
   width: 95%;
   min-width: 10rem;

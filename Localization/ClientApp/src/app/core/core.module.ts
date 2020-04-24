@@ -22,7 +22,6 @@ import { NewProfileComponent, DialogAddServiceComponent } from '../new-profile/n
 import { UserAccountComponent } from '../user-account/user-account.component';
 import { NotifierModule } from 'angular-notifier';
 
-
 import {
   MatIconModule,
   MatInputModule,
@@ -45,6 +44,7 @@ import {
 
 @NgModule({
   imports: [
+
     CommonModule,
     CoreRoutingModule,
     // BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -64,7 +64,7 @@ import {
     ReactiveFormsModule,
     MatDialogModule,
     NotifierModule,
-
+    
     //
     MatNativeDateModule,
     MatSortModule,

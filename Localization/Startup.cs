@@ -54,11 +54,11 @@ namespace Localization
 
             // TODO нужно будет переделать все классы под этот вариант
             services.AddScoped<IFilesRepository>(provider => new FilesRepository(connectionString));
-            services.AddScoped<IGlossaryRepository>(provider => new GlossaryRepository(connectionString));
-            services.AddScoped<IGlossariesRepository>(provider => new GlossariesRepository(connectionString));
-            services.AddScoped<ITranslationSubstringRepository>(provider => new TranslationSubstringRepository(connectionString));
-            services.AddScoped<ITranslationTroubleRepository>(provider => new TranslationTroubleRepository(connectionString));
-            services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
+           services.AddScoped<IGlossaryRepository>(provider => new GlossaryRepository(connectionString));
+           services.AddScoped<IGlossariesRepository>(provider => new GlossariesRepository(connectionString));
+           services.AddScoped<ITranslationSubstringRepository>(provider => new TranslationSubstringRepository(connectionString));
+          services.AddScoped<ITranslationTroubleRepository>(provider => new TranslationTroubleRepository(connectionString));
+           services.AddScoped<ILocaleRepository>(provider => new LocaleRepository(connectionString));
             services.AddScoped<IUserActionRepository>(provider => new UserActionRepository(connectionString));
             services.AddScoped<IMail>(provider => new EMail());
             services.AddScoped<ITranslationMemoryRepository>(provider => new TranslationMemoryRepository(connectionString));
@@ -66,19 +66,19 @@ namespace Localization
             services.AddScoped<IUserRepository>(provider => new UserRepository(connectionString));
             services.AddScoped<IParticipantRepository>(provider => new ParticipantRepository(connectionString));
             services.AddScoped<IImagesRepository>(provider => new ImageRepository(connectionString));
-            services.AddScoped<IProjectTranslationMemoryRepository>(provider => new ProjectTranslationMemoryRepository(connectionString));
+           services.AddScoped<IProjectTranslationMemoryRepository>(provider => new ProjectTranslationMemoryRepository(connectionString));
             services.AddScoped<IFilesPackagesRepository>(provider => new FilesPackagesRepository(connectionString));
             services.AddScoped<ITranslationTopicRepository>(provider => new TranslationTopicRepository(connectionString));
-            services.AddScoped<ITypeOfServiceRepository>(provider => new TypeOfServiceRepository(connectionString));
+           services.AddScoped<ITypeOfServiceRepository>(provider => new TypeOfServiceRepository(connectionString));
 
-            services.AddScoped<FromExcel>();
+           services.AddScoped<FromExcel>();
 
 
-            services.AddScoped<FilesService>();
+           services.AddScoped<FilesService>();
             services.AddScoped<GlossaryService>();
             services.AddScoped<GlossariesService>();
             services.AddScoped<UserAction>();
-            services.AddScoped<TranslationMemoryService>();
+           services.AddScoped<TranslationMemoryService>();
             services.AddScoped<InvitationsService>();
 
             ////Данный блок кода включает доступ к серверу с любого порта(нужен для тестирования с нескольких клиентов)///////
@@ -155,6 +155,7 @@ namespace Localization
                         await streamWriter.WriteLineAsync(unhandledException?.Message ?? string.Empty);
                     }
                 }));
+           
 
             if (!env.IsDevelopment())
             {

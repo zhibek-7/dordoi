@@ -25,6 +25,7 @@
     "@aspnet/signalr": "^1.1.2",
     "@types/file-saver": "^2.0.0",
     "angular-notifier": "^4.1.1",
+    "chromedriver": "^81.0.0",
     "core-js": "^2.6.5",
     "file-saver": "^2.0.1",
     "guid-typescript": "^1.0.9",
@@ -33,10 +34,11 @@
     "jquery": "^3.3.1",
     "jquery-ui": "^1.12.1",
     "moment": "2.24.0",
-    "ngx-daterangepicker-material": "^2.0.2",
+    "ngx-daterangepicker-material": "2.2.0",
     "ngx-dropzone-wrapper": "^7.2.1",
     "ngx-spinner": "^7.0.0",
-    "npm": "^6.8.0",
+    "node-sass": "^4.13.0",
+    "npm": "^6.14.4",
     "primeicons": "^1.0.0",
     "primeng": "^7.0.5",
     "primeui": "^4.1.15",
@@ -62,6 +64,7 @@
     "protractor": "~5.4.2",
     "ts-node": "~8.0.2",
     "tslint": "~5.13.1",
-    "typescript": "3.2.4"
+    "typescript": "3.2.4",
+    "webpack-bundle-analyzer": "^3.6.1"
   }
 }

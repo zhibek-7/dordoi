@@ -27,8 +27,10 @@
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/nova-light/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
-	       "./node_modules/angular-notifier/styles.css",
-              {"input": "src/base.scss"}
+              "./node_modules/angular-notifier/styles.css",
+              {
+                "input": "src/base.scss"
+              }
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js"
@@ -138,5 +140,8 @@
       }
     }
   },
-  "defaultProject": "TranslatorApp"
+  "defaultProject": "TranslatorApp",
+  "cli": {
+    "analytics": "83a86c66-611f-43c5-a5ca-49c82c871901"
+  }
 }

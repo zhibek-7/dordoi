@@ -1,0 +1,50 @@
+<!--<div style="text-align:center" *ngIf="project">
+  <h1>
+    Проект { {project.name_text}} name.value
+  </h1>
+</div>-->
+
+<form [formGroup]="form"
+      novalidate
+      (ngSubmit)="submit()"
+       *ngIf="loaded">
+
+  <div class="form-group row">
+    <label class="col-3 col-form-label">Название раздела:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field width-to-parent">
+        <input matInput type="text"
+               #name formControlName="nameMenuFormControl">
+      </mat-form-field>
+    
+      <div class="text-danger"
+           *ngIf="form.controls['nameMenuFormControl'].invalid && form.controls['nameMenuFormControl'].touched && form.controls['nameMenuFormControl'].errors?.required">
+        Это поле необходимо заполнить.
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-3 col-form-label">Описание раздела:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field width-to-parent">
+        <input matInput type="text"
+               #Fund_description formControlName="fundDescriptionFormControl">
+        <button mat-button *ngIf="Fund_description.value" matSuffix mat-icon-button aria-label="Clear" (click)="fund.Fund_description='';Fund_description.value='';">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <button class="btn m-1 btn-sm"
+            [class.btn-success]="form.valid "
+            [class.btn-primary]="form.invalid"
+            [disabled]="form.invalid "
+            type="submit">
+      Сохранить
+    </button>
+  </div>
+
+</form>

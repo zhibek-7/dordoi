@@ -1,16 +1,25 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-
+import { ContactsComponent } from 'src/app/contacts/contacts.component';
 import { NewProfileComponent } from "../new-profile/new-profile.component";
 import { UserAccountComponent } from "../user-account/user-account.component";
-
+import { AboutFundComponent } from 'src/app/about-fund/about-fund/about-fund.component';
+import { ForCompaniesComponent } from 'src/app/for-companies/for-companies.component';
 import { AuthenticationGuard } from "../services/authentication.guard";
-
+import { ForSeniorsComponent } from 'src/app/for-seniors/for-seniors.component';
+import { IndividualComponent } from 'src/app/individual/individual.component';
+import { HomeComponent } from 'src/app/home/home.component';
 const routes: Routes = [
   {
     path: "administration",
     loadChildren: "../administration/administration.module#AdministrationModule"
   },
+ // { path: 'about-fund', component: AboutFundComponent },
+  { path: 'contacts', component: ContactsComponent },
+  { path: 'for-companies', component: ForCompaniesComponent },
+  { path: 'for-seniors', component: ForSeniorsComponent },
+  { path: 'individual', component: IndividualComponent },
+  { path: 'home', component: HomeComponent },
   {
     path: "Translation/:fileId/:localeId",
     loadChildren: "../work-panel/work-panel.module#WorkPanelModule",
@@ -20,21 +29,20 @@ const routes: Routes = [
    path: "new-profile",
    component: NewProfileComponent
   },
-  //{
-  //  path: "Projects/:id/reports",
-  //  loadChildren: "../reports/Reports.module#ReportsModule",
-  //  canActivate: [AuthenticationGuard]
-  //},
-  //{
-  //  path: "Projects/:id/stringsTranslationMemory",
-  //  loadChildren: "../strings-project/module/strings-project.module#StringsProjectModule",
-  //  canActivate: [AuthenticationGuard]
-  //},
+ 
   {
     path: "Projects/:projectId",
     loadChildren: "../current-project-settings/module/current-project-settings.module#CurrentProjectSettingsModule",
     canActivate: [AuthenticationGuard]
   },
+
+
+  {
+    path: "Fund",
+    loadChildren: "../about-fund/about-fund.module#AboutFundModule",
+    canActivate: [AuthenticationGuard]
+  },
+
   {
     path: "Profile",
     component: UserAccountComponent,
