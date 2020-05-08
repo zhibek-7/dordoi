@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dal.Reposity.PostgreSqlRepository;
 using DAL.Reposity.PostgreSqlRepository;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -33,21 +32,26 @@ namespace Localization.Controllers
             ur = new UserRepository(connectionString);
             _roleRepository = new RoleRepository(connectionString);
         }
+        [Authorize]
+        [HttpPost]
+        [Route("{Id}")]
+        public Fund GetFundById(Guid Id)
+        {
+            var identityName = User.Identity.Name;
+            Guid? userId = (Guid)ur.GetID(identityName);
+            var fund = _fundRepository.GetByIDAsync(Id, userId);
+            return fund.Result;
+        }
 
-        /// <summary>
-        /// Создание фонда
-        /// </summary>
-        /// <param name="fund">фонд.</param>
-        /// <returns></returns>
-        //[Authorize]
-        //[HttpPost("Create")]
-        //public async Task<Guid?> CreateAsync(FundDTO fund)
-        //{
-        //    var fundId = await _fundRepository.CreateAsync(fund);
-        //    //var userId = (Guid)ur.GetID(User.Identity.Name);
-        //    return fundId;
-        //}
-
+        [Authorize]
+        [HttpPost]
+        [Route("List")]
+        public List<Fund> GetProjects()
+        {
+            var identityName = User.Identity.Name;
+            Guid? userId = (Guid)ur.GetID(identityName);
+            return _fundRepository.GetAllAsync(userId, null).Result?.ToList();
+        }
 
 
         [Authorize]
@@ -55,43 +59,32 @@ namespace Localization.Controllers
         public async Task<Guid?> CreateAsync(FundDTO project)
         {
             var projectId = await _fundRepository.CreateAsync(project);
-           
-
-
             return projectId;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   
+        [Authorize]
+        [HttpPost("update")]
+        public async Task<Fund> UpdateAsync(Fund project)
+        {
+            await _fundRepository.UpdateAsync(project);
+            return project;
+        }
 
         /// <summary>
-        /// Обновление данных .
+        /// Удаление.
         /// </summary>
-        /// <param name="fund">fund</param>
+        /// <param name="fundId">Идентификатор.</param>
         /// <returns></returns>
-        //[Authorize]
-        //[HttpPost("update")]
-        //public async Task<Fu> UpdateAsync(LocalizationProject project)
-        //{
-        //    await _localizationProjectRepository.UpdateAsync(project);
-        //    await _userActionRepository.AddEditProjectActionAsync((Guid)ur.GetID(User.Identity.Name), User.Identity.Name, project.id, project.ID_Source_Locale);
-
-        //    return project;
-        //}
-
+        [Authorize]
+        [HttpDelete("delete/{fundId}")]
+        public async Task DeleteAsync(Guid fundId)
+        {
+            var identityName = User.Identity.Name;
+            Guid userId = (Guid)ur.GetID(identityName);
+           
+            await _fundRepository.RemoveAsync(fundId);
+        }
 
 
     }

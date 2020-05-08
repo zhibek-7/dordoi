@@ -15,9 +15,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule, MatInputModule, MatButtonModule, MatCheckboxModule, MatRadioModule, MatIconModule } from '@angular/material';
 import { SharedModule } from '../shared/shared.module';
 import { CreateFundComponent } from './create-fund/create-fund.component';
+import { ConfirmDeleteFundComponent } from './confirm-delete-fund/confirm-delete-fund.component';
 
 @NgModule({
-  declarations: [AboutFundComponent, EditableFundComponent, EditFundComponent, AddFundComponent, CreateFundComponent],
+  declarations: [AboutFundComponent, EditableFundComponent, EditFundComponent, AddFundComponent, CreateFundComponent, ConfirmDeleteFundComponent],
   
   imports: [
     CommonModule,

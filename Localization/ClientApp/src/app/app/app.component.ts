@@ -3,7 +3,8 @@ import { Router } from "@angular/router";
 import { ProjectsService } from "../services/projects.service";
 import { AuthenticationService } from "../services/authentication.service";
 import { Guid } from "guid-typescript";
-
+import { FundService } from '../services/fund.service';
+import { fund } from "../models/database-entities/fund.type";
 import { LocalizationProject } from "../models/database-entities/localizationProject.type";
 import { UserService } from "src/app/services/user.service";
 
@@ -11,18 +12,32 @@ import { UserService } from "src/app/services/user.service";
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
-  providers: [ProjectsService, UserService]
+  providers: [ProjectsService, UserService, FundService]
 })
 export class AppComponent implements OnInit {
-  projects: LocalizationProject[];
-  currentProject: LocalizationProject;
+  funds: fund[];
+  currentFund: fund;
+  fundid: string = null;
+  fundVisibility = false;
+
+
+
+
+  //projects: LocalizationProject[];
+  //currentProject: LocalizationProject;
   name: string = null;
-  projectid: string = null;
-  projectVisibility = false;
+  //projectid: string = null;
+  //projectVisibility = false;
+
+
+
 
   userAuthorized: boolean = false;
   currentUserName: string;
   constructor(
+    private fundService: FundService,
+
+
     private projectService: ProjectsService,
     private authenticationService: AuthenticationService,
     private router: Router,
@@ -32,48 +47,56 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getProject();
+    this.getFund();
   }
 
-  createNewProject() {
-    console.log("app createNewProject ---!!!!!!!!!");
+  createNewFund() {
+    console.log("app createFund ---!!!!!!!!!");
   }
 
-  getProjects() {
+  getFunds() {
     this.checkAuthorization();
-    this.projectService.getProjects().subscribe(
-      projects => {
-        this.projects = projects;
+    this.fundService.getFunds().subscribe(
+      funds => {
+        this.funds = funds;
       },
       error => console.error(error)
     );
   }
 
-  getCurrentProject(currentProject: LocalizationProject) {
-    this.currentProject = currentProject;
 
-    this.projectService.currentProjectId = currentProject.id;
-    this.projectService.currentProjectName = currentProject.name_text;
-    this.getProject();
+  getCurrentFund(currentFund: fund) {
+    this.currentFund = currentFund;
+
+    this.fundService.currentFundId = currentFund.id;
+    this.fundService.currentFundName = currentFund.name_text;
+    this.getFund();
+  }
+  fundcleaning() {
+    this.fundService.currentFundId = Guid.createEmpty();
+    this.fundService.currentFundName = "";
   }
 
-  projectcleaning() {
-    this.projectService.currentProjectId = Guid.createEmpty();
-    this.projectService.currentProjectName = "";
+  getFund() {
+    this.name = sessionStorage.getItem("Fund_text");
+    this.fundid = sessionStorage.getItem("FundID");
   }
 
-  getProject() {
-    this.name = sessionStorage.getItem("ProjectName");
-    this.projectid = sessionStorage.getItem("ProjectID");
+
+
+  getFundName() {
+    return sessionStorage.getItem("Fund_text");
   }
 
-  getProjectName() {
-    return sessionStorage.getItem("ProjectName");
+  getFundId() {
+    return sessionStorage.getItem("FundID");
   }
 
-  getProjectId() {
-    return sessionStorage.getItem("ProjectID");
-  }
+
+  
+
+
+
 
   logOut() {
     this.authenticationService.logOut();
@@ -93,4 +116,12 @@ export class AppComponent implements OnInit {
       }
     );
   }
+
+
+
+  editFund(fund1: fund) {
+    this.currentFund = new fund(fund1.name_text, fund1.description);
+  }
+
+
 }

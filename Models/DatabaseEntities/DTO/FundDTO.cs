@@ -6,7 +6,7 @@ using System.Text;
 namespace Models.DatabaseEntities.DTO
 {
     [Serializable]
-    public class FundDTO// : BaseEntity
+    public class FundDTO : BaseEntity
     {
         
         public string fund_text { get; set; }
@@ -15,6 +15,6 @@ namespace Models.DatabaseEntities.DTO
         public string fund_description { get; set; }
 
         public DateTime? data_create { get; set; }
-        public Guid ID_User { get; set; }
+        public Guid? ID_User { get; set; }
     }
 }

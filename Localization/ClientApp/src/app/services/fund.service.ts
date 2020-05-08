@@ -7,6 +7,7 @@ import { fund } from "../models/database-entities/fund.type";
 import { Guid } from "guid-typescript";
 @Injectable()
 export class FundService {
+  formData: fund;
   private controllerUrl: string = "api/Fund/";
 
   constructor(private httpClient: HttpClient) { }
@@ -40,22 +41,18 @@ export class FundService {
 
 
 
-
-
-
-
-  getProjects(): Observable<LocalizationProject[]> {
-    console.log("getProject-->");
-    return this.httpClient.post<LocalizationProject[]>(
+  getFunds(): Observable<fund[]> {
+    console.log("getFund-->");
+    return this.httpClient.post<fund[]>(
       this.controllerUrl + "List",
       null
     );
   }
 
-  getProject(id: Guid): Observable<LocalizationProject> {
-    console.log("service projects = getProject=" + id);
-    console.log("service projects = getProject===" + this.controllerUrl + id);
-    return this.httpClient.post<LocalizationProject>(
+  getFund(id: Guid): Observable<fund> {
+    console.log("service funds = getFund=" + id);
+    console.log("service funds = getFund===" + this.controllerUrl + id);
+    return this.httpClient.post<fund>(
       this.controllerUrl + id,
       id
     );
@@ -65,15 +62,15 @@ export class FundService {
    * Возвращает проект локализации с подробной иформацией из связанных данных.
    * @param id Идентификатор проекта локализации.
    */
-  getProjectWithDetails(id: Guid): Observable<LocalizationProject> {
-    return this.httpClient.post<LocalizationProject>(
+  getFundWithDetails(id: Guid): Observable<fund> {
+    return this.httpClient.post<fund>(
       this.controllerUrl + "details" + "/" + id,
       id
     );
   }
 
   /** Возвращает список проектов локализации, назначенных на пользователя, содержащий только ID, Name */
-  getLocalizationProjectForSelectDTOByUser(): Observable<LocalizationProjectForSelectDTO[]> {
+  getFundForSelectDTOByUser(): Observable<LocalizationProjectForSelectDTO[]> {
     return this.httpClient.post<LocalizationProjectForSelectDTO[]>(
       this.controllerUrl + "forSelectByUser",
       null,
@@ -87,19 +84,9 @@ export class FundService {
   }
 
 
-
-
-
-
   create(fund: fund): Observable<Guid> {
     return this.httpClient.post<Guid>(this.controllerUrl + "Create", fund);
   }
-
-
-
-
-
-
 
   update(fund: fund): Observable<Object> {
     return this.httpClient.post(this.controllerUrl + "update", fund);
@@ -109,20 +96,5 @@ export class FundService {
     return this.httpClient.delete(this.controllerUrl + "delete/" + fundId);
   }
 
-  ///**
-  // xml tmx file
-  // * @param Id
-  // * @param fund
-  // */
-  //private controllerUrlTmx: string = "api/ReadWriteFile/";
-  //async tmxFile(Id: Guid, fund: fund) {
-  //  console.log("updateProject-->" + Id);
-  //  console.log(fund);
-  //  fund.id = Id;
-  //  let asyncResult = await this.httpClient
-  //    .post<LocalizationProject>(this.controllerUrlTmx + "createTmx", fund)
-  //    .toPromise();
-  //  return asyncResult;
-  //}
 
 }

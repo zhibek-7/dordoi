@@ -75,75 +75,54 @@
     <ul class="navbar-nav mr-auto" *ngIf="this.usersService.currentUserName != null">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false" (click)="getProjects()">
+           aria-haspopup="true" aria-expanded="false" (click)="getFunds()">
           Разделы
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <!--<div *ngIf="userAuthorized">
-                      <a *ngFor="let project of projects" class="dropdown-item" (click)="getCurrentProject(project)"
-                        href='/Translation_project/{{ project.id }}'>
-                        {{ project.name_text }}
-                        <a (click)="getCurrentProject(project)" href='/Projects/{{ project.id }}'><img
-                            src="../assets/icons/main/settings.jpg" width="20" height="20" class="d-inline-block align-top"
-                            alt=""></a>
-                      </a>
-                    </div>
-          -->
-          <div *ngFor="let project of projects" class="row">
+         
+          <div *ngFor="let fund of funds" class="row">
             <div class="col-1 bnt-text">
-              <a (click)="getCurrentProject(project)" href="/Projects/{{ project.id }}">
+              <a (click)="getCurrentFund(fund)" href="/Fund/{{ fund.id }}">
                 <img src="../assets/icons/main/settings.jpg" class="align-top img_small" alt="" />
               </a>
             </div>
             <div class="col-2 bnt-text">
-              <a class="dropdown-item col-2" (click)="getCurrentProject(project)"
-                 href="/Translation_project/{{ project.id }}">
-                {{ project.name_text }}
+              <a class="dropdown-item col-2" (click)="getCurrentFund(fund)"
+                 href="/Fund/{{ fund.id }}">
+                {{ fund.name_text }}
               </a>
             </div>
+            <!--<div class="col-3 bnt-text">
+    <a class="dropdown-item col-2" (click)="populateForm(fund)"
+       href="/Fund/edit/{{ fund.id }}">
+      {{ fund.Fund_text }}
+    </a>
+  </div>-->
+
+
+
+
+
+
           </div>
 
-          <a class="dropdown-item" routerLink="/Profile" (click)="this.projectcleaning()">Все разделы</a>
+          <a class="dropdown-item" routerLink="/Profile" (click)="this.fundcleaning()">Все разделы</a>
           <div class="dropdown-divider"></div>
-          <button type="button" class="btn btn-primary btn-sm bnt-create" routerLink="project/create"
-                  (click)="this.projectcleaning()">
-            Создать проект
+          <button type="button" class="btn btn-primary btn-sm bnt-create" routerLink="Fund/create"
+                  (click)="this.fundcleaning()">
+            Создать фонд
           </button>
         </div>
       </li>
 
       <!--//-->
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false">
-          Ресурсы
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" routerLink="/translation-memories">Память переводов</a>
-          <a class="dropdown-item" routerLink="/list-glossaries">Словари</a>
-        </div>
-      </li>
-      <!--//-->
-      <!--  </ul>
-
-      <ul class="navbar-nav mr-auto">
-        -->
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false">
-          Поиск команды
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" routerLink="translators">Список людей</a>
-        </div>
-      </li>
     </ul>
 
     <ul class="navbar-nav mr-auto" *ngIf="this.usersService.currentUserName != null">
-      <li *ngIf="getProjectName()  != ''">
-        <a class="nav-link disabled" href="/Projects/{{ getProjectId() }}" *ngIf="getProjectName()  != null">
-          Проект: {{ getProjectName() }}
+      <li *ngIf="getFundName()  != ''">
+        <a class="nav-link disabled" href="/Fund/{{ getFundId() }}" *ngIf="getFundName()  != null">
+          Фонд: {{ getFundName() }}
           <img src=" ../assets/icons/main/settings.jpg" class="align-top img_small" alt="" />
         </a>
       </li>

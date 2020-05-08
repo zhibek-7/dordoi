@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Reposity.PostgreSqlRepository;
@@ -8,8 +9,9 @@ using Models.DatabaseEntities;
 using Models.DatabaseEntities.DTO;
 using Models.Interfaces.Repository;
 using Npgsql;
+using SqlKata;
 
-namespace Dal.Reposity.PostgreSqlRepository
+namespace DAL.Reposity.PostgreSqlRepository
 {
     public class FundRepository : BaseRepository, IRepositoryAuthorizeAsync<Fund>
     {
@@ -99,24 +101,127 @@ namespace Dal.Reposity.PostgreSqlRepository
        throw new NotImplementedException();
        }
 
-        public Task<IEnumerable<Fund>> GetAllAsync(Guid? userId, Guid? projectId)
+        public async Task<IEnumerable<Fund>> GetAllAsync(Guid? userId, Guid? fundId)
         {
-            throw new NotImplementedException();
+            // Sql string to select all rows where id_user = '" + (Guid)userId + @"'
+            var sqlString = @"SELECT id, name_text, date_time_added, id_user, description
+            FROM fund 
+            
+            order by name_text";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    this.LogQuery(sqlString);
+                    IEnumerable<Fund> users = dbConnection.Query<Fund>(sqlString);
+                    return users;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FundRepository)}.{nameof(FundRepository.GetAllAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FundRepository)}.{nameof(FundRepository.GetAllAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
         }
 
-        public Task<Fund> GetByIDAsync(Guid id, Guid? conditionsId)
+        public async Task<Fund> GetByIDAsync(Guid id, Guid? userId)
         {
-            throw new NotImplementedException();
+            var sqlString = @"SELECT id, name_text, date_time_added, id_user, description
+            FROM fund 
+            where id_user = '" + (Guid)userId + @"'
+            order by name_text";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var param = new { Id = id, @userId = userId };
+                    this.LogQuery(sqlString, param);
+                    var fund = dbConnection.Query<Fund>(sqlString, param).FirstOrDefault();
+                    return fund;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FundRepository)}.{nameof(FundRepository.GetByIDAsync)} {nameof(NpgsqlException)} ",
+                    exception);
+                return null;
+            }
+            catch (Exception exception)
+            {
+                this._loggerError.WriteLn(
+                    $"Ошибка в {nameof(FundRepository)}.{nameof(FundRepository.GetByIDAsync)} {nameof(Exception)} ",
+                    exception);
+                return null;
+            }
         }
 
-        public Task<bool> RemoveAsync(Guid id)
+        public async Task<bool> RemoveAsync(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    var query = new Query("fund").Where("id", id).AsDelete();
+                    var compiledQuery = _compiler.Compile(query);
+                    LogQuery(compiledQuery);
+                    await dbConnection.ExecuteAsync(
+                        sql: compiledQuery.Sql,
+                        param: compiledQuery.NamedBindings);
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(LocalizationProjectRepository)}.{nameof(LocalizationProjectRepository.RemoveAsync)} {nameof(Exception)} ", exception);
+                return false;
+            }
         }
 
-        public Task<bool> UpdateAsync(Fund item)
+        public async Task<bool> UpdateAsync(Fund fund)
         {
-            throw new NotImplementedException();
+            var sqlQuery = "UPDATE \"fund\" SET" +
+                             "\"name_text\"=@fund_text, " +
+                             "\"date_time_added\"=@data_create," +
+                             "\"id_user\"=@ID_User," +
+                             " \"description\"=@fund_description," +
+                              "WHERE \"id\"=@id";
+
+            try
+            {
+                using (var dbConnection = new NpgsqlConnection(connectionString))
+                {
+                    LogQuery(sqlQuery, fund.GetType(), fund);
+                    await dbConnection.ExecuteAsync(sqlQuery, fund);
+                    return true;
+                }
+            }
+            catch (NpgsqlException exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(FundRepository)}.{nameof(FundRepository.UpdateAsync)} {nameof(NpgsqlException)} ", exception);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                _loggerError.WriteLn($"Ошибка в {nameof(FundRepository)}.{nameof(FundRepository.UpdateAsync)} {nameof(Exception)} ", exception);
+                return false;
+            }
         }
     }
 }

@@ -36,6 +36,11 @@ const routes: Routes = [
     canActivate: [AuthenticationGuard]
   },
 
+  {
+    path: "Fund/:fundId",
+    loadChildren: "../current-fund-settings/module/current-fund-setting.module#CurrentFundSettingModule",
+    canActivate: [AuthenticationGuard]
+  },
 
   {
     path: "Fund",

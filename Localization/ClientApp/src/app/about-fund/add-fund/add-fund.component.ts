@@ -24,30 +24,22 @@ export class AddFundComponent implements OnInit {
   
   }
 
-
-
-
-
   initForm() {
     this.form = new FormGroup({
-      nameMenuFormControl: new FormControl(this.fund.Fund_text, Validators.required),
-      fundDescriptionFormControl: new FormControl(this.fund.Fund_description),
+      nameMenuFormControl: new FormControl(this.fund.name_text, Validators.required),
+      fundDescriptionFormControl: new FormControl(this.fund.description),
 
     });
   }
 
 
-  
-
-
-
 
 submit(editedFund: fund) {
-       this.fundService.create(editedFund).subscribe(
+    this.fundService.create(editedFund).subscribe(
          fundId => {
        //    this.fundService.currentFundId = fundId;
-        this.fundService.currentFundName = editedFund.Fund_text;
-        this.fundService.currentFundDescription = editedFund.Fund_description;
+        this.fundService.currentFundName = editedFund.name_text;
+        this.fundService.currentFundDescription = editedFund.description;
         //this.router.navigate(["/Fund"]);
       },
       error => console.error(error)

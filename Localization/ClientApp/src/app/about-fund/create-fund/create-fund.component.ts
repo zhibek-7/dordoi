@@ -16,7 +16,7 @@ export class CreateFundComponent implements OnInit {
 
   ngOnInit() {
     this.fund = new fund(null, null);
-    this.fund.DateTime = null;
+    this.fund.date_time_added = null;
     //this.fund.ID_User=
     this.loaded = true;
   }
@@ -24,8 +24,8 @@ export class CreateFundComponent implements OnInit {
   submit(editedFund: fund) {
     this.fundService.create(editedFund).subscribe(
       fundId => {
-        this.fundService.currentFundName = editedFund.Fund_text;
-        this.fundService.currentFundDescription = editedFund.Fund_description;
+        this.fundService.currentFundName = editedFund.name_text;
+        this.fundService.currentFundDescription = editedFund.description;
 
       },
       error => console.error(error)

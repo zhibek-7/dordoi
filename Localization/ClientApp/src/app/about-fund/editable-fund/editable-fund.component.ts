@@ -29,26 +29,23 @@ export class EditableFundComponent implements OnInit {
   ngOnInit() {
     this.loaded = true;
     this.initForm();
-  
   }
 
   initForm() {
     this.form = new FormGroup({
-      nameMenuFormControl: new FormControl(this.fund.Fund_text, Validators.required),
-      fundDescriptionFormControl: new FormControl(this.fund.Fund_description),
-    });
-   
+      nameMenuFormControl: new FormControl(this.fund.name_text, Validators.required),
+      fundDescriptionFormControl: new FormControl(this.fund.description),
+    });   
   }
 
   async submit() {
-    this.getProject();
+    this.getFund();
     this.editedSubmittedf.emit(this.fund);
   }
 
-  getProject() {
-    this.fund.Fund_text = this.form.controls.nameMenuFormControl.value;
-    this.fund.Fund_description = this.form.controls.fundDescriptionFormControl.value;
-  
+  getFund() {
+    this.fund.name_text = this.form.controls.nameMenuFormControl.value;
+    this.fund.description = this.form.controls.fundDescriptionFormControl.value;
   }
 
  

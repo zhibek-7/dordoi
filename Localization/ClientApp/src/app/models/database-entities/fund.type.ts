@@ -2,15 +2,15 @@ import { Guid } from "guid-typescript";
 export class fund {
   public id: Guid;
   public ID_User: string;
-  public Fund_text: string;
-  public Fund_description: string;
-  public DateTime: Date;
+  public name_text: string;
+  public description: string;
+  public date_time_added: Date;
 
 
-   public constructor(Fund_text: string, Fund_description: string) {
+  public constructor(name_text: string, description: string) {
     this.ID_User = null; //Guid.createEmpty()
-    this.Fund_text = Fund_text;
-    this.Fund_description = Fund_description;
-    this.DateTime = null;
+    this.name_text = name_text;
+    this.description = description;
+    this.date_time_added = null;
   }
 }
