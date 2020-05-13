@@ -165,11 +165,11 @@ export class IndividualService {
 
 
   create(individ: individual): Observable<Guid> {
-    return this.httpClient.post<Guid>(this.controllerUrl + "Create", individual);
+    return this.httpClient.post<Guid>(this.controllerUrl + "Create", individ);
   }
 
   update(individ: individual): Observable<Object> {
-    return this.httpClient.post(this.controllerUrl + "update", individual);
+    return this.httpClient.post(this.controllerUrl + "update", individ);
   } 
 
   delete(individId: Guid): Observable<Object> {
