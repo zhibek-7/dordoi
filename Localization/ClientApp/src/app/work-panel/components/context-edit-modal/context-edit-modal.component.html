@@ -1,0 +1,36 @@
+<app-modal [(visible)]="visible">
+  <div class="app-modal-header d-flex">
+    <h4 class="headline-text">Редактор контекста</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <p>Комментарий для текущей строки:</p>
+    <textarea class="form-control translateTextArea" id="inputForContext" name="context" [(ngModel)]="enteredContext"
+      placeholder="Введите контекст"></textarea>
+
+    <hr>
+    <p>Макс. длина переведененого текста (0 - неограничено):</p>
+    <div class="container">
+      <div class="row">
+        <input class="col-4" type="number" [(ngModel)]="translationMaxLength" (ngModelChange)="countNumberOfSymbols()"
+          placeholder="0">
+        <span class="col-4 align-middle"> символов</span>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="app-modal-footer">
+    <div class="mb-1"><input (change)="handleFileInput($event.target.files)" type="file" #Image accept="image/*"></div>
+    <ul class="row">
+      <li class="list-group-item col-3 imageBlock" (click)="showImage(image)" *ngFor="let image of images">
+        <div>
+          <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
+        </div>
+      </li>
+    </ul>
+
+    <button class="btn mr-1 btn-success btn-sm" (click)="confirmButtunClick()">Сохранить</button>
+    <button class="btn btn-primary btn-sm" (click)="hide()">Отмена</button>
+  </div>
+</app-modal>

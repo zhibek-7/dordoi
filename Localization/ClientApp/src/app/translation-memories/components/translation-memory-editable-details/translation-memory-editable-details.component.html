@@ -1,0 +1,34 @@
+<div>
+  <label class="m-1"> Название памяти переводов </label>
+  <input id="name" name="name" class="form-control m-1" type="text" required [(ngModel)]="translationMemory.name_text" #name="ngModel">
+  <div *ngIf="name.invalid && (name.dirty || name.touched)"
+       class="alert alert-danger">
+    <div *ngIf="name.errors.required">
+      Введите название памяти переводов.
+    </div>
+  </div>
+</div>
+
+<div>
+  <label class="m-1"> Назначить память переводов в следующих проектах: </label>
+  <div class="input-group">
+    <div>
+      <div class="form-check" *ngFor="let localizationProject of availableLocalizationProjects">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" [ngModel]="localizationProject.isSelected" (ngModelChange)="toggleSelection(localizationProject)">{{localizationProject.model.name_text}}
+        </label>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="errorsRequiredLocalizationProjects" class="alert alert-danger">
+    Выберите проект(ы).
+  </div>
+</div>
+
+<div>
+  <label class="m-1"> Целевые языки: </label>
+  <app-set-languages [availableLocales]="availableLocales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
+  <!--<div *ngIf="errorsRequiredLocales" class="alert alert-danger">
+    Выберите целевой(ые) язык(и).
+  </div>-->
+</div>

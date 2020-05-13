@@ -1,0 +1,103 @@
+<h1>Ресурсы</h1>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb nav-border">
+    <li class="breadcrumb-item active nav-element-gray" aria-current="page"> Словари </li>
+  </ol>
+</nav>
+
+<nav class="navbar navbar-expand nav">
+  <ul class="navbar-nav nav">
+
+    <li class="nav-item">
+      <button class="btn nav-element btn-sm" (click)="addGlossaryFormModal.show()"> Создать словарь </button>
+      <app-add-glossary-form-modal #addGlossaryFormModal (newGlossarySubmitted)="addNewGlossary($event)"></app-add-glossary-form-modal>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element btn-sm" (click)="getEditingGlossary()" [disabled]="!isSelectedGlossary">
+        Редактировать
+        словарь
+      </button>
+      <app-edit-glossary-form-modal #editGlossaryFormModal *ngIf="isVisibleEditGlossaryFormModal" [glossary]="glossary"
+                                    (editedGlossarySubmitted)="editedGlossary($event)" (error)="getGlossariesDTO()"></app-edit-glossary-form-modal>
+    </li>
+
+    <li class="nav-item">
+      <button type="button" class="btn nav-element btn-sm" (click)="getConfirmClear()" [disabled]="!isSelectedGlossary">
+        Очистить
+      </button>
+      <app-confirm-clear-glossary-of-terms #confirmClearGlossaryFormModal *ngIf="isSelectedGlossary" [glossary]="glossary"
+                                           (confirmedClear)="clearGlossary($event)"></app-confirm-clear-glossary-of-terms>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element btn-sm" (click)="getConfirmDelete()" [disabled]="!isSelectedGlossary">
+        <img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">
+      </button>
+      <app-confirm-delete-glossary #confirmDeleteGlossaryFormModal *ngIf="isSelectedGlossary" [glossary]="glossary"
+                                   (confirmedDelete)="deleteGlossary($event)"></app-confirm-delete-glossary>
+    </li>
+
+  </ul>
+</nav>
+
+
+<app-main-list-page #parent (changed)="loadData()"></app-main-list-page>
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th (click)="requestSortBy('name_text')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'name_text'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'name_text'"
+          class="col-2">
+        Имя словаря
+      </th>
+      <th (click)="requestSortBy('locales_name')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'locales_name'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'locales_name'"
+          class="col-3">
+        Языки
+      </th>
+      <th (click)="requestSortBy('localization_projects_name')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'localization_projects_name'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'localization_projects_name'"
+          class="col-2">
+        Проекты
+      </th>
+      <th class="col-4">
+
+      </th>
+    </tr>
+  </thead>
+  <tr (click)="selected(row)"
+      [class.row-selected]="row.isSelected"
+      *ngFor="let row of dataSource">
+    <td class="col-xs">
+      {{row.model.name_text}}
+    </td>
+    <td class="col-xs">
+      {{row.model.locales_name}}
+    </td>
+    <td class="col-xs">
+      {{row.model.localization_projects_name}}
+    </td>
+    <td class="col-xs-10">
+      <div class="dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <b>Действия</b>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <button class="dropdown-item" (click)="getEditingGlossary()"> Изменить </button>
+          <button class="dropdown-item" (click)="getConfirmClear()"> Очистить от терминов </button>
+          <button class="dropdown-item" (click)="getConfirmDelete()"> Удалить </button>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

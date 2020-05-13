@@ -1,0 +1,1 @@
+Start "Chrome" "http://localhost:4200"

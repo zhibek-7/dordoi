@@ -1,0 +1,53 @@
+<div class="row m-2">
+  <div class="col">
+    <button class="btn btn-primary m-1 btn-sm" (click)="inviteUser.show()">Пригласить</button>
+    <app-invite-user #inviteUser [projectId]="projectId" [roles]="roles" ></app-invite-user>
+    <button class="btn btn-primary m-1 btn-sm" disabled>Связаться</button>
+  </div>
+  <div class="col">
+    <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalParticipantsCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
+  </div>
+</div>
+<div class="row m-2">
+  <div class="col">
+    <input type="text" class="form-control m-1" placeholder="Искать по имени" [(ngModel)]="search" (input)="loadParticipants()" />
+  </div>
+  <div class="col">
+    <select class="form-control m-1" [(ngModel)]="selectedRoleId" (change)="loadParticipants()">
+      <option [ngValue]="null">Все роли</option>
+      <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name_text}}</option>
+    </select>
+  </div>
+  <div class="col">
+    <button class="btn btn-primary dropdown-toggle m-1 btn-sm" data-toggle="collapse" data-target="#collapseSetLanguages" aria-controls="collapseSetLanguages">Фильтр по языкам</button>
+  </div>
+</div>
+<div class="row m-2">
+  <div class="col"></div>
+  <div class="col collapse m-1" id="collapseSetLanguages">
+    <app-set-languages [availableLocales]="locales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
+  </div>
+</div>
+<app-participant-details #participantDetails (participantDeleted)="loadParticipants(currentOffset)"></app-participant-details>
+<table class="table table-bordered table-striped m-2">
+  <thead>
+    <tr>
+      <th (click)="sortByColumn('username')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'user_name'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'user_name'">Имя пользователя</th>
+      <th (click)="sortByColumn('rolename')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'role_name'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'role_name'">Роль в проекте</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tr *ngFor="let participant of participants">
+    <td class="col-xs-6">{{participant.user_Name}}</td>
+    <td class="col-xs-6">{{participant.role_Name}}</td>
+    <td class="col-xs-2">
+      <div class="btn-group">
+        <button class="btn btn-primary m-1 btn-sm" (click)="participantDetails.showParticipant(participant)">Подробности</button>
+      </div>
+    </td>
+  </tr>
+</table>

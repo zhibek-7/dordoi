@@ -1,0 +1,92 @@
+<nav class="navbar navbar-expand nav">
+  <ul class="navbar-nav nav">
+
+    <li class="nav-item">
+      <div>
+        <label for="file-upload" class="btn nav-element btn-sm">
+          Открыть
+        </label>
+        <input id="file-upload" (change)="unload($event.target.files)" type="file" [accept]="fileTypes">
+      </div>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element btn-sm" (click)="getLoad()" [disabled]="!isSelected">
+        Скачать
+      </button>
+      <app-load-string-project-form-modal #loadFormModal (loadSubmitted)="load($event)" *ngIf="isSelected"
+        [translationSubstrings]="translationSubstrings">
+      </app-load-string-project-form-modal>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element btn-sm" (click)="getConfirmSelectedDelete()" [disabled]="!isSelected">
+        <img src="../assets/icons/main/bin.png" class="d-inline-block align-li img " alt="Удалить">
+      </button>
+      <app-confirm-delete-string-project-form-modal #confirmDeleteFormModal *ngIf="isSelected || translationSubstrings.length > 0"
+        [translationSubstrings]="translationSubstrings" (confirmedDelete)="delete($event)">
+      </app-confirm-delete-string-project-form-modal>
+    </li>
+
+    <li class="nav-item">
+      <button class="btn nav-element btn-sm" (click)="appointFormModalShow()">
+        Назначить ПП
+      </button>
+      <app-appoint-translation-memories-project-form-modal #appointFormModal *ngIf="isVisibleAppointFormModal">
+      </app-appoint-translation-memories-project-form-modal>
+    </li>
+
+  </ul>
+</nav>
+
+<app-edit-string-project-form-modal #editFormModal *ngIf="isVisibleEditFormModal" [translationSubstring]="translationSubstring"
+  (editedSubmitted)="edited($event)" (error)="getAllDTO()">
+</app-edit-string-project-form-modal>
+
+<app-main-list-page #parent (changed)="loadData()"></app-main-list-page>
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th class="col-1">
+        <input #checkboxHead type="checkbox" [ngModel]="isSelectedAllCurrentPage" (change)="allSelectedCurrentPage()">
+      </th>
+      <th (click)="requestSortBy('substring_to_translate')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'substring_to_translate'"
+          class="col-2">
+        Строка
+      </th>
+      <th (click)="requestSortBy('translation_memories.name_text')"
+          [class.headerSortUp]="isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
+          [class.headerSortDown]="!isSortingAscending && lastSortColumnName == 'translation_memories.name_text'"
+          class="col-3">
+        Память переводов
+      </th>
+      <th class="col-4">
+        Действия
+      </th>
+    </tr>
+  </thead>
+  <tr *ngFor="let row of dataSource"
+      [class.row-selected]="row.isSelected">
+    <td class="col-xs-1">
+      <input type="checkbox" [ngModel]="row.isSelected" (change)="selected(row)">
+    </td>
+    <td class="col-xs-55">
+      {{row.model.substring_to_translate}}
+    </td>
+    <td class="col-xs-34">
+      {{row.model.translation_memories_name}}
+    </td>
+    <td class="col-xs-10">
+      <div class="btn-group" role="group">
+        <button (click)="getEditing(row.model)" class="btn btn-primary m-1 btn-sm"> Изменить </button>
+        <button (click)="getConfirmDelete(row.model)" class="btn btn-warning m-1 btn-sm"> Удалить </button>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+<h4 *ngIf="!isDataSourceLoaded" class="alert alert-danger"> Невозможно подключиться к БД </h4>

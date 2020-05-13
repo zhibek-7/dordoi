@@ -1,0 +1,45 @@
+<div class="header-wrap">
+  <div>Папки</div>
+  <div>Владельцы</div>
+  <div>Дата создания</div>
+  <div>Количество файлов</div>
+  <div>Размер папки</div>
+  <div>Допустимый размер</div>
+  <div>Действия</div>
+</div>
+
+<div class="basic-container">
+  <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <!-- детальные записи -->
+    <cdk-tree-node *cdkTreeNodeDef="let node" cdkTreeNodePadding class="custom-tree-node">
+      <div class="node-content">
+        {{node.item}}
+      </div>
+    </cdk-tree-node>
+
+    <!-- группировки -->
+    <cdk-tree-node *cdkTreeNodeDef="let node; when: hasChild" cdkTreeNodePadding class="custom-tree-node">
+      <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" cdkTreeNodeToggle >
+        <mat-icon class="mat-icon-rtl-mirror" >
+          {{treeControl.isExpanded(node) ? 'remove' : 'add'}}
+        </mat-icon>
+      </button>
+      <div class="node-content">
+        {{node.item}}
+        <mat-progress-bar *ngIf="node.isLoading"
+        mode="indeterminate"
+        class="example-tree-progress-bar"></mat-progress-bar>
+      </div>
+
+      <div class="node-detailes"> {{node.owner}}</div>
+      <div class="node-detailes">{{node.dateCreated}}</div>
+      <div class="node-detailes">{{node.childrenCounter}}</div>
+      <div class="node-detailes">{{node.folderSize}}</div>
+      <div class="node-detailes">{{node.maxSize}}</div>
+      <div class="node-detailes">
+        <a>Изменить</a>
+      </div>
+
+    </cdk-tree-node>
+  </cdk-tree>
+</div>

@@ -1,0 +1,153 @@
+<div class="container-fluide">
+  <div class="row">
+    <div class="col-9">
+      <mat-form-field style="width:50%">
+        <mat-select placeholder="Сортировать по..." (ngModelChange)="sortBy($event)" [(ngModel)]="selectedSorting" name="sortBy">
+          <mat-option *ngFor="let sorting of sortingList" [value]="sorting.value">
+            {{sorting.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="jumbotron" *ngIf="!translators.length">
+        Согласно заданным параметрам фильтра не найдено ни одного переводчика.
+      </div>
+      
+      <app-dialog-invite-translator #invite *ngIf="visibleInvite" [user]="currentUser"></app-dialog-invite-translator>
+
+      <div class="jumbotron" *ngFor="let item of translators; let i=index">
+        <div class="row">
+          <div class="col-2">
+            <img class="width-to-parent" src="data:image/JPEG;base64,{{item.user_pic}}" alt="Participant avatar" *ngIf="item.user_pic; else noImageFound" class="rounded float-left" style="height: 4rem;">
+            <ng-template #noImageFound>
+              <img src="../../assets/svg/011-user.svg" class="rounded float-left" style="height: 4rem;">
+            </ng-template>
+          </div>
+          <div class="col-2" style="padding: 0rem;">
+            <h6>{{item.user_name}}</h6>
+          </div>
+          <div class="col">
+            Перевод <br> <span>{{item.words_quantity| number:'1.0-0'}}</span> слов
+          </div>
+          <div class="col">
+            <div class="row">
+              <div class="col" style="padding:0rem"><span class="amount">{{item.cost | currency : item.currency}}</span></div>
+              <div class="col-5" style="padding:0rem; line-height:1; padding-top: 5px;"><span style="color: grey; ">за <br> слово</span></div>
+            </div>
+          </div>
+          <div class="col" style="display: flex; justify-content: flex-end;">
+            <button mat-button color="primary" style="text-transform: uppercase; height: 3rem;" (click)="openDialog(item)">Пригласить в проект</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-2" style="font-size: 12px;">
+            <div class="row" style="align-items:center;">
+              <mat-icon style="color: green;">stars</mat-icon>{{item.translation_rating}}%
+            </div>
+            <div class="row">Качество</div>
+            <div class="row" style="align-items:center;">
+              <mat-icon style="color: #ffae00;">star_rate</mat-icon><span>{{item.term_rating}}%</span>
+            </div>
+            <div class="row">Соблюдение сроков</div>
+            <div class="row">
+              <p style="font-size: 10px; color: grey">Основано на <span style="font-weight:600;">{{item.number_of_ratings}} оценках(е)</span></p>
+            </div>
+          </div>
+          <div class="col topics">
+            <div class="row">
+              <span class="topic" *ngFor="let topic of item.topics;">
+                {{topic}}
+              </span>
+            </div>
+          </div>
+          <div class="col col-btn">
+            <button mat-button color="primary" style="height: 2rem;" class="btn-sm">Посмотреть профиль</button>
+          </div>
+        </div>
+      </div>
+      <mat-paginator [length]="listLength"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="pageSizeOptions"
+                     (page)="onPageChanged($event)"
+                     style="margin-bottom: 1rem;">
+      </mat-paginator>
+
+    </div>
+    <div class="col-3" style="font-size: 14px;">
+      <div class="content-top">
+        <div class="row">
+          <div class="col-2" style="display: flex; align-items: center;">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="col">Собрать команду фрилансеров</div>
+          <div class="col-2" style="display: flex; align-items: center;">
+            <mat-icon>chevron_right</mat-icon>
+          </div>
+        </div>
+
+        <span></span>
+
+      </div>
+      <mat-form-field>
+        <mat-select placeholder="Язык оригинала" [(ngModel)]="selectedCurrentLanguage" name="currentLanguages">
+          <mat-option *ngFor="let language of languages" [value]="language.id">
+            {{language.name_text}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Язык перевода" [(ngModel)]="selectedTranslateLanguage" name="translateLanguages">
+          <mat-option *ngFor="let language of languages" [value]="language.id">
+            {{language.name_text}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-checkbox [(ngModel)]="nativeLanguage">Родной язык</mat-checkbox>
+      <mat-form-field>
+        <mat-select placeholder="Услуга" [(ngModel)]="selectedService" name="services">
+          <mat-option *ngFor="let service of services" [value]="service.id">
+            {{service.name_text}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select placeholder="Тематика" [formControl]="topics" multiple>
+          <mat-select-trigger>
+            {{topics.value ? topics.value[0].name_text : ''}}
+            <span *ngIf="topics.value?.length > 1" class="example-additional-selection">
+              (+ {{'ещё'}} {{topics.value.length - 1}})
+            </span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let topic of topicsList" [value]="topic">{{topic.name_text}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <fieldset>
+        <legend>Ставка за слово</legend>
+        <div class="row">
+          <div class="col-6">
+            <label for="min">от</label>
+            <input matInput type="number" id="min" name="min" [(ngModel)]="min" (input)="onMinPriceChange($event.target.value)" />
+          </div>
+          <div class="col-6">
+            <label for="max">до</label>
+            <input matInput type="number" id="max" name="max" [(ngModel)]="max" (input)="onMaxPriceChange($event.target.value)" />
+          </div>
+        </div>
+      </fieldset>
+      <div class="row row-buttons">
+        <button mat-button (click)="clearSearch()">Очистить</button>
+        <button mat-button color="primary" (click)="filtredFn({
+          currentLanguage: selectedCurrentLanguage,
+          translateLanguage: selectedTranslateLanguage,
+          itsNativeLanguage: nativeLanguage,
+          service: selectedService,
+          topics: topics.value,
+          min: min,
+          max: max
+        })">
+          Поиск
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

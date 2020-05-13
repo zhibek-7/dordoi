@@ -1,0 +1,77 @@
+<div class="translationBlock" *ngIf="checkPhrase()">
+  <table class="controlBlock">
+      <tr>
+        <td scope="col" class=" col-1">
+          <mat-icon class="arrowIcon mat-icon " (click)="hideLeftBlock()">chevron_left</mat-icon>
+        </td>
+        <td scope="col" class="col-2">
+              <div (dblclick)="openSelectionDialog($event)" class="textArea">{{phraseForTranslate.substring_to_translate}}</div>
+	</td>
+        <td scope="col" class="col-3">
+          <mat-icon class="arrowIcon mat-icon " (click)="hideRightBlock()">chevron_right</mat-icon>
+        </td>
+      </tr>
+  </table>
+  <div class="contextBlock">
+    <!--<div class="row mt-2"> -->
+    <div class="row context">
+      <div class="contextPicker" (click)="contextShowClick()">Контекст</div>
+      <div *ngIf="showContextBlock">
+        <mat-icon class="arrowIcon">expand_less</mat-icon>
+      </div>
+      <div *ngIf="!showContextBlock">
+        <mat-icon class="arrowIcon">expand_more</mat-icon>
+      </div>
+      <div *ngIf="showContextBlock">
+        <div class="contextEdit col-6" (click)="editContextModal.show()">
+          <mat-icon>edit</mat-icon>
+        </div>
+        <context-edit-modal-component #editContextModal [currentPhrase]="phraseForTranslate"
+          (onEnterContext)="enterContext($event)"></context-edit-modal-component>
+      </div>
+    </div>
+    <div *ngIf="showContextBlock">
+      <!--<div class="row mb-1 ">--->
+      <div class="col-sm">
+        <div class="textAreaContext">{{phraseForTranslate.context}}</div>
+        <div class="textAreaContext"
+          disabled=true>Из файла:{{phraseForTranslate.context_file}}</div>
+      </div>
+      <div class="col-sm">
+        <ul class="row margin-small">
+          <li class="list-group-item imageBlock" (click)="showImage(image)" *ngFor="let image of images">
+            <img class="appendedImage" src="data:image/JPEG;base64,{{image.body}}" />
+          </li>
+        </ul>
+      </div>
+      <!--</div>-->
+    </div>
+    <hr class="hr-style">
+    <div>
+      <!-- class="yourTranslateBlock"<div class="form-group translateTextArea">-->
+      <!-- <div class="row mt-2">
+        <div ng-cl class="translateTextArea">-->
+      <textarea id="inputForTranslation" name="translatedText" [(ngModel)]="translatedText"
+        placeholder="Введите перевод" class="translateTextArea"></textarea>
+      <!--</div>
+      </div>-->
+      <!--</div>-->
+      <div class="form-group" *ngIf="!changingTranslation">
+        <button type="submit" class="btn btn-success float-right m-1 btn-sm" id="btnSave" name="buttonSubmitInput"
+          form="inputForTranslation" (click)="submitTranslate()">Сохранить</button>
+      </div>
+      <div class="form-group" *ngIf="changingTranslation">      
+        <button type="submit" class="btn btn-success float-right m-1 btn-sm" id="btnSave" name="buttonSubmitInput"
+          form="inputForTranslation" (click)="changeTranslation()">Изменить</button>
+        <button type="submit" class="btn btn-success float-right m-1 btn-sm"
+          (click)="cancelChangeingTranslation()">Отменить изменение</button>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div class="translationBlockWithoutPhrase" *ngIf="!checkPhrase()">
+  <div class="phraseUndifinedBlock">Выберите фразу</div>
+</div>

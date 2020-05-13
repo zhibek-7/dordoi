@@ -1,0 +1,54 @@
+<!--<div style="text-align:center" *ngIf="project">
+  <h1>
+    Проект { {project.name_text}} name.value
+  </h1>
+</div>-->
+
+<form [formGroup]="form"
+      novalidate
+      (ngSubmit)="submit()"
+      *ngIf="loaded">
+
+  <div class="form-group row">
+    <label class="col-3 col-form-label">Название проекта:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field width-to-parent">
+        <input matInput type="text"
+               #name formControlName="nameFormControl"><!--placeholder="Обычно название вашего веб-сайта или приложения"-->
+        <!--<button mat-button *ngIf="name.value" matSuffix mat-icon-button aria-label="Clear" (click)="project.name_text='';name.value='';">
+          <mat-icon>close</mat-icon>
+        </button>-->
+      </mat-form-field>
+      <small class="form-text text-muted">
+        Обычно название вашего веб-сайта или приложения.
+      </small>
+      <div class="text-danger"
+           *ngIf="form.controls['nameFormControl'].invalid && form.controls['nameFormControl'].touched && form.controls['nameFormControl'].errors?.required">
+        Это поле необходимо заполнить.
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-3 col-form-label">Описание проекта:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field width-to-parent">
+        <input matInput type="text"
+               #description formControlName="descriptionFormControl">
+        <button mat-button *ngIf="description.value" matSuffix mat-icon-button aria-label="Clear" (click)="project.description='';description.value='';">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <button class="btn m-1 btn-sm"
+            [class.btn-success]="form.valid "
+            [class.btn-primary]="form.invalid"
+            [disabled]="form.invalid"
+            type="submit">
+      Сохранить
+    </button>
+  </div>
+
+</form>

@@ -1,0 +1,58 @@
+<app-modal [isWide]="true" [(visible)]="visible">
+
+  <div class="app-modal-header d-flex m-2">
+    <h4 class="modal-title">Пригласить в проект(ы) {{user.user_name}}</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+
+  <div class="app-modal-body">
+    <form [formGroup]="formGroup">
+      <div class="m-2">
+        <h6>Проект(ы)</h6>
+        <section *ngFor="let project of projects"
+                 class="example-section">
+          <mat-checkbox class="example-margin"
+                        labelPosition="before"
+                        (change)="changeSelectedProjects(project,$event)">
+            {{project.name_text}}
+          </mat-checkbox>
+        </section>
+      </div>
+      <div class="m-2">
+        <div>
+          <h6>Роль</h6>
+        </div>
+        <select *ngIf="roles" class="form-control m-1" [(ngModel)]="selectedRoleId" [ngModelOptions]="{standalone: true}">
+          <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name_text}}</option>
+        </select>
+      </div>
+      <div class="m-2">
+        <div>
+          <h6>Сообщение</h6>
+        </div>
+        <mat-form-field class="width-to-parent">
+          <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="6"
+                      cdkAutosizeMaxRows="20" placeholder="Сообщение" formControlName="invitationMessageFormControl"></textarea>
+
+        </mat-form-field>
+      </div>
+      <div class="m-2">
+        <div>
+          <h6>Ссылка(и)</h6>
+        </div>
+        <mat-form-field *ngFor="let invitationLink of invitationWithLinks"
+                        class="width-to-parent">
+          <textarea matInput readonly [value]="invitationLink[1]"></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <div class="app-modal-footer row">
+    <div class="col">
+      <button class="btn btn-primary" (click)="hide()">Отмена</button>
+      <button class="btn btn-success m-1" (click)="submit()">Пригласить</button>
+    </div>
+  </div>
+
+</app-modal>

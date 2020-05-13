@@ -1,0 +1,92 @@
+/* You can add global styles to this file, and also import other style files */
+/*@import "~@angular/material/prebuilt-themes/indigo-pink.css";*/
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "https://fonts.googleapis.com/css?family=Roboto";
+
+body {
+  color: #3E3F42;
+  background-color: #F4F7FC;
+}
+
+.selectionDialog .mat-dialog-container {
+  padding: 0%;
+  border-radius: 5%;
+}
+
+html {
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background-color: #3369FD;
+  border-color: #3369FD;
+}
+
+
+.btn-secondary {
+  background-color: #646567;
+  border-color: #646567;
+}
+
+.btn-success {
+  background-color: #0AC786;
+  border-color: #0AC786;
+}
+
+.btn-danger {
+  background-color: #FF2660;
+  border-color: #FF2660;
+}
+
+.btn-warning {
+  background-color: #FFA716;
+  border-color: #FFA716;
+}
+
+
+.btn-light {
+  background-color: #F3F6FE;
+  border-color: #F3F6FE;
+}
+
+
+.btn-link {
+  color: #3369FD;
+}
+
+
+
+.img {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.img_small {
+  height: 1rem;
+  width: 1rem;
+}
+
+.img_big {
+  height: 5rem;
+  width: 5rem;
+}
+
+@media (min-width: 576px) {
+  html {
+    font-size: 1.2rem;
+  }
+}
+
+
+@media (min-width: 900px) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  html {
+    font-size: 1.4rem;
+  }
+}

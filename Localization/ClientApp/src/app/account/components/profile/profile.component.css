@@ -1,0 +1,43 @@
+.mat-icon {
+  color: grey;
+}
+
+.nav.nav-pills {
+  background-color: #F9F9F8;
+}
+
+.nav-pills {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #E6E7E4;
+}
+
+.nav-item a {
+  color: black;
+}
+
+.table-border {
+  border-top: 1px solid #b9b6b6;
+  border-bottom: 1px solid #b9b6b6;
+}
+
+input.ng-touched.ng-invalid {
+  border: solid red 2px;
+}
+
+/*input.ng-touched.ng-valid {
+  border: solid green 2px;
+}*/
+
+.green {
+  color: green;
+}
+
+.badge-outline-danger
+{
+  color: red;
+  border: 1px solid red;
+}

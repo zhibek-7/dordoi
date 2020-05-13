@@ -1,0 +1,24 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "es2015",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+   // "noUnusedLocals": true, //TODO Ïðè êîìïèëÿöèè ãîâîðèò, ÷òî ÷òî òî íå èñïîëüçóåòñÿ
+   //"charset": "utf8", // TODO Êîäèðîâêà âõîäíûõ ôàéëîâ.
+    //"allowUnreachableCode": false, // Ñîîáùèòü îá îøèáêå â ñëó÷àå îáíàðóæåíèÿ êîäà, êîòîðûé íèêîãäà íå áóäåò âûïîëíåí?
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+.btn:focus,
+.btn:active {
+  outline: none !important;
+  box-shadow: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.col-10 {
+  padding: 0em;
+  font-size: 0.8em
+}
+
+.appendedImage {
+  width: 100%;
+}
+
+.imageBlock {
+  cursor: pointer;
+  margin-right: 5%;
+  padding: 2%;
+  border-radius: 15%;
+  border-color: #4430ffea;
+  border-width: 2px;
+  border-style: dashed;
+  height: 3rem;
+  width: 3rem;
+
+}
+
+
+.translateTextArea {
+  padding-left: 1rem;
+  padding-right: 1rem;
+width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+//height:5rem;
+ min-width: 7rem;
+  font-size: 1em;
+    min-width: 30em;
+}

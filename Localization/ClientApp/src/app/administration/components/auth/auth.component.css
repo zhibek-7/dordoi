@@ -1,0 +1,13 @@
+::ng-deep .mat-tab-label {
+  border: 1px solid #b9b9b9;
+  color: #4e4e4e;
+  background-color: #e9ecef;
+}
+
+::ng-deep .mat-tab-label-active {
+  background-color: white;
+}
+
+::ng-deep .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: #4e4e4e;
+}

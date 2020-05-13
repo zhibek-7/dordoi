@@ -1,0 +1,13 @@
+<app-modal [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 class="modal-title">Задать языки перевода для термина</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <app-set-languages [availableLocales]="availableLocales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-success m-1 btn-sm" (click)="applyChanges()">Сохранить</button>
+    <button class="btn btn-primary btn-sm" (click)="hide()">Отмена</button>
+  </div>
+</app-modal>

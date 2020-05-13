@@ -1,0 +1,4 @@
+<select class="form-control" (change)="raiseSelectionChanged($event.target.value)">
+  <option value="null"> </option>
+  <option *ngFor="let timeZone of timeZones" [value]="timeZone.id" [selected]="timeZone.id==availableTimeZone">{{timeZone.description}}</option>
+</select>

@@ -1,0 +1,27 @@
+<div>
+  <section>
+    <mat-checkbox [(ngModel)]="cleanTableBeforeImportFlag">Очистить таблицу</mat-checkbox>
+    <button mat-raised-button (click)="selectFile.click()">
+      Выбрать файл
+      <input #selectFile type="file" style="display: none;" (change)="fileSelected($event)">
+    </button>
+    <mat-form-field>
+      <mat-select placeholder="Тип данных" [(ngModel)]="selectedDataType">
+        <mat-option *ngFor="let dataType of dataTypes" [value]="dataType">
+          {{dataType.displayName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button (click)="beginImport()">Импорт</button>
+  </section>
+  <mat-form-field class="width-to-parent">
+    <textarea matInput
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              cdkAutosizeMinRows="4"
+              cdkAutosizeMaxRows="20"
+              placeholder="Лог"
+              [(value)]="log"
+              ></textarea>
+  </mat-form-field>
+</div>

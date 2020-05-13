@@ -1,0 +1,231 @@
+<div class="container-fluide">
+  <div class="row">
+    <ul class="nav nav-pills nav-element-gray" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+           aria-selected="false">Профиль</a>
+      </li>
+<!--      <li class="nav-item">
+        <a class="nav-link" id="notifications-tab" data-toggle="tab" href="#notifications" role="tab" aria-controls="notifications"
+           aria-selected="true">Уведомления</a>
+      </li>
+-->
+      <li class="nav-item">
+        <a class="nav-link" id="connections-tab" data-toggle="tab" href="#connections" role="tab" aria-controls="connections"
+           aria-selected="true">Пароль и подключения</a>
+      </li>
+    </ul>
+  </div>
+
+
+
+    <div class="row"
+         *ngIf="user">
+      <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+          <label><b>Аватар</b></label>
+
+          <div class="row">
+            <div class="col-sm-2">
+             <img *ngIf="user.photo == null" [src]="imageUrl" alt="" class="img-thumbnail mx-auto d-block">
+              <img *ngIf="user.photo != null" src="data:image/JPEG;base64,{{user.photo}}" class="img-thumbnail mx-auto d-block"/>
+            </div>
+            <div class="col-sm-10">
+              <dropzone class="dropzone-container"
+                        [config]="config"
+                        [message]="'Перетяните картинку сюда или нажмите на эту область для выбора файла'"
+                        (init)="onUploadInit($event)"
+                        (error)="onUploadError($event)"
+                        (success)="onUploadSuccess($event)">
+
+
+              </dropzone>
+              <button class="btn btn-danger m-1 btn-sm"
+                      (click)="deleteImage()">
+                Удалить
+              </button>
+            </div>
+          </div>
+
+          <label><b>Общая информация</b></label>
+
+          <form [formGroup]="profileFormGroup"
+                novalidate
+                (ngSubmit)="submit()">
+
+            <div class="form-group">
+              <label>Полное имя:</label>
+              <input class="form-control"
+                     placeholder="например, Иванов Иван"
+                     name="fullName"
+                     formControlName="fullNameFormControl" />
+            </div>
+            <div class="form-group">
+              <label>Email:</label>
+              <input class="form-control"
+                     name="email"
+                     formControlName="emailFormControl"
+                     (keyup)="isUniqueEmail($event)"
+                     (blur)="isUniqueEmail($event)"/>
+              <div class="alert alert-danger"
+                   *ngIf="profileFormGroup.controls['emailFormControl'].invalid && profileFormGroup.controls['emailFormControl'].touched && profileFormGroup.controls['emailFormControl'].errors?.required">
+                Поле "Email" обязательно для заполнения
+              </div>
+              <div class="alert alert-danger"
+                   *ngIf="profileFormGroup.controls['emailFormControl'].invalid && profileFormGroup.controls['emailFormControl'].touched && profileFormGroup.controls['emailFormControl'].errors?.email">
+                Некорректный email
+              </div>
+              <div class="alert alert-danger"
+                   *ngIf="profileFormGroup.controls['emailFormControl'].invalid && profileFormGroup.controls['emailFormControl'].touched && profileFormGroup.controls['emailFormControl'].errors?.isUniqueEmail">
+                Введенный email занят другим пользователем
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Пол:</label>
+              <br />
+              <input type="radio"
+                     formControlName="genderFormControl"
+                     value="false" /> Мужчина
+              <input type="radio"
+                     formControlName="genderFormControl"
+                     value="true" /> Женщина
+            </div>
+
+            <div class="form-group">
+              <label>Обо мне:</label>
+              <textarea class="form-control"
+                        name="about"
+                        formControlName="aboutMeFormControl"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Часовой пояс:</label>
+              <app-set-time-zone [availableTimeZone]="user.id_time_zones" (selectedTimeZoneChanged)="setSelectedTimeZone($event)"></app-set-time-zone>
+
+            </div>
+            <div class="border-top"
+                 *ngIf="availableLocales.length > 0">
+              <label>Мои языки:</label>
+              <app-set-languages-with-native [availableLocales]="availableLocales" (selectedLocalesWithNativeChanged)="setSelectedLocales($event)"></app-set-languages-with-native>
+            </div>
+            <br />
+            <div class="form-group">
+              <button class="btn m-1 btn-sm"
+                      [class.btn-success]="profileFormGroup.valid"
+                      [class.btn-primary]="profileFormGroup.invalid"
+                      [disabled]="profileFormGroup.invalid"
+                      type="submit">
+                СОХРАНИТЬ
+              </button>
+            </div>
+          </form>
+
+          <div class="form-group">
+
+            <label><b>Удаление учетной записи</b></label>
+
+            <div class="alert alert-danger"
+                 *ngIf="isDeleteUserError">
+              Не удалось удалить профиль, т.к. Вы являетесь владельцом проекта(ов)
+            </div>
+
+            <label>
+              <span class="badge badge-outline-danger">Важно </span>
+              Проекты, созданные под Вашей учётной записью и сама учётная запись будут удалены навсегда,
+              без возможности их восстановления в будущем.
+            </label>
+            <button class="btn btn-danger m-1 btn-sm"
+                    (click)="deleteUser()">
+              Удаление учетной записи
+            </button>
+          </div>
+
+        </div>
+
+
+          <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+
+            <label><b>Настройка уведомлений</b></label>
+
+          </div>
+
+
+
+
+          <div class="tab-pane fade" id="connections" role="tabpanel" aria-labelledby="connections-tab">
+
+            <form [formGroup]="passwordChangeFormGroup"
+                  novalidate
+                  (ngSubmit)="passwordChange()">
+
+              <label><b>Смена пароля</b></label>
+
+              <div class="alert alert-success"
+                   *ngIf="passwordChangeFormGroup.untouched && isPasswordChanged">
+                Пароль изменен
+              </div>
+
+              <div class="form-group">
+                <label>
+                  Текущий пароль
+                  <mat-icon (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </label>
+                <input class="form-control"
+                       [type]="hidePassword ? 'password' : 'text'"
+                       name="passwordCurrent"
+                       formControlName="passwordCurrentFormControl" />
+                <div class="alert alert-danger"
+                     *ngIf="passwordChangeFormGroup.controls['passwordCurrentFormControl'].invalid && passwordChangeFormGroup.controls['passwordCurrentFormControl'].touched && passwordChangeFormGroup.controls['passwordCurrentFormControl'].errors?.required">
+                  Введите текущий пароль
+                </div>
+                <div class="alert alert-danger"
+                     *ngIf="passwordChangeFormGroup.controls['passwordCurrentFormControl'].invalid && passwordChangeFormGroup.controls['passwordCurrentFormControl'].touched && passwordChangeFormGroup.controls['passwordCurrentFormControl'].errors?.passwordCurrentInvalid">
+                  Неверный пароль, попробуйте ввести заново
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>
+                  Новый пароль
+                </label>
+                <input class="form-control"
+                       [type]="hidePassword ? 'password' : 'text'"
+                       name="password"
+                       formControlName="passwordNewFormControl" />
+                <div class="alert alert-danger"
+                     *ngIf="passwordChangeFormGroup.controls['passwordNewFormControl'].invalid && passwordChangeFormGroup.controls['passwordNewFormControl'].touched">
+                  Пароль должен содержать не меньше 8 знаков, включая прописные и заглавные символы латинского алфавита, цифры и специальные знаки
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Подтвердите новый пароль</label>
+                <input class="form-control"
+                       [type]="hidePassword ? 'password' : 'text'"
+                       (keyup)="confirmPassword($event)"
+                       name="passwordConfirm"
+                       formControlName="passwordNewConfirmFormControl" />
+                <div class="alert alert-danger"
+                     *ngIf="passwordChangeFormGroup.controls['passwordNewConfirmFormControl'].invalid && passwordChangeFormGroup.controls['passwordNewConfirmFormControl'].touched">
+                  Пароли не совпадают, попробуйте заново ввести
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="btn m-1 btn-sm"
+                        [class.btn-success]="passwordChangeFormGroup.valid"
+                        [class.btn-primary]="passwordChangeFormGroup.invalid"
+                        [disabled]="passwordChangeFormGroup.invalid"
+                        type="submit">
+                  Смена пароля
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+    </div>
+</div>

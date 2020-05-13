@@ -1,0 +1,47 @@
+<h5 mat-dialog-title>Редактирование изображения: {{currentImg.name_text}}</h5>
+<div mat-dialog-content>
+  <div id="modal-body">
+    <canvas id="imgCanvas" #imgCanvas (dblclick)="getTxtInput($event)"></canvas>
+  </div>
+  <div class="container wrap">
+    <div class="row">
+      <div class="custom-width col-4">
+        <mat-hint>Обрезать рисунок</mat-hint>
+        <div class="example-full-width">
+          <button mat-icon-button matTooltipClass="tooltip-zindex" matTooltip="Выделить область для обрезки" (click)="initDraw()">
+            <mat-icon aria-label="">aspect_ratio</mat-icon>
+          </button>
+          <button mat-icon-button matTooltipClass="tooltip-zindex" matTooltip="Сохранить фрагмент" (click)="cutImg()">
+            <mat-icon aria-label="">save_alt</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="custom-width col-4">
+        <mat-hint>Выделить область</mat-hint>
+        <div class="example-full-width">
+          <button mat-icon-button (click)="selectArea(imgCanvas)">
+            <mat-icon aria-label="" matTooltipClass="tooltip-zindex" matTooltip="Выделить область">crop_square</mat-icon>
+          </button>
+          <button mat-icon-button (click)="saveSqr()">
+            <mat-icon aria-label="" matTooltipClass="tooltip-zindex" matTooltip="Сохранить">save_alt</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="custom-width col-4">
+        <mat-hint>Текст</mat-hint>
+        <div class="example-full-width">
+          <button mat-icon-button (click)="getTxtInput()">
+            <mat-icon aria-label="" matTooltipClass="tooltip-zindex" matTooltip="Создать надпись">text_fields</mat-icon>
+          </button>
+          <button mat-icon-button (click)="saveTxt()">
+            <mat-icon aria-label="" matTooltipClass="tooltip-zindex" matTooltip="Сохранить надпись">save_alt</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Закрыть</button>
+  <button mat-button (click)="saveImg()">Сохранить</button>
+</div>

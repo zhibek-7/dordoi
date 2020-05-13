@@ -1,0 +1,45 @@
+.jumbotron {
+  padding: .3rem;
+  margin: 1rem;
+  background-color: #e9ecef;
+  border-radius: .3rem;
+  border: 1px solid #b9b9b9;
+  color: black;
+}
+
+.header {
+  text-align: center;
+}
+p {
+  margin: 0px;
+}
+.header p {
+  font-weight: 600;
+}
+
+::ng-deep .mat-sidenav-content{
+  height: 90vh !important;
+}
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  width: 15rem;
+  border: 1px solid #b9b9b9;
+  border-top: none;
+  color: #4e4e4e;
+}
+
+.mat-toolbar-row:first-child {
+  border-top: 1px solid #b9b9b9;
+}
+
+::ng-deep .mat-toolbar {
+  background: inherit !important;
+}
+
+.mat-drawer-content {
+  background: white !important;
+}
+
+.active {
+  background: #e9ecef;
+}

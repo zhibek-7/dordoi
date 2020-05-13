@@ -1,0 +1,103 @@
+<app-modal [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 class="modal-title"> Скачивание </h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+
+    <div>
+      <label class="m-1"> Формат: </label>
+      <div class="input-group">
+        <div>
+          <select class="form-control m-1"
+                  [(ngModel)]="setting.typeFile"
+                  #typesControl="ngModel"
+                  name="typesControl">
+            <option [value]="null">Не выбрано</option>
+            <option *ngFor="let item of types" [ngValue]="item.key">{{item.value}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="alert alert-danger"
+           *ngIf="(typesControl.dirty || typesControl.touched) &&
+           (setting.typeFile == null)">
+        Выберите формат.
+      </div>
+    </div>
+
+    <div>
+      <div class="input-group ml-4">
+        <div>
+          <div>
+            <label class="form-check-label">
+              <input class="form-check-input"
+                     type="radio"
+                     [value]="true"
+                     [(ngModel)]="setting.isAllLocale"
+                     #allLocaleCheckControl="ngModel"
+                     name="allLocaleCheckControl">
+              Все языки
+            </label>
+          </div>
+          <div>
+            <label class="form-check-label">
+              <input class="form-check-input"
+                     type="radio"
+                     [value]="false"
+                     [(ngModel)]="setting.isAllLocale"
+                     #notAllLocaleCheckControl="ngModel"
+                     name="notAllLocaleCheckControl">
+              Языковая пара
+            </label>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="( (allLocaleCheckControl.dirty || allLocaleCheckControl.touched) || (notAllLocaleCheckControl.dirty || notAllLocaleCheckControl.touched) ) &&
+           setting.isAllLocale == null" class="alert alert-danger">
+        Выберите языковую настройку.
+      </div>
+    </div>
+
+    <div>
+      <div class="input-group">
+        <div>
+          <select class="form-control m-1" [(ngModel)]="setting.baseLocaleId"
+                  [disabled]="setting.isAllLocale != false"
+                  #baseLocaleControl="ngModel"
+                  name="baseLocaleControl">
+            <option [value]="null">Не выбрано</option>
+            <option *ngFor="let item of availableLocales" [ngValue]="item.id">{{item.name_text}}</option>
+          </select>
+
+          <select class="form-control m-1" [(ngModel)]="setting.translationLocaleId"
+                  [disabled]="setting.isAllLocale != false"
+                  #translationLocaleControl="ngModel"
+                  name="translationLocaleControl">
+            <option [value]="null">Не выбрано</option>
+            <option *ngFor="let item of availableLocales" [ngValue]="item.id">{{item.name_text}}</option>
+          </select>
+        </div>
+      </div>
+      <div *ngIf="setting.isAllLocale == false &&
+           ( ((setting.baseLocaleId == null) && (baseLocaleControl.dirty || baseLocaleControl.touched)) ||
+           ((setting.translationLocaleId == null) && (translationLocaleControl.dirty || translationLocaleControl.touched)) )" class="alert alert-danger">
+        Выберите языковую пару.
+      </div>
+    </div>
+
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-primary m-1 btn-sm"
+            [disabled]="setting.typeFile == null ||
+            setting.isAllLocale == null ||
+            (setting.isAllLocale == false && (setting.baseLocaleId == null || setting.translationLocaleId == null))"
+            (click)="submit()">
+
+      Скачать
+    </button>
+    <button class="btn btn-primary btn-sm"
+            (click)="hide()">
+      Закрыть
+    </button>
+  </div>
+</app-modal>

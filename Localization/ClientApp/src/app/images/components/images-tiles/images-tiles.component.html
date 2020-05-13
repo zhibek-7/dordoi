@@ -1,0 +1,24 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <input type="text" class="form-control m-1" placeholder="Искать скриншоты" [(ngModel)]="imageNameFilter" (input)="loadImages()" />
+    </div>
+    <mat-paginator [length]="totalCount"
+                   [pageSize]="pageSize"
+                   [pageSizeOptions]="[10, 25]"
+                   (page)="onPageChanged($event)"
+                   showFirstLastButtons>
+    </mat-paginator>
+  </div>
+  <div class="row">
+    <div *ngFor="let image of imgs">
+      <div class="card" style="width: 18rem; margin: 1rem;">
+        <img src="data:image/JPEG;base64,{{image.body}}" class="card-img-top" (click)="showModal($event, image)">
+        <div class="card-body">
+          <h5 class="card-title">{{image.name_text}}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

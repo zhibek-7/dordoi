@@ -1,0 +1,21 @@
+<app-modal [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 class="modal-title"> Изменить память переводов </h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <app-translation-memory-editable-details [translationMemory]="translationMemoryEditable" [triggerLoading]="visible"></app-translation-memory-editable-details>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-success m-1 btn-sm" (click)="submit()"
+            [disabled]="translationMemoryEditable.name_text == null || translationMemoryEditable.name_text.length == 0 ||
+            translationMemoryEditable.locales_ids.length == 0 ||
+            translationMemoryEditable.localization_projects_ids.length == 0">
+      Сохранить
+      </button>
+    <button class="btn btn-primary btn-sm"
+            (click)="hide()">
+       Отмена
+    </button>
+  </div>
+</app-modal>

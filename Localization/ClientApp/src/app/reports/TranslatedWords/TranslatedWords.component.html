@@ -1,0 +1,100 @@
+<div class="reportParamHolder">
+
+  <p class="daterangePicker1">
+    <span>Диапазон дат </span>
+    <!-- -->
+    <input type="text" matInput ngxDaterangepickerMd [locale]="{cancelLabel: ' Отмена ', applyLabel: ' ОК ', format: 'DD-MM-YYYY'}"
+      startKey="from" endKey="to" [(ngModel)]="selected" name="daterange" class="daterangePicker1" value="{{getReportPeriod()}}" />
+    <!---->
+  </p>
+
+  <div>
+
+    <div classs="div_bg">
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Пользователь</mat-label>
+        <mat-select [(value)]="user" placeholder="Пользователь" style=" color: green;padding: 2px">
+          <mat-option value="-1" selected>Все пользователи</mat-option>
+          <mat-option *ngFor="let u of Users" [value]="u">"{{u.name_text}}"</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Язык перевода</mat-label>
+        <mat-select [(value)]="locale" placeholder="Язык перевода">
+          <mat-option value="-1" selected>Все языки</mat-option>
+          <mat-option *ngFor="let lang of Languages" [value]="lang">"{{lang.name_text}}"</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Вид работ</mat-label>
+        <mat-select [(value)]="workType" placeholder="Вид работы">
+          <mat-option value="-1" selected>Все</mat-option>
+          <mat-option *ngFor="let workType of WorkTypes" [value]="workType">"{{workType.name_text}}"</mat-option>
+          <!--<mat-option value="Перевод">Перевод</mat-option>
+          <mat-option value="Редактура">Редактура</mat-option>-->
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Подсчет объема по</mat-label>
+        <mat-select [(value)]="volumeCalcType" placeholder="Подсчет объема по">
+          <mat-option value="false" selected>словам</mat-option>
+          <mat-option value="true">знакам с пробелами</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input_text" style="margin-right: 1rem;">
+        <mat-label>Основа для подсчета</mat-label>
+        <mat-select [(value)]="calcBasisType" placeholder="Основа для подсчета">
+          <mat-option value="false" selected>Исходный язык</mat-option>
+          <mat-option value="true">Язык перевода</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <button (click)="clickEvent()" class="btn  btn-success m-1 btn-sm">
+        Построить отчет
+      </button>
+      <button (click)="download()" class="btn  btn-primary btn-sm">
+        Экспорт отчетов
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="reportHeader">
+  <h2>{{msg}}</h2>
+</div>
+
+<div *ngIf="reportrows">
+  <table mat-table [dataSource]="reportrows" class="mat-elevation-z8">
+    <ng-container matColumnDef="name_text">
+      <th mat-header-cell *matHeaderCellDef> Имя пользовател </th>
+      <td mat-cell *matCellDef="let element"> {{element.name_text}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="language">
+      <th mat-header-cell *matHeaderCellDef> Языки </th>
+      <td mat-cell *matCellDef="let element"> {{element.language}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="workType">
+      <th mat-header-cell *matHeaderCellDef> Вид работ </th>
+      <td mat-cell *matCellDef="let element"> Перевод </td>
+    </ng-container>
+
+    <ng-container matColumnDef="translations">
+      <th mat-header-cell *matHeaderCellDef> Переведено </th>
+      <td mat-cell *matCellDef="let element"> {{element.translations}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+</div>

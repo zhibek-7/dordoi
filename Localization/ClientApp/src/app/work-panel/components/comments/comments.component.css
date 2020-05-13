@@ -1,0 +1,113 @@
+.directoryBlock,
+.addCommentBlock {
+}
+
+
+.directoryBlock a {
+  color: gray;
+}
+
+.panel-body {
+  background: #fcfaef;
+}
+
+.tabsBlock {
+}
+
+.tabsBlock .list-group {
+  height: 75vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px;
+}
+
+.list-group {
+}
+
+
+.list-group-item-action {
+  padding: 2px 2px 2px 1rem;
+}
+
+/* .inputSearch {
+    padding-top: 2%;
+    padding-left: 0%;
+    padding-right: 1%;
+} */
+
+/* .inputSearch input {
+    border-radius: 0%
+} */
+
+.form-control {
+  padding: 0px;
+}
+
+.conditionsBlock {
+  text-align: center;
+  padding-top: 40%;
+  font-size: 1em;
+  color: grey;
+}
+
+
+.col-6 {
+  font-size: 0.8rem;
+}
+
+.controlText {
+
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px 2px 2px 2px;
+}
+
+.greenBtn {
+}
+
+.appendedImage {
+  width: 100%;
+}
+
+.imageBlock {
+  cursor: pointer;
+  margin-right: 5%;
+  padding: 2%;
+  border-radius: 15%;
+  border-color: #4430ffea;
+  border-width: 2px;
+  border-style: dashed;
+  height: 3rem;
+  width: 3rem;
+}
+
+.addCommentBlock {
+  padding-top: 0.3rem;
+}
+
+.arrowIcon {
+  cursor: pointer;
+}
+
+.align-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.col-12{
+  font-size: 0.8em;
+}
+.mat-icon {
+  color: grey;
+}
+
+.termName {
+  font-weight: bold;
+  color: #A4BF82;
+}
+
+.glossaryName {
+  font-weight: bold;
+}

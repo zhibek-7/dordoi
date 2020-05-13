@@ -1,0 +1,54 @@
+<div class="jumbotron">
+  <div class="container header">
+    <p>Центральная консоль управления</p>
+  </div>
+</div>
+<div class="container-fluide" style="margin:0rem 1rem;">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col" style="text-align: end; font-size: 1rem;">
+      <span>Добро пожаловать: current_user_name</span>
+      <span style="margin:.3rem;">|</span>
+      <span><a routerLink='/administration'>Выход</a></span>
+    </div>
+  </div>
+</div>
+
+<mat-sidenav-container style="margin:2rem 1rem 0rem 1rem;">
+  <mat-sidenav mode="side" opened>
+      <mat-toolbar>
+          <mat-toolbar-row (click)="showMainContent(1)" [ngClass]="{'active': showSettingsComponent}">
+              <mat-icon>home</mat-icon>&nbsp;&nbsp;&nbsp;<span>Настройки</span>
+          </mat-toolbar-row>
+
+          <mat-toolbar-row (click)="showMainContent(2);" [ngClass]="{'active': showFoldersComponent}">
+              <mat-icon>folder</mat-icon>&nbsp;&nbsp;&nbsp;<span>Папки</span>
+          </mat-toolbar-row>
+
+          <mat-toolbar-row (click)="showMainContent(3)" [ngClass]="{'active': showUsersListComponent}">
+              <mat-icon>person</mat-icon>&nbsp;&nbsp;&nbsp;<span>Пользователи</span>
+          </mat-toolbar-row>
+
+          <mat-toolbar-row (click)="showMainContent(7)" [ngClass]="{'active': showImportComponent}">
+              <mat-icon>input</mat-icon>&nbsp;&nbsp;&nbsp;<span>Иморт данных</span>
+          </mat-toolbar-row>
+
+        </mat-toolbar>
+  </mat-sidenav>
+  <mat-sidenav-content >
+    <div style="margin-left: .5rem;">
+      <div *ngIf="showSettingsComponent">
+          <app-settings></app-settings>
+      </div>
+      <div *ngIf="showFoldersComponent">
+          <app-folders></app-folders>
+      </div>
+      <div *ngIf="showUsersListComponent">
+          <app-users-list></app-users-list>
+      </div>
+      <div *ngIf="showImportComponent">
+          <app-data-import></app-data-import>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

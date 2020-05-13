@@ -1,0 +1,22 @@
+<div class="row m-2">
+
+  <div class="col">
+    <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
+  </div>
+</div>
+<div class="row m-2">
+  <div class="col">
+    <input type="text" class="form-control m-1" placeholder="Искать строки" [(ngModel)]="stringSearchString" (input)="loadStrings()" />
+  </div>
+  <div class="col">
+    <select class="form-control m-1" [(ngModel)]="selectedFileId" (change)="loadStrings()">
+      <option [ngValue]="null">Все файлы</option>
+      <option *ngFor="let file of filesViewModels" [ngValue]="file.id">{{file.name_text}}</option>
+    </select>
+  </div>
+</div>
+<div class="col m-2">
+  <app-strings-list [translationStrings]="translationStrings"
+                    (sortingParamsChanged)="applySorting($event)"
+                    (dataReloadRequested)="loadStrings()"></app-strings-list>
+</div>

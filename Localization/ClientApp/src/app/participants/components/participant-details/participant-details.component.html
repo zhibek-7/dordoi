@@ -1,0 +1,63 @@
+<app-modal [isWide]="true" [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 *ngIf="participant" class="modal-title">{{participant.user_Name}}</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <div class="row">
+      <div class="col-4">
+        <img class="width-to-parent" [src]="participantPhoto" alt="Participant avatar" *ngIf="participantPhoto && !isPhotoLoading; else noImageFound">
+        <ng-template #noImageFound>
+          <img class="width-to-parent" src="../../../../assets/svg/011-user.svg" alt="Participant avatar was not loaded">
+        </ng-template>
+        <div>
+          <h6>Предпочитаемые языки</h6>
+        </div>
+        <div *ngFor="let locale of locales">
+          {{locale.name_text}}
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="m-2">
+          <div>
+            <h6>Роль</h6>
+          </div>
+          <div *ngIf="participant">
+            {{participant.role_Name}}
+          </div>
+        </div>
+        <table class="table m-2">
+          <thead>
+            <tr>
+              <th>Вклад в проект</th>
+              <th>Слов</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Переведено</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>С подтверждённым переводом</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Комментарии</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="app-modal-footer row">
+    <div class="col btn-group">
+      <button class="btn btn-primary m-1 btn-sm" disabled>Открыть профиль</button>
+      <button class="btn btn-danger m-1 btn-sm" (click)="deleteParticpant()">Удалить</button>
+    </div>
+    <div class="col">
+      <button class="btn btn-primary btn-sm" (click)="hide()">Закрыть</button>
+    </div>
+  </div>
+</app-modal>

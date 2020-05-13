@@ -1,0 +1,24 @@
+<app-modal [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 *ngIf="file && !file.is_folder" class="modal-title">Прогресс перевода для файла {{file.name_text}}</h4>
+    <h4 *ngIf="file && file.is_folder" class="modal-title">Прогресс перевода для папки {{file.name_text}}</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <div *ngFor="let fileTranslationInfo of fileTranslationInfos">
+      <div *ngIf="getLocale(fileTranslationInfo.locale_Id)" class="row">
+        <div class="col-4">
+          <img alt="Locale icon" [style.width]="16+'px'" [src]="getLocale(fileTranslationInfo.locale_Id).url" />
+          {{getLocale(fileTranslationInfo.locale_Id).name_text}}
+        </div>
+        <div class="col-8">
+          <mat-progress-bar mode="determinate" [value]="fileTranslationInfo.percent_Of_Translation"></mat-progress-bar>
+          {{fileTranslationInfo.percent_Of_Translation | percent }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="app-modal-footer">
+    <button class="btn btn-primary m-1 btn-sm" (click)="hide()">Закрыть</button>
+  </div>
+</app-modal>

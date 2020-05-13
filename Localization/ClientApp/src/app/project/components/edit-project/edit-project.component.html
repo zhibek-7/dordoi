@@ -1,0 +1,14 @@
+<app-editable-project *ngIf="loaded" [project]="project" (editedSubmitted)="submit($event)"></app-editable-project>
+
+<div *ngIf="loaded">
+  
+  <button class="btn btn-danger btn-sm m-1" (click)="confirmDeleteFormModal.show()">
+    Удалить
+    <!--<img src="../assets/icons/main/bin.png" width="20" height="20" class="d-inline-block align-li" alt="Удалить">-->
+  </button>
+  <app-confirm-delete-project #confirmDeleteFormModal
+                              [nameProject]="project.name_text"
+                              (confirmedDelete)="delete($event)">
+  </app-confirm-delete-project>
+
+</div>

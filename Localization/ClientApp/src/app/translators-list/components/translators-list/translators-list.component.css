@@ -1,0 +1,115 @@
+.jumbotron {
+  border-radius: 0;
+  background: white;
+  padding: 1rem;
+  margin-bottom: .5rem;
+  font-size: .9rem;
+}
+
+.col-btn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.topics {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.topic {
+  background: #dbdbdb;
+  margin: 5px 10px 5px 0px;
+  padding: 5px;
+}
+
+.amount {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/*Отображает символ валюты рубль*/
+/*.amount:before {
+  content: "\20BD"; 
+}*/
+
+.content-top {
+  background: #7c529e;
+  height: 3rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+
+.control-group {
+  width: 50%;
+}
+
+fieldset {
+  border-width: 2px;
+  border-style: groove;
+  border-color: #eaeaea;
+  padding: inherit;
+  margin: inherit;
+}
+
+::ng-deep .mat-dialog-container {
+  border-radius: 0px !important;
+}
+
+::ng-deep .mat-dialog-actions {
+  justify-content: space-between;
+}
+
+::ng-deep .mat-dialog-actions button {
+  outline: none;
+}
+
+::ng-deep .mat-checkbox-layout {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+::ng-deep .mat-checkbox-label-before .mat-checkbox-inner-container {
+  margin-right: 8px !important;
+}
+
+::ng-deep .example-section {
+  height: 60px !important;
+}
+
+legend {
+  text-align: center;
+  font-size: 1rem;
+  width: 50%;
+}
+
+#min, #max {
+  width: 4rem;
+  margin-left: 1rem;
+}
+
+label::after {
+  content: "\20BD";
+  margin-left: 5px;
+}
+.row-buttons button {
+  text-transform: uppercase;
+}
+.row-buttons {
+  justify-content: space-between;
+  padding: 2rem 0rem;
+}
+button:focus {
+  outline: none;
+}

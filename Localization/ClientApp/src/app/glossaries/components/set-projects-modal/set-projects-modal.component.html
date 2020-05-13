@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Назначить словарь {{data.name}} для проектов</h1>
+<div mat-dialog-content>
+  <label class="m-1"> Назначить словарь для следующих проектов: </label>
+  <div class="input-group">
+    <div>
+      <div class="form-check" *ngFor="let localizationProject of availableLocalizationProjects">
+        <label class="form-check-label">
+          <input class="form-check-input" type="checkbox" [ngModel]="localizationProject.isSelected" (ngModelChange)="toggleSelection(localizationProject)">{{localizationProject.model.name_text}}
+        </label>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="errorsRequiredLocalizationProjects" class="alert alert-danger">
+    Выберите проект(ы).
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Закрыть</button>
+  <button mat-button (click)="applyChanges()">Применить</button>
+</div>

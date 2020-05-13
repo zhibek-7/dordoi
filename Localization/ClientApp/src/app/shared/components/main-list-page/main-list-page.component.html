@@ -1,0 +1,17 @@
+<div class="row mb-2">
+  <div class="col">
+    <app-pagination [offset]="currentOffset" [pageSize]="pageSize" [totalCount]="totalCount" [displayedPagesRange]="3" (pageChanged)="onPageChanged($event)"></app-pagination>
+  </div>
+</div>
+
+<div class="row mb-2">
+  <div class="col">
+    <input type="text" class="form-control" placeholder="Искать" [(ngModel)]="searchString" (input)="reloadData()" />
+  </div>
+  <div class="col">
+    <select class="form-control" [(ngModel)]="filterId" (change)="reloadData()">
+      <option [ngValue]="null">Все</option>
+      <option *ngFor="let item of filters" [ngValue]="item.id">{{item.name_text}}</option>
+    </select>
+  </div>
+</div>

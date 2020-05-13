@@ -1,0 +1,59 @@
+<app-modal [isWide]="true" [(visible)]="visible">
+  <div class="app-modal-header d-flex m-2">
+    <h4 class="modal-title">Пригласить людей в проект</h4>
+    <button type="button" class="close" (click)="hide()">&times;</button>
+  </div>
+  <div class="app-modal-body">
+    <form [formGroup]="formGroup">
+      <div class="m-2">
+        <div>
+          <h6>Роль</h6>
+        </div>
+        <select *ngIf="roles" class="form-control m-1" [(ngModel)]="selectedRoleId"
+          [ngModelOptions]="{standalone: true}">
+          <option *ngFor="let role of roles" [ngValue]="role.id">{{role.name_text}}</option>
+        </select>
+      </div>
+      <div class="m-2">
+        <div>
+          <h6>Электронная почта</h6>
+        </div>
+        <div class="width-to-parent">
+          <input class="form-control" formControlName="emailFormControl" placeholder="Электронная почта">
+        </div>
+        <div class="alert alert-danger"
+          *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.required">
+          Поле "Email" обязательно для заполнения
+        </div>
+        <div class="alert alert-danger"
+          *ngIf="formGroup.controls['emailFormControl'].invalid && formGroup.controls['emailFormControl'].touched && formGroup.controls['emailFormControl'].errors?.email">
+          Некорректный email
+        </div>
+      </div>
+      <div class="m-2">
+        <div>
+          <h6>Сообщение</h6>
+        </div>
+        <mat-form-field class="width-to-parent">
+          <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="6"
+            cdkAutosizeMaxRows="20" placeholder="Сообщение" formControlName="invitationMessageFormControl"></textarea>
+
+        </mat-form-field>
+      </div>
+      <div class="m-2">
+        <div>
+          <h6>Ссылка</h6>
+        </div>
+        <mat-form-field class="width-to-parent">
+          <textarea matInput readonly [value]="invitationLink"></textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div class="app-modal-footer row">
+    <div class="col">
+      <button class="btn btn-success m-1 btn-sm" (click)="saveInvitation()">Пригласить</button>
+      <button class="btn btn-primary btn-sm" (click)="hide()">Отмена</button>
+    </div>
+  </div>
+</app-modal>

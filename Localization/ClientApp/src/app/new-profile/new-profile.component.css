@@ -1,0 +1,128 @@
+.jumbotron {
+  padding: 1rem 1rem;
+  border-radius: 0;
+  background: white;
+}
+button:focus {
+  outline: none !important;
+}
+.rate {
+  display: flex;
+  align-items: center;
+}
+.name {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+.mb-custom {
+  margin-bottom: 5rem;
+}
+.w75 {
+  width: 75%;
+}
+.w100 {
+  width: 100%;
+}
+.mat-hint {
+  font-size: 12px !important;
+  color: #ff4081 !important;
+}
+.wrap {
+  height: 8rem;
+  width: 8rem;
+  position: relative;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+}
+.lt-inner {
+  position: absolute;
+  border-right: #7c529e 1px solid;
+  border-bottom: #7c529e 1px solid;
+  height: 50%;
+  width: 50%;
+  top: 0;
+  left: 0;
+}
+.rt-inner {
+  border-left: #7c529e 1px solid;
+  border-bottom: #7c529e 1px solid;
+  position: absolute;
+  height: 50%;
+  width: 50%;
+  top: 0;
+  right: 0;
+}
+.lb-inner {
+  border-right: #7c529e 1px solid;
+  border-top: #7c529e 1px solid;
+  position: absolute;
+  height: 50%;
+  width: 50%;
+  bottom: 0;
+  left: 0;
+}
+.rb-inner {
+  border-left: #7c529e 1px solid;
+  border-top: #7c529e 1px solid;
+  position: absolute;
+  height: 50%;
+  width: 50%;
+  bottom: 0;
+  right: 0;
+}
+.service {
+  font-size: 14px;
+  margin-right: 1rem;
+  border: 1px solid #bab4b4;
+  min-height: 20rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.service div {
+  width: 100%;
+}
+.mat-form-field {
+  width: 100% !important;
+}
+.row-btn {
+  justify-content: flex-end;
+  margin: 0px;
+}
+.mat-button.mat-primary {
+  color: #7c529e !important;
+  text-transform: uppercase;
+}
+.mat-button {
+  padding: 0px !important;
+}
+::ng-deep .mat-content {
+  display: flex;
+  flex: none !important;
+  flex-direction: row-reverse !important;
+  overflow: hidden;
+  color: #7c529e;
+}
+::ng-deep .mat-expansion-panel-header-title {
+  color: #7c529e;
+  font-size: 14px;
+}
+::ng-deep .mat-expansion-panel:not([class*='mat-elevation-z']) {
+  box-shadow: none;
+}
+::ng-deep .mat-expansion-panel-header {
+  padding: 0px !important;
+}
+::ng-deep .mat-dialog-container {
+  border-radius: 0px !important;
+}
+::ng-deep .mat-form-field {
+  width: 100% !important;
+}
+::ng-deep .mat-dialog-actions {
+  flex-direction: column !important;
+}
+::ng-deep .align {
+  align-self: flex-end !important;
+}

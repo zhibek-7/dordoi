@@ -1,0 +1,16 @@
+.modal-body {
+  padding: 0rem !important;
+  margin: 0rem !important;
+}
+
+.mat-icon-button:focus {
+  outline: none !important;
+}
+
+/deep/.cdk-overlay-container {
+  z-index: 105200 !important;
+}
+
+#modal-body {
+  position: relative;
+}

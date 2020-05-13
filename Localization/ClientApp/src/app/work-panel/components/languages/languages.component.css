@@ -1,0 +1,136 @@
+.languagesBlock {}
+
+.languagesOptionsBlock {
+  background-color: #F6F5F1;
+  padding-top: 1vh;
+  padding-left: 1%;
+}
+
+.languagesOptionsBlock a {
+  color: gray;
+}
+
+.offersBlock {
+  padding: 2px 2px 2px 2px;
+}
+
+.offersBlock {}
+
+.list-group-item {
+  padding: 2px 2px 2px 2px;
+}
+
+.userIcon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.userLogin {
+  color: #A4BF82;
+  text-align: left;
+}
+
+.translatedText {
+  font-size: 0.8em;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 2rem;
+  max-height: 20rem;
+  min-width: 18em;
+  padding: 0.1rem;
+
+}
+
+.translationInfo {
+  padding-top: 0.1rem;
+}
+
+.utilitiesIcon {
+  width: 0.8rem;
+  height: 0.8rem;
+  cursor: pointer;
+}
+
+.form-check-input {
+  width: 0.8rem;
+  height: 0.8rem;
+  bottom: 0.6em;
+}
+
+.translationsEmpty {
+  text-align: center;
+  color: gray;
+  padding: 12vh;
+  font-size: 1em;
+}
+
+.otherLanguages {
+  text-align: center;
+  color: gray;
+  padding: 12vh;
+  font-size: 1em;
+}
+
+.searchByMemory {
+  padding: 15px;
+  text-align: justify;
+  color: gray;
+  font-size: 1em;
+}
+
+.fileDescription {
+  color: gray;
+  font-size: 0.8em;
+}
+
+.labelSimilarTranlsations {
+  color: gray;
+  font-size: 0.8em;
+  margin-left: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+
+.col-6 {
+  font-size: 0.8rem;
+}
+
+.userLogin {
+  font-size: 0.8rem;
+
+}
+
+
+.row {
+  margin: 0px;
+}
+
+.arrowIcon {
+  cursor: pointer;
+}
+
+.mat-icon {
+  color: grey;
+}
+
+.col-4 {
+  font-size: 0.8rem;
+  color: grey;
+
+}
+
+.col-6 {
+  font-size: 0.8rem;
+}
+
+
+hr {
+  margin: 0.3rem;
+}
+
+
+.margin-small {
+  margin: 0.3rem;
+}

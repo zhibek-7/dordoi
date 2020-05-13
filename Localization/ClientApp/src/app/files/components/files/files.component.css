@@ -1,0 +1,84 @@
+label {
+    margin: 0;
+}
+
+.ui-treetable {
+    position: relative;
+}
+
+.ui-treetable table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.ui-treetable tr:nth-child(even) {
+    background: #f1f1f1;
+}
+
+.ui-treetable th, td {
+    padding: 0.3em;
+    border: 1px solid #d0d0d0;
+}
+
+.ui-treetable .ui-treetable-tbody > tr.ui-state-highlight {
+    background-color: #007ad9;
+    color: #ffffff; 
+}
+
+.ui-treetable-toggler {
+    color: #000;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.pi-chevron-right {
+    display: inline-block;
+    border-bottom: 6px solid transparent;
+    border-top: 6px solid transparent;
+    border-left: 10px solid;
+    padding: 0 1px;
+  height: 0.8rem;
+  width: 0.8rem;
+
+}
+.pi-chevron-down {
+    display: inline-block;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 10px solid;
+    padding: 1px 0;
+  height: 0.8rem;
+  width: 0.8rem;
+
+}
+
+.pi-chevron-right:before {
+content: "";
+}
+.pi-chevron-down:before {
+content: "";
+}
+
+
+.table {
+  font-size: 0.8rem;
+}
+
+table td, table th
+{
+    padding: 2px;
+    word-wrap: break-word;
+}
+
+table th
+{
+  text-align : justify;
+}
+
+.col-xs-6, {
+  width : 10vw;
+}
+
+.col-xs-2{
+  width : 1vw;
+}

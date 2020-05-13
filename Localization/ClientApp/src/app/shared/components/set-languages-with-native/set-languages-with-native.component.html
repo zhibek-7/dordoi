@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col">
+    <app-set-languages #setLanguages [availableLocales]="availableLocales" (selectedLocalesChanged)="setSelectedLocales($event)"></app-set-languages>
+  </div>
+  <div class="col">
+    <div>
+      <label>Родной:</label>
+    </div>
+      <div class="col-md" size="4" style="height: 10em; overflow: auto; border-left: 1px solid lightgrey">
+        <div class="form-check" *ngFor="let locale of availableLocalesNative|orderBy:setLanguages.args:setLanguages.reverse">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" [ngModel]="locale.isSelected" (ngModelChange)="toggleSelectionNative(locale)">
+            <span style="color: white">.</span><!-- Без текста некорректно работает.-->
+          </label>
+        </div>
+      </div>
+  </div>
+</div>
