@@ -17,7 +17,7 @@ const routes: Routes = [
     component: AddFundComponent
   },
   {
-    path: 'edit',
+    path: 'edit/:fundId"',
     component: EditFundComponent
   },
   {

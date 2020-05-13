@@ -10,7 +10,7 @@ import { ContactsComponent } from './contacts/contacts.component';
 import { ForCompaniesComponent } from './for-companies/for-companies.component';
 import { ForSeniorsComponent } from './for-seniors/for-seniors.component';
 import { HomeComponent } from './home/home.component';
-import { IndividualComponent } from './individual/individual.component';
+//import { IndividualComponent } from './individual/individual/individual.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
 @NgModule({
@@ -21,7 +21,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     ForCompaniesComponent,
     ForSeniorsComponent,
     HomeComponent,
-    IndividualComponent,
+   // IndividualComponent,
     NavMenuComponent,
   ],
   imports: [

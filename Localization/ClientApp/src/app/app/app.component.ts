@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
   //projects: LocalizationProject[];
   //currentProject: LocalizationProject;
   name: string = null;
+  description: string = null;
   //projectid: string = null;
   //projectVisibility = false;
 
@@ -70,19 +71,24 @@ export class AppComponent implements OnInit {
 
     this.fundService.currentFundId = currentFund.id;
     this.fundService.currentFundName = currentFund.name_text;
+    this.fundService.currentFundDescription = currentFund.description;
     this.getFund();
   }
   fundcleaning() {
     this.fundService.currentFundId = Guid.createEmpty();
     this.fundService.currentFundName = "";
+    this.fundService.currentFundDescription = "";
   }
 
   getFund() {
     this.name = sessionStorage.getItem("Fund_text");
     this.fundid = sessionStorage.getItem("FundID");
+    this.description = sessionStorage.getItem("description");
   }
 
-
+  getFundDescription() {
+    return sessionStorage.getItem("description");
+  }
 
   getFundName() {
     return sessionStorage.getItem("Fund_text");

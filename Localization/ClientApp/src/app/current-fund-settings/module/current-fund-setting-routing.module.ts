@@ -10,7 +10,7 @@ const routes: Routes = [
     canActivate: [AuthenticationGuard],
     children: [
       {
-        path: "fund",
+        path: "funds",
         loadChildren: "src/app/about-fund/about-fund.module#AboutFundModule",
         canActivate: [AuthenticationGuard]
       }]

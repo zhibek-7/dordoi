@@ -11,38 +11,39 @@ moment.locale("ru");
   selector: "app-user-account",
   templateUrl: "./user-account.component.html",
   styleUrls: ["./user-account.component.css"],
-  providers: [ProjectsService, UserService, FundService]
+  providers: [UserService, FundService]
 })
 export class UserAccountComponent implements OnInit {
-  projectsArr: LocalizationProject[];
+  //projectsArr: LocalizationProject[];
   fundsArr: fund[];
   columnsToDisplay = ["fundName", "changed", "settings", "fundMenu"];
   currentUserName = "";
-
+  //currentUserName="";
 
   funds: fund[];
   fund: fund ; 
 
   constructor(
-    private projectsService: ProjectsService,
+   // private projectsService: ProjectsService,
     private userService: UserService,
     private fundService:  FundService
   ) {}
 
-  getPickedProject(pickedProject) {
-    this.projectsService.currentProjectId = pickedProject.id;
-    this.projectsService.currentProjectName = pickedProject.name_text;
-  }
+  //getPickedProject(pickedProject) {
+  //  this.projectsService.currentProjectId = pickedProject.id;
+  //  this.projectsService.currentProjectName = pickedProject.name_text;
+  //}
 
   getPickedFund(pickedFund) {
     this.fundService.currentFundId = pickedFund.id;
     this.fundService.currentFundName = pickedFund.name_text;
+    this.fundService.currentFundDescription = pickedFund.description;
   }
 
 
   ngOnInit() {    
     this.currentUserName = this.userService.currentUserName;
-
+    
     this.fundService.getFunds().subscribe(
       fund => {
         this.fundsArr = fund;

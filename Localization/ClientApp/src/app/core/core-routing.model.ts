@@ -7,18 +7,18 @@ import { AboutFundComponent } from 'src/app/about-fund/about-fund/about-fund.com
 import { ForCompaniesComponent } from 'src/app/for-companies/for-companies.component';
 import { AuthenticationGuard } from "../services/authentication.guard";
 import { ForSeniorsComponent } from 'src/app/for-seniors/for-seniors.component';
-import { IndividualComponent } from 'src/app/individual/individual.component';
+import { IndividualComponent } from 'src/app/individual/individual/individual.component';
 import { HomeComponent } from 'src/app/home/home.component';
 const routes: Routes = [
   {
     path: "administration",
     loadChildren: "../administration/administration.module#AdministrationModule"
   },
- // { path: 'about-fund', component: AboutFundComponent },
+  //{ path: 'about-fund', component: AboutFundComponent },
   { path: 'contacts', component: ContactsComponent },
   { path: 'for-companies', component: ForCompaniesComponent },
   { path: 'for-seniors', component: ForSeniorsComponent },
-  { path: 'individual', component: IndividualComponent },
+  //{ path: 'individual', component: IndividualComponent },
   { path: 'home', component: HomeComponent },
   {
     path: "Translation/:fileId/:localeId",
@@ -37,16 +37,26 @@ const routes: Routes = [
   },
 
   {
-    path: "Fund/:fundId",
+    path: "Funds/:fundId",
     loadChildren: "../current-fund-settings/module/current-fund-setting.module#CurrentFundSettingModule",
     canActivate: [AuthenticationGuard]
   },
 
   {
     path: "Fund",
-    loadChildren: "../about-fund/about-fund.module#AboutFundModule",
+    loadChildren: "../about-fund/about-fund.module#AboutFundModule"
+    //canActivate: [AuthenticationGuard]
+  },
+
+
+
+  {
+    path: "Individual",
+    loadChildren: "../individual/individual.module#IndividualModule",
     canActivate: [AuthenticationGuard]
   },
+
+
 
   {
     path: "Profile",

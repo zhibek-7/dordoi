@@ -11,18 +11,20 @@ export class CurrentFundSettingComponent implements OnInit {
 
   fundId: Guid;
   fundName: string;
+  description: string;
+
   constructor(private route: ActivatedRoute,
     private fundService: FundService) { }
 
   ngOnInit() {
     this.fundId = this.fundService.currentFundId;
     this.fundName = this.fundService.currentFundName;
+    this.description = this.fundService.currentFundDescription;
 
 
 
-    console.log(".CurrentFundSettingsComponent==" + this.route.snapshot.params["fundId"]);
-    if (this.route.snapshot.params["fundId"] != null) {
-     
+    console.log(".CurrentFundSettingsComponent==" + this.route.snapshot.params["fundId"] + this.route.snapshot.params["fundName"]);
+    if (this.route.snapshot.params["fundId"] != null) {     
       this.fundService.currentFundId = this.route.snapshot.params["fundId"];
     }
 

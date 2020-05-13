@@ -21,7 +21,7 @@
           <table mat-table [dataSource]="fundsArr" style="width: 100%">
             <ng-container matColumnDef="fundName">
               <td mat-cell *matCellDef="let fund">
-                <a class="nav-link" (click)="getPickedFund(fund)" role="button" aria-haspopup="true" routerLink='/Fund/{{ fund.id }}'>
+                <a class="nav-link" (click)="getPickedFund(fund)" role="button" aria-haspopup="true" routerLink='/Funds/{{ fund.id }}'>
                   {{fund.name_text}}
                 </a>
               </td>
@@ -31,9 +31,9 @@
             </ng-container>
             <ng-container matColumnDef="settings">
               <td mat-cell *matCellDef="let fund">
-                <button class="btn btn-sm btn-primary" (click)="editFund(fund)">Изменить</button>
+                <!--<button class="btn btn-sm btn-primary" (click)="editFund(fund)">Изменить</button>-->
 
-                <a class="nav-link" (click)="getPickedFund(fund)" role="button" aria-haspopup="true" routerLink='/Fund/{{ fund.id }}'>
+                <a class="nav-link" (click)="getPickedFund(fund)" role="button" aria-haspopup="true" routerLink='/Fund/edit/{{ fund.id }}'>
                   <mat-icon>Редактировать</mat-icon>
                 </a>
               </td>
@@ -46,7 +46,7 @@
                     <mat-icon>drag_indicator</mat-icon>
                   </a>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" routerLink='/Fund/{{ fund.id }}'>Удалить раздел</a>
+                    <a class="dropdown-item" routerLink='/Funds/{{ fund.id }}'>Удалить раздел</a>
                   </div>
                 </div>
               </td>

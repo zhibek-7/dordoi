@@ -20,75 +20,75 @@ namespace Localization.Controllers
     [Route("api/[controller]")]
     [EnableCors("SiteCorsPolicy")]
     [ApiController]
-    public class FundController : ControllerBase
+    public class IndividualController : ControllerBase
     {
-        private readonly  FundRepository _fundRepository;
+        private readonly  IndividualRepository _individRepository;
         private UserRepository ur;
         private RoleRepository _roleRepository;
-        public FundController()
+        public IndividualController()
         {
             string connectionString = Settings.GetStringDB();
-            _fundRepository = new FundRepository(connectionString);
+            _individRepository = new IndividualRepository(connectionString);
             ur = new UserRepository(connectionString);
             _roleRepository = new RoleRepository(connectionString);
         }
         [Authorize]
         [HttpPost]
         [Route("{Id}")]
-        public Fund GetFundById(Guid Id)
+        public Individual GetById(Guid Id)
         {
             var identityName = User.Identity.Name;
             Guid? userId = (Guid)ur.GetID(identityName);
-            var fund = _fundRepository.GetByIDAsync(Id, userId);
-            return fund.Result;
+            var individ = _individRepository.GetByIDAsync(Id, userId);
+            return individ.Result;
         }
 
         [Authorize]
         [HttpPost]
         [Route("List")]
-        public List<Fund> GetProjects()
+        public List<Individual> GetProjects()
         {
             var identityName = User.Identity.Name;
             Guid? userId = (Guid)ur.GetID(identityName);
-            return _fundRepository.GetAllAsync(userId, null).Result?.ToList();
+            return _individRepository.GetAllAsync(userId, null).Result?.ToList();
         }
 
 
         [Authorize]
         [HttpPost("Create")]
-        public async Task<Guid?> CreateAsync(FundDTO project)
+        public async Task<Guid?> CreateAsync(IndividualDTO project)
         {
             var identityName = User.Identity.Name;
             Guid userId = (Guid)ur.GetID(identityName);
 
-            project.id_user = userId;
+            project.ID_User = userId;
 
-            var projectId = await _fundRepository.CreateAsync(project);
+            var projectId = await _individRepository.CreateAsync(project);
             return projectId;
         }
 
    
         [Authorize]
         [HttpPost("update")]
-        public async Task<Fund> UpdateAsync(Fund project)
+        public async Task<Individual> UpdateAsync(Individual project)
         {
-            await _fundRepository.UpdateAsync(project);
+            await _individRepository.UpdateAsync(project);
             return project;
         }
 
         /// <summary>
         /// Удаление.
         /// </summary>
-        /// <param name="fundId">Идентификатор.</param>
+        /// <param name="individId">Идентификатор.</param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("delete/{fundId}")]
-        public async Task DeleteAsync(Guid fundId)
+        [HttpDelete("delete/{individId}")]
+        public async Task DeleteAsync(Guid individId)
         {
             var identityName = User.Identity.Name;
             Guid userId = (Guid)ur.GetID(identityName);
            
-            await _fundRepository.RemoveAsync(fundId);
+            await _individRepository.RemoveAsync(individId);
         }
 
 

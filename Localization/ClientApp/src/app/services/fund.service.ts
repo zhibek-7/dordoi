@@ -13,12 +13,12 @@ export class FundService {
   constructor(private httpClient: HttpClient) { }
 
   get currentFundId(): Guid {
-    let id: string = sessionStorage.getItem("id");
+    let id: string = sessionStorage.getItem("FundID");
 
     if (id == null || id == "") {
       return Guid.createEmpty();
     } else {
-      return Guid.parse(sessionStorage.getItem("id"));
+      return Guid.parse(sessionStorage.getItem("FundID"));
     }
   }
   set currentFundId(id: Guid) {

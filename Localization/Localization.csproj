@@ -37,6 +37,7 @@
     <Content Remove="%2a%2a\**" />
     <Content Remove="ClientApp\src\app\string-translation-memory\**" />
     <Content Remove="WebApi\**" />
+    
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 

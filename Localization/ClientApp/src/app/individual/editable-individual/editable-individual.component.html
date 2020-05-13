@@ -1,0 +1,174 @@
+  <form [formGroup]="form"
+        novalidate
+        (ngSubmit)="submit()"
+        *ngIf="loaded">
+
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Название раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #name_text_first formControlName="nameMenuFormControl1">
+        </mat-form-field>
+
+        <div class="text-danger"
+             *ngIf="form.controls['nameMenuFormControl1'].invalid && form.controls['nameMenuFormControl1'].touched && form.controls['nameMenuFormControl1'].errors?.required">
+          Это поле необходимо заполнить.
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Описание раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #description_first formControlName="DescriptionFormControl1">
+          <button mat-button *ngIf="description_first.value" matSuffix mat-icon-button aria-label="Clear" (click)="individ.description_first='';description_first.value='';">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Название раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #name_text_second formControlName="nameMenuFormControl2">
+        </mat-form-field>
+
+        <div class="text-danger"
+             *ngIf="form.controls['nameMenuFormControl2'].invalid && form.controls['nameMenuFormControl2'].touched && form.controls['nameMenuFormControl2'].errors?.required">
+          Это поле необходимо заполнить.
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Описание раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #description_second formControlName="DescriptionFormControl2">
+          <button mat-button *ngIf="description_second.value" matSuffix mat-icon-button aria-label="Clear" (click)="individ.description_second='';description_second.value='';">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Название раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #name_text_third formControlName="nameMenuFormControl3">
+        </mat-form-field>
+
+        <div class="text-danger"
+             *ngIf="form.controls['nameMenuFormControl3'].invalid && form.controls['nameMenuFormControl3'].touched && form.controls['nameMenuFormControl3'].errors?.required">
+          Это поле необходимо заполнить.
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Описание раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #description_third formControlName="DescriptionFormControl3">
+          <button mat-button *ngIf="description_third.value" matSuffix mat-icon-button aria-label="Clear" (click)="individ.description_third='';description_third.value='';">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+
+
+
+
+    <div class="form-group row">
+    <label class="col-3 col-form-label">Название раздела:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field width-to-parent">
+        <input matInput type="text"
+               #name_text_fourth formControlName="nameMenuFormControl4">
+      </mat-form-field>
+
+      <div class="text-danger"
+           *ngIf="form.controls['nameMenuFormControl4'].invalid && form.controls['nameMenuFormControl4'].touched && form.controls['nameMenuFormControl4'].errors?.required">
+        Это поле необходимо заполнить.
+      </div>
+    </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Описание раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #description_fourth formControlName="DescriptionFormControl4">
+          <button mat-button *ngIf="description_fourth.value" matSuffix mat-icon-button aria-label="Clear" (click)="individ.description_fourth='';description_fourth.value='';">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+
+
+
+
+
+   <div class="form-group row">
+    <label class="col-3 col-form-label">Название раздела:</label>
+    <div class="col-9" style="padding-left: 0px;">
+      <mat-form-field class="txt-form-field width-to-parent">
+        <input matInput type="text"
+               #name_text_fifth formControlName="nameMenuFormControl5">
+      </mat-form-field>
+
+      <div class="text-danger"
+           *ngIf="form.controls['nameMenuFormControl5'].invalid && form.controls['nameMenuFormControl5'].touched && form.controls['nameMenuFormControl5'].errors?.required">
+        Это поле необходимо заполнить.
+      </div>
+    </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-3 col-form-label">Описание раздела:</label>
+      <div class="col-9" style="padding-left: 0px;">
+        <mat-form-field class="txt-form-field width-to-parent">
+          <input matInput type="text"
+                 #description_fifth formControlName="DescriptionFormControl5">
+          <button mat-button *ngIf="description_fifth.value" matSuffix mat-icon-button aria-label="Clear" (click)="individ.description_fifth='';description_fifth.value='';">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+
+
+
+
+
+    <div class="form-group">
+      <button class="btn m-1 btn-sm"
+              [class.btn-success]="form.valid "
+              [class.btn-primary]="form.invalid"
+              [disabled]="form.invalid "
+              type="submit">
+        Сохранить
+      </button>
+    </div>
+
+  </form>

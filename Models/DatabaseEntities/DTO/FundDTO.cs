@@ -9,12 +9,11 @@ namespace Models.DatabaseEntities.DTO
     public class FundDTO : BaseEntity
     {
         
-        public string fund_text { get; set; }
-
+        public string name_text { get; set; }
        
-        public string fund_description { get; set; }
+        public string description { get; set; }
 
-        public DateTime? data_create { get; set; }
-        public Guid? ID_User { get; set; }
+        public DateTime? date_time_added { get; set; }
+        public Guid? id_user { get; set; }
     }
 }

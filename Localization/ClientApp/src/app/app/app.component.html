@@ -40,7 +40,7 @@
             <li class="nav-item"
                 [routerLinkActive]="['link-active']"
                 [routerLinkActiveOptions]="{ exact: true }">
-              <a class="nav-link text-dark" [routerLink]="['/about-fund']" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">О ФОНДЕ</a>
+              <a class="nav-link text-dark" [routerLink]="['/Fund/funds']" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">О ФОНДЕ</a>
             </li>
             <li class="nav-item" [routerLinkActive]="['link-active']">
               <a class="nav-link text-dark" [routerLink]="['/individual']" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">ДЛЯ ФИЗИЧЕСКИХ ЛИЦ</a>
@@ -82,13 +82,13 @@
          
           <div *ngFor="let fund of funds" class="row">
             <div class="col-1 bnt-text">
-              <a (click)="getCurrentFund(fund)" href="/Fund/{{ fund.id }}">
+              <a (click)="getCurrentFund(fund)" href="/Funds/{{ fund.id }}">
                 <img src="../assets/icons/main/settings.jpg" class="align-top img_small" alt="" />
               </a>
             </div>
             <div class="col-2 bnt-text">
               <a class="dropdown-item col-2" (click)="getCurrentFund(fund)"
-                 href="/Fund/{{ fund.id }}">
+                 href="/Funds/{{ fund.id }}">
                 {{ fund.name_text }}
               </a>
             </div>
@@ -121,7 +121,7 @@
 
     <ul class="navbar-nav mr-auto" *ngIf="this.usersService.currentUserName != null">
       <li *ngIf="getFundName()  != ''">
-        <a class="nav-link disabled" href="/Fund/{{ getFundId() }}" *ngIf="getFundName()  != null">
+        <a class="nav-link disabled" href="/Funds/{{ getFundId() }}" *ngIf="getFundName()  != null">
           Фонд: {{ getFundName() }}
           <img src=" ../assets/icons/main/settings.jpg" class="align-top img_small" alt="" />
         </a>

@@ -10,13 +10,16 @@
        *ngIf="loaded">
 
   <div class="form-group row">
+
+
+  
     <label class="col-3 col-form-label">Название раздела:</label>
     <div class="col-9" style="padding-left: 0px;">
       <mat-form-field class="txt-form-field width-to-parent">
         <input matInput type="text"
-               #name formControlName="nameMenuFormControl">
+               #name_text formControlName="nameMenuFormControl">
       </mat-form-field>
-    
+
       <div class="text-danger"
            *ngIf="form.controls['nameMenuFormControl'].invalid && form.controls['nameMenuFormControl'].touched && form.controls['nameMenuFormControl'].errors?.required">
         Это поле необходимо заполнить.
@@ -28,7 +31,7 @@
     <div class="col-9" style="padding-left: 0px;">
       <mat-form-field class="txt-form-field width-to-parent">
         <input matInput type="text"
-               #Fund_description formControlName="fundDescriptionFormControl">
+               #description formControlName="fundDescriptionFormControl">
         <button mat-button *ngIf="description.value" matSuffix mat-icon-button aria-label="Clear" (click)="fund.description='';description.value='';">
           <mat-icon>close</mat-icon>
         </button>

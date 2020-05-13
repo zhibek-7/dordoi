@@ -40,7 +40,7 @@ submit(editedFund: fund) {
        //    this.fundService.currentFundId = fundId;
         this.fundService.currentFundName = editedFund.name_text;
         this.fundService.currentFundDescription = editedFund.description;
-        //this.router.navigate(["/Fund"]);
+        this.router.navigate(["/Profile"]);
       },
       error => console.error(error)
     );

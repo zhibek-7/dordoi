@@ -22,10 +22,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<Guid?> CreateAsync(FundDTO fund)
         {
             var sqlQuery = "INSERT INTO fund " +
-                            "(name_text, description "
+                            "(name_text, description, id_user "
                             + ") " +
                             "VALUES('"
-                  + fund.fund_text + "','" + fund.fund_description + "'"
+                  + fund.name_text + "','" + fund.description + "','" + fund.id_user + "'"
                   + ")"
                    + " RETURNING fund.id";
             try
@@ -66,7 +66,7 @@ namespace DAL.Reposity.PostgreSqlRepository
                            "(name_text, description "
                            +") " +
                            "VALUES('"
-                 + fund.fund_text + "','" + fund.fund_description + "'" 
+                 + fund.name_text + "','" + fund.description + "'" 
                  +  ")"
                   + " RETURNING fund.id";
             try
@@ -197,10 +197,10 @@ namespace DAL.Reposity.PostgreSqlRepository
         public async Task<bool> UpdateAsync(Fund fund)
         {
             var sqlQuery = "UPDATE \"fund\" SET" +
-                             "\"name_text\"=@fund_text, " +
+                             "\"name_text\"=@name_text, " +
                              "\"date_time_added\"=@data_create," +
                              "\"id_user\"=@ID_User," +
-                             " \"description\"=@fund_description," +
+                             " \"description\"=@description " +
                               "WHERE \"id\"=@id";
 
             try
